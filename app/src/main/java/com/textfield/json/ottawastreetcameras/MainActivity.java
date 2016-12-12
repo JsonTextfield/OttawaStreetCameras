@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.ListView;
@@ -46,9 +48,10 @@ public class MainActivity extends AppCompatActivity {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
 
-        Thread thread = new Thread() {
+        new AsyncTask<Void, Void, Void>() {
+
             @Override
-            public void run() {
+            protected Void doInBackground(Void... voids) {
                 try {
                     URL oracle = new URL("http://traffic.ottawa.ca/map");
                     HttpURLConnection urlConnection = (HttpURLConnection) oracle.openConnection();
@@ -56,26 +59,42 @@ public class MainActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     //e.printStackTrace();
                 }
+                return null;
             }
-        };
-        thread.start();
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                try {
+                    JSONArray jsonArray = new JSONArray(loadJSONFromAsset());
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject g = (JSONObject) jsonArray.get(i);
+                        cameras.add(new Camera(g.getString("name"), g.getString("id")));
+                    }
+
+
+                } catch (JSONException e) {
+                    //e.printStackTrace();
+                }
+
+                final ListView listView = (ListView) findViewById(R.id.listView);
+
+                listView.setAdapter(cameraAdapter);
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        Bundle b = new Bundle();
+                        b.putString("id", ((Camera) listView.getAdapter().getItem(i)).getId());
+                        b.putString("name", ((Camera) listView.getAdapter().getItem(i)).getName());
+
+
+                        Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+                        intent.putExtras(b);
+                        startActivity(intent);
+                    }
+                });
+            }
+        }.execute();
         //doSomething();
-
-        try {
-            JSONArray jsonArray = new JSONArray(loadJSONFromAsset());
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject g = (JSONObject) jsonArray.get(i);
-                cameras.add(new Camera(g.getString("name"), g.getString("id")));
-            }
-
-
-        } catch (JSONException e) {
-            //e.printStackTrace();
-        }
-
-        ListView listView = (ListView) findViewById(R.id.listView);
-
-        listView.setAdapter(cameraAdapter);
 
     }
 
@@ -125,6 +144,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             return data.size();
+        }
+
+        @Nullable
+        @Override
+        public Camera getItem(int position) {
+            return data.get(position);
         }
 
         @NonNull
