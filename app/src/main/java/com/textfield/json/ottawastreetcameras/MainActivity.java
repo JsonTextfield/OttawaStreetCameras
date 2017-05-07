@@ -1,11 +1,15 @@
 package com.textfield.json.ottawastreetcameras;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
+import android.support.annotation.BoolRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -48,50 +52,65 @@ public class MainActivity extends AppCompatActivity {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
 
-        new AsyncTask<Void, Void, Void>() {
+        new AsyncTask<Void, Void, Boolean>() {
 
             @Override
-            protected Void doInBackground(Void... voids) {
+            protected Boolean doInBackground(Void... voids) {
                 try {
                     URL oracle = new URL("http://traffic.ottawa.ca/map");
                     HttpURLConnection urlConnection = (HttpURLConnection) oracle.openConnection();
                     MainActivity.SESSION_ID = urlConnection.getHeaderFields().get("Set-Cookie").get(0);
                 } catch (IOException e) {
                     //e.printStackTrace();
+                } catch (NullPointerException e) {
+                    return false;
                 }
-                return null;
+                return true;
             }
 
             @Override
-            protected void onPostExecute(Void aVoid) {
-                try {
-                    JSONArray jsonArray = new JSONArray(loadJSONFromAsset());
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject g = (JSONObject) jsonArray.get(i);
-                        cameras.add(new Camera(g.getString("name"), g.getString("id")));
+            protected void onPostExecute(Boolean b) {
+                if (b) {
+                    try {
+                        JSONArray jsonArray = new JSONArray(loadJSONFromAsset());
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject g = (JSONObject) jsonArray.get(i);
+                            cameras.add(new Camera(g.getString("name"), g.getString("id")));
+                        }
+
+
+                    } catch (JSONException e) {
+                        //e.printStackTrace();
                     }
 
+                    final ListView listView = (ListView) findViewById(R.id.listView);
 
-                } catch (JSONException e) {
-                    //e.printStackTrace();
+                    listView.setAdapter(cameraAdapter);
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                            Bundle b = new Bundle();
+                            b.putString("id", ((Camera) listView.getAdapter().getItem(i)).getId());
+                            b.putString("name", ((Camera) listView.getAdapter().getItem(i)).getName());
+
+
+                            Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+                            intent.putExtras(b);
+                            startActivity(intent);
+                        }
+                    });
+                } else {
+                    AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).setTitle("Network error")
+                            .setMessage("You need to be connected to the internet to use this app").create();
+                    dialog.show();
+                    dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialogInterface) {
+                            MainActivity.this.finish();
+                            System.exit(0);
+                        }
+                    });
                 }
-
-                final ListView listView = (ListView) findViewById(R.id.listView);
-
-                listView.setAdapter(cameraAdapter);
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        Bundle b = new Bundle();
-                        b.putString("id", ((Camera) listView.getAdapter().getItem(i)).getId());
-                        b.putString("name", ((Camera) listView.getAdapter().getItem(i)).getName());
-
-
-                        Intent intent = new Intent(MainActivity.this, CameraActivity.class);
-                        intent.putExtras(b);
-                        startActivity(intent);
-                    }
-                });
             }
         }.execute();
         //doSomething();

@@ -76,7 +76,7 @@ public class CameraActivity extends AppCompatActivity {
             if (result != null) {
                 bmImage.setImageBitmap(result);
             }
-            //Log.w("STREETCAM", "updated");
+            Log.w("STREETCAM", "updated");
             if (RUNNING) {
                 new DownloadImageTask(bmImage, id).execute("http://traffic.ottawa.ca/map/camera?id=" + id);
             }
