@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
@@ -17,6 +18,7 @@ import java.net.URLConnection;
 public class CameraActivity extends AppCompatActivity {
 
     private static boolean RUNNING;
+    Camera camera;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,19 +34,38 @@ public class CameraActivity extends AppCompatActivity {
 
 
         Bundle bundle = getIntent().getExtras();
-        String id = bundle.getString("id");
-        getSupportActionBar().setTitle(bundle.getString("name"));
+        camera = new Camera(bundle.getString("name"), bundle.getString("id"));
+        getSupportActionBar().setTitle(camera.getName());
 
-        new DownloadImageTask((ImageView) findViewById(R.id.imageView), id).execute("http://traffic.ottawa.ca/map/camera?id=" + id);
+        getSessionId();
+    }
+
+    public void getSessionId() {
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                try {
+                    URL oracle = new URL("http://traffic.ottawa.ca/map");
+                    oracle.openConnection();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void b) {
+                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://traffic.ottawa.ca/map/camera?id=" + camera.getId());
+            }
+        }.execute();
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
-        String id;
 
-        public DownloadImageTask(ImageView imageView, String id) {
+        public DownloadImageTask(ImageView imageView) {
             bmImage = imageView;
-            this.id = id;
         }
 
         protected Bitmap doInBackground(String... urls) {
@@ -59,7 +80,7 @@ public class CameraActivity extends AppCompatActivity {
             try {
                 URL myUrl = new URL(urldisplay);
                 URLConnection urlConnection = myUrl.openConnection();
-                urlConnection.setRequestProperty("Cookie", MainActivity.SESSION_ID);
+                //urlConnection.setRequestProperty("Cookie", MainActivity.SESSION_ID);
                 //urlConnection.connect();
                 InputStream in = urlConnection.getInputStream();
 
@@ -78,7 +99,7 @@ public class CameraActivity extends AppCompatActivity {
             }
             Log.w("STREETCAM", "updated");
             if (RUNNING) {
-                new DownloadImageTask(bmImage, id).execute("http://traffic.ottawa.ca/map/camera?id=" + id);
+                new DownloadImageTask(bmImage).execute("http://traffic.ottawa.ca/map/camera?id=" + camera.getId());
             }
         }
     }

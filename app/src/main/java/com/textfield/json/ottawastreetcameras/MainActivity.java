@@ -4,8 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Looper;
-import android.support.annotation.BoolRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
@@ -14,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -39,80 +36,45 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    static String SESSION_ID;
     ArrayList<Camera> cameras = new ArrayList<>();
-    CameraAdapter cameraAdapter;
+    CameraAdapter cameraAdapter = new CameraAdapter();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        cameraAdapter = new CameraAdapter();
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
 
-        new AsyncTask<Void, Void, Boolean>() {
-
-            @Override
-            protected Boolean doInBackground(Void... voids) {
-                try {
-                    URL oracle = new URL("http://traffic.ottawa.ca/map");
-                    HttpURLConnection urlConnection = (HttpURLConnection) oracle.openConnection();
-                    MainActivity.SESSION_ID = urlConnection.getHeaderFields().get("Set-Cookie").get(0);
-                } catch (IOException e) {
-                    //e.printStackTrace();
-                } catch (NullPointerException e) {
-                    return false;
-                }
-                return true;
+        try {
+            JSONArray jsonArray = new JSONArray(loadJSONFromAsset());
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject g = (JSONObject) jsonArray.get(i);
+                cameras.add(new Camera(g.getString("name"), g.getString("id")));
             }
 
+
+        } catch (JSONException e) {
+            //e.printStackTrace();
+        }
+
+        final ListView listView = (ListView) findViewById(R.id.listView);
+
+        listView.setAdapter(cameraAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            protected void onPostExecute(Boolean b) {
-                if (b) {
-                    try {
-                        JSONArray jsonArray = new JSONArray(loadJSONFromAsset());
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject g = (JSONObject) jsonArray.get(i);
-                            cameras.add(new Camera(g.getString("name"), g.getString("id")));
-                        }
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Bundle b = new Bundle();
+                b.putString("id", cameras.get(i).getId());
+                b.putString("name", cameras.get(i).getName());
 
 
-                    } catch (JSONException e) {
-                        //e.printStackTrace();
-                    }
-
-                    final ListView listView = (ListView) findViewById(R.id.listView);
-
-                    listView.setAdapter(cameraAdapter);
-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            Bundle b = new Bundle();
-                            b.putString("id", ((Camera) listView.getAdapter().getItem(i)).getId());
-                            b.putString("name", ((Camera) listView.getAdapter().getItem(i)).getName());
-
-
-                            Intent intent = new Intent(MainActivity.this, CameraActivity.class);
-                            intent.putExtras(b);
-                            startActivity(intent);
-                        }
-                    });
-                } else {
-                    AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).setTitle("Network error")
-                            .setMessage("You need to be connected to the internet to use this app").create();
-                    dialog.show();
-                    dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                        @Override
-                        public void onDismiss(DialogInterface dialogInterface) {
-                            MainActivity.this.finish();
-                            System.exit(0);
-                        }
-                    });
-                }
+                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+                intent.putExtras(b);
+                startActivity(intent);
             }
-        }.execute();
+        });
         //doSomething();
 
     }
@@ -144,19 +106,7 @@ public class MainActivity extends AppCompatActivity {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             viewHolder.title.setText(data.get(position).getName());
-            viewHolder.title.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Bundle b = new Bundle();
-                    b.putString("id", data.get(position).getId());
-                    b.putString("name", data.get(position).getName());
 
-
-                    Intent i = new Intent(getContext(), CameraActivity.class);
-                    i.putExtras(b);
-                    getContext().startActivity(i);
-                }
-            });
             return convertView;
         }
 
