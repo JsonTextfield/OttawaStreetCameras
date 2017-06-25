@@ -37,12 +37,14 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     ArrayList<Camera> cameras = new ArrayList<>();
-    CameraAdapter cameraAdapter = new CameraAdapter();
+    CameraAdapter cameraAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        cameraAdapter = new CameraAdapter();
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
@@ -66,8 +68,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Bundle b = new Bundle();
-                b.putString("id", cameras.get(i).getId());
-                b.putString("name", cameras.get(i).getName());
+                b.putString("id", ((Camera) listView.getAdapter().getItem(i)).getId());
+                b.putString("name", ((Camera) listView.getAdapter().getItem(i)).getName());
 
 
                 Intent intent = new Intent(MainActivity.this, CameraActivity.class);

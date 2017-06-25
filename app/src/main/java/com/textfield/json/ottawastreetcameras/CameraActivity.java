@@ -12,12 +12,14 @@ import android.widget.ImageView;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
 public class CameraActivity extends AppCompatActivity {
 
     private static boolean RUNNING;
+    private static String SESSION_ID;
     Camera camera;
 
     @Override
@@ -47,7 +49,8 @@ public class CameraActivity extends AppCompatActivity {
             protected Void doInBackground(Void... voids) {
                 try {
                     URL oracle = new URL("http://traffic.ottawa.ca/map");
-                    oracle.openConnection();
+                    HttpURLConnection urlConnection = (HttpURLConnection) oracle.openConnection();
+                    CameraActivity.SESSION_ID = urlConnection.getHeaderFields().get("Set-Cookie").get(0);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -80,7 +83,7 @@ public class CameraActivity extends AppCompatActivity {
             try {
                 URL myUrl = new URL(urldisplay);
                 URLConnection urlConnection = myUrl.openConnection();
-                //urlConnection.setRequestProperty("Cookie", MainActivity.SESSION_ID);
+                urlConnection.setRequestProperty("Cookie", CameraActivity.SESSION_ID);
                 //urlConnection.connect();
                 InputStream in = urlConnection.getInputStream();
 
