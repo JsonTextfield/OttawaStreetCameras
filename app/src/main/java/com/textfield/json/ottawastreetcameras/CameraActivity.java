@@ -9,6 +9,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,22 +32,24 @@ public class CameraActivity extends AppCompatActivity {
         RUNNING = true;
         setContentView(R.layout.activity_camera);
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.camera_toolbar);
-        setSupportActionBar(toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.camera_toolbar);
+        toolbar.setTitle("");
+        TextView title = (TextView) toolbar.findViewById(R.id.textView);
 
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+
+
+
 
 
         Bundle bundle = getIntent().getExtras();
         camera = bundle.getParcelable("camera");
         if (Locale.getDefault().getDisplayLanguage().contains("français"))
-            getSupportActionBar().setTitle(camera.getNameFr());
+            title.setText(camera.getNameFr());
         else
-            getSupportActionBar().setTitle(camera.getName());
-
-        Log.w("Camera", camera.toString());
-
+            title.setText(camera.getName());
         getSessionId();
     }
 

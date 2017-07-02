@@ -3,7 +3,7 @@
     android:id="@+id/listtitle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="5dp"
+    android:padding="12dp"
+    android:textSize="17sp"
     android:text="Large Text"
-    android:background="?attr/selectableItemBackground"
-    android:textAppearance="?android:attr/textAppearanceLarge" />
+    android:background="?attr/selectableItemBackground" />
