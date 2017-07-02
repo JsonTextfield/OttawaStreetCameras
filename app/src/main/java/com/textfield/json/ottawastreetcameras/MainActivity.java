@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -171,6 +172,16 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
         return json;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menuItemMap) {
+            Intent intent = new Intent(this, MapsActivity.class);
+            intent.putParcelableArrayListExtra("cameras", cameras);
+            startActivity(intent);
+        }
+        return true;
     }
 
     @Override
