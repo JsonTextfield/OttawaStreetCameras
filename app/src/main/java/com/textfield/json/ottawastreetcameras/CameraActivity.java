@@ -36,8 +36,9 @@ public class CameraActivity extends AppCompatActivity {
 
 
         Bundle bundle = getIntent().getExtras();
-        camera = new Camera(bundle.getString("name"), bundle.getString("id"));
+        camera = bundle.getParcelable("camera");
         getSupportActionBar().setTitle(camera.getName());
+        Log.w("Camera", camera.toString());
 
         getSessionId();
     }
@@ -59,7 +60,7 @@ public class CameraActivity extends AppCompatActivity {
 
             @Override
             protected void onPostExecute(Void b) {
-                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://traffic.ottawa.ca/map/camera?id=" + camera.getId());
+                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://traffic.ottawa.ca/map/camera?id=" + camera.getNum());
             }
         }.execute();
     }
@@ -100,9 +101,9 @@ public class CameraActivity extends AppCompatActivity {
             if (result != null) {
                 bmImage.setImageBitmap(result);
             }
-            Log.w("STREETCAM", "updated");
+            //Log.w("STREETCAM", "updated");
             if (RUNNING) {
-                new DownloadImageTask(bmImage).execute("http://traffic.ottawa.ca/map/camera?id=" + camera.getId());
+                new DownloadImageTask(bmImage).execute("http://traffic.ottawa.ca/map/camera?id=" + camera.getNum());
             }
         }
     }
