@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     ArrayList<Camera> cameras = new ArrayList<>();
@@ -38,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
-
 
         DB myDB = new DB(this);
         myDB.createDatabase();
@@ -71,13 +72,11 @@ public class MainActivity extends AppCompatActivity {
                 Bundle b = new Bundle();
                 b.putParcelable("camera", (Camera) listView.getAdapter().getItem(i));
 
-
                 Intent intent = new Intent(MainActivity.this, CameraActivity.class);
                 intent.putExtras(b);
                 startActivity(intent);
             }
         });
-        //doSomething();
 
     }
 
@@ -92,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         public CameraAdapter() {
             super(MainActivity.this, 0, cameras);
             this.data = wholeList = cameras;
+            //System.out.println(Locale.getDefault().getDisplayLanguage());
         }
 
         @NonNull
@@ -107,7 +107,11 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
-            viewHolder.title.setText(data.get(position).getName());
+
+            if (Locale.getDefault().getDisplayLanguage().contains("français"))
+                viewHolder.title.setText(data.get(position).getNameFr());
+            else
+                viewHolder.title.setText(data.get(position).getName());
 
             return convertView;
         }
@@ -141,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                     ArrayList<Camera> filteredResults = new ArrayList<>();
 
                     for (Camera s : wholeList) {
-                        if (s.getName().toLowerCase().contains(constraint.toString().toLowerCase())) {
+                        if (s.getName().toLowerCase().contains(constraint.toString().toLowerCase()) || s.getNameFr().toLowerCase().contains(constraint.toString().toLowerCase())) {
                             filteredResults.add(s);
                         }
                     }
@@ -188,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.user_searchView));
+        searchView.setQueryHint(String.format(getResources().getString(R.string.search_hint), cameras.size()));
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

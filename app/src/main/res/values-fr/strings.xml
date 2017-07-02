@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">StreetCams</string>
+    <string name="app_name">RueCams</string>
     <string name="search">Chercher</string>
+    <string name="map">Carte</string>
+    <string name="search_hint">Recherche de %d emplacements</string>
 
 </resources>

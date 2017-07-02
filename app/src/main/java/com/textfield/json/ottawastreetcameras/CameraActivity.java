@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Locale;
 
 public class CameraActivity extends AppCompatActivity {
 
@@ -37,7 +38,11 @@ public class CameraActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         camera = bundle.getParcelable("camera");
-        getSupportActionBar().setTitle(camera.getName());
+        if (Locale.getDefault().getDisplayLanguage().contains("français"))
+            getSupportActionBar().setTitle(camera.getNameFr());
+        else
+            getSupportActionBar().setTitle(camera.getName());
+
         Log.w("Camera", camera.toString());
 
         getSessionId();

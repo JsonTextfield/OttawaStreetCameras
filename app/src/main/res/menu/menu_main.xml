@@ -9,6 +9,7 @@
         app:showAsAction="ifRoom|collapseActionView" />
     <item
         android:id="@+id/menuItemMap"
-        android:title="Map"
-        app:showAsAction="always" />
+        android:icon="@drawable/ic_place_white_24dp"
+        android:title="@string/map"
+        app:showAsAction="ifRoom" />
 </menu>
