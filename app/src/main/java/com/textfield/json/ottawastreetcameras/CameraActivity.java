@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -40,10 +41,6 @@ public class CameraActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-
-
-
-
         Bundle bundle = getIntent().getExtras();
         camera = bundle.getParcelable("camera");
         if (Locale.getDefault().getDisplayLanguage().contains("français"))
@@ -54,23 +51,30 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     public void getSessionId() {
-        new AsyncTask<Void, Void, Void>() {
+        new AsyncTask<Void, Void, Boolean>() {
 
             @Override
-            protected Void doInBackground(Void... voids) {
+            protected Boolean doInBackground(Void... voids) {
                 try {
                     URL oracle = new URL("http://traffic.ottawa.ca/map");
                     HttpURLConnection urlConnection = (HttpURLConnection) oracle.openConnection();
                     CameraActivity.SESSION_ID = urlConnection.getHeaderFields().get("Set-Cookie").get(0);
                 } catch (IOException e) {
                     e.printStackTrace();
+                } catch (NullPointerException e){
+                    RUNNING = false;
+                    return RUNNING;
                 }
-                return null;
+                return true;
             }
 
             @Override
-            protected void onPostExecute(Void b) {
-                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://traffic.ottawa.ca/map/camera?id=" + camera.getNum());
+            protected void onPostExecute(Boolean b) {
+                if(RUNNING) {
+                    new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://traffic.ottawa.ca/map/camera?id=" + camera.getNum());
+                }else {
+                    findViewById(R.id.errortext).setVisibility(View.VISIBLE);
+                }
             }
         }.execute();
     }
@@ -110,6 +114,9 @@ public class CameraActivity extends AppCompatActivity {
         protected void onPostExecute(Bitmap result) {
             if (result != null) {
                 bmImage.setImageBitmap(result);
+            }
+            else{
+                findViewById(R.id.errortext).setVisibility(View.VISIBLE);
             }
             //Log.w("STREETCAM", "updated");
             if (RUNNING) {

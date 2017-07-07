@@ -63,6 +63,9 @@ public class Camera implements Parcelable {
         lng = cursor.getDouble(cursor.getColumnIndex("longitude"));
         id = cursor.getInt(cursor.getColumnIndex("id"));
         num = cursor.getInt(cursor.getColumnIndex("num"));
+        if(owner.equals("MTO")){
+            num += 2000;
+        }
     }
 
     public String getOwner() {

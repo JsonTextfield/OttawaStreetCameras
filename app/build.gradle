@@ -25,8 +25,8 @@ dependencies {
     // https://mvnrepository.com/artifact/org.jsoup/jsoup
     //compile group: 'org.jsoup', name: 'jsoup', version: '1.7.2'
 
-    compile 'com.android.support:appcompat-v7:25.0.0'
-    compile 'com.android.support:design:25.0.0'
+    compile 'com.android.support:appcompat-v7:25.1.1'
+    compile 'com.android.support:design:25.1.1'
     compile 'com.google.android.gms:play-services-maps:10.0.1'
     testCompile 'junit:junit:4.12'
 }
