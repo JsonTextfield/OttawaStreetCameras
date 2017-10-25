@@ -2,54 +2,118 @@ package com.textfield.json.ottawastreetcameras;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Filter;
-import android.widget.ListView;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
+
+import com.diegocarloslima.fgelv.lib.FloatingGroupExpandableListView;
+import com.diegocarloslima.fgelv.lib.WrapperExpandableListAdapter;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     ArrayList<Camera> cameras = new ArrayList<>();
-    CameraAdapter cameraAdapter;
+    MyAdapter myAdapter;
+    FloatingGroupExpandableListView myList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        cameraAdapter = new CameraAdapter();
+        myList = (FloatingGroupExpandableListView) findViewById(R.id.listView);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        toolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                myList.smoothScrollToPosition(0);
+            }
+        });
         setSupportActionBar(toolbar);
 
         DB myDB = new DB(this);
         myDB.createDatabase();
         myDB.open();
         Cursor cursor = myDB.runQuery("select * from cameras;");
+
         do {
             Camera camera = new Camera(cursor);
             cameras.add(camera);
         } while (cursor.moveToNext());
         myDB.close();
+
+
+        HashMap<String, List<Camera>> data = new HashMap<>();
+        for (Camera camera : cameras) {
+            String c = "";
+            if (Locale.getDefault().getDisplayLanguage().equals("fr")) {
+                c = Character.toString(camera.getNameFr().replaceAll("\\W", "").charAt(0));
+            } else {
+                c = Character.toString(camera.getName().replaceAll("\\W", "").charAt(0));
+            }
+            if (!data.keySet().contains(c)) {
+                data.put(c, new ArrayList<Camera>());
+            }
+            data.get(c).add(camera);
+        }
+        ArrayList<String> list = new ArrayList<>(data.keySet());
+        Collections.sort(list);
+
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.indexHolder);
+        for (int i = 0; i < list.size(); i++) {
+            TextView t = new TextView(this);
+            LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+            layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
+            t.setLayoutParams(layoutParams);
+            t.setText(list.get(i));
+            t.setTextColor(Color.BLUE);
+            t.setGravity(Gravity.CENTER_HORIZONTAL);
+            t.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
+            final int finalI = i;
+            t.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    myList.setSelectedGroup(finalI);
+                }
+            });
+            linearLayout.addView(t);
+        }
+
+        myAdapter = new MyAdapter(MainActivity.this, list, data);
+        WrapperExpandableListAdapter wrapperAdapter = new WrapperExpandableListAdapter(myAdapter);
+        myList.setAdapter(wrapperAdapter);
+
+        myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Bundle b = new Bundle();
+                b.putParcelable("camera", (Camera) myList.getAdapter().getItem(i));
+
+                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+                intent.putExtras(b);
+                startActivity(intent);
+            }
+        });
 
         /*try {
             JSONArray jsonArray = new JSONArray(loadJSONFromAsset());
@@ -63,102 +127,6 @@ public class MainActivity extends AppCompatActivity {
             //e.printStackTrace();
         }*/
 
-        final ListView listView = (ListView) findViewById(R.id.listView);
-
-        listView.setAdapter(cameraAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Bundle b = new Bundle();
-                b.putParcelable("camera", (Camera) listView.getAdapter().getItem(i));
-
-                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
-                intent.putExtras(b);
-                startActivity(intent);
-            }
-        });
-
-    }
-
-    private class CameraAdapter extends ArrayAdapter<Camera> {
-        private ArrayList<Camera> data;
-        private ArrayList<Camera> wholeList;
-
-        private class ViewHolder {
-            public TextView title;
-        }
-
-        public CameraAdapter() {
-            super(MainActivity.this, 0, cameras);
-            this.data = wholeList = cameras;
-            //System.out.println(Locale.getDefault().getDisplayLanguage());
-        }
-
-        @NonNull
-        @Override
-        public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
-            ViewHolder viewHolder = new ViewHolder();
-            if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item, parent, false);
-
-                viewHolder.title = (TextView) convertView.findViewById(R.id.listtitle);
-
-                convertView.setTag(viewHolder);
-            } else {
-                viewHolder = (ViewHolder) convertView.getTag();
-            }
-
-            if (Locale.getDefault().getDisplayLanguage().contains("français"))
-                viewHolder.title.setText(data.get(position).getNameFr());
-            else
-                viewHolder.title.setText(data.get(position).getName());
-
-            return convertView;
-        }
-
-        @Override
-        public int getCount() {
-            return data.size();
-        }
-
-        @Nullable
-        @Override
-        public Camera getItem(int position) {
-            return data.get(position);
-        }
-
-        @NonNull
-        @Override
-        public Filter getFilter() {
-            return new Filter() {
-                @SuppressWarnings("unchecked")
-                @Override
-                protected void publishResults(CharSequence constraint, FilterResults results) {
-                    //Log.d(Constants.TAG, "**** PUBLISHING RESULTS for: " + constraint);
-                    data = (ArrayList<Camera>) results.values;
-                    notifyDataSetChanged();
-                }
-
-                @Override
-                protected FilterResults performFiltering(CharSequence constraint) {
-                    //Log.d(Constants.TAG, "**** PERFORM FILTERING for: " + constraint);
-                    ArrayList<Camera> filteredResults = new ArrayList<>();
-
-                    for (Camera s : wholeList) {
-                        if (s.getName().toLowerCase().contains(constraint.toString().toLowerCase()) || s.getNameFr().toLowerCase().contains(constraint.toString().toLowerCase())) {
-                            filteredResults.add(s);
-                        }
-                    }
-
-                    //System.out.print(filteredResults);
-
-                    FilterResults results = new FilterResults();
-                    results.values = filteredResults;
-
-                    return results;
-                }
-            };
-        }
 
     }
 
@@ -203,10 +171,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (TextUtils.isEmpty(newText)) {
-                    cameraAdapter.getFilter().filter("");
-                    //listView.clearTextFilter();
+                    myAdapter.getFilter().filter("");
+                    myList.clearTextFilter();
                 } else {
-                    cameraAdapter.getFilter().filter(newText);
+                    myAdapter.getFilter().filter(newText);
                 }
                 return true;
             }

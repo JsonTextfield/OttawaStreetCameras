@@ -18,14 +18,22 @@
             android:title="@string/app_name" />
     </android.support.design.widget.AppBarLayout>
 
-
-    <ListView
+    <com.diegocarloslima.fgelv.lib.FloatingGroupExpandableListView
         android:id="@+id/listView"
+        android:scrollbars="none"
+        android:groupIndicator="@null"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fastScrollAlwaysVisible="true"
-        android:fastScrollEnabled="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+    <LinearLayout
+        android:background="@android:color/transparent"
+        android:id="@+id/indexHolder"
+        android:layout_width="20dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="right|center_vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:orientation="vertical">
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
