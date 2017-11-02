@@ -3,14 +3,17 @@ package com.textfield.json.ottawastreetcameras;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Locale;
+
 /**
  * Created by Jason on 25/04/2016.
  */
-public class Camera implements Parcelable {
+public class Camera implements Parcelable, Comparable<Camera> {
     private String name, nameFr, owner;
     private double lat, lng;
     private int num, id;
@@ -63,7 +66,7 @@ public class Camera implements Parcelable {
         lng = cursor.getDouble(cursor.getColumnIndex("longitude"));
         id = cursor.getInt(cursor.getColumnIndex("id"));
         num = cursor.getInt(cursor.getColumnIndex("num"));
-        if(owner.equals("MTO")){
+        if (owner.equals("MTO")) {
             num += 2000;
         }
     }
@@ -115,5 +118,13 @@ public class Camera implements Parcelable {
     @Override
     public String toString() {
         return String.format("camera: {\n\tname: %s\n\tnum: %d\n\tid: %d\n\towner: %s\n}", name, num, id, owner);
+    }
+
+    @Override
+    public int compareTo(@NonNull Camera camera) {
+        if (Locale.getDefault().getDisplayLanguage().equals("fr")) {
+            return nameFr.replaceAll("\\W", "").compareTo(camera.getNameFr().replaceAll("\\W", ""));
+        }
+        return name.replaceAll("\\W", "").compareTo(camera.getName().replaceAll("\\W", ""));
     }
 }
