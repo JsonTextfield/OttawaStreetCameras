@@ -3,6 +3,9 @@ package com.textfield.json.ottawastreetcameras;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
+import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -15,8 +18,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback{
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
 
@@ -48,7 +52,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onInfoWindowClick(Marker marker) {
                 Bundle b = new Bundle();
-                b.putParcelable("camera", (Camera) marker.getTag());
+                ArrayList<Camera> cams = new ArrayList<Camera>(Arrays.asList(new Camera[]{(Camera) marker.getTag()}));
+                b.putParcelableArrayList("cameras", cams);
 
                 Intent intent = new Intent(MapsActivity.this, CameraActivity.class);
                 intent.putExtras(b);
@@ -72,4 +77,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    @Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            super.onBackPressed();
+        }
+        return super.onMenuItemSelected(featureId, item);
+    }
 }

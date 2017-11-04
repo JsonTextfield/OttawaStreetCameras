@@ -16,6 +16,7 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -38,7 +39,7 @@ class CameraAdapter extends ArrayAdapter<Camera>{
         wholeCameras = cameras = list;
         for (Camera camera : cameras) {
 
-            String c = (Locale.getDefault().getDisplayLanguage().equals("fr")) ?
+            String c = (Locale.getDefault().getDisplayLanguage().contains("fr")) ?
                     Character.toString(camera.getNameFr().replaceAll("\\W", "").charAt(0)) :
                     Character.toString(camera.getName().replaceAll("\\W", "").charAt(0));
 
@@ -91,7 +92,7 @@ class CameraAdapter extends ArrayAdapter<Camera>{
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        if (Locale.getDefault().getDisplayLanguage().equals("fr")) {
+        if (Locale.getDefault().getDisplayLanguage().contains("fr")) {
             viewHolder.title.setText(item.getNameFr());
         } else {
             viewHolder.title.setText(item.getName());

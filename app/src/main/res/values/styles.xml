@@ -8,6 +8,11 @@
         <item name="colorPrimaryDark">#000000</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="windowActionModeOverlay">true</item>
+        <item name="android:actionModeStyle">@style/MyActionModeStyle</item>
+    </style>
+
+    <style name="MyActionModeStyle" parent="Base.Widget.AppCompat.ActionMode">
+        <item name="background">@color/colorPrimary</item>
     </style>
 
 </resources>
