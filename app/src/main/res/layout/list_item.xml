@@ -3,7 +3,7 @@
     android:id="@+id/listtitle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground"
+    android:background="?android:attr/activatedBackgroundIndicator"
     android:padding="12dp"
     android:paddingEnd="25dp"
     android:paddingRight="25dp"

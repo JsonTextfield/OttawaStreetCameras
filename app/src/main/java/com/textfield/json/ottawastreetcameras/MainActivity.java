@@ -140,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
             cameraListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
                 @Override
                 public void onItemCheckedStateChanged(android.view.ActionMode actionMode, int i, long l, boolean b) {
+                    //cameraListView.getSelectedView().setSelected(b);
                     if (b) {
                         selectedCameras.add(myAdapter.getItem(i));
                     } else {
