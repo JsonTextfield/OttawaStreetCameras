@@ -1,5 +1,6 @@
 package com.textfield.json.ottawastreetcameras;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -22,11 +23,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+
 public class CameraActivity extends AppCompatActivity {
 
     private static boolean RUNNING;
     private static String SESSION_ID;
-    LinearLayout linearLayout;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +40,6 @@ public class CameraActivity extends AppCompatActivity {
         RUNNING = true;
         setContentView(R.layout.activity_camera);
 
-        linearLayout = (LinearLayout) findViewById(R.id.layout);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.camera_toolbar);
         toolbar.setTitle("");
@@ -46,17 +51,19 @@ public class CameraActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         List<Camera> cameras = bundle.getParcelableArrayList("cameras");
-        if (cameras.size() > 2) {
-            cameras = cameras.subList(0, 2);
-        }
+
         StringBuilder allTitles = new StringBuilder();
         for (Camera camera : cameras) {
             if (Locale.getDefault().getDisplayLanguage().contains("fr"))
-                allTitles.append(camera.getNameFr() + ", ");
+                allTitles.append(camera.getNameFr());
             else
-                allTitles.append(camera.getName() + ", ");
+                allTitles.append(camera.getName());
+            allTitles.append(", ");
         }
-        String s = allTitles.substring(0, allTitles.length() - 2);
+        String s = "";
+        if (allTitles.length() > 2) {
+            s = allTitles.substring(0, allTitles.length() - 2);
+        }
         title.setText(s);
         new GetSessionIdTask(new ArrayList<Camera>(cameras)).execute();
     }
@@ -75,6 +82,7 @@ public class CameraActivity extends AppCompatActivity {
                 URL oracle = new URL("http://traffic.ottawa.ca/map");
                 HttpURLConnection urlConnection = (HttpURLConnection) oracle.openConnection();
                 CameraActivity.SESSION_ID = urlConnection.getHeaderFields().get("Set-Cookie").get(0);
+
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (NullPointerException e) {
@@ -89,9 +97,11 @@ public class CameraActivity extends AppCompatActivity {
             if (RUNNING) {
                 for (Camera camera : cameras) {
                     ImageView imageView = new ImageView(CameraActivity.this);
-                    imageView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT / cameras.size(), 1));
-                    imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                    linearLayout.addView(imageView);
+                    imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                    imageView.setAdjustViewBounds(true);
+                    imageView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+                    ((ViewGroup) findViewById(R.id.layout)).addView(imageView);
                     new DownloadImageTask(imageView, camera).execute();
                 }
             } else {
@@ -111,18 +121,14 @@ public class CameraActivity extends AppCompatActivity {
         }
 
         protected Bitmap doInBackground(Void... v) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                //e.printStackTrace();
-            }
+
             String url = "http://traffic.ottawa.ca/map/camera?id=" + camera.getNum();
             Bitmap mIcon11 = null;
             try {
                 URL myUrl = new URL(url);
                 URLConnection urlConnection = myUrl.openConnection();
                 urlConnection.setRequestProperty("Cookie", CameraActivity.SESSION_ID);
-                //urlConnection.connect();
+
                 InputStream in = urlConnection.getInputStream();
 
                 mIcon11 = BitmapFactory.decodeStream(in);
@@ -130,7 +136,11 @@ public class CameraActivity extends AppCompatActivity {
                 //Log.e("Error", e.getMessage());
                 //e.printStackTrace();
             }
-
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                //e.printStackTrace();
+            }
             return mIcon11;
 
         }

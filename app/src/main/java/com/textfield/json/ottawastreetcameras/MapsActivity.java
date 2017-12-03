@@ -20,8 +20,6 @@ import java.util.Arrays;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    private GoogleMap mMap;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,12 +43,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         ArrayList<Camera> cameras = getIntent().getParcelableArrayListExtra("cameras");
-        mMap = googleMap;
-        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+        googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
                 Bundle b = new Bundle();
-                ArrayList<Camera> cams = new ArrayList<Camera>(Arrays.asList(new Camera[]{(Camera) marker.getTag()}));
+                ArrayList<Camera> cams = new ArrayList<>(Arrays.asList(new Camera[]{(Camera) marker.getTag()}));
                 b.putParcelableArrayList("cameras", cams);
 
                 Intent intent = new Intent(MapsActivity.this, CameraActivity.class);
@@ -63,7 +60,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Add a marker in Sydney and move the camera
         for (Camera camera : cameras) {
-            Marker m = mMap.addMarker(new MarkerOptions().position(new LatLng(camera.getLat(), camera.getLng())).title(camera.getName()));
+            Marker m = googleMap.addMarker(new MarkerOptions().position(new LatLng(camera.getLat(), camera.getLng())).title(camera.getName()));
             m.setTag(camera);
             builder.include(m.getPosition());
 

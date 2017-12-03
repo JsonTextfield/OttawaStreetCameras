@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 23
     buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "com.textfield.json.ottawastreetcameras"
-        minSdkVersion 15
-        targetSdkVersion 25
+        minSdkVersion 16
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
     }
@@ -21,12 +21,8 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    //compile 'com.google.code.gson:gson:2.4'
-    // https://mvnrepository.com/artifact/org.jsoup/jsoup
-    //compile group: 'org.jsoup', name: 'jsoup', version: '1.7.2'
     compile 'com.android.volley:volley:1.0.0'
-    compile 'com.android.support:appcompat-v7:25.1.1'
-    compile 'com.android.support:design:25.1.1'
+    compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.google.android.gms:play-services-maps:10.0.1'
     testCompile 'junit:junit:4.12'
 }

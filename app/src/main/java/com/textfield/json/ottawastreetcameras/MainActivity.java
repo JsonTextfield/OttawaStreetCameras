@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     Bundle b = new Bundle();
-                    ArrayList<Camera> cams = new ArrayList<Camera>(Arrays.asList(new Camera[]{myAdapter.getItem(i)}));
+                    ArrayList<Camera> cams = new ArrayList<>(Arrays.asList(new Camera[]{myAdapter.getItem(i)}));
                     b.putParcelableArrayList("cameras", cams);
 
                     Intent intent = new Intent(MainActivity.this, CameraActivity.class);
