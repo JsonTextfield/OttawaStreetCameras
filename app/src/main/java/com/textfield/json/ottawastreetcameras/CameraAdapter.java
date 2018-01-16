@@ -19,7 +19,7 @@ import java.util.Locale;
  * Created by Jason on 24/10/2017.
  */
 
-class CameraAdapter extends ArrayAdapter<Camera>{
+class CameraAdapter extends ArrayAdapter<Camera> {
 
     ArrayList<String> indexTitles = new ArrayList<>();
     HashMap<String, Integer> index = new HashMap<>();
@@ -68,7 +68,6 @@ class CameraAdapter extends ArrayAdapter<Camera>{
     }
 
 
-
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
@@ -112,11 +111,11 @@ class CameraAdapter extends ArrayAdapter<Camera>{
             protected FilterResults performFiltering(CharSequence constraint) {
                 //Log.d(Constants.TAG, "**** PERFORM FILTERING for: " + constraint);
                 List<Camera> filteredResults = new ArrayList<>();
-                    for (Camera camera : wholeCameras) {
-                        if (camera.getName().toLowerCase().contains(constraint.toString().toLowerCase())
-                                || camera.getNameFr().toLowerCase().contains(constraint.toString().toLowerCase())) {
-                            filteredResults.add(camera);
-                        }
+                for (Camera camera : wholeCameras) {
+                    if (camera.getName().toLowerCase().contains(constraint.toString().toLowerCase())
+                            || camera.getNameFr().toLowerCase().contains(constraint.toString().toLowerCase())) {
+                        filteredResults.add(camera);
+                    }
 
                 }
 
