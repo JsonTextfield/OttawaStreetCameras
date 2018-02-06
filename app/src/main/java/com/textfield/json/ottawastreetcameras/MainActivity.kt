@@ -72,8 +72,8 @@ class MainActivity : AppCompatActivity() {
             myAdapter = CameraAdapter(this, cameras)
             cameraListView.adapter = myAdapter
 
-            val indexTitles = myAdapter.getIndexTitles()
-            val index = myAdapter.getIndex()
+            val indexTitles = myAdapter.indexTitles
+            val index = myAdapter.index
 
             val linearLayout = findViewById(R.id.indexHolder) as LinearLayout?
             for (i in 0 until index.size) {
