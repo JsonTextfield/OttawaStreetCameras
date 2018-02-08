@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras
+package com.textfield.json.ottawastreetcameras.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Filter
 import android.widget.TextView
+import com.textfield.json.ottawastreetcameras.Camera
+import com.textfield.json.ottawastreetcameras.R
 
 import java.util.ArrayList
 import java.util.HashMap

@@ -9,6 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
-        tools:context="com.textfield.json.ottawastreetcameras.MapsActivity" />
+        tools:context="com.textfield.json.ottawastreetcameras.activities.MapsActivity" />
 </RelativeLayout>
 

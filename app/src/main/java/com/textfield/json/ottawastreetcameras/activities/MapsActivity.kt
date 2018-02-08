@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras
+package com.textfield.json.ottawastreetcameras.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,6 +11,8 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
+import com.textfield.json.ottawastreetcameras.Camera
+import com.textfield.json.ottawastreetcameras.R
 import java.util.*
 
 class MapsActivity : FragmentActivity(), OnMapReadyCallback {
@@ -48,7 +50,7 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback {
         val builder = LatLngBounds.Builder()
         val padding = 50 // offset from edges of the map in pixels
 
-        // Add a marker in Sydney and move the camera
+        //add a marker for every camera available
         for (camera in cameras) {
             val m = googleMap.addMarker(MarkerOptions().position(LatLng(camera.lat, camera.lng)).title(camera.name))
             m.tag = camera

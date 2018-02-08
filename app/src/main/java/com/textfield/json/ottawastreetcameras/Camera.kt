@@ -96,16 +96,13 @@ class Camera : Parcelable, Comparable<Camera> {
         } else name.replace("\\W".toRegex(), "").compareTo(other.name.replace("\\W".toRegex(), ""))
     }
 
-    companion object {
+    companion object CREATOR: Parcelable.Creator<Camera> {
+        override fun createFromParcel(`in`: Parcel): Camera {
+            return Camera(`in`)
+        }
 
-        val CREATOR: Parcelable.Creator<Camera> = object : Parcelable.Creator<Camera> {
-            override fun createFromParcel(`in`: Parcel): Camera {
-                return Camera(`in`)
-            }
-
-            override fun newArray(size: Int): Array<Camera?> {
-                return arrayOfNulls(size)
-            }
+        override fun newArray(size: Int): Array<Camera?> {
+            return arrayOfNulls(size)
         }
     }
 }

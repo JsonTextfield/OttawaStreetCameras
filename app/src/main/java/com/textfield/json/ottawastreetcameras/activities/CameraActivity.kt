@@ -1,24 +1,26 @@
-package com.textfield.json.ottawastreetcameras
+package com.textfield.json.ottawastreetcameras.activities
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
-import com.textfield.json.ottawastreetcameras.R.id.camera_toolbar
+import com.textfield.json.ottawastreetcameras.Camera
+import com.textfield.json.ottawastreetcameras.R
+import com.textfield.json.ottawastreetcameras.adapters.ImageAdapter
 import kotlinx.android.synthetic.main.activity_camera.*
 import kotlinx.android.synthetic.main.activity_camera.view.*
+import kotlinx.android.synthetic.main.activity_main.*
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class CameraActivity : AppCompatActivity() {
@@ -51,6 +53,7 @@ class CameraActivity : AppCompatActivity() {
             s = allTitles.substring(0, allTitles.length - 2)
         }
         title.text = s
+        image_listView.adapter = ImageAdapter(this, cameras)
         GetSessionIdTask(ArrayList(cameras)).execute()
     }
 
@@ -60,7 +63,7 @@ class CameraActivity : AppCompatActivity() {
             try {
                 val oracle = URL("http://traffic.ottawa.ca/map")
                 val urlConnection = oracle.openConnection() as HttpURLConnection
-                CameraActivity.SESSION_ID = urlConnection.headerFields["Set-Cookie"]!![0]
+                SESSION_ID = urlConnection.headerFields["Set-Cookie"]!![0]
 
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -74,17 +77,11 @@ class CameraActivity : AppCompatActivity() {
 
         override fun onPostExecute(b: Boolean?) {
             if (RUNNING) {
-                for (camera in cameras) {
-                    val imageView = ImageView(this@CameraActivity)
-                    imageView.scaleType = ImageView.ScaleType.FIT_CENTER
-                    imageView.adjustViewBounds = true
-                    imageView.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
-                    layout.addView(imageView)
-                    DownloadImageTask(imageView, camera).execute()
+                for (i in 0 until cameras.size) {
+                    //get the imageView in the listview at position i
+                    DownloadImageTask(image_listView.getChildAt(i).findViewById(R.id.source) as ImageView, cameras[i]).execute()
                 }
-            } else {
-                errortext.visibility = View.VISIBLE
             }
         }
     }
@@ -99,7 +96,7 @@ class CameraActivity : AppCompatActivity() {
             try {
                 val myUrl = URL(url)
                 val urlConnection = myUrl.openConnection()
-                urlConnection.setRequestProperty("Cookie", CameraActivity.SESSION_ID)
+                urlConnection.setRequestProperty("Cookie", SESSION_ID)
 
                 val `in` = urlConnection.getInputStream()
 
@@ -122,8 +119,6 @@ class CameraActivity : AppCompatActivity() {
         override fun onPostExecute(result: Bitmap?) {
             if (result != null) {
                 bmImage.setImageBitmap(result)
-            } else {
-                errortext.visibility = View.VISIBLE
             }
             //Log.w("STREETCAM", "updated");
             if (RUNNING) {

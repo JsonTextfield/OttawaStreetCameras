@@ -1,12 +1,10 @@
-package com.textfield.json.ottawastreetcameras
+package com.textfield.json.ottawastreetcameras.activities
 
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
-import android.support.v4.view.MenuItemCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
-import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.util.Log
 import android.view.Gravity
@@ -17,6 +15,9 @@ import android.widget.LinearLayout.LayoutParams
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
+import com.textfield.json.ottawastreetcameras.Camera
+import com.textfield.json.ottawastreetcameras.R
+import com.textfield.json.ottawastreetcameras.adapters.CameraAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONArray
 import org.json.JSONException
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity() {
     internal lateinit var myAdapter: CameraAdapter
     internal lateinit var cameraListView: ListView
     private val selectedCameras = ArrayList<Camera>()
-
+    val maxCameras = 2
     fun downloadJson() {
 
         val url = "http://traffic.ottawa.ca/map/camera_list"
@@ -107,7 +108,9 @@ class MainActivity : AppCompatActivity() {
                 override fun onItemCheckedStateChanged(actionMode: android.view.ActionMode, i: Int, l: Long, b: Boolean) {
                     //cameraListView.getSelectedView().setSelected(b);
                     if (b) {
-                        selectedCameras.add(myAdapter.getItem(i)!!)
+                        if (selectedCameras.size < maxCameras) {
+                            selectedCameras.add(myAdapter.getItem(i)!!)
+                        }
                     } else {
                         selectedCameras.remove(myAdapter.getItem(i))
                     }
@@ -212,7 +215,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
-        val searchView = MenuItemCompat.getActionView(menu.findItem(R.id.user_searchView)) as SearchView
+        val searchView = menu.findItem(R.id.user_searchView).actionView as SearchView
         searchView.queryHint = String.format(resources.getString(R.string.search_hint), cameras.size)
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
