@@ -6,16 +6,12 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import com.textfield.json.ottawastreetcameras.Camera
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.adapters.ImageAdapter
 import kotlinx.android.synthetic.main.activity_camera.*
 import kotlinx.android.synthetic.main.activity_camera.view.*
-import kotlinx.android.synthetic.main.activity_main.*
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -24,11 +20,13 @@ import kotlin.collections.ArrayList
 
 
 class CameraActivity : AppCompatActivity() {
+    var cameras = ArrayList<Camera>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        RUNNING = true
         setContentView(R.layout.activity_camera)
+
+        RUNNING = true
 
         camera_toolbar.title = ""
         val title = camera_toolbar.textView
@@ -38,7 +36,7 @@ class CameraActivity : AppCompatActivity() {
         supportActionBar!!.setHomeButtonEnabled(true)
 
         val bundle = intent.extras
-        val cameras = bundle!!.getParcelableArrayList<Camera>("cameras")
+        cameras = bundle!!.getParcelableArrayList<Camera>("cameras")
 
         val allTitles = StringBuilder()
         for (camera in cameras!!) {
@@ -54,10 +52,10 @@ class CameraActivity : AppCompatActivity() {
         }
         title.text = s
         image_listView.adapter = ImageAdapter(this, cameras)
-        GetSessionIdTask(ArrayList(cameras)).execute()
+        GetSessionIdTask().execute()
     }
 
-    private inner class GetSessionIdTask(internal var cameras: ArrayList<Camera>) : AsyncTask<Void, Void, Boolean>() {
+    private inner class GetSessionIdTask : AsyncTask<Void, Void, Boolean>() {
 
         override fun doInBackground(vararg voids: Void): Boolean? {
             try {
@@ -79,7 +77,7 @@ class CameraActivity : AppCompatActivity() {
             if (RUNNING) {
 
                 for (i in 0 until cameras.size) {
-                    //get the imageView in the listview at position i
+                    //get the imageView in the listView at position i
                     DownloadImageTask(image_listView.getChildAt(i).findViewById(R.id.source) as ImageView, cameras[i]).execute()
                 }
             }
@@ -148,7 +146,7 @@ class CameraActivity : AppCompatActivity() {
 
     companion object {
 
-        private var RUNNING: Boolean = false
-        private var SESSION_ID: String? = null
+        private var RUNNING = false
+        private var SESSION_ID = ""
     }
 }

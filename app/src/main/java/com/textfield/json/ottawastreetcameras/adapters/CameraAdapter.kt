@@ -37,7 +37,7 @@ internal class CameraAdapter(private val _context: Context, list: ArrayList<Came
 
             if (!index.keys.contains(c)) {
                 indexTitles.add(c)
-                index.put(c, cameras.indexOf(camera))
+                index[c] = cameras.indexOf(camera)
             }
         }
     }
@@ -93,13 +93,9 @@ internal class CameraAdapter(private val _context: Context, list: ArrayList<Came
 
             override fun performFiltering(constraint: CharSequence): Filter.FilterResults {
                 //Log.d(Constants.TAG, "**** PERFORM FILTERING for: " + constraint);
-                val filteredResults = ArrayList<Camera>()
-                for (camera in wholeCameras) {
-                    if (camera.name.toLowerCase().contains(constraint.toString().toLowerCase()) || camera.nameFr.toLowerCase().contains(constraint.toString().toLowerCase())) {
-                        filteredResults.add(camera)
-                    }
-
-                }
+                val filteredResults = wholeCameras.filter {
+                    it.name.toLowerCase().contains(constraint.toString().toLowerCase()) ||
+                        it.nameFr.toLowerCase().contains(constraint.toString().toLowerCase()) }
 
                 val results = Filter.FilterResults()
                 results.values = filteredResults

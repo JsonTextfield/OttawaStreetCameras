@@ -35,7 +35,8 @@ class MainActivity : AppCompatActivity() {
     internal lateinit var myAdapter: CameraAdapter
     internal lateinit var cameraListView: ListView
     private val selectedCameras = ArrayList<Camera>()
-    val maxCameras = 2
+    private val selectedCamerasIndex = ArrayList<Int>()
+    val maxCameras = 4
     fun downloadJson() {
 
         val url = "http://traffic.ottawa.ca/map/camera_list"
@@ -63,10 +64,9 @@ class MainActivity : AppCompatActivity() {
 
         try {
             val jsonArray = JSONArray(loadJSONFromFile())
-            for (i in 0 until jsonArray.length()) {
-                val g = jsonArray.get(i) as JSONObject
-                cameras.add(Camera(g))
-            }
+            (0 until jsonArray.length())
+                    .map { jsonArray.get(it) as JSONObject }
+                    .forEach { cameras.add(Camera(it)) }
 
 
             Collections.sort(cameras)
@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
             val indexTitles = myAdapter.indexTitles
             val index = myAdapter.index
 
-            val linearLayout = findViewById(R.id.indexHolder) as LinearLayout?
+            val linearLayout = findViewById<LinearLayout>(R.id.indexHolder)
             for (i in 0 until index.size) {
                 val t = TextView(this)
                 val layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, 0, 1f)
@@ -84,6 +84,7 @@ class MainActivity : AppCompatActivity() {
 
                 t.layoutParams = layoutParams
                 t.text = indexTitles[i]
+                t.textSize = 10f
                 t.setTextColor(ContextCompat.getColor(this, R.color.colorAccent))
                 t.gravity = Gravity.CENTER_HORIZONTAL
                 t.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent))
@@ -110,6 +111,7 @@ class MainActivity : AppCompatActivity() {
                     if (b) {
                         if (selectedCameras.size < maxCameras) {
                             selectedCameras.add(myAdapter.getItem(i)!!)
+                            selectedCamerasIndex.add(i)
                         }
                     } else {
                         selectedCameras.remove(myAdapter.getItem(i))
