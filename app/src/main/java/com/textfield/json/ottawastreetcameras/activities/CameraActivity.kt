@@ -1,13 +1,15 @@
 package com.textfield.json.ottawastreetcameras.activities
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.widget.ImageView
+import com.android.volley.NetworkResponse
+import com.android.volley.RequestQueue
+import com.android.volley.Response
+import com.android.volley.toolbox.*
 import com.textfield.json.ottawastreetcameras.Camera
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.adapters.ImageAdapter
@@ -22,89 +24,68 @@ import kotlin.collections.ArrayList
 
 class CameraActivity : AppCompatActivity() {
 
-    var cameras = ArrayList<Camera>()
-    var handler = Handler()
-    var timers = ArrayList<CameraRunnable>()
+    private var cameras = ArrayList<Camera>()
+    private var timers = ArrayList<CameraRunnable>()
+    private var handler = Handler()
+    private var queue: RequestQueue? = null
+    private var sessionId = ""
 
-    var SESSION_ID = ""
+    fun download(index: Int) {
+        val url = "http://traffic.ottawa.ca/map/camera?id=" + cameras[index].num
 
-    private inner class DownloadImageTask(internal var bmImage: ImageView, internal var camera: Camera) : AsyncTask<Void, Void, Bitmap>() {
-
-        override fun doInBackground(vararg v: Void): Bitmap? {
-
-            val url = "http://traffic.ottawa.ca/map/camera?id=" + camera.num
-            var mIcon11: Bitmap? = null
+        val request = ImageRequest(url, Response.Listener<Bitmap> { response ->
             try {
-                val myUrl = URL(url)
-                val urlConnection = myUrl.openConnection()
-                urlConnection.setRequestProperty("Cookie", SESSION_ID)
-
-                val `in` = urlConnection.getInputStream()
-
-                mIcon11 = BitmapFactory.decodeStream(`in`)
-            } catch (e: Exception) {
-            }
-            return mIcon11
-
-        }
-
-        override fun onPostExecute(result: Bitmap?) {
-            if (result != null) {
-                bmImage.setImageBitmap(result)
-            }
-        }
-
-    }
-
-    private inner class GetSessionIdTask : AsyncTask<Void, Void, Boolean>() {
-
-        override fun doInBackground(vararg voids: Void): Boolean? {
-            try {
-                val oracle = URL("http://traffic.ottawa.ca/map")
-                val urlConnection = oracle.openConnection() as HttpURLConnection
-                SESSION_ID = urlConnection.headerFields["Set-Cookie"]!![0]
-
-            } catch (e: IOException) {
-                e.printStackTrace()
+                val bmImage = image_listView.getChildAt(index).findViewById(R.id.source) as ImageView
+                bmImage.setImageBitmap(response)
             } catch (e: NullPointerException) {
-                return false
             }
+        }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.RGB_565, Response.ErrorListener { })
 
-            return true
-        }
-
-        override fun onPostExecute(b: Boolean?) {
-            if (b!!) {
-
-                for (i in 0 until cameras.size) {
-                    val cameraRunnable = CameraRunnable(i)
-                    cameraRunnable.run()
-                    timers.add(cameraRunnable)
-                }
-            }
-        }
+        queue!!.add(request)
     }
 
-    inner class CameraRunnable(index: Int) : Runnable {
+    fun getSessionId() {
+        val url = "http://traffic.ottawa.ca/map"
+        val sessionRequest = object : StringRequest(url, Response.Listener { response ->
+            for (i in 0 until cameras.size) {
+                val cameraRunnable = CameraRunnable(i)
+                cameraRunnable.run()
+                timers.add(cameraRunnable)
+            }
+        }, Response.ErrorListener { }) {
+            override fun parseNetworkResponse(response: NetworkResponse): Response<String> {
+                sessionId = response.headers.get("Set-Cookie")!!
+                return Response.success(sessionId, HttpHeaderParser.parseCacheHeaders(response))
+
+            }
+        }
+        queue!!.add(sessionRequest)
+    }
+
+
+    private inner class CameraRunnable(index: Int) : Runnable {
         val i = index
         override fun run() {
-            try {
-                DownloadImageTask(image_listView.getChildAt(i).findViewById(R.id.source) as ImageView, cameras[i]).execute()
-
-            }catch (e: NullPointerException){
-
-            } finally {
-                handler.postDelayed(this, 500L)
-            }
+            download(i)
+            handler.postDelayed(this, 500L)
         }
-
     }
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
+
+        queue = Volley.newRequestQueue(this, object : HurlStack() {
+            @Throws(IOException::class)
+            override fun createConnection(url: URL): HttpURLConnection {
+
+                val connection = url.openConnection() as HttpURLConnection
+                connection.setRequestProperty("Cookie", sessionId)
+
+                return connection
+            }
+        })
 
         camera_toolbar.title = ""
         val title = camera_toolbar.textView
@@ -130,7 +111,9 @@ class CameraActivity : AppCompatActivity() {
         }
         title.text = s
         image_listView.adapter = ImageAdapter(this, cameras)
-        GetSessionIdTask().execute()
+
+        getSessionId()
+        //GetSessionIdTask().execute()
     }
 
     override fun onDestroy() {
@@ -147,4 +130,62 @@ class CameraActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
+
+    /*    private inner class GetSessionIdTask : AsyncTask<Void, Void, Boolean>() {
+
+    override fun doInBackground(vararg voids: Void): Boolean? {
+        try {
+            val oracle = URL("http://traffic.ottawa.ca/map")
+            val urlConnection = oracle.openConnection() as HttpURLConnection
+            sessionId = urlConnection.headerFields["Set-Cookie"]!![0]
+
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: NullPointerException) {
+            return false
+        }
+
+        return true
+    }
+
+    override fun onPostExecute(b: Boolean?) {
+        if (b!!) {
+
+            for (i in 0 until cameras.size) {
+                val cameraRunnable = CameraRunnable(i)
+                cameraRunnable.run()
+                timers.add(cameraRunnable)
+            }
+        }
+    }
+}*/
+    /*private inner class DownloadImageTask(internal var bmImage: ImageView, internal var camera: Camera) : AsyncTask<Void, Void, Bitmap>() {
+
+        override fun doInBackground(vararg v: Void): Bitmap? {
+
+            val url = "http://traffic.ottawa.ca/map/camera?id=" + camera.num
+            var mIcon11: Bitmap? = null
+            try {
+                val myUrl = URL(url)
+                val urlConnection = myUrl.openConnection()
+                urlConnection.setRequestProperty("Cookie", sessionId)
+
+                val `in` = urlConnection.getInputStream()
+
+                mIcon11 = BitmapFactory.decodeStream(`in`)
+            } catch (e: Exception) {
+            }
+            return mIcon11
+
+        }
+
+        override fun onPostExecute(result: Bitmap?) {
+            if (result != null) {
+                bmImage.setImageBitmap(result)
+            }
+        }
+
+    }*/
+
 }
