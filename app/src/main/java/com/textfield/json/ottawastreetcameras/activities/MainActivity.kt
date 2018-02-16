@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     internal lateinit var cameraListView: ListView
     private val selectedCameras = ArrayList<Camera>()
     private val selectedCamerasIndex = ArrayList<Int>()
-    val maxCameras = 4
+    val maxCameras = 10
     fun downloadJson() {
 
         val url = "http://traffic.ottawa.ca/map/camera_list"

@@ -20,8 +20,8 @@ class ImageAdapter(private val _context: Context, list: ArrayList<Camera>) : Arr
         internal var image: ImageView? = null
     }
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var convertView = convertView
+    override fun getView(position: Int, view: View?, parent: ViewGroup): View {
+        var convertView = view
         val viewHolder: ViewHolder
 
         val item = getItem(position)
@@ -30,7 +30,7 @@ class ImageAdapter(private val _context: Context, list: ArrayList<Camera>) : Arr
             viewHolder = ViewHolder()
             val inflater = LayoutInflater.from(_context)
             convertView = inflater.inflate(R.layout.camera_item, parent, false)
-            viewHolder.title = convertView!!.findViewById<View>(R.id.label) as TextView
+            viewHolder.title = convertView.findViewById<View>(R.id.label) as TextView
             viewHolder.image = convertView.findViewById<View>(R.id.source) as ImageView
             convertView.tag = viewHolder
 
@@ -38,14 +38,11 @@ class ImageAdapter(private val _context: Context, list: ArrayList<Camera>) : Arr
             viewHolder = convertView.tag as ViewHolder
         }
 
-        if (Locale.getDefault().displayLanguage.contains("fr")) {
-            viewHolder.title!!.text = item!!.nameFr
-        } else {
-            viewHolder.title!!.text = item!!.name
-        }
+        viewHolder.title!!.text = if (Locale.getDefault().displayLanguage.contains("fr")) item.nameFr
+            else item.name
 
 
         // Return the completed view to render on screen
-        return convertView
+        return convertView!!
     }
 }
