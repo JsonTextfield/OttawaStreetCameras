@@ -1,8 +1,10 @@
 package com.textfield.json.ottawastreetcameras.activities
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
 import android.text.TextUtils
@@ -10,7 +12,9 @@ import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.*
+import android.widget.LinearLayout.INVISIBLE
 import android.widget.LinearLayout.LayoutParams
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
@@ -30,14 +34,15 @@ import java.nio.charset.Charset
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
-    internal var cameras = ArrayList<Camera>()
-    internal lateinit var cameraJson: File
-    internal lateinit var myAdapter: CameraAdapter
-    internal lateinit var cameraListView: ListView
+
+    private var cameras = ArrayList<Camera>()
     private val selectedCameras = ArrayList<Camera>()
-    private val selectedCamerasIndex = ArrayList<Int>()
-    val maxCameras = 4
-    fun downloadJson() {
+
+    internal lateinit var myAdapter: CameraAdapter
+
+    private val maxCameras = 3
+
+    fun downloadJson(cameraJson: File) {
 
         val url = "http://traffic.ottawa.ca/map/camera_list"
         val queue = Volley.newRequestQueue(this)
@@ -46,24 +51,28 @@ class MainActivity : AppCompatActivity() {
                 val fileWriter = FileWriter(cameraJson)
                 fileWriter.write(response.toString())
                 fileWriter.flush()
-                setup()
+                setup(cameraJson)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-        }, Response.ErrorListener { })
+        }, Response.ErrorListener {
+            val builder = AlertDialog.Builder(this@MainActivity)
+
+            builder.setTitle(resources.getString(R.string.no_network_title)).setMessage(resources.getString(R.string.no_network_content))
+                    .setPositiveButton("OK") { _, _ -> finish() }
+            val dialog = builder.create()
+            dialog.show()
+        })
         queue.add(jsObjRequest)
 
     }
 
-    fun setup() {
-
-        cameraListView = listView
-
-        main_toolbar.setOnClickListener { cameraListView.smoothScrollToPosition(0) }
+    fun setup(cameraJson: File) {
+        main_toolbar.setOnClickListener { listView.smoothScrollToPosition(0) }
         setSupportActionBar(main_toolbar)
 
         try {
-            val jsonArray = JSONArray(loadJSONFromFile())
+            val jsonArray = JSONArray(loadJSONFromFile(cameraJson))
             (0 until jsonArray.length())
                     .map { jsonArray.get(it) as JSONObject }
                     .forEach { cameras.add(Camera(it)) }
@@ -71,7 +80,7 @@ class MainActivity : AppCompatActivity() {
 
             Collections.sort(cameras)
             myAdapter = CameraAdapter(this, cameras)
-            cameraListView.adapter = myAdapter
+            listView.adapter = myAdapter
 
             val indexTitles = myAdapter.indexTitles
             val index = myAdapter.index
@@ -89,12 +98,12 @@ class MainActivity : AppCompatActivity() {
                 t.gravity = Gravity.CENTER_HORIZONTAL
                 t.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent))
 
-                t.setOnClickListener { cameraListView.setSelection(index[indexTitles[i]]!!) }
+                t.setOnClickListener { listView.setSelection(index[indexTitles[i]]!!) }
                 linearLayout!!.addView(t)
             }
 
 
-            cameraListView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
+            listView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
                 val b = Bundle()
                 val cams = ArrayList(Arrays.asList(myAdapter.getItem(i)!!))
                 b.putParcelableArrayList("cameras", cams)
@@ -103,15 +112,15 @@ class MainActivity : AppCompatActivity() {
                 intent.putExtras(b)
                 startActivity(intent)
             }
-            cameraListView.itemsCanFocus = true
+            listView.itemsCanFocus = true
 
-            cameraListView.setMultiChoiceModeListener(object : AbsListView.MultiChoiceModeListener {
+            listView.setMultiChoiceModeListener(object : AbsListView.MultiChoiceModeListener {
                 override fun onItemCheckedStateChanged(actionMode: android.view.ActionMode, i: Int, l: Long, b: Boolean) {
-                    //cameraListView.getSelectedView().setSelected(b);
                     if (b) {
                         if (selectedCameras.size < maxCameras) {
                             selectedCameras.add(myAdapter.getItem(i)!!)
-                            selectedCamerasIndex.add(i)
+                        } else {
+                            selectedCameras.remove(myAdapter.getItem(i))
                         }
                     } else {
                         selectedCameras.remove(myAdapter.getItem(i))
@@ -148,15 +157,28 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    fun getViewByPosition(pos: Int, listView: ListView): View {
+        val firstListItemPosition = listView.getFirstVisiblePosition();
+        val lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1;
+
+        if (pos < firstListItemPosition || pos > lastListItemPosition) {
+            return listView.getAdapter().getView(pos, null, listView);
+        } else {
+            val childIndex = pos - firstListItemPosition;
+            return listView.getChildAt(childIndex);
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        cameraJson = File(cacheDir.toString() + "/cameras.json")
+
+        val cameraJson = File(cacheDir.toString() + "/cameras.json")
         if (!cameraJson.exists()) {
             Log.w("FILE:", "Does not exist")
-            downloadJson()
+            downloadJson(cameraJson)
         } else {
-            setup()
+            setup(cameraJson)
         }
 
 
@@ -189,7 +211,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun loadJSONFromFile(): String? {
+    fun loadJSONFromFile(cameraJson: File): String? {
         val json: String
         try {
             val `is` = FileInputStream(cameraJson)
@@ -228,9 +250,11 @@ class MainActivity : AppCompatActivity() {
             override fun onQueryTextChange(newText: String): Boolean {
                 if (TextUtils.isEmpty(newText)) {
                     myAdapter.filter.filter("")
-                    cameraListView.clearTextFilter()
+                    listView.clearTextFilter()
+                    indexHolder.visibility = View.VISIBLE
                 } else {
                     myAdapter.filter.filter(newText)
+                    indexHolder.visibility = View.INVISIBLE
                 }
                 return true
             }

@@ -3,6 +3,7 @@ package com.textfield.json.ottawastreetcameras.activities
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Handler
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.widget.ImageView
@@ -29,6 +30,7 @@ class CameraActivity : AppCompatActivity() {
     private var handler = Handler()
     private var queue: RequestQueue? = null
     private var sessionId = ""
+    private val tag = "camera"
 
     fun download(index: Int) {
         val url = "http://traffic.ottawa.ca/map/camera?id=" + cameras[index].num
@@ -40,7 +42,7 @@ class CameraActivity : AppCompatActivity() {
             } catch (e: NullPointerException) {
             }
         }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.RGB_565, Response.ErrorListener { })
-
+        request.tag = tag
         queue!!.add(request)
     }
 
@@ -52,13 +54,21 @@ class CameraActivity : AppCompatActivity() {
                 cameraRunnable.run()
                 timers.add(cameraRunnable)
             }
-        }, Response.ErrorListener { }) {
+        }, Response.ErrorListener {
+            val builder = AlertDialog.Builder(this@CameraActivity)
+
+            builder.setTitle(resources.getString(R.string.no_network_title)).setMessage(resources.getString(R.string.no_network_content))
+                    .setPositiveButton("OK") { _, _ -> finish() }
+            val dialog = builder.create()
+            dialog.show()
+        }) {
             override fun parseNetworkResponse(response: NetworkResponse): Response<String> {
                 sessionId = response.headers.get("Set-Cookie")!!
                 return Response.success(sessionId, HttpHeaderParser.parseCacheHeaders(response))
 
             }
         }
+        sessionRequest.tag = tag
         queue!!.add(sessionRequest)
     }
 
@@ -117,6 +127,7 @@ class CameraActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        queue!!.cancelAll(tag)
         for (timer in timers) {
             handler.removeCallbacks(timer)
         }

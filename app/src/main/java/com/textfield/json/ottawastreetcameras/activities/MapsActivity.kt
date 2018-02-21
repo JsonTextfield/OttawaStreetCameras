@@ -2,8 +2,8 @@ package com.textfield.json.ottawastreetcameras.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.FragmentActivity
-import android.view.MenuItem
+import android.support.v7.app.AppCompatActivity
+import android.view.View
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -15,12 +15,12 @@ import com.textfield.json.ottawastreetcameras.Camera
 import com.textfield.json.ottawastreetcameras.R
 import java.util.*
 
-class MapsActivity : FragmentActivity(), OnMapReadyCallback {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+
         val mapFragment = supportFragmentManager
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -64,10 +64,7 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback {
 
     }
 
-    override fun onMenuItemSelected(featureId: Int, item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            super.onBackPressed()
-        }
-        return super.onMenuItemSelected(featureId, item)
+    fun back(v: View) {
+        onBackPressed()
     }
 }
