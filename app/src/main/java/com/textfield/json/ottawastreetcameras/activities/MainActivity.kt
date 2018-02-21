@@ -1,6 +1,5 @@
 package com.textfield.json.ottawastreetcameras.activities
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -13,9 +12,11 @@ import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.*
-import android.widget.LinearLayout.INVISIBLE
+import android.widget.AbsListView
+import android.widget.AdapterView
 import android.widget.LinearLayout.LayoutParams
+import android.widget.ListView
+import android.widget.TextView
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
@@ -32,6 +33,7 @@ import java.io.FileWriter
 import java.io.IOException
 import java.nio.charset.Charset
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
 
@@ -67,6 +69,89 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    fun setupSectionIndex(){
+        val index = HashSet<Char>()
+
+        //assumes cameras are sorted
+        for (i in 0 until cameras.size) {
+            val camera = cameras[i]
+
+            //get the first character
+            val c = if (Locale.getDefault().displayLanguage.contains("fr"))
+                camera.nameFr.replace("\\W".toRegex(), "")[0]
+            else
+                camera.name.replace("\\W".toRegex(), "")[0]
+
+            if(!index.contains(c)){
+                index.add(c)
+                val t = TextView(this)
+                val layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, 0, 1f)
+                layoutParams.gravity = Gravity.CENTER_HORIZONTAL
+
+                t.layoutParams = layoutParams
+                t.text = c.toString()
+                t.textSize = 10f
+                t.setTextColor(ContextCompat.getColor(this, R.color.colorAccent))
+                t.gravity = Gravity.CENTER_HORIZONTAL
+                t.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent))
+                t.setOnClickListener { listView.setSelection(i) }
+
+                indexHolder.addView(t)
+            }
+
+        }
+    }
+
+    fun setupListView(){
+        listView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
+            val b = Bundle()
+            val cams = ArrayList(Arrays.asList(myAdapter.getItem(i)!!))
+            b.putParcelableArrayList("cameras", cams)
+
+            val intent = Intent(this@MainActivity, CameraActivity::class.java)
+            intent.putExtras(b)
+            startActivity(intent)
+        }
+        listView.itemsCanFocus = true
+
+        listView.setMultiChoiceModeListener(object : AbsListView.MultiChoiceModeListener {
+            override fun onItemCheckedStateChanged(actionMode: android.view.ActionMode, i: Int, l: Long, b: Boolean) {
+                if (b) {
+                    if (selectedCameras.size < maxCameras) {
+                        selectedCameras.add(myAdapter.getItem(i)!!)
+                    } else {
+                        selectedCameras.remove(myAdapter.getItem(i))
+                    }
+                } else {
+                    selectedCameras.remove(myAdapter.getItem(i))
+                }
+            }
+
+            override fun onCreateActionMode(actionMode: android.view.ActionMode, menu: Menu): Boolean {
+                actionMode.menuInflater.inflate(R.menu.contextual_menu, menu)
+                return true
+            }
+
+            override fun onPrepareActionMode(actionMode: android.view.ActionMode, menu: Menu): Boolean {
+                return false
+            }
+
+            override fun onActionItemClicked(actionMode: android.view.ActionMode, menuItem: MenuItem): Boolean {
+                if (menuItem.itemId == R.id.open_cameras) {
+                    val intent = Intent(this@MainActivity, CameraActivity::class.java)
+                    intent.putParcelableArrayListExtra("cameras", selectedCameras)
+                    startActivity(intent)
+                    return true
+                }
+                return false
+            }
+
+            override fun onDestroyActionMode(actionMode: android.view.ActionMode) {
+                selectedCameras.clear()
+            }
+        })
+    }
+
     fun setup(cameraJson: File) {
         main_toolbar.setOnClickListener { listView.smoothScrollToPosition(0) }
         setSupportActionBar(main_toolbar)
@@ -82,74 +167,8 @@ class MainActivity : AppCompatActivity() {
             myAdapter = CameraAdapter(this, cameras)
             listView.adapter = myAdapter
 
-            val indexTitles = myAdapter.indexTitles
-            val index = myAdapter.index
-
-            val linearLayout = findViewById<LinearLayout>(R.id.indexHolder)
-            for (i in 0 until index.size) {
-                val t = TextView(this)
-                val layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, 0, 1f)
-                layoutParams.gravity = Gravity.CENTER_HORIZONTAL
-
-                t.layoutParams = layoutParams
-                t.text = indexTitles[i]
-                t.textSize = 10f
-                t.setTextColor(ContextCompat.getColor(this, R.color.colorAccent))
-                t.gravity = Gravity.CENTER_HORIZONTAL
-                t.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent))
-
-                t.setOnClickListener { listView.setSelection(index[indexTitles[i]]!!) }
-                linearLayout!!.addView(t)
-            }
-
-
-            listView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
-                val b = Bundle()
-                val cams = ArrayList(Arrays.asList(myAdapter.getItem(i)!!))
-                b.putParcelableArrayList("cameras", cams)
-
-                val intent = Intent(this@MainActivity, CameraActivity::class.java)
-                intent.putExtras(b)
-                startActivity(intent)
-            }
-            listView.itemsCanFocus = true
-
-            listView.setMultiChoiceModeListener(object : AbsListView.MultiChoiceModeListener {
-                override fun onItemCheckedStateChanged(actionMode: android.view.ActionMode, i: Int, l: Long, b: Boolean) {
-                    if (b) {
-                        if (selectedCameras.size < maxCameras) {
-                            selectedCameras.add(myAdapter.getItem(i)!!)
-                        } else {
-                            selectedCameras.remove(myAdapter.getItem(i))
-                        }
-                    } else {
-                        selectedCameras.remove(myAdapter.getItem(i))
-                    }
-                }
-
-                override fun onCreateActionMode(actionMode: android.view.ActionMode, menu: Menu): Boolean {
-                    actionMode.menuInflater.inflate(R.menu.contextual_menu, menu)
-                    return true
-                }
-
-                override fun onPrepareActionMode(actionMode: android.view.ActionMode, menu: Menu): Boolean {
-                    return false
-                }
-
-                override fun onActionItemClicked(actionMode: android.view.ActionMode, menuItem: MenuItem): Boolean {
-                    if (menuItem.itemId == R.id.open_cameras) {
-                        val intent = Intent(this@MainActivity, CameraActivity::class.java)
-                        intent.putParcelableArrayListExtra("cameras", selectedCameras)
-                        startActivity(intent)
-                        return true
-                    }
-                    return false
-                }
-
-                override fun onDestroyActionMode(actionMode: android.view.ActionMode) {
-                    selectedCameras.clear()
-                }
-            })
+            setupSectionIndex()
+            setupListView()
 
         } catch (e: JSONException) {
             //e.printStackTrace();
@@ -158,14 +177,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun getViewByPosition(pos: Int, listView: ListView): View {
-        val firstListItemPosition = listView.getFirstVisiblePosition();
-        val lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1;
+        val firstListItemPosition = listView.getFirstVisiblePosition()
+        val lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1
 
         if (pos < firstListItemPosition || pos > lastListItemPosition) {
-            return listView.getAdapter().getView(pos, null, listView);
+            return listView.getAdapter().getView(pos, null, listView)
         } else {
-            val childIndex = pos - firstListItemPosition;
-            return listView.getChildAt(childIndex);
+            val childIndex = pos - firstListItemPosition
+            return listView.getChildAt(childIndex)
         }
     }
 

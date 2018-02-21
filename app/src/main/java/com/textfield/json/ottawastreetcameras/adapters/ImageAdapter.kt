@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.textfield.json.ottawastreetcameras.Camera
 import com.textfield.json.ottawastreetcameras.R
-import java.util.*
+import java.util.Locale
 
 /**
  * Created by Jason on 08/02/2018.

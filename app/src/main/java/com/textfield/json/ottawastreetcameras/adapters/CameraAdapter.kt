@@ -9,9 +9,7 @@ import android.widget.Filter
 import android.widget.TextView
 import com.textfield.json.ottawastreetcameras.Camera
 import com.textfield.json.ottawastreetcameras.R
-
 import java.util.ArrayList
-import java.util.HashMap
 import java.util.Locale
 
 /**
@@ -20,26 +18,12 @@ import java.util.Locale
 
 internal class CameraAdapter(private val _context: Context, list: ArrayList<Camera>) : ArrayAdapter<Camera>(_context, 0, list) {
 
-    var indexTitles = ArrayList<String>()
-    var index = HashMap<String, Int>()
     var cameras: ArrayList<Camera>
     var wholeCameras: ArrayList<Camera>
 
     init {
         cameras = list
         wholeCameras = cameras
-        for (camera in cameras) {
-
-            val c = if (Locale.getDefault().displayLanguage.contains("fr"))
-                Character.toString(camera.nameFr.replace("\\W".toRegex(), "")[0])
-            else
-                Character.toString(camera.name.replace("\\W".toRegex(), "")[0])
-
-            if (!index.keys.contains(c)) {
-                indexTitles.add(c)
-                index[c] = cameras.indexOf(camera)
-            }
-        }
     }
 
     private class ViewHolder {
@@ -54,9 +38,8 @@ internal class CameraAdapter(private val _context: Context, list: ArrayList<Came
         return cameras.size
     }
 
-
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var convertView = convertView
+    override fun getView(position: Int, view: View?, parent: ViewGroup): View {
+        var convertView = view
         val viewHolder: ViewHolder
 
         val item = getItem(position)
@@ -72,12 +55,8 @@ internal class CameraAdapter(private val _context: Context, list: ArrayList<Came
             viewHolder = convertView.tag as ViewHolder
         }
 
-        if (Locale.getDefault().displayLanguage.contains("fr")) {
-            viewHolder.title!!.text = item!!.nameFr
-        } else {
-            viewHolder.title!!.text = item!!.name
-        }
-
+        viewHolder.title!!.text = if (Locale.getDefault().displayLanguage.contains("fr")) item!!.nameFr
+        else item!!.name
 
         // Return the completed view to render on screen
         return convertView
@@ -86,16 +65,15 @@ internal class CameraAdapter(private val _context: Context, list: ArrayList<Came
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun publishResults(constraint: CharSequence, results: Filter.FilterResults) {
-                //Log.d(Constants.TAG, "**** PUBLISHING RESULTS for: " + constraint);
                 cameras = results.values as ArrayList<Camera>
                 notifyDataSetChanged()
             }
 
             override fun performFiltering(constraint: CharSequence): Filter.FilterResults {
-                //Log.d(Constants.TAG, "**** PERFORM FILTERING for: " + constraint);
                 val filteredResults = wholeCameras.filter {
                     it.name.toLowerCase().contains(constraint.toString().toLowerCase()) ||
-                        it.nameFr.toLowerCase().contains(constraint.toString().toLowerCase()) }
+                            it.nameFr.toLowerCase().contains(constraint.toString().toLowerCase())
+                }
 
                 val results = Filter.FilterResults()
                 results.values = filteredResults
