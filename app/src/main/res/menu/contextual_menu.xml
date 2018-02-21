@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/open_cameras"
-        android:title="Show"
+        android:icon="@drawable/ic_camera_alt_white_24dp"
+        android:title="@string/show"
         app:showAsAction="ifRoom" />
 </menu>

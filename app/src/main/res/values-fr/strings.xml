@@ -2,6 +2,7 @@
     <string name="app_name">RueCams</string>
     <string name="search">Chercher</string>
     <string name="map">Carte</string>
+    <string name="show">Montre</string>
     <string name="search_hint">Recherche de %d emplacements</string>
     <string name="no_network_title">Pas de connexion réseau</string>
     <string name="no_network_content">Veuillez vous connecter à un réseau et réessayer</string>

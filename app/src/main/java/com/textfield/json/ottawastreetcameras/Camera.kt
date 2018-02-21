@@ -91,7 +91,7 @@ class Camera : Parcelable, Comparable<Camera> {
 
 
     override fun compareTo(other: Camera): Int {
-        return if (Locale.getDefault().displayLanguage == "fr") {
+        return if (Locale.getDefault().displayLanguage.contains("fr")) {
             nameFr.replace("\\W".toRegex(), "").compareTo(other.nameFr.replace("\\W".toRegex(), ""))
         } else name.replace("\\W".toRegex(), "").compareTo(other.name.replace("\\W".toRegex(), ""))
     }
