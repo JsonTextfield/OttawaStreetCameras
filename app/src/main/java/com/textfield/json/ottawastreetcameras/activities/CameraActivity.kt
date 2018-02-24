@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.view.MenuItem
+import android.view.View
 import android.widget.ImageView
 import com.android.volley.NetworkResponse
 import com.android.volley.RequestQueue
@@ -15,7 +15,6 @@ import com.textfield.json.ottawastreetcameras.Camera
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.adapters.ImageAdapter
 import kotlinx.android.synthetic.main.activity_camera.*
-import kotlinx.android.synthetic.main.activity_camera.view.*
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -96,28 +95,10 @@ class CameraActivity : AppCompatActivity() {
             }
         })
 
-        camera_toolbar.title = ""
-        val title = camera_toolbar.textView
-
-        setSupportActionBar(camera_toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.setHomeButtonEnabled(true)
-
         val bundle = intent.extras
         cameras = bundle!!.getParcelableArrayList<Camera>("cameras")
 
         val isFrench = Locale.getDefault().displayLanguage.contains("fr")
-
-        val allTitles = StringBuilder()
-        for (camera in cameras) {
-            allTitles.append(if (isFrench) camera.nameFr else camera.name)
-            allTitles.append(", ")
-        }
-        var s = ""
-        if (allTitles.length > 2) {
-            s = allTitles.substring(0, allTitles.length - 2)
-        }
-        title.text = s
         image_listView.adapter = ImageAdapter(this, cameras, isFrench)
 
         getSessionId()
@@ -132,12 +113,8 @@ class CameraActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            onBackPressed()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
+    fun back(v: View){
+        onBackPressed()
     }
 
 
