@@ -177,11 +177,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun getViewByPosition(pos: Int, listView: ListView): View {
-        val firstListItemPosition = listView.getFirstVisiblePosition()
-        val lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1
+        val firstListItemPosition = listView.firstVisiblePosition
+        val lastListItemPosition = firstListItemPosition + listView.childCount - 1
 
         if (pos < firstListItemPosition || pos > lastListItemPosition) {
-            return listView.getAdapter().getView(pos, null, listView)
+            return listView.adapter.getView(pos, null, listView)
         } else {
             val childIndex = pos - firstListItemPosition
             return listView.getChildAt(childIndex)

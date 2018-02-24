@@ -12,4 +12,12 @@
         android:icon="@drawable/ic_place_white_24dp"
         android:title="@string/map"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/distance_sort"
+        android:title="Sort by distance"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/sort_name"
+        android:title="Sort by name"
+        app:showAsAction="never" />
 </menu>

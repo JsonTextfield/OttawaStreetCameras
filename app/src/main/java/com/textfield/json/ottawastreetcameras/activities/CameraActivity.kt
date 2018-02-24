@@ -19,8 +19,6 @@ import kotlinx.android.synthetic.main.activity_camera.view.*
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 class CameraActivity : AppCompatActivity() {
@@ -109,10 +107,7 @@ class CameraActivity : AppCompatActivity() {
 
         val allTitles = StringBuilder()
         for (camera in cameras) {
-            if (Locale.getDefault().displayLanguage.contains("fr"))
-                allTitles.append(camera.nameFr)
-            else
-                allTitles.append(camera.name)
+            allTitles.append(camera.getName())
             allTitles.append(", ")
         }
         var s = ""

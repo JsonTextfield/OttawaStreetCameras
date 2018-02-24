@@ -55,8 +55,7 @@ internal class CameraAdapter(private val _context: Context, list: ArrayList<Came
             viewHolder = convertView.tag as ViewHolder
         }
 
-        viewHolder.title!!.text = if (Locale.getDefault().displayLanguage.contains("fr")) item!!.nameFr
-        else item!!.name
+        viewHolder.title!!.text = item!!.getName()
 
         // Return the completed view to render on screen
         return convertView
@@ -71,8 +70,7 @@ internal class CameraAdapter(private val _context: Context, list: ArrayList<Came
 
             override fun performFiltering(constraint: CharSequence): Filter.FilterResults {
                 val filteredResults = wholeCameras.filter {
-                    it.name.toLowerCase().contains(constraint.toString().toLowerCase()) ||
-                            it.nameFr.toLowerCase().contains(constraint.toString().toLowerCase())
+                    it.getName().toLowerCase().contains(constraint.toString().toLowerCase())
                 }
 
                 val results = Filter.FilterResults()

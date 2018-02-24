@@ -3,20 +3,16 @@ package com.textfield.json.ottawastreetcameras
 import android.database.Cursor
 import android.os.Parcel
 import android.os.Parcelable
-
 import org.json.JSONException
 import org.json.JSONObject
-
-import java.util.Locale
+import java.util.*
 
 /**
  * Created by Jason on 25/04/2016.
  */
 class Camera : Parcelable, Comparable<Camera> {
-    var name: String = ""
-        private set
-    var nameFr: String = ""
-        private set
+    private var name: String = ""
+    private var nameFr: String = ""
     var owner: String = ""
         private set
     var lat: Double = 0.0
@@ -96,7 +92,11 @@ class Camera : Parcelable, Comparable<Camera> {
         } else name.replace("\\W".toRegex(), "").compareTo(other.name.replace("\\W".toRegex(), ""))
     }
 
-    companion object CREATOR: Parcelable.Creator<Camera> {
+    fun getName(): String {
+        return if (Locale.getDefault().displayLanguage.contains("fr")) nameFr else name
+    }
+
+    companion object CREATOR : Parcelable.Creator<Camera> {
         override fun createFromParcel(`in`: Parcel): Camera {
             return Camera(`in`)
         }
