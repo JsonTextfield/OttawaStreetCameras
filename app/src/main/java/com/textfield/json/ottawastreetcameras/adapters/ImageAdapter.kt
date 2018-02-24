@@ -9,12 +9,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.textfield.json.ottawastreetcameras.Camera
 import com.textfield.json.ottawastreetcameras.R
-import java.util.Locale
 
 /**
  * Created by Jason on 08/02/2018.
  */
-class ImageAdapter(private val _context: Context, list: ArrayList<Camera>) : ArrayAdapter<Camera>(_context, 0, list) {
+class ImageAdapter(private val _context: Context, list: ArrayList<Camera>, langFr: Boolean) : ArrayAdapter<Camera>(_context, 0, list) {
+    private val french = langFr
+
     private class ViewHolder {
         internal var title: TextView? = null
         internal var image: ImageView? = null
@@ -38,7 +39,7 @@ class ImageAdapter(private val _context: Context, list: ArrayList<Camera>) : Arr
             viewHolder = convertView.tag as ViewHolder
         }
 
-        viewHolder.title!!.text = item.getName()
+        viewHolder.title!!.text = if (french) item.nameFr else item.name
 
 
         // Return the completed view to render on screen

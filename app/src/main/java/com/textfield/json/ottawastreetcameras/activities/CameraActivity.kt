@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.activity_camera.view.*
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.*
 
 
 class CameraActivity : AppCompatActivity() {
@@ -105,9 +106,11 @@ class CameraActivity : AppCompatActivity() {
         val bundle = intent.extras
         cameras = bundle!!.getParcelableArrayList<Camera>("cameras")
 
+        val isFrench = Locale.getDefault().displayLanguage.contains("fr")
+
         val allTitles = StringBuilder()
         for (camera in cameras) {
-            allTitles.append(camera.getName())
+            allTitles.append(if (isFrench) camera.nameFr else camera.name)
             allTitles.append(", ")
         }
         var s = ""
@@ -115,7 +118,7 @@ class CameraActivity : AppCompatActivity() {
             s = allTitles.substring(0, allTitles.length - 2)
         }
         title.text = s
-        image_listView.adapter = ImageAdapter(this, cameras)
+        image_listView.adapter = ImageAdapter(this, cameras, isFrench)
 
         getSessionId()
         //GetSessionIdTask().execute()

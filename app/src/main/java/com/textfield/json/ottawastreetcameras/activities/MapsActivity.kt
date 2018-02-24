@@ -52,7 +52,8 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback {
 
         //add a marker for every camera available
         for (camera in cameras) {
-            val m = googleMap.addMarker(MarkerOptions().position(LatLng(camera.lat, camera.lng)).title(camera.getName()))
+            val name = if (Locale.getDefault().displayLanguage.contains("fr")) camera.nameFr else camera.name
+            val m = googleMap.addMarker(MarkerOptions().position(LatLng(camera.lat, camera.lng)).title(name))
             m.tag = camera
             builder.include(m.position)
 

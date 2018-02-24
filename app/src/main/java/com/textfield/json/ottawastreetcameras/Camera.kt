@@ -11,8 +11,10 @@ import java.util.*
  * Created by Jason on 25/04/2016.
  */
 class Camera : Parcelable{
-    private var name: String = ""
-    private var nameFr: String = ""
+    var name: String = ""
+        private set
+    var nameFr: String = ""
+        private set
     var owner: String = ""
         private set
     var lat: Double = 0.0
@@ -83,10 +85,6 @@ class Camera : Parcelable{
         parcel.writeDouble(lng)
         parcel.writeInt(id)
         parcel.writeInt(num)
-    }
-
-    fun getName(): String {
-        return if (Locale.getDefault().displayLanguage.contains("fr")) nameFr else name
     }
 
     companion object CREATOR : Parcelable.Creator<Camera> {

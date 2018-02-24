@@ -9,15 +9,14 @@ import android.widget.Filter
 import android.widget.TextView
 import com.textfield.json.ottawastreetcameras.Camera
 import com.textfield.json.ottawastreetcameras.R
-import java.util.ArrayList
-import java.util.Locale
+import java.util.*
 
 /**
  * Created by Jason on 24/10/2017.
  */
 
-internal class CameraAdapter(private val _context: Context, list: ArrayList<Camera>) : ArrayAdapter<Camera>(_context, 0, list) {
-
+internal class CameraAdapter(private val _context: Context, list: ArrayList<Camera>, lang: Boolean) : ArrayAdapter<Camera>(_context, 0, list) {
+    private val french = lang
     var cameras: ArrayList<Camera>
     var wholeCameras: ArrayList<Camera>
 
@@ -55,7 +54,7 @@ internal class CameraAdapter(private val _context: Context, list: ArrayList<Came
             viewHolder = convertView.tag as ViewHolder
         }
 
-        viewHolder.title!!.text = item!!.getName()
+        viewHolder.title!!.text = if (french) item!!.nameFr else item!!.name
 
         // Return the completed view to render on screen
         return convertView
@@ -70,7 +69,9 @@ internal class CameraAdapter(private val _context: Context, list: ArrayList<Came
 
             override fun performFiltering(constraint: CharSequence): Filter.FilterResults {
                 val filteredResults = wholeCameras.filter {
-                    it.getName().toLowerCase().contains(constraint.toString().toLowerCase())
+                    if (french) it.nameFr.toLowerCase().contains(constraint.toString().toLowerCase())
+                    else it.name.toLowerCase().contains(constraint.toString().toLowerCase())
+
                 }
 
                 val results = Filter.FilterResults()

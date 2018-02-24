@@ -20,14 +20,13 @@ import android.view.View
 import android.widget.AbsListView
 import android.widget.AdapterView
 import android.widget.LinearLayout.LayoutParams
-import android.widget.ListView
 import android.widget.TextView
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
 import com.textfield.json.ottawastreetcameras.Camera
-import com.textfield.json.ottawastreetcameras.SortByDistance
 import com.textfield.json.ottawastreetcameras.R
+import com.textfield.json.ottawastreetcameras.SortByDistance
 import com.textfield.json.ottawastreetcameras.SortByName
 import com.textfield.json.ottawastreetcameras.adapters.CameraAdapter
 import kotlinx.android.synthetic.main.activity_main.*
@@ -50,6 +49,11 @@ class MainActivity : AppCompatActivity() {
     internal lateinit var myAdapter: CameraAdapter
 
     private val maxCameras = 3
+
+    private var sortName: MenuItem? = null
+    private var sortDistance: MenuItem? = null
+
+    private var isFrench = false
 
     fun downloadJson(cameraJson: File) {
 
@@ -84,7 +88,8 @@ class MainActivity : AppCompatActivity() {
             val camera = cameras[i]
 
             //get the first character
-            val c = camera.getName().replace("\\W".toRegex(), "")[0]
+            val c = if (isFrench) camera.nameFr.replace("\\W".toRegex(), "")[0]
+                else camera.name.replace("\\W".toRegex(), "")[0]
 
             if (!index.contains(c)) {
                 index.add(c)
@@ -125,6 +130,7 @@ class MainActivity : AppCompatActivity() {
                         selectedCameras.add(myAdapter.getItem(i)!!)
                     } else {
                         selectedCameras.remove(myAdapter.getItem(i))
+                        listView.setItemChecked(i, false)
                     }
                 } else {
                     selectedCameras.remove(myAdapter.getItem(i))
@@ -167,8 +173,8 @@ class MainActivity : AppCompatActivity() {
                     .forEach { cameras.add(Camera(it)) }
 
 
-            Collections.sort(cameras, SortByName())
-            myAdapter = CameraAdapter(this, cameras)
+            Collections.sort(cameras, SortByName(isFrench))
+            myAdapter = CameraAdapter(this, cameras, isFrench)
             listView.adapter = myAdapter
 
             setupSectionIndex()
@@ -180,22 +186,10 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun getViewByPosition(pos: Int, listView: ListView): View {
-        val firstListItemPosition = listView.firstVisiblePosition
-        val lastListItemPosition = firstListItemPosition + listView.childCount - 1
-
-        if (pos < firstListItemPosition || pos > lastListItemPosition) {
-            return listView.adapter.getView(pos, null, listView)
-        } else {
-            val childIndex = pos - firstListItemPosition
-            return listView.getChildAt(childIndex)
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        isFrench = Locale.getDefault().displayLanguage.contains("fr")
         val cameraJson = File(cacheDir.toString() + "/cameras.json")
         if (!cameraJson.exists()) {
             Log.w("FILE:", "Does not exist")
@@ -203,35 +197,6 @@ class MainActivity : AppCompatActivity() {
         } else {
             setup(cameraJson)
         }
-
-
-        /*DB myDB = new DB(this);
-        myDB.createDatabase();
-        myDB.open();
-        Cursor cursor = myDB.runQuery("select * from cameras;");
-
-        do {
-            Camera camera = new Camera(cursor);
-            cameras.add(camera);
-        } while (cursor.moveToNext());
-        myDB.close();
-
-        Collections.sort(cameras);*/
-
-
-        /*try {
-            JSONArray jsonArray = new JSONArray(loadJSONFromFile());
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject g = (JSONObject) jsonArray.get(i);
-                cameras.add(new Camera(g));
-            }
-
-
-        } catch (JSONException e) {
-            //e.printStackTrace();
-        }*/
-
-
     }
 
     fun loadJSONFromFile(cameraJson: File): String? {
@@ -259,8 +224,10 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
             }
             R.id.sort_name -> {
-                myAdapter.sort(SortByName())
+                myAdapter.sort(SortByName(isFrench))
                 indexHolder.visibility = View.VISIBLE
+                sortName?.isVisible = false
+                sortDistance?.isVisible = true
             }
             R.id.distance_sort -> {
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -273,6 +240,8 @@ class MainActivity : AppCompatActivity() {
                     val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
                     myAdapter.sort(SortByDistance(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)))
                     indexHolder.visibility = View.INVISIBLE
+                    sortDistance?.isVisible = false
+                    sortName?.isVisible = true
                 }
             }
         }
@@ -294,7 +263,8 @@ class MainActivity : AppCompatActivity() {
                     // contacts-related task you need to do.
                     val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
                     myAdapter.sort(SortByDistance(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)))
-
+                    sortDistance?.isVisible = false
+                    sortName?.isVisible = true
                 } else {
 
                     // permission denied, boo! Disable the
@@ -315,6 +285,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
+        sortName = menu.findItem(R.id.sort_name)
+        sortDistance = menu.findItem(R.id.distance_sort)
         val searchView = menu.findItem(R.id.user_searchView).actionView as SearchView
         searchView.queryHint = String.format(resources.getString(R.string.search_hint), cameras.size)
 
