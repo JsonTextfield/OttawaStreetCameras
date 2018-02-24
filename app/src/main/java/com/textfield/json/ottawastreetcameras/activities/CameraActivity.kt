@@ -61,7 +61,7 @@ class CameraActivity : AppCompatActivity() {
             dialog.show()
         }) {
             override fun parseNetworkResponse(response: NetworkResponse): Response<String> {
-                sessionId = response.headers.get("Set-Cookie")!!
+                sessionId = response.headers["Set-Cookie"]!!
                 return Response.success(sessionId, HttpHeaderParser.parseCacheHeaders(response))
 
             }

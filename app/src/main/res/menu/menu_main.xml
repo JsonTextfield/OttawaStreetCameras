@@ -14,11 +14,11 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/distance_sort"
-        android:title="Sort by distance"
+        android:title="@string/sort_by_distance"
         app:showAsAction="never" />
     <item
         android:id="@+id/sort_name"
-        android:title="Sort by name"
+        android:title="@string/sort_by_name"
         android:visible="false"
         app:showAsAction="never" />
 </menu>

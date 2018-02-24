@@ -3,7 +3,9 @@
     <string name="search">Chercher</string>
     <string name="map">Carte</string>
     <string name="show">Montre</string>
+    <string name="sort_by_distance">Triez-les par distance</string>
     <string name="search_hint">Recherche de %d emplacements</string>
     <string name="no_network_title">Pas de connexion réseau</string>
     <string name="no_network_content">Veuillez vous connecter à un réseau et réessayer</string>
+    <string name="sort_by_name">Triez-les par nom</string>
 </resources>
