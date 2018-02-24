@@ -1,7 +1,12 @@
 package com.textfield.json.ottawastreetcameras.activities
 
+import android.Manifest
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -21,7 +26,9 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
 import com.textfield.json.ottawastreetcameras.Camera
+import com.textfield.json.ottawastreetcameras.SortByDistance
 import com.textfield.json.ottawastreetcameras.R
+import com.textfield.json.ottawastreetcameras.SortByName
 import com.textfield.json.ottawastreetcameras.adapters.CameraAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONArray
@@ -69,7 +76,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun setupSectionIndex(){
+    fun setupSectionIndex() {
         val index = HashSet<Char>()
 
         //assumes cameras are sorted
@@ -77,12 +84,9 @@ class MainActivity : AppCompatActivity() {
             val camera = cameras[i]
 
             //get the first character
-            val c = if (Locale.getDefault().displayLanguage.contains("fr"))
-                camera.nameFr.replace("\\W".toRegex(), "")[0]
-            else
-                camera.name.replace("\\W".toRegex(), "")[0]
+            val c = camera.getName().replace("\\W".toRegex(), "")[0]
 
-            if(!index.contains(c)){
+            if (!index.contains(c)) {
                 index.add(c)
                 val t = TextView(this)
                 val layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, 0, 1f)
@@ -102,7 +106,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun setupListView(){
+    fun setupListView() {
         listView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
             val b = Bundle()
             val cams = ArrayList(Arrays.asList(myAdapter.getItem(i)!!))
@@ -163,7 +167,7 @@ class MainActivity : AppCompatActivity() {
                     .forEach { cameras.add(Camera(it)) }
 
 
-            Collections.sort(cameras)
+            Collections.sort(cameras, SortByName())
             myAdapter = CameraAdapter(this, cameras)
             listView.adapter = myAdapter
 
@@ -248,12 +252,65 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menuItemMap -> {
+                val intent = Intent(this, MapsActivity::class.java)
+                intent.putParcelableArrayListExtra("cameras", cameras)
+                startActivity(intent)
+            }
+            R.id.sort_name -> {
+                myAdapter.sort(SortByName())
+                indexHolder.visibility = View.VISIBLE
+            }
+            R.id.distance_sort -> {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this,
+                            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                            0)
+                    // Permission is not granted
+                } else {
+                    val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                    myAdapter.sort(SortByDistance(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)))
+                    indexHolder.visibility = View.INVISIBLE
+                }
+            }
+        }
         if (item.itemId == R.id.menuItemMap) {
             val intent = Intent(this, MapsActivity::class.java)
             intent.putParcelableArrayListExtra("cameras", cameras)
             startActivity(intent)
         }
         return true
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            0 -> {
+                // If request is cancelled, the result arrays are empty.
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                    myAdapter.sort(SortByDistance(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)))
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+
+                }
+                return
+            }
+
+        // Add other 'when' lines to check for other
+        // permissions this app might request.
+
+            else -> {
+                // Ignore all other requests.
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -10,7 +10,7 @@ import java.util.*
 /**
  * Created by Jason on 25/04/2016.
  */
-class Camera : Parcelable, Comparable<Camera> {
+class Camera : Parcelable{
     private var name: String = ""
     private var nameFr: String = ""
     var owner: String = ""
@@ -83,13 +83,6 @@ class Camera : Parcelable, Comparable<Camera> {
         parcel.writeDouble(lng)
         parcel.writeInt(id)
         parcel.writeInt(num)
-    }
-
-
-    override fun compareTo(other: Camera): Int {
-        return if (Locale.getDefault().displayLanguage.contains("fr")) {
-            nameFr.replace("\\W".toRegex(), "").compareTo(other.nameFr.replace("\\W".toRegex(), ""))
-        } else name.replace("\\W".toRegex(), "").compareTo(other.name.replace("\\W".toRegex(), ""))
     }
 
     fun getName(): String {

@@ -38,8 +38,7 @@ class ImageAdapter(private val _context: Context, list: ArrayList<Camera>) : Arr
             viewHolder = convertView.tag as ViewHolder
         }
 
-        viewHolder.title!!.text = if (Locale.getDefault().displayLanguage.contains("fr")) item.nameFr
-            else item.name
+        viewHolder.title!!.text = item.getName()
 
 
         // Return the completed view to render on screen
