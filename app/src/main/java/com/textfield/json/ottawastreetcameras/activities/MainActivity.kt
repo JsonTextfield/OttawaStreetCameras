@@ -166,9 +166,7 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
             }
             R.id.sort_name -> {
-                myAdapter = CameraAdapter(this, cameras)
-                listView.adapter = myAdapter
-                //myAdapter.sort(SortByName())
+                myAdapter.sort(SortByName())
                 indexHolder.visibility = View.VISIBLE
                 sortName?.isVisible = false
                 sortDistance?.isVisible = true
