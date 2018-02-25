@@ -21,8 +21,7 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
 
-        val mapFragment = supportFragmentManager
-                .findFragmentById(R.id.map) as SupportMapFragment
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
     }
 
@@ -39,30 +38,22 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         val cameras = intent.getParcelableArrayListExtra<Camera>("cameras")
         googleMap.setOnInfoWindowClickListener { marker ->
-            val b = Bundle()
-            val cams = ArrayList(Arrays.asList(marker.tag as Camera))
-            b.putParcelableArrayList("cameras", cams)
 
             val intent = Intent(this@MapsActivity, CameraActivity::class.java)
-            intent.putExtras(b)
+            intent.putParcelableArrayListExtra("cameras", ArrayList(Arrays.asList(marker.tag as Camera)))
             startActivity(intent)
         }
         val builder = LatLngBounds.Builder()
-        val padding = 50 // offset from edges of the map in pixels
 
         //add a marker for every camera available
         for (camera in cameras) {
-            val name = if (Locale.getDefault().displayLanguage.contains("fr")) camera.nameFr else camera.name
-            val m = googleMap.addMarker(MarkerOptions().position(LatLng(camera.lat, camera.lng)).title(name))
+            val m = googleMap.addMarker(MarkerOptions().position(LatLng(camera.lat, camera.lng)).title(camera.getName()))
             m.tag = camera
             builder.include(m.position)
-
         }
-        val bounds = builder.build()
-        val cu = CameraUpdateFactory.newLatLngBounds(bounds, padding)
 
         googleMap.setOnMapLoadedCallback {
-            googleMap.animateCamera(cu)
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50))
         }
 
     }

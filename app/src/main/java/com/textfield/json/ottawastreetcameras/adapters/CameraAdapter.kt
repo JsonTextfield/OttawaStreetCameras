@@ -15,15 +15,9 @@ import java.util.*
  * Created by Jason on 24/10/2017.
  */
 
-internal class CameraAdapter(private val _context: Context, list: ArrayList<Camera>, lang: Boolean) : ArrayAdapter<Camera>(_context, 0, list) {
-    private val french = lang
-    var cameras: ArrayList<Camera>
-    var wholeCameras: ArrayList<Camera>
-
-    init {
-        cameras = list
-        wholeCameras = cameras
-    }
+class CameraAdapter(private val _context: Context, list: ArrayList<Camera>) : ArrayAdapter<Camera>(_context, 0, list) {
+    private var cameras = list
+    private val wholeCameras = list
 
     private class ViewHolder {
         internal var title: TextView? = null
@@ -41,12 +35,9 @@ internal class CameraAdapter(private val _context: Context, list: ArrayList<Came
         var convertView = view
         val viewHolder: ViewHolder
 
-        val item = getItem(position)
-
         if (convertView == null) {
             viewHolder = ViewHolder()
-            val inflater = LayoutInflater.from(_context)
-            convertView = inflater.inflate(R.layout.list_item, parent, false)
+            convertView = LayoutInflater.from(_context).inflate(R.layout.list_item, parent, false)
             viewHolder.title = convertView!!.findViewById<View>(R.id.listtitle) as TextView
             convertView.tag = viewHolder
 
@@ -54,7 +45,7 @@ internal class CameraAdapter(private val _context: Context, list: ArrayList<Came
             viewHolder = convertView.tag as ViewHolder
         }
 
-        viewHolder.title!!.text = if (french) item!!.nameFr else item!!.name
+        viewHolder.title!!.text = getItem(position)!!.getName()
 
         // Return the completed view to render on screen
         return convertView
@@ -69,9 +60,7 @@ internal class CameraAdapter(private val _context: Context, list: ArrayList<Came
 
             override fun performFiltering(constraint: CharSequence): Filter.FilterResults {
                 val filteredResults = wholeCameras.filter {
-                    if (french) it.nameFr.toLowerCase().contains(constraint.toString().toLowerCase())
-                    else it.name.toLowerCase().contains(constraint.toString().toLowerCase())
-
+                    it.getName().toLowerCase().contains(constraint.toString().toLowerCase())
                 }
 
                 val results = Filter.FilterResults()

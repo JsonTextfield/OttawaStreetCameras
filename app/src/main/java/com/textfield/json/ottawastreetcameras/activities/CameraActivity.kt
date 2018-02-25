@@ -25,7 +25,7 @@ class CameraActivity : AppCompatActivity() {
 
     private var cameras = ArrayList<Camera>()
     private var timers = ArrayList<CameraRunnable>()
-    private var handler = Handler()
+    private val handler = Handler()
     private var queue: RequestQueue? = null
     private var sessionId = ""
     private val tag = "camera"
@@ -95,11 +95,8 @@ class CameraActivity : AppCompatActivity() {
             }
         })
 
-        val bundle = intent.extras
-        cameras = bundle!!.getParcelableArrayList<Camera>("cameras")
-
-        val isFrench = Locale.getDefault().displayLanguage.contains("fr")
-        image_listView.adapter = ImageAdapter(this, cameras, isFrench)
+        cameras = intent.getParcelableArrayListExtra<Camera>("cameras")
+        image_listView.adapter = ImageAdapter(this, cameras)
 
         getSessionId()
         //GetSessionIdTask().execute()

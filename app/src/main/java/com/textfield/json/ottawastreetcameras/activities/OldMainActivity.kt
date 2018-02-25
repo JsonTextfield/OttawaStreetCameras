@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
 import android.text.TextUtils
+import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
@@ -29,43 +30,46 @@ import com.textfield.json.ottawastreetcameras.SortByDistance
 import com.textfield.json.ottawastreetcameras.SortByName
 import com.textfield.json.ottawastreetcameras.adapters.CameraAdapter
 import kotlinx.android.synthetic.main.activity_main.*
+import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileWriter
+import java.io.IOException
+import java.nio.charset.Charset
 import java.util.*
 import kotlin.collections.ArrayList
 
-class MainActivity : AppCompatActivity() {
-
-    private val cameras = ArrayList<Camera>()
+class OldMainActivity : AppCompatActivity() {
+/*
+    private var cameras = ArrayList<Camera>()
     private val selectedCameras = ArrayList<Camera>()
 
-    private lateinit var myAdapter: CameraAdapter
+    internal lateinit var myAdapter: CameraAdapter
 
     private val maxCameras = 3
 
     private var sortName: MenuItem? = null
     private var sortDistance: MenuItem? = null
 
-    fun downloadJson() {
+    private var isFrench = false
+
+    fun downloadJson(cameraJson: File) {
 
         val url = "http://traffic.ottawa.ca/map/camera_list"
         val queue = Volley.newRequestQueue(this)
         val jsObjRequest = JsonArrayRequest(url, Response.Listener { response ->
-            (0 until response.length())
-                    .map { response.get(it) as JSONObject }
-                    .forEach { cameras.add(Camera(it)) }
-
-            Collections.sort(cameras, SortByName())
-            myAdapter = CameraAdapter(this, cameras)
-            listView.adapter = myAdapter
-
-            main_toolbar.setOnClickListener { listView.smoothScrollToPosition(0) }
-            setSupportActionBar(main_toolbar)
-
-            setupSectionIndex()
-            setupListView()
-
+            try {
+                val fileWriter = FileWriter(cameraJson)
+                fileWriter.write(response.toString())
+                fileWriter.flush()
+                setup(cameraJson)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }, Response.ErrorListener {
-            val builder = AlertDialog.Builder(this@MainActivity)
+            val builder = AlertDialog.Builder(this@OldMainActivity)
 
             builder.setTitle(resources.getString(R.string.no_network_title)).setMessage(resources.getString(R.string.no_network_content))
                     .setPositiveButton("OK") { _, _ -> finish() }
@@ -73,6 +77,7 @@ class MainActivity : AppCompatActivity() {
             dialog.show()
         })
         queue.add(jsObjRequest)
+
     }
 
     fun setupSectionIndex() {
@@ -80,9 +85,11 @@ class MainActivity : AppCompatActivity() {
 
         //assumes cameras are sorted
         for (i in 0 until cameras.size) {
+            val camera = cameras[i]
 
             //get the first character
-            val c = cameras[i].getName().replace(Regex("\\W"), "")[0]
+            val c = if (isFrench) camera.nameFr.replace("\\W".toRegex(), "")[0]
+                else camera.name.replace("\\W".toRegex(), "")[0]
 
             if (!index.contains(c)) {
                 index.add(c)
@@ -106,9 +113,12 @@ class MainActivity : AppCompatActivity() {
 
     fun setupListView() {
         listView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
+            val b = Bundle()
+            val cams = ArrayList(Arrays.asList(myAdapter.getItem(i)!!))
+            b.putParcelableArrayList("cameras", cams)
 
-            val intent = Intent(this@MainActivity, CameraActivity::class.java)
-            intent.putParcelableArrayListExtra("cameras", ArrayList(Arrays.asList(myAdapter.getItem(i)!!)))
+            val intent = Intent(this@OldMainActivity, CameraActivity::class.java)
+            intent.putExtras(b)
             startActivity(intent)
         }
         listView.itemsCanFocus = true
@@ -138,7 +148,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onActionItemClicked(actionMode: android.view.ActionMode, menuItem: MenuItem): Boolean {
                 if (menuItem.itemId == R.id.open_cameras) {
-                    val intent = Intent(this@MainActivity, CameraActivity::class.java)
+                    val intent = Intent(this@OldMainActivity, CameraActivity::class.java)
                     intent.putParcelableArrayListExtra("cameras", selectedCameras)
                     startActivity(intent)
                     return true
@@ -152,10 +162,58 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    fun setup(cameraJson: File) {
+        main_toolbar.setOnClickListener { listView.smoothScrollToPosition(0) }
+        setSupportActionBar(main_toolbar)
+
+        try {
+            val jsonArray = JSONArray(loadJSONFromFile(cameraJson))
+            (0 until jsonArray.length())
+                    .map { jsonArray.get(it) as JSONObject }
+                    .forEach { cameras.add(Camera(it)) }
+
+
+            Collections.sort(cameras, SortByName(isFrench))
+            myAdapter = CameraAdapter(this, cameras, isFrench)
+            listView.adapter = myAdapter
+
+            setupSectionIndex()
+            setupListView()
+
+        } catch (e: JSONException) {
+            //e.printStackTrace();
+        }
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        downloadJson()
+        isFrench = Locale.getDefault().displayLanguage.contains("fr")
+        val cameraJson = File(cacheDir.toString() + "/cameras.json")
+        if (!cameraJson.exists()) {
+            Log.w("FILE:", "Does not exist")
+            downloadJson(cameraJson)
+        } else {
+            setup(cameraJson)
+        }
+    }
+
+    fun loadJSONFromFile(cameraJson: File): String? {
+        val json: String
+        try {
+            val `is` = FileInputStream(cameraJson)
+            val size = `is`.available()
+            val buffer = ByteArray(size)
+            `is`.read(buffer)
+            `is`.close()
+            json = String(buffer, Charset.forName("UTF-8"))
+        } catch (ex: IOException) {
+            //ex.printStackTrace();
+            return null
+        }
+
+        return json
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -166,9 +224,7 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
             }
             R.id.sort_name -> {
-                myAdapter = CameraAdapter(this, cameras)
-                listView.adapter = myAdapter
-                //myAdapter.sort(SortByName())
+                myAdapter.sort(SortByName(isFrench))
                 indexHolder.visibility = View.VISIBLE
                 sortName?.isVisible = false
                 sortDistance?.isVisible = true
@@ -209,8 +265,20 @@ class MainActivity : AppCompatActivity() {
                     myAdapter.sort(SortByDistance(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)))
                     sortDistance?.isVisible = false
                     sortName?.isVisible = true
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+
                 }
                 return
+            }
+
+        // Add other 'when' lines to check for other
+        // permissions this app might request.
+
+            else -> {
+                // Ignore all other requests.
             }
         }
     }
@@ -242,4 +310,4 @@ class MainActivity : AppCompatActivity() {
 
         return true
     }
-}
+*/}
