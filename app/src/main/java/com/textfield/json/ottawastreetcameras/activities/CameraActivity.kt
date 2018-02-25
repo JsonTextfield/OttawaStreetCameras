@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.ImageView
+import android.widget.ListView
 import com.android.volley.NetworkResponse
 import com.android.volley.RequestQueue
 import com.android.volley.Response
@@ -21,6 +22,8 @@ import java.net.URL
 import java.util.*
 
 
+
+
 class CameraActivity : AppCompatActivity() {
 
     private var cameras = ArrayList<Camera>()
@@ -29,13 +32,14 @@ class CameraActivity : AppCompatActivity() {
     private var queue: RequestQueue? = null
     private var sessionId = ""
     private val tag = "camera"
+    private lateinit var imageAdapter: ImageAdapter
 
     fun download(index: Int) {
-        val url = "http://traffic.ottawa.ca/map/camera?id=" + cameras[index].num
+        val url = "http://traffic.ottawa.ca/map/camera?id=" + imageAdapter.getItem(index).num
 
         val request = ImageRequest(url, Response.Listener<Bitmap> { response ->
             try {
-                val bmImage = image_listView.getChildAt(index).findViewById(R.id.source) as ImageView
+                val bmImage = getViewByPosition(index, image_listView).findViewById(R.id.source) as ImageView
                 bmImage.setImageBitmap(response)
             } catch (e: NullPointerException) {
             }
@@ -44,10 +48,23 @@ class CameraActivity : AppCompatActivity() {
         queue!!.add(request)
     }
 
+    //https://stackoverflow.com/questions/24811536/android-listview-get-item-view-by-position/24864536
+    fun getViewByPosition(pos: Int, listView: ListView): View {
+        val firstListItemPosition = listView.getFirstVisiblePosition()
+        val lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1
+
+        if (pos < firstListItemPosition || pos > lastListItemPosition) {
+            return listView.getAdapter().getView(pos, null, listView)
+        } else {
+            val childIndex = pos - firstListItemPosition
+            return listView.getChildAt(childIndex)
+        }
+    }
+
     fun getSessionId() {
         val url = "http://traffic.ottawa.ca/map"
         val sessionRequest = object : StringRequest(url, Response.Listener { response ->
-            for (i in 0 until cameras.size) {
+            for (i in 0 until imageAdapter.count) {
                 val cameraRunnable = CameraRunnable(i)
                 cameraRunnable.run()
                 timers.add(cameraRunnable)
@@ -96,7 +113,8 @@ class CameraActivity : AppCompatActivity() {
         })
 
         cameras = intent.getParcelableArrayListExtra<Camera>("cameras")
-        image_listView.adapter = ImageAdapter(this, cameras)
+        imageAdapter = ImageAdapter(this, cameras)
+        image_listView.adapter = imageAdapter
 
         getSessionId()
         //GetSessionIdTask().execute()
@@ -110,8 +128,8 @@ class CameraActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    fun back(v: View){
-        onBackPressed()
+    fun back(v: View) {
+        finish()
     }
 
 

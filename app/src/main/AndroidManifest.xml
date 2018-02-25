@@ -14,17 +14,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.MainActivity"
-            android:screenOrientation="portrait">
+            android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.CameraActivity"
-            android:screenOrientation="portrait" />
+        <activity android:name=".activities.CameraActivity"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -39,11 +36,7 @@
 
         <activity
             android:name=".activities.MapsActivity"
-            android:label="@string/map"
-            android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.textfield.json.ottawastreetcameras.activities.OldMainActivity" />
+            android:label="@string/map">
         </activity>
         <activity android:name=".activities.OldMainActivity"></activity>
     </application>

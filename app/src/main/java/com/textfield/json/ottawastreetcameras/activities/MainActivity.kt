@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
             myAdapter = CameraAdapter(this, cameras)
             listView.adapter = myAdapter
 
-            main_toolbar.setOnClickListener { listView.smoothScrollToPosition(0) }
+            main_toolbar.setOnClickListener { listView.setSelection(0) }
             setSupportActionBar(main_toolbar)
 
             setupSectionIndex()
@@ -207,6 +207,7 @@ class MainActivity : AppCompatActivity() {
                     myAdapter.sort(SortByDistance(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)))
                     sortDistance?.isVisible = false
                     sortName?.isVisible = true
+                    indexHolder.visibility = View.INVISIBLE
                 }
                 return
             }

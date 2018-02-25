@@ -59,6 +59,6 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback {
     }
 
     fun back(v: View) {
-        onBackPressed()
+        finish()
     }
 }
