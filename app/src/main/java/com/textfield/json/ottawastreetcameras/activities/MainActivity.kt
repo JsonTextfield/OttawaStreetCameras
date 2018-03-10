@@ -40,14 +40,14 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var myAdapter: CameraAdapter
 
-    private val maxCameras = 3
+    private val maxCameras = 4
 
     private var sortName: MenuItem? = null
     private var sortDistance: MenuItem? = null
 
-    fun downloadJson() {
+    private fun downloadJson() {
 
-        val url = "http://traffic.ottawa.ca/map/camera_list"
+        val url = "https://traffic.ottawa.ca/map/camera_list"
         val queue = Volley.newRequestQueue(this)
         val jsObjRequest = JsonArrayRequest(url, Response.Listener { response ->
             (0 until response.length())
@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         queue.add(jsObjRequest)
     }
 
-    fun setupSectionIndex() {
+    private fun setupSectionIndex() {
         val index = HashSet<Char>()
 
         //assumes cameras are sorted
@@ -104,8 +104,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun setupListView() {
-        listView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
+    private fun setupListView() {
+        listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, i, _ ->
 
             val intent = Intent(this@MainActivity, CameraActivity::class.java)
             intent.putParcelableArrayListExtra("cameras", ArrayList(Arrays.asList(myAdapter.getItem(i)!!)))
@@ -186,11 +186,6 @@ class MainActivity : AppCompatActivity() {
                     sortName?.isVisible = true
                 }
             }
-        }
-        if (item.itemId == R.id.menuItemMap) {
-            val intent = Intent(this, MapsActivity::class.java)
-            intent.putParcelableArrayListExtra("cameras", cameras)
-            startActivity(intent)
         }
         return true
     }

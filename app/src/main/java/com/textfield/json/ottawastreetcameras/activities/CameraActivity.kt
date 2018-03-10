@@ -21,9 +21,6 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
 
-
-
-
 class CameraActivity : AppCompatActivity() {
 
     private var cameras = ArrayList<Camera>()
@@ -35,7 +32,7 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var imageAdapter: ImageAdapter
 
     fun download(index: Int) {
-        val url = "http://traffic.ottawa.ca/map/camera?id=" + imageAdapter.getItem(index).num
+        val url = "https://traffic.ottawa.ca/map/camera?id=" + imageAdapter.getItem(index).num
 
         val request = ImageRequest(url, Response.Listener<Bitmap> { response ->
             try {
@@ -62,7 +59,7 @@ class CameraActivity : AppCompatActivity() {
     }
 
     fun getSessionId() {
-        val url = "http://traffic.ottawa.ca/map"
+        val url = "https://traffic.ottawa.ca/map"
         val sessionRequest = object : StringRequest(url, Response.Listener { response ->
             for (i in 0 until imageAdapter.count) {
                 val cameraRunnable = CameraRunnable(i)
@@ -87,7 +84,6 @@ class CameraActivity : AppCompatActivity() {
         queue!!.add(sessionRequest)
     }
 
-
     private inner class CameraRunnable(index: Int) : Runnable {
         val i = index
         override fun run() {
@@ -95,7 +91,6 @@ class CameraActivity : AppCompatActivity() {
             handler.postDelayed(this, 500L)
         }
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,7 +112,6 @@ class CameraActivity : AppCompatActivity() {
         image_listView.adapter = imageAdapter
 
         getSessionId()
-        //GetSessionIdTask().execute()
     }
 
     override fun onDestroy() {
@@ -131,62 +125,4 @@ class CameraActivity : AppCompatActivity() {
     fun back(v: View) {
         finish()
     }
-
-
-    /*    private inner class GetSessionIdTask : AsyncTask<Void, Void, Boolean>() {
-
-    override fun doInBackground(vararg voids: Void): Boolean? {
-        try {
-            val oracle = URL("http://traffic.ottawa.ca/map")
-            val urlConnection = oracle.openConnection() as HttpURLConnection
-            sessionId = urlConnection.headerFields["Set-Cookie"]!![0]
-
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: NullPointerException) {
-            return false
-        }
-
-        return true
-    }
-
-    override fun onPostExecute(b: Boolean?) {
-        if (b!!) {
-
-            for (i in 0 until cameras.size) {
-                val cameraRunnable = CameraRunnable(i)
-                cameraRunnable.run()
-                timers.add(cameraRunnable)
-            }
-        }
-    }
-}*/
-    /*private inner class DownloadImageTask(internal var bmImage: ImageView, internal var camera: Camera) : AsyncTask<Void, Void, Bitmap>() {
-
-        override fun doInBackground(vararg v: Void): Bitmap? {
-
-            val url = "http://traffic.ottawa.ca/map/camera?id=" + camera.num
-            var mIcon11: Bitmap? = null
-            try {
-                val myUrl = URL(url)
-                val urlConnection = myUrl.openConnection()
-                urlConnection.setRequestProperty("Cookie", sessionId)
-
-                val `in` = urlConnection.getInputStream()
-
-                mIcon11 = BitmapFactory.decodeStream(`in`)
-            } catch (e: Exception) {
-            }
-            return mIcon11
-
-        }
-
-        override fun onPostExecute(result: Bitmap?) {
-            if (result != null) {
-                bmImage.setImageBitmap(result)
-            }
-        }
-
-    }*/
-
 }
