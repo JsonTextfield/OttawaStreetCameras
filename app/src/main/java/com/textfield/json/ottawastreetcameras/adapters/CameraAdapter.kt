@@ -60,7 +60,7 @@ class CameraAdapter(private val _context: Context, list: ArrayList<Camera>) : Ar
 
             override fun performFiltering(constraint: CharSequence): Filter.FilterResults {
                 val filteredResults = wholeCameras.filter {
-                    it.getName().toLowerCase().contains(constraint.toString().toLowerCase())
+                    it.getName().contains(constraint, true)
                 }
 
                 val results = Filter.FilterResults()

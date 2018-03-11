@@ -46,21 +46,21 @@ class CameraActivity : AppCompatActivity() {
     }
 
     //https://stackoverflow.com/questions/24811536/android-listview-get-item-view-by-position/24864536
-    fun getViewByPosition(pos: Int, listView: ListView): View {
-        val firstListItemPosition = listView.getFirstVisiblePosition()
-        val lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1
+    private fun getViewByPosition(pos: Int, listView: ListView): View {
+        val firstListItemPosition = listView.firstVisiblePosition
+        val lastListItemPosition = firstListItemPosition + listView.childCount - 1
 
-        if (pos < firstListItemPosition || pos > lastListItemPosition) {
-            return listView.getAdapter().getView(pos, null, listView)
+        return if (pos < firstListItemPosition || pos > lastListItemPosition) {
+            listView.adapter.getView(pos, null, listView)
         } else {
             val childIndex = pos - firstListItemPosition
-            return listView.getChildAt(childIndex)
+            listView.getChildAt(childIndex)
         }
     }
 
-    fun getSessionId() {
+    private fun getSessionId() {
         val url = "https://traffic.ottawa.ca/map"
-        val sessionRequest = object : StringRequest(url, Response.Listener { response ->
+        val sessionRequest = object : StringRequest(url, Response.Listener {
             for (i in 0 until imageAdapter.count) {
                 val cameraRunnable = CameraRunnable(i)
                 cameraRunnable.run()
