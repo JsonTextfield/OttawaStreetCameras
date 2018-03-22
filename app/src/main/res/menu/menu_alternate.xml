@@ -9,16 +9,17 @@
         app:showAsAction="ifRoom|collapseActionView" />
     <item
         android:id="@+id/menuItemMap"
-        android:icon="@drawable/ic_place_white_24dp"
-        android:title="@string/map"
+        android:icon="@drawable/ic_swap_horiz_white_24dp"
+        android:title="@string/switch_view"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/distance_sort"
-        android:title="Sort by distance"
+        android:title="@string/sort_by_distance"
         app:showAsAction="never" />
     <item
         android:id="@+id/sort_name"
-        android:title="Sort by name"
+        android:title="@string/sort_by_name"
         android:visible="false"
         app:showAsAction="never" />
+
 </menu>

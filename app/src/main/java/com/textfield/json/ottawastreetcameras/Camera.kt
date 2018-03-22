@@ -11,10 +11,8 @@ import java.util.*
  * Created by Jason on 25/04/2016.
  */
 class Camera : Parcelable{
-    var name: String = ""
-        private set
-    var nameFr: String = ""
-        private set
+    private var name: String = ""
+    private var nameFr: String = ""
     var owner: String = ""
         private set
     var lat: Double = 0.0
@@ -71,6 +69,10 @@ class Camera : Parcelable{
         if (owner == "MTO") {
             num += 2000
         }
+    }
+
+    fun getName() : String{
+        return if (Locale.getDefault().displayLanguage.contains("fr")) nameFr else name
     }
 
     override fun describeContents(): Int {

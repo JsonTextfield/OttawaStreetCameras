@@ -1,5 +1,5 @@
-package com.textfield.json.ottawastreetcameras.activities
-
+package com.textfield.json.ottawastreetcameras.activities.old
+/**
 import android.Manifest
 import android.content.Context
 import android.content.Intent
@@ -41,7 +41,7 @@ import java.nio.charset.Charset
 import java.util.*
 import kotlin.collections.ArrayList
 
-class MainActivity : AppCompatActivity() {
+class OldMainActivity : AppCompatActivity() {
 
     private var cameras = ArrayList<Camera>()
     private val selectedCameras = ArrayList<Camera>()
@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
         }, Response.ErrorListener {
-            val builder = AlertDialog.Builder(this@MainActivity)
+            val builder = AlertDialog.Builder(this@OldMainActivity)
 
             builder.setTitle(resources.getString(R.string.no_network_title)).setMessage(resources.getString(R.string.no_network_content))
                     .setPositiveButton("OK") { _, _ -> finish() }
@@ -117,7 +117,7 @@ class MainActivity : AppCompatActivity() {
             val cams = ArrayList(Arrays.asList(myAdapter.getItem(i)!!))
             b.putParcelableArrayList("cameras", cams)
 
-            val intent = Intent(this@MainActivity, CameraActivity::class.java)
+            val intent = Intent(this@OldMainActivity, CameraActivity::class.java)
             intent.putExtras(b)
             startActivity(intent)
         }
@@ -148,7 +148,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onActionItemClicked(actionMode: android.view.ActionMode, menuItem: MenuItem): Boolean {
                 if (menuItem.itemId == R.id.open_cameras) {
-                    val intent = Intent(this@MainActivity, CameraActivity::class.java)
+                    val intent = Intent(this@OldMainActivity, CameraActivity::class.java)
                     intent.putParcelableArrayListExtra("cameras", selectedCameras)
                     startActivity(intent)
                     return true
@@ -310,4 +310,4 @@ class MainActivity : AppCompatActivity() {
 
         return true
     }
-}
+}*/
