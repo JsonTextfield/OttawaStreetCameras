@@ -5,7 +5,10 @@
     android:layout_height="match_parent"
     tools:context="com.textfield.json.ottawastreetcameras.activities.AlternateMainActivity">
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2bd873e2d474d7edbd5e24f8465919c7cc941aa0
     <ViewSwitcher
         android:id="@+id/view_switcher"
         android:layout_width="match_parent"
@@ -19,7 +22,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="5dp"
+<<<<<<< HEAD
             tools:context="com.textfield.json.ottawastreetcameras.activities.old.OldMainActivity">
+=======
+            tools:context="com.textfield.json.ottawastreetcameras.activities.OldMainActivity">
+>>>>>>> 2bd873e2d474d7edbd5e24f8465919c7cc941aa0
 
             <ListView
                 android:id="@+id/listView"
@@ -44,7 +51,11 @@
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+<<<<<<< HEAD
             tools:context="com.textfield.json.ottawastreetcameras.activities.old.MapsActivity" />
+=======
+            tools:context="com.textfield.json.ottawastreetcameras.activities.MapsActivity" />
+>>>>>>> 2bd873e2d474d7edbd5e24f8465919c7cc941aa0
 
     </ViewSwitcher>
 
@@ -54,10 +65,13 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
+<<<<<<< HEAD
 
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"/>
+=======
+>>>>>>> 2bd873e2d474d7edbd5e24f8465919c7cc941aa0
 </RelativeLayout>
