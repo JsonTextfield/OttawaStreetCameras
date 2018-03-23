@@ -133,7 +133,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, ActionMod
                 if (TextUtils.isEmpty(newText)) {
                     myAdapter.filter.filter("")
                     listView.clearTextFilter()
-                    if (sortName!!.isVisible) {
+                    if (sortDistance!!.isVisible) {
                         indexHolder.visibility = View.VISIBLE
                     }
                 } else {
@@ -192,14 +192,13 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, ActionMod
                 index.add(c)
                 val t = TextView(this)
                 val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f)
-                layoutParams.gravity = Gravity.CENTER_HORIZONTAL
 
                 t.layoutParams = layoutParams
                 t.text = c.toString()
                 t.textSize = 10f
                 t.setTextColor(ContextCompat.getColor(this, R.color.colorAccent))
-                t.gravity = Gravity.CENTER_HORIZONTAL
-                t.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent))
+                t.gravity = Gravity.CENTER
+                t.background = ContextCompat.getDrawable(this, R.drawable.section_index)
                 t.setOnClickListener { listView.setSelection(i) }
 
                 indexHolder.addView(t)
@@ -279,9 +278,8 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, ActionMod
                         actionMode!!.finish()
                     }
                 } else {
-                    selectCamera(camera)
                     val intent = Intent(this, CameraActivity::class.java)
-                    intent.putParcelableArrayListExtra("cameras", selectedCameras)
+                    intent.putParcelableArrayListExtra("cameras", ArrayList(Arrays.asList(camera)))
                     startActivity(intent)
                 }
             }
