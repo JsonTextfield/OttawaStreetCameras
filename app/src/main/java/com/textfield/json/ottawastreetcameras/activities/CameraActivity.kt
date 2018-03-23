@@ -35,6 +35,7 @@ class CameraActivity : AppCompatActivity() {
         val url = "https://traffic.ottawa.ca/map/camera?id=" + imageAdapter.getItem(index).num
 
         val request = ImageRequest(url, Response.Listener<Bitmap> { response ->
+            camera_progress_bar.visibility = View.INVISIBLE
             try {
                 val bmImage = getViewByPosition(index, image_listView).findViewById(R.id.source) as ImageView
                 bmImage.setImageBitmap(response)

@@ -241,8 +241,4 @@ class OldMainActivity : AppCompatActivity() {
 
         return true
     }
-<<<<<<< HEAD:app/src/main/java/com/textfield/json/ottawastreetcameras/activities/old/OldMainActivity.kt
 }*/
-=======
-}
->>>>>>> 2bd873e2d474d7edbd5e24f8465919c7cc941aa0:app/src/main/java/com/textfield/json/ottawastreetcameras/activities/MainActivity.kt

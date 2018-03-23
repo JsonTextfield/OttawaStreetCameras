@@ -46,6 +46,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, ActionMod
 
     private var sortName: MenuItem? = null
     private var sortDistance: MenuItem? = null
+    private var listShowing: MenuItem? = null
 
     private lateinit var locationManager: LocationManager
 
@@ -67,6 +68,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, ActionMod
             R.id.menuItemMap -> {
                 selectedCameras.clear()
                 viewSwitcher.showNext()
+                listShowing!!.isVisible = (viewSwitcher.getChildAt(0).visibility == View.VISIBLE)
             }
             R.id.sort_name -> {
                 myAdapter.sort(SortByName())
@@ -84,6 +86,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, ActionMod
     private fun sortByDistance(location: Location) {
         myAdapter.sort(SortByDistance(location))
     }
+
 
     private fun requestPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -111,10 +114,11 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, ActionMod
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_alternate, menu)
+        menuInflater.inflate(R.menu.menu_main, menu)
 
         sortName = menu.findItem(R.id.sort_name)
         sortDistance = menu.findItem(R.id.distance_sort)
+        listShowing = menu.findItem(R.id.list_showing)
 
         val searchView = menu.findItem(R.id.user_searchView).actionView as SearchView
         searchView.queryHint = String.format(resources.getString(R.string.search_hint), cameras.size)
@@ -206,6 +210,14 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, ActionMod
         }
     }
 
+    fun selectCamera(camera: Camera) {
+        if (cameras.contains(camera)) {
+            selectedCameras.remove(camera)
+        } else if (selectedCameras.size < maxCameras) {
+            selectedCameras.add(camera)
+        }
+    }
+
     private fun setupListView() {
         listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, i, _ ->
 
@@ -213,7 +225,6 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, ActionMod
             intent.putParcelableArrayListExtra("cameras", ArrayList(Arrays.asList(myAdapter.getItem(i)!!)))
             startActivity(intent)
         }
-        //listView.itemsCanFocus = true
 
         listView.setMultiChoiceModeListener(object : AbsListView.MultiChoiceModeListener {
             override fun onItemCheckedStateChanged(actionMode: android.view.ActionMode, i: Int, l: Long, b: Boolean) {
@@ -258,7 +269,6 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, ActionMod
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
-        requestPermissions()
     }
 
     private fun loadMarkers() {
@@ -271,7 +281,6 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, ActionMod
                 selectedCameras.add(marker.tag as Camera)
                 selectMarker(marker, true)
             }
-
             map!!.setOnInfoWindowClickListener { marker ->
                 val camera = marker.tag as Camera
                 if (actionMode != null) {
@@ -303,6 +312,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, ActionMod
                 builder.include(m.position)
             }
 
+            map!!.setLatLngBoundsForCameraTarget(builder.build())
             map!!.setOnMapLoadedCallback {
                 map!!.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50))
             }

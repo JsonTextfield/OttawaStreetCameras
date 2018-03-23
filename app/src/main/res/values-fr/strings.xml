@@ -8,8 +8,5 @@
     <string name="no_network_title">Pas de connexion réseau</string>
     <string name="no_network_content">Veuillez vous connecter à un réseau et réessayer</string>
     <string name="sort_by_name">Triez-les par nom</string>
-<<<<<<< HEAD
     <string name="switch_view">Change la vue</string>
-=======
->>>>>>> 2bd873e2d474d7edbd5e24f8465919c7cc941aa0
 </resources>

@@ -8,4 +8,4 @@
     android:paddingEnd="25dp"
     android:paddingRight="25dp"
     android:text="Large Text"
-    android:textSize="17sp" />
+    android:textAppearance="?android:textAppearanceListItem" />

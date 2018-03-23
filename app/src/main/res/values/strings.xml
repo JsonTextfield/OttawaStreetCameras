@@ -8,9 +8,6 @@
     <string name="show">Show</string>
     <string name="sort_by_distance">Sort by distance</string>
     <string name="sort_by_name">Sort by name</string>
-<<<<<<< HEAD
     <string name="switch_view">Switch view</string>
-=======
->>>>>>> 2bd873e2d474d7edbd5e24f8465919c7cc941aa0
 
 </resources>
