@@ -12,17 +12,13 @@
         android:icon="@drawable/ic_swap_horiz_white_24dp"
         android:title="@string/switch_view"
         app:showAsAction="ifRoom" />
-
-    <group android:id="@+id/list_showing">
-        <item
-            android:id="@+id/distance_sort"
-            android:title="@string/sort_by_distance"
-            app:showAsAction="never" />
-        <item
-            android:id="@+id/sort_name"
-            android:title="@string/sort_by_name"
-            android:visible="false"
-            app:showAsAction="never" />
-    </group>
-
+    <item
+        android:id="@+id/distance_sort"
+        android:title="@string/sort_by_distance"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/sort_name"
+        android:title="@string/sort_by_name"
+        android:visible="false"
+        app:showAsAction="never" />
 </menu>
