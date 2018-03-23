@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -32,22 +33,23 @@ import kotlinx.android.synthetic.main.activity_alternate_main.*
 import org.json.JSONObject
 import java.util.*
 
-class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, ActionMode.Callback {
+class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListView.MultiChoiceModeListener {
+
     private val cameras = ArrayList<Camera>()
     private val selectedCameras = ArrayList<Camera>()
     private val markers = ArrayList<Marker>()
+
     private val maxCameras = 3
 
-    private var map: GoogleMap? = null
-
     private lateinit var viewSwitcher: ViewSwitcher
-    private var actionMode: android.view.ActionMode? = null
     private lateinit var myAdapter: CameraAdapter
+    private lateinit var locationManager: LocationManager
+
+    private var map: GoogleMap? = null
+    private var actionMode: android.view.ActionMode? = null
 
     private var sortName: MenuItem? = null
     private var sortDistance: MenuItem? = null
-
-    private lateinit var locationManager: LocationManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,56 +62,6 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, ActionMod
         mapFragment.getMapAsync(this)
 
         downloadJson()
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menuItemMap -> {
-                selectedCameras.clear()
-                viewSwitcher.showNext()
-            }
-            R.id.sort_name -> {
-                myAdapter.sort(SortByName())
-
-                indexHolder.visibility = View.VISIBLE
-                sortDistance?.isVisible = true
-                sortName?.isVisible = false
-            }
-            R.id.distance_sort -> {
-                requestPermissions()
-            }
-        }
-        return true
-    }
-
-    private fun sortByDistance(location: Location) {
-        myAdapter.sort(SortByDistance(location))
-        indexHolder.visibility = View.INVISIBLE
-        sortDistance?.isVisible = false
-        sortName?.isVisible = true
-    }
-
-
-    private fun requestPermissions() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 0)
-            // Permission is not granted
-        } else {
-            sortByDistance(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER))
-            map?.isMyLocationEnabled = true
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        when (requestCode) {
-            0 -> {
-                // If request is cancelled, the result arrays are empty.
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    requestPermissions()
-                }
-            }
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -131,7 +83,6 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, ActionMod
                     marker.isVisible = (marker.tag as Camera).getName().contains(newText, true)
                 }
                 if (TextUtils.isEmpty(newText)) {
-                    myAdapter.filter.filter("")
                     listView.clearTextFilter()
                     if (sortDistance!!.isVisible) {
                         indexHolder.visibility = View.VISIBLE
@@ -143,6 +94,26 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, ActionMod
                 return true
             }
         })
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menuItemMap -> {
+                selectedCameras.clear()
+                viewSwitcher.showNext()
+            }
+            R.id.sort_name -> {
+                myAdapter.sort(SortByName())
+
+                indexHolder.visibility = View.VISIBLE
+                sortDistance?.isVisible = true
+                sortName?.isVisible = false
+            }
+            R.id.distance_sort -> {
+                requestPermissions()
+            }
+        }
         return true
     }
 
@@ -198,22 +169,15 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, ActionMod
                 t.textSize = 10f
                 t.setTextColor(ContextCompat.getColor(this, R.color.colorAccent))
                 t.gravity = Gravity.CENTER
-                t.background = ContextCompat.getDrawable(this, R.drawable.section_index)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    t.background = ContextCompat.getDrawable(this, R.drawable.section_index)
+                }
                 t.setOnClickListener { listView.setSelection(i) }
 
                 indexHolder.addView(t)
             }
 
         }
-    }
-
-    private fun selectCamera(camera: Camera): Boolean {
-        if (selectedCameras.contains(camera)) {
-            selectedCameras.remove(camera)
-        } else if (selectedCameras.size < maxCameras) {
-            selectedCameras.add(camera)
-        }
-        return selectedCameras.contains(camera)
     }
 
     private fun setupListView() {
@@ -223,38 +187,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, ActionMod
             intent.putParcelableArrayListExtra("cameras", ArrayList(Arrays.asList(myAdapter.getItem(i)!!)))
             startActivity(intent)
         }
-
-        listView.setMultiChoiceModeListener(object : AbsListView.MultiChoiceModeListener {
-            override fun onItemCheckedStateChanged(actionMode: android.view.ActionMode, i: Int, l: Long, b: Boolean) {
-                if (!selectCamera(myAdapter.getItem(i)!!) && b) {
-                    listView.setItemChecked(i, false)
-                }
-            }
-
-            override fun onCreateActionMode(actionMode: android.view.ActionMode, menu: Menu): Boolean {
-                selectedCameras.clear()
-                actionMode.menuInflater.inflate(R.menu.contextual_menu, menu)
-                return true
-            }
-
-            override fun onPrepareActionMode(actionMode: android.view.ActionMode, menu: Menu): Boolean {
-                return false
-            }
-
-            override fun onActionItemClicked(actionMode: android.view.ActionMode, menuItem: MenuItem): Boolean {
-                if (menuItem.itemId == R.id.open_cameras) {
-                    val intent = Intent(this@AlternateMainActivity, CameraActivity::class.java)
-                    intent.putParcelableArrayListExtra("cameras", selectedCameras)
-                    startActivity(intent)
-                    return true
-                }
-                return false
-            }
-
-            override fun onDestroyActionMode(actionMode: android.view.ActionMode) {
-                selectedCameras.clear()
-            }
-        })
+        listView.setMultiChoiceModeListener(this)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -300,6 +233,43 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, ActionMod
         }
     }
 
+    private fun requestPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            //Ask for permission
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 0)
+        } else {
+            sortByDistance(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER))
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            0 -> {
+                // If request is cancelled, the result arrays are empty.
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    requestPermissions()
+                }
+            }
+        }
+    }
+
+    private fun sortByDistance(location: Location) {
+        myAdapter.sort(SortByDistance(location))
+        indexHolder.visibility = View.INVISIBLE
+        sortDistance?.isVisible = false
+        sortName?.isVisible = true
+    }
+
+    private fun selectCamera(camera: Camera): Boolean {
+        if (selectedCameras.contains(camera)) {
+            selectedCameras.remove(camera)
+        } else if (selectedCameras.size < maxCameras) {
+            selectedCameras.add(camera)
+        }
+        return selectedCameras.contains(camera)
+    }
+
     private fun selectMarker(marker: Marker, boolean: Boolean) {
         if (boolean) {
             marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
@@ -334,5 +304,11 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, ActionMod
                 .forEach { selectMarker(it, false) }
         selectedCameras.clear()
         actionMode = null
+    }
+
+    override fun onItemCheckedStateChanged(actionMode: android.view.ActionMode, i: Int, l: Long, b: Boolean) {
+        if (!selectCamera(myAdapter.getItem(i)!!) && b) {
+            listView.setItemChecked(i, false)
+        }
     }
 }
