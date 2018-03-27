@@ -35,21 +35,21 @@ import java.util.*
 
 class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListView.MultiChoiceModeListener {
 
-    private val cameras = ArrayList<Camera>()
-    private val selectedCameras = ArrayList<Camera>()
-    private val markers = ArrayList<Marker>()
+    val cameras = ArrayList<Camera>()
+    val selectedCameras = ArrayList<Camera>()
+    val markers = ArrayList<Marker>()
 
-    private val maxCameras = 3
+    val maxCameras = 3
 
-    private lateinit var viewSwitcher: ViewSwitcher
-    private lateinit var myAdapter: CameraAdapter
-    private lateinit var locationManager: LocationManager
+    lateinit var viewSwitcher: ViewSwitcher
+    lateinit var myAdapter: CameraAdapter
+    lateinit var locationManager: LocationManager
 
-    private var map: GoogleMap? = null
-    private var actionMode: android.view.ActionMode? = null
+    var map: GoogleMap? = null
+    var actionMode: android.view.ActionMode? = null
 
-    private var sortName: MenuItem? = null
-    private var sortDistance: MenuItem? = null
+    var sortName: MenuItem? = null
+    var sortDistance: MenuItem? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -261,7 +261,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
         sortName?.isVisible = true
     }
 
-    private fun selectCamera(camera: Camera): Boolean {
+    fun selectCamera(camera: Camera): Boolean {
         if (selectedCameras.contains(camera)) {
             selectedCameras.remove(camera)
         } else if (selectedCameras.size < maxCameras) {
