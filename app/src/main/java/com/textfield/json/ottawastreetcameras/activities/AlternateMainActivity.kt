@@ -38,7 +38,9 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
     private val cameras = ArrayList<Camera>()
     private val selectedCameras = ArrayList<Camera>()
     private val markers = ArrayList<Marker>()
-
+    private val requestForList = 0
+    private val requestForMap = 1
+    private val permissionArray = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
     private val maxCameras = 4
 
     private lateinit var viewSwitcher: ViewSwitcher
@@ -111,7 +113,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                 sortName?.isVisible = false
             }
             R.id.distance_sort -> {
-                requestPermissions()
+                requestPermissions(requestForList)
             }
         }
         return true
@@ -192,6 +194,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
+        requestPermissions(requestForMap)
     }
 
     private fun loadMarkers() {
@@ -233,13 +236,19 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
         }
     }
 
-    private fun requestPermissions() {
+    private fun requestPermissions(requestCode: Int) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            //Ask for permission
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 0)
+            ActivityCompat.requestPermissions(this, permissionArray, requestCode)
         } else {
-            sortByDistance(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER))
+            when (requestCode) {
+                0 ->
+                    sortByDistance(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER))
+                1 ->
+                    map!!.isMyLocationEnabled = true
+            }
         }
     }
 
@@ -248,7 +257,12 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             0 -> {
                 // If request is cancelled, the result arrays are empty.
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    requestPermissions()
+                    requestPermissions(requestForList)
+                }
+            }
+            1 -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    requestPermissions(requestForMap)
                 }
             }
         }
