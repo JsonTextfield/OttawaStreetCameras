@@ -23,19 +23,19 @@
                 android:id="@+id/listView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/indexHolder"
-                android:layout_toStartOf="@+id/indexHolder"
+                android:layout_toLeftOf="@+id/sectionIndex"
+                android:layout_toStartOf="@+id/sectionIndex"
                 android:choiceMode="multipleChoiceModal"
                 android:divider="@null"
                 android:scrollbars="none" />
 
-            <LinearLayout
-                android:id="@+id/indexHolder"
+            <com.textfield.json.ottawastreetcameras.SectionIndex
+                android:id="@+id/sectionIndex"
                 android:layout_width="20dp"
+                android:layout_centerVertical="true"
                 android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:orientation="vertical" />
+                android:layout_alignParentRight="true" />
 
         </RelativeLayout>
 

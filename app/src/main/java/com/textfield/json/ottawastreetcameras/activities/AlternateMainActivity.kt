@@ -6,16 +6,19 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
-import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
-import android.text.TextUtils
-import android.view.*
-import android.widget.*
+import android.view.ActionMode
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.widget.AbsListView
+import android.widget.AdapterView
+import android.widget.ViewSwitcher
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
@@ -24,16 +27,13 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import com.textfield.json.ottawastreetcameras.Camera
-import com.textfield.json.ottawastreetcameras.R
-import com.textfield.json.ottawastreetcameras.SortByDistance
-import com.textfield.json.ottawastreetcameras.SortByName
+import com.textfield.json.ottawastreetcameras.*
 import com.textfield.json.ottawastreetcameras.adapters.CameraAdapter
 import kotlinx.android.synthetic.main.activity_alternate_main.*
 import org.json.JSONObject
 import java.util.*
 
-class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListView.MultiChoiceModeListener {
+class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListView.MultiChoiceModeListener, SectionIndex.OnTouchingLetterChangedListener {
 
     private val cameras = ArrayList<Camera>()
     private val selectedCameras = ArrayList<Camera>()
@@ -53,13 +53,15 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
     private var sortName: MenuItem? = null
     private var sortDistance: MenuItem? = null
 
+    private val index = HashMap<Char, Int>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alternate_main)
 
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         viewSwitcher = findViewById<ViewSwitcher>(R.id.view_switcher)
-
+        sectionIndex.setOnTouchingLetterChangedListener(this)
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
@@ -84,14 +86,11 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                 for (marker in markers) {
                     marker.isVisible = (marker.tag as Camera).getName().contains(newText, true)
                 }
-                if (TextUtils.isEmpty(newText)) {
-                    listView.clearTextFilter()
-                    if (sortDistance!!.isVisible) {
-                        indexHolder.visibility = View.VISIBLE
-                    }
-                } else {
-                    myAdapter.filter.filter(newText)
-                    indexHolder.visibility = View.INVISIBLE
+                myAdapter.filter.filter(newText)
+                if(newText.isEmpty() && sortDistance!!.isVisible){
+                    sectionIndex.visibility = View.VISIBLE
+                }else{
+                    sectionIndex.visibility = View.INVISIBLE
                 }
                 return true
             }
@@ -108,7 +107,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             R.id.sort_name -> {
                 myAdapter.sort(SortByName())
 
-                indexHolder.visibility = View.VISIBLE
+                sectionIndex.visibility = View.VISIBLE
                 sortDistance?.isVisible = true
                 sortName?.isVisible = false
             }
@@ -141,45 +140,32 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             progress_bar.visibility = View.INVISIBLE
 
         }, Response.ErrorListener {
-            val builder = AlertDialog.Builder(this)
-
-            builder.setTitle(resources.getString(R.string.no_network_title))
-                    .setMessage(resources.getString(R.string.no_network_content))
-                    .setPositiveButton("OK") { _, _ -> finish() }
-            val dialog = builder.create()
-            dialog.show()
+            showErrorDialogue(this)
         })
         queue.add(jsObjRequest)
     }
 
     private fun setupSectionIndex() {
-        val index = HashSet<Char>()
 
         //assumes cameras are sorted
-        for (i in 0 until cameras.size) {
+        val indexTitles = LinkedHashSet<String>()
+        for (i in cameras.indices) {
 
             //get the first character
             val c = cameras[i].getName().replace(Regex("\\W"), "")[0]
 
-            if (!index.contains(c)) {
-                index.add(c)
-                val t = TextView(this)
-                val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f)
-
-                t.layoutParams = layoutParams
-                t.text = c.toString()
-                t.textSize = 10f
-                t.setTextColor(ContextCompat.getColor(this, R.color.colorAccent))
-                t.gravity = Gravity.CENTER
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    t.background = ContextCompat.getDrawable(this, R.drawable.section_index)
-                }
-                t.setOnClickListener { listView.setSelection(i) }
-
-                indexHolder.addView(t)
+            if (!index.containsKey(c)) {
+                indexTitles.add(c.toString())
+                index.put(c, i)
             }
 
         }
+        sectionIndex.addLetters(indexTitles)
+    }
+
+    override fun onTouchingLetterChanged(s: String) {
+        val position = index[s[0]]
+        listView.setSelection(position!!)
     }
 
     private fun setupListView() {
@@ -268,9 +254,10 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
         }
     }
 
+
     private fun sortByDistance(location: Location) {
         myAdapter.sort(SortByDistance(location))
-        indexHolder.visibility = View.INVISIBLE
+        sectionIndex.visibility = View.INVISIBLE
         sortDistance?.isVisible = false
         sortName?.isVisible = true
     }
@@ -325,4 +312,15 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             listView.setItemChecked(i, false)
         }
     }
+}
+
+fun AppCompatActivity.showErrorDialogue(context: Context) {
+    val builder = AlertDialog.Builder(context)
+
+    builder.setTitle(resources.getString(R.string.no_network_title))
+            .setMessage(resources.getString(R.string.no_network_content))
+            .setPositiveButton("OK") { _, _ -> finish() }
+            .setOnDismissListener { finish() }
+    val dialog = builder.create()
+    dialog.show()
 }

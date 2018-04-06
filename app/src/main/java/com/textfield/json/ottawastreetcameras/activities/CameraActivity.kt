@@ -32,18 +32,20 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var imageAdapter: ImageAdapter
 
     fun download(index: Int) {
+        val bmImage = getViewByPosition(index, image_listView).findViewById(R.id.source) as ImageView
+
         val url = "https://traffic.ottawa.ca/map/camera?id=" + imageAdapter.getItem(index).num
 
         val request = ImageRequest(url, Response.Listener<Bitmap> { response ->
             camera_progress_bar.visibility = View.INVISIBLE
             try {
-                val bmImage = getViewByPosition(index, image_listView).findViewById(R.id.source) as ImageView
+                bmImage.setImageResource(android.R.color.transparent)
                 bmImage.setImageBitmap(response)
             } catch (e: NullPointerException) {
             }
         }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.RGB_565, Response.ErrorListener { })
         request.tag = tag
-        request.retryPolicy = DefaultRetryPolicy(900, 0, 0f)
+        request.retryPolicy = DefaultRetryPolicy(600, 0, 0f)
         request.setShouldCache(false)
         queue!!.add(request)
     }
@@ -70,13 +72,7 @@ class CameraActivity : AppCompatActivity() {
                 cameraRunnable.run()
             }
         }, Response.ErrorListener {
-            val builder = AlertDialog.Builder(this@CameraActivity)
-
-            builder.setTitle(resources.getString(R.string.no_network_title))
-                    .setMessage(resources.getString(R.string.no_network_content))
-                    .setPositiveButton("OK") { _, _ -> finish() }
-            val dialog = builder.create()
-            dialog.show()
+            showErrorDialogue(this)
         }) {
             override fun parseNetworkResponse(response: NetworkResponse): Response<String> {
                 sessionId = response.headers["Set-Cookie"]!!
