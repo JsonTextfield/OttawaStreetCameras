@@ -29,13 +29,14 @@
                 android:divider="@null"
                 android:scrollbars="none" />
 
-            <com.textfield.json.ottawastreetcameras.SectionIndex
+            <com.textfield.json.ottawastreetcameras.MyLinearLayout
+                android:orientation="vertical"
                 android:id="@+id/sectionIndex"
                 android:layout_width="20dp"
-                android:layout_centerVertical="true"
                 android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true" />
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true" />
 
         </RelativeLayout>
 

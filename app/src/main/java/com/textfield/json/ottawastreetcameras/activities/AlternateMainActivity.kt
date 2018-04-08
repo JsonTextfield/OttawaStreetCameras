@@ -4,21 +4,18 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Location
 import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
-import android.view.ActionMode
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.widget.AbsListView
-import android.widget.AdapterView
-import android.widget.ViewSwitcher
+import android.view.*
+import android.widget.*
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
@@ -33,7 +30,7 @@ import kotlinx.android.synthetic.main.activity_alternate_main.*
 import org.json.JSONObject
 import java.util.*
 
-class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListView.MultiChoiceModeListener, SectionIndex.OnTouchingLetterChangedListener {
+class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListView.MultiChoiceModeListener, MyLinearLayout.OnTouchingLetterChangedListener {
 
     private val cameras = ArrayList<Camera>()
     private val selectedCameras = ArrayList<Camera>()
@@ -155,17 +152,25 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             val c = cameras[i].getName().replace(Regex("\\W"), "")[0]
 
             if (!index.containsKey(c)) {
+                val t = TextView(this)
+                val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f)
+
+                t.layoutParams = layoutParams
+                t.text = c.toString()
+                t.textSize = 10f
+                t.setTextColor(Color.WHITE)
+                t.gravity = Gravity.CENTER
+                sectionIndex.addView(t)
                 indexTitles.add(c.toString())
                 index.put(c, i)
+
             }
 
         }
-        sectionIndex.addLetters(indexTitles)
     }
 
-    override fun onTouchingLetterChanged(s: String) {
-        val position = index[s[0]]
-        listView.setSelection(position!!)
+    override fun onTouchingLetterChanged(c: Char) {
+        listView.setSelection(index[c]!!)
     }
 
     private fun setupListView() {

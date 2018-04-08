@@ -2,15 +2,14 @@ package com.textfield.json.ottawastreetcameras
 
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Typeface
+import android.graphics.*
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
+import android.widget.LinearLayout
+
 
 //https://github.com/dongjunkun/IndexStickHeaderListView/blob/master/app/src/main/java/com/yyy/djk/stickfilterindexlistview/SideBar.java
 class SectionIndex : View {
@@ -20,7 +19,6 @@ class SectionIndex : View {
     val letters = ArrayList<String>()
 
     private var choose = -1
-
     private val paint = Paint()
 
     constructor(context: Context) : super(context)
@@ -33,15 +31,12 @@ class SectionIndex : View {
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         if (!letters.isEmpty()) {
-            val height = height
             val width = width
-            val singleHeight = height / (letters.size)
+            val singleHeight = (height / letters.size)
 
-            println(singleHeight)
-            println(letters.size)
             for (i in letters.indices) {
                 paint.color = Color.WHITE
-                paint.typeface = Typeface.DEFAULT
+                //paint.typeface = Typeface.DEFAULT
                 paint.isAntiAlias = true
                 paint.textSize = spToPx(10).toFloat()
                 if (i == choose) {
@@ -49,8 +44,8 @@ class SectionIndex : View {
                     paint.isFakeBoldText = true
                 }
                 val xPos = width / 2 - paint.measureText(letters[i]) / 2
-                val yPos = (1f * (i+1) * singleHeight)
-                canvas.drawText(letters[i], xPos, yPos, paint)
+                val yPos = (1.0f * (i) * singleHeight)
+                canvas.drawText(letters[i], xPos, yPos+singleHeight/2, paint)
                 paint.reset()
             }
         }
@@ -61,8 +56,6 @@ class SectionIndex : View {
         letters.addAll(arrayList)
         invalidate()
     }
-
-
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
 
         val action = event.action
@@ -77,7 +70,7 @@ class SectionIndex : View {
 
             MotionEvent.ACTION_UP -> {
 
-                //setBackgroundColor(Color.TRANSPARENT)
+                setBackgroundColor(Color.TRANSPARENT)
 
                 choose = -1
                 invalidate()
@@ -85,7 +78,7 @@ class SectionIndex : View {
             }
 
             else -> {
-                //setBackgroundResource(R.drawable.sidebar_bg)
+                setBackgroundResource(R.drawable.sidebar_bg)
 
                 if (oldChoose != c) {
                     if (c in letters.indices) {
