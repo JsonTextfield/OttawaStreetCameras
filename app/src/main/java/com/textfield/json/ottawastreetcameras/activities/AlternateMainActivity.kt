@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
 import android.location.LocationManager
-import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -84,9 +83,9 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                     marker.isVisible = (marker.tag as Camera).getName().contains(newText, true)
                 }
                 myAdapter.filter.filter(newText)
-                if(newText.isEmpty() && sortDistance!!.isVisible){
+                if (newText.isEmpty() && sortDistance!!.isVisible) {
                     sectionIndex.visibility = View.VISIBLE
-                }else{
+                } else {
                     sectionIndex.visibility = View.INVISIBLE
                 }
                 return true
@@ -145,7 +144,6 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
     private fun setupSectionIndex() {
 
         //assumes cameras are sorted
-        val indexTitles = LinkedHashSet<String>()
         for (i in cameras.indices) {
 
             //get the first character
@@ -161,8 +159,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                 t.setTextColor(Color.WHITE)
                 t.gravity = Gravity.CENTER
                 sectionIndex.addView(t)
-                indexTitles.add(c.toString())
-                index.put(c, i)
+                index[c] = i
 
             }
 
@@ -273,6 +270,9 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
         } else if (selectedCameras.size < maxCameras) {
             selectedCameras.add(camera)
         }
+        if (!selectedCameras.isEmpty()){
+            actionMode?.title = String.format (resources.getQuantityString(R.plurals.selectedCameras, selectedCameras.size), selectedCameras.size)
+        }
         return selectedCameras.contains(camera)
     }
 
@@ -296,7 +296,8 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
 
     override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
         selectedCameras.clear()
-        mode!!.menuInflater.inflate(R.menu.contextual_menu, menu)
+        actionMode = mode
+        actionMode!!.menuInflater.inflate(R.menu.contextual_menu, menu)
         return true
     }
 

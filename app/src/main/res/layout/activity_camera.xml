@@ -9,8 +9,9 @@
         android:id="@+id/image_listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="none"
-        android:divider="@null" />
+        android:background="@color/backgroundColor"
+        android:divider="@null"
+        android:scrollbars="none" />
 
     <ImageButton
         android:layout_width="wrap_content"

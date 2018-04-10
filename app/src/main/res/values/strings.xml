@@ -10,4 +10,8 @@
     <string name="sort_by_name">Sort by name</string>
     <string name="switch_view">Switch view</string>
 
+    <plurals name="selectedCameras">
+        <item quantity="one">%d camera selected</item>
+        <item quantity="other">%d cameras selected</item>
+    </plurals>
 </resources>
