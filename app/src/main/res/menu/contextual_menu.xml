@@ -6,4 +6,10 @@
         android:icon="@drawable/ic_camera_alt_white_24dp"
         android:title="@string/show"
         app:showAsAction="ifRoom" />
+    <item android:id="@+id/remove_favourite"
+        android:title="Remove from favourites"/>
+    <item
+        android:id="@+id/add_favourites"
+        android:title="Add to favourites"
+        app:showAsAction="ifRoom" />
 </menu>

@@ -28,6 +28,7 @@ import com.textfield.json.ottawastreetcameras.adapters.CameraAdapter
 import kotlinx.android.synthetic.main.activity_alternate_main.*
 import org.json.JSONObject
 import java.util.*
+import kotlin.collections.ArrayList
 
 class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListView.MultiChoiceModeListener, MyLinearLayout.OnTouchingLetterChangedListener {
 
@@ -109,6 +110,11 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             }
             R.id.distance_sort -> {
                 requestPermissions(requestForList)
+            }
+            R.id.random_camera -> {
+                val intent = Intent(this@AlternateMainActivity, CameraActivity::class.java)
+                intent.putExtra("cameras", ArrayList(Arrays.asList(cameras[Random().nextInt(cameras.size)])))
+                startActivity(intent)
             }
         }
         return true
@@ -270,8 +276,8 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
         } else if (selectedCameras.size < maxCameras) {
             selectedCameras.add(camera)
         }
-        if (!selectedCameras.isEmpty()){
-            actionMode?.title = String.format (resources.getQuantityString(R.plurals.selectedCameras, selectedCameras.size), selectedCameras.size)
+        if (!selectedCameras.isEmpty()) {
+            actionMode?.title = String.format(resources.getQuantityString(R.plurals.selectedCameras, selectedCameras.size), selectedCameras.size)
         }
         return selectedCameras.contains(camera)
     }

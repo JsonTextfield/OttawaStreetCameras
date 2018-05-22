@@ -21,4 +21,12 @@
         android:title="@string/sort_by_name"
         android:visible="false"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/favourites"
+        android:title="Favourites"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/random_camera"
+        android:title="Random Camera"
+        app:showAsAction="ifRoom" />
 </menu>
