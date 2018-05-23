@@ -10,20 +10,20 @@ import java.util.*
 /**
  * Created by Jason on 25/04/2016.
  */
-class Camera : Parcelable{
-    private var name: String = ""
-    private var nameFr: String = ""
-    var owner: String = ""
+class Camera : Parcelable {
+    private var name = ""
+    private var nameFr = ""
+    var owner = ""
         private set
-    var lat: Double = 0.0
+    var lat = 0.0
         private set
-    var lng: Double = 0.0
+    var lng = 0.0
         private set
-    var num: Int = 0
+    var num = 0
         private set
-    var id: Int = 0
+    var id = 0
         private set
-    var isFavourite: Boolean = false
+    var isFavourite = false
 
     constructor(vals: JSONObject) {
         try {
@@ -72,8 +72,12 @@ class Camera : Parcelable{
         }
     }
 
-    fun getName() : String{
+    fun getName(): String {
         return if (Locale.getDefault().displayLanguage.contains("fr")) nameFr else name
+    }
+
+    override fun toString(): String {
+        return getName()
     }
 
     override fun describeContents(): Int {

@@ -18,6 +18,7 @@ import android.view.*
 import android.widget.*
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
+import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -35,6 +36,7 @@ import kotlin.collections.HashSet
 
 class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListView.MultiChoiceModeListener, MyLinearLayout.OnTouchingLetterChangedListener {
 
+    private val neighbourhoods = ArrayList<Neighbourhood>()
     private val cameras = ArrayList<Camera>()
     private val selectedCameras = ArrayList<Camera>()
     private val markers = ArrayList<Marker>()
@@ -137,6 +139,26 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
         searchview.setQuery("*favourites*", false)
     }
 
+    private fun getNeighbourhoods() {
+        val url = "http://data.ottawa.ca/dataset/302ade92-51ec-4b26-a715-627802aa62a8/resource/f1163794-de80-4682-bda5-b13034984087/download/onsboundariesgen1.shp.json"
+        val queue = Volley.newRequestQueue(this)
+        val jsObjRequest = JsonObjectRequest(url, null, Response.Listener { response ->
+            val array = response.getJSONArray("features")
+            (0 until array.length())
+                    .map { array.get(it) as JSONObject }
+                    .forEach { neighbourhoods.add(Neighbourhood(it)) }
+
+            for (camera in cameras) {
+                for (neighbourhood in neighbourhoods) {
+                    isCameraInNeighbourhood(camera, neighbourhood)
+                }
+            }
+        }, Response.ErrorListener {
+            println(it)
+        })
+        queue.add(jsObjRequest)
+    }
+
     private fun downloadJson() {
 
         val url = "https://traffic.ottawa.ca/map/camera_list"
@@ -161,6 +183,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             setupListView()
             loadMarkers()
             progress_bar.visibility = View.INVISIBLE
+            getNeighbourhoods()
 
         }, Response.ErrorListener {
             showErrorDialogue(this)
@@ -349,8 +372,8 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
         } else {
             favs.removeAll(selectedCameras.map { it.num.toString() })
         }
-        for(camera in cameras){
-            if(selectedCameras.contains(camera)){
+        for (camera in cameras) {
+            if (selectedCameras.contains(camera)) {
                 camera.isFavourite = willAdd
             }
         }
@@ -390,6 +413,46 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
         if (!selectCamera(myAdapter.getItem(i)!!) && b) {
             listView.setItemChecked(i, false)
         }
+    }
+
+    //http://en.wikipedia.org/wiki/Point_in_polygon
+    //https://stackoverflow.com/questions/26014312/identify-if-point-is-in-the-polygon
+    private fun isCameraInNeighbourhood(camera: Camera, neighbourhood: Neighbourhood): Boolean {
+        var intersectCount = 0
+        val cameraLocation = LatLng(camera.lat, camera.lng)
+        val vertices = neighbourhood.boundaries
+        for (j in 0 until vertices.size - 1) {
+            if (rayCastIntersect(cameraLocation, vertices[j], vertices[j + 1])) {
+                intersectCount++
+            }
+        }
+        if ((intersectCount % 2) == 1) {
+            println("" + camera + " is in " + neighbourhood)
+        }
+
+        return ((intersectCount % 2) == 1) // odd = inside, even = outside
+    }
+
+    private fun rayCastIntersect(location: LatLng, vertA: LatLng, vertB: LatLng): Boolean {
+
+        val aY = vertA.latitude
+        val bY = vertB.latitude
+        val aX = vertA.longitude
+        val bX = vertB.longitude
+        val pY = location.latitude
+        val pX = location.longitude
+
+        if ((aY > pY && bY > pY) || (aY < pY && bY < pY)
+                || (aX < pX && bX < pX)) {
+            return false // a and b can't both be above or below pt.y, and a or
+            // b must be east of pt.x
+        }
+
+        val m = (aY - bY) / (aX - bX) // Rise over run
+        val bee = (-aX) * m + aY // y = mx + b
+        val x = (pY - bee) / m // algebra is neat!
+
+        return x > pX
     }
 }
 
