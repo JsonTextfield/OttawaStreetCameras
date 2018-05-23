@@ -23,10 +23,10 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/favourites"
-        android:title="Favourites"
+        android:title="@string/favourites"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/random_camera"
-        android:title="Random Camera"
+        android:title="@string/random_camera"
         app:showAsAction="ifRoom" />
 </menu>

@@ -3,6 +3,7 @@ package com.textfield.json.ottawastreetcameras.activities
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
@@ -29,6 +30,8 @@ import kotlinx.android.synthetic.main.activity_alternate_main.*
 import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import kotlin.collections.HashSet
 
 class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListView.MultiChoiceModeListener, MyLinearLayout.OnTouchingLetterChangedListener {
 
@@ -49,13 +52,19 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
 
     private var sortName: MenuItem? = null
     private var sortDistance: MenuItem? = null
+    private var showCameras: MenuItem? = null
+    private var addFav: MenuItem? = null
+    private var removeFav: MenuItem? = null
+
+    private lateinit var searchview: SearchView
 
     private val index = HashMap<Char, Int>()
-
+    private lateinit var sharedPrefs: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alternate_main)
 
+        sharedPrefs = this.getSharedPreferences(applicationContext.packageName, Context.MODE_PRIVATE)
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         viewSwitcher = findViewById<ViewSwitcher>(R.id.view_switcher)
         sectionIndex.setOnTouchingLetterChangedListener(this)
@@ -70,7 +79,6 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
 
         sortName = menu.findItem(R.id.sort_name)
         sortDistance = menu.findItem(R.id.distance_sort)
-
         val searchView = menu.findItem(R.id.user_searchView).actionView as SearchView
         searchView.queryHint = String.format(resources.getString(R.string.search_hint), cameras.size)
 
@@ -92,6 +100,8 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                 return true
             }
         })
+
+        searchview = searchView
         return true
     }
 
@@ -116,8 +126,15 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                 intent.putExtra("cameras", ArrayList(Arrays.asList(cameras[Random().nextInt(cameras.size)])))
                 startActivity(intent)
             }
+            R.id.favourites -> {
+                showFavourites()
+            }
         }
         return true
+    }
+
+    private fun showFavourites() {
+        searchview.setQuery("*favourites*", false)
     }
 
     private fun downloadJson() {
@@ -128,6 +145,10 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             (0 until response.length())
                     .map { response.get(it) as JSONObject }
                     .forEach { cameras.add(Camera(it)) }
+
+            for (camera in cameras) {
+                camera.isFavourite = (sharedPrefs.getStringSet("favourites", HashSet<String>()).contains(camera.num.toString()))
+            }
 
             Collections.sort(cameras, SortByName())
             myAdapter = CameraAdapter(this, cameras)
@@ -273,9 +294,18 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
     private fun selectCamera(camera: Camera): Boolean {
         if (selectedCameras.contains(camera)) {
             selectedCameras.remove(camera)
-        } else if (selectedCameras.size < maxCameras) {
+        } else {
             selectedCameras.add(camera)
         }
+        addFav!!.isVisible = true
+        removeFav!!.isVisible = false
+        if (selectedCameras.filter({ it.isFavourite }).size == selectedCameras.size) {
+            addFav!!.isVisible = false
+            removeFav!!.isVisible = true
+        }
+
+        showCameras!!.isVisible = selectedCameras.size < maxCameras
+
         if (!selectedCameras.isEmpty()) {
             actionMode?.title = String.format(resources.getQuantityString(R.plurals.selectedCameras, selectedCameras.size), selectedCameras.size)
         }
@@ -291,19 +321,56 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
     }
 
     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-        if (item!!.itemId == R.id.open_cameras) {
-            val intent = Intent(this, CameraActivity::class.java)
-            intent.putParcelableArrayListExtra("cameras", selectedCameras)
-            startActivity(intent)
-            return true
+        when (item!!.itemId) {
+            R.id.open_cameras -> {
+                val intent = Intent(this, CameraActivity::class.java)
+                intent.putParcelableArrayListExtra("cameras", selectedCameras)
+                startActivity(intent)
+                return true
+            }
+            R.id.add_favourites -> {
+                addRemoveFavourites(true)
+                return true
+            }
+            R.id.remove_favourite -> {
+                addRemoveFavourites(false)
+                return true
+            }
         }
+
         return false
+    }
+
+    private fun addRemoveFavourites(willAdd: Boolean) {
+        val favs = sharedPrefs.getStringSet("favourites", HashSet<String>())
+        val editor = sharedPrefs.edit()
+        if (willAdd) {
+            favs.addAll(selectedCameras.map { it.num.toString() })
+        } else {
+            favs.removeAll(selectedCameras.map { it.num.toString() })
+        }
+        for(camera in cameras){
+            if(selectedCameras.contains(camera)){
+                camera.isFavourite = willAdd
+            }
+        }
+        editor.putStringSet("favourites", favs)
+        editor.apply()
+
+        addFav!!.isVisible = !willAdd
+        removeFav!!.isVisible = willAdd
+
+        myAdapter.notifyDataSetChanged()
     }
 
     override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
         selectedCameras.clear()
         actionMode = mode
         actionMode!!.menuInflater.inflate(R.menu.contextual_menu, menu)
+        showCameras = menu!!.findItem(R.id.open_cameras)
+        removeFav = menu.findItem(R.id.remove_favourite)
+        removeFav!!.isVisible = false
+        addFav = menu.findItem(R.id.add_favourites)
         return true
     }
 

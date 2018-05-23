@@ -6,10 +6,14 @@
         android:icon="@drawable/ic_camera_alt_white_24dp"
         android:title="@string/show"
         app:showAsAction="ifRoom" />
-    <item android:id="@+id/remove_favourite"
-        android:title="Remove from favourites"/>
+    <item
+        android:id="@+id/remove_favourite"
+        android:icon="@drawable/outline_star_border_white_24"
+        android:title="@string/remove_from_favourites"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/add_favourites"
-        android:title="Add to favourites"
+        android:icon="@drawable/outline_star_white_24"
+        android:title="@string/add_to_favourites"
         app:showAsAction="ifRoom" />
 </menu>

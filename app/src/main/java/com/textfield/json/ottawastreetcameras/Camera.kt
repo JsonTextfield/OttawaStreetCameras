@@ -23,6 +23,7 @@ class Camera : Parcelable{
         private set
     var id: Int = 0
         private set
+    var isFavourite: Boolean = false
 
     constructor(vals: JSONObject) {
         try {

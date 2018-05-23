@@ -9,6 +9,10 @@
     <string name="sort_by_distance">Sort by distance</string>
     <string name="sort_by_name">Sort by name</string>
     <string name="switch_view">Switch view</string>
+    <string name="random_camera">Random camera</string>
+    <string name="favourites">Favourites</string>
+    <string name="remove_from_favourites">Unfavourite</string>
+    <string name="add_to_favourites">Favourite</string>
 
     <plurals name="selectedCameras">
         <item quantity="one">%d camera selected</item>
