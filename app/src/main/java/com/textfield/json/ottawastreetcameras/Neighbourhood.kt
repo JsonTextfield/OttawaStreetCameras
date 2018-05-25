@@ -13,6 +13,7 @@ class Neighbourhood {
         private set
 
     var boundaries = ArrayList<LatLng>()
+    var cameras = ArrayList<Camera>()
 
     constructor(vals: JSONObject) {
         try {

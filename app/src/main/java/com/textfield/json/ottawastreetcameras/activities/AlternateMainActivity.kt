@@ -3,7 +3,6 @@ package com.textfield.json.ottawastreetcameras.activities
 import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
@@ -14,6 +13,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
+import android.util.Log
 import android.view.*
 import android.widget.*
 import com.android.volley.Response
@@ -58,15 +58,13 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
     private var addFav: MenuItem? = null
     private var removeFav: MenuItem? = null
 
-    private lateinit var searchview: SearchView
+    private lateinit var searchview: MenuItem
 
     private val index = HashMap<Char, Int>()
-    private lateinit var sharedPrefs: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alternate_main)
 
-        sharedPrefs = this.getSharedPreferences(applicationContext.packageName, Context.MODE_PRIVATE)
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         viewSwitcher = findViewById<ViewSwitcher>(R.id.view_switcher)
         sectionIndex.setOnTouchingLetterChangedListener(this)
@@ -82,16 +80,24 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
         sortName = menu.findItem(R.id.sort_name)
         sortDistance = menu.findItem(R.id.distance_sort)
         val searchView = menu.findItem(R.id.user_searchView).actionView as SearchView
+
         searchView.queryHint = String.format(resources.getString(R.string.search_hint), cameras.size)
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                return false
+                return true
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
                 for (marker in markers) {
-                    marker.isVisible = (marker.tag as Camera).getName().contains(newText, true)
+                    if (newText.startsWith("f: ")) {
+                        marker.isVisible = (marker.tag as Camera).isFavourite &&
+                                (marker.tag as Camera).getName().contains(newText.removePrefix("f: "), true)
+                    } else if (newText.startsWith("n: ")) {
+                        marker.isVisible = (marker.tag as Camera).neighbourhood.contains(newText.removePrefix("n: "))
+                    } else {
+                        marker.isVisible = (marker.tag as Camera).getName().contains(newText, true)
+                    }
                 }
                 myAdapter.filter.filter(newText)
                 if (newText.isEmpty() && sortDistance!!.isVisible) {
@@ -103,7 +109,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             }
         })
 
-        searchview = searchView
+        searchview = menu.findItem(R.id.user_searchView)
         return true
     }
 
@@ -129,14 +135,11 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                 startActivity(intent)
             }
             R.id.favourites -> {
-                showFavourites()
+                searchview.expandActionView()
+                (searchview.actionView as SearchView).setQuery("f: ", false)
             }
         }
         return true
-    }
-
-    private fun showFavourites() {
-        searchview.setQuery("*favourites*", false)
     }
 
     private fun getNeighbourhoods() {
@@ -150,9 +153,12 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
 
             for (camera in cameras) {
                 for (neighbourhood in neighbourhoods) {
-                    isCameraInNeighbourhood(camera, neighbourhood)
+                    if (isCameraInNeighbourhood(camera, neighbourhood)) {
+                        camera.neighbourhood = neighbourhood.getName()
+                    }
                 }
             }
+            myAdapter.notifyDataSetChanged()
         }, Response.ErrorListener {
             println(it)
         })
@@ -160,30 +166,33 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
     }
 
     private fun downloadJson() {
-
+        val sharedPrefs = getSharedPreferences(applicationContext.packageName, Context.MODE_PRIVATE)
         val url = "https://traffic.ottawa.ca/map/camera_list"
         val queue = Volley.newRequestQueue(this)
         val jsObjRequest = JsonArrayRequest(url, Response.Listener { response ->
             (0 until response.length())
                     .map { response.get(it) as JSONObject }
-                    .forEach { cameras.add(Camera(it)) }
-
-            for (camera in cameras) {
-                camera.isFavourite = (sharedPrefs.getStringSet("favourites", HashSet<String>()).contains(camera.num.toString()))
-            }
+                    .forEach {
+                        val camera = Camera(it)
+                        camera.isFavourite = sharedPrefs.getStringSet("favourites", HashSet<String>()).contains(camera.num.toString())
+                        cameras.add(camera)
+                    }
 
             Collections.sort(cameras, SortByName())
             myAdapter = CameraAdapter(this, cameras)
             listView.adapter = myAdapter
 
-            toolbar.setOnClickListener { listView.setSelection(0) }
+            toolbar.setOnClickListener {
+                listView.setSelection(0)
+                (searchview.actionView as SearchView).setQuery("", false)
+            }
             setSupportActionBar(toolbar)
 
             setupSectionIndex()
             setupListView()
             loadMarkers()
             progress_bar.visibility = View.INVISIBLE
-            getNeighbourhoods()
+            //getNeighbourhoods()
 
         }, Response.ErrorListener {
             showErrorDialogue(this)
@@ -320,11 +329,13 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
         } else {
             selectedCameras.add(camera)
         }
-        addFav!!.isVisible = true
-        removeFav!!.isVisible = false
+
         if (selectedCameras.filter({ it.isFavourite }).size == selectedCameras.size) {
             addFav!!.isVisible = false
             removeFav!!.isVisible = true
+        }else{
+            addFav!!.isVisible = true
+            removeFav!!.isVisible = false
         }
 
         showCameras!!.isVisible = selectedCameras.size < maxCameras
@@ -352,39 +363,32 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                 return true
             }
             R.id.add_favourites -> {
-                addRemoveFavourites(true)
+                addRemoveFavs(true)
                 return true
             }
             R.id.remove_favourite -> {
-                addRemoveFavourites(false)
+                addRemoveFavs(false)
                 return true
             }
         }
-
         return false
     }
 
-    private fun addRemoveFavourites(willAdd: Boolean) {
-        val favs = sharedPrefs.getStringSet("favourites", HashSet<String>())
-        val editor = sharedPrefs.edit()
-        if (willAdd) {
-            favs.addAll(selectedCameras.map { it.num.toString() })
-        } else {
-            favs.removeAll(selectedCameras.map { it.num.toString() })
-        }
+    private fun addRemoveFavs(willAdd: Boolean) {
+        addRemoveFavourites(selectedCameras, willAdd)
+
         for (camera in cameras) {
             if (selectedCameras.contains(camera)) {
                 camera.isFavourite = willAdd
             }
         }
-        editor.putStringSet("favourites", favs)
-        editor.apply()
 
         addFav!!.isVisible = !willAdd
         removeFav!!.isVisible = willAdd
 
         myAdapter.notifyDataSetChanged()
     }
+
 
     override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
         selectedCameras.clear()
@@ -427,7 +431,8 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             }
         }
         if ((intersectCount % 2) == 1) {
-            println("" + camera + " is in " + neighbourhood)
+            println("$camera is in $neighbourhood")
+
         }
 
         return ((intersectCount % 2) == 1) // odd = inside, even = outside
@@ -465,4 +470,20 @@ fun AppCompatActivity.showErrorDialogue(context: Context) {
             .setOnDismissListener { finish() }
     val dialog = builder.create()
     dialog.show()
+}
+
+fun AppCompatActivity.addRemoveFavourites(selectedCameras: ArrayList<Camera>, willAdd: Boolean) {
+    Log.w("FAVS", "$selectedCameras")
+    val sharedPrefs = getSharedPreferences(applicationContext.packageName, Context.MODE_PRIVATE)
+    val favs = sharedPrefs.getStringSet("favourites", HashSet<String>())
+    val editor = sharedPrefs.edit()
+
+    if (willAdd) {
+        favs.addAll(selectedCameras.map { it.num.toString() })
+    } else {
+        favs.removeAll(selectedCameras.map { it.num.toString() })
+    }
+    editor.putStringSet("favourites", favs)
+    editor.apply()
+
 }

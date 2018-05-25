@@ -25,6 +25,7 @@ class Camera : Parcelable {
         private set
     var isFavourite = false
 
+    var neighbourhood = ""
     constructor(vals: JSONObject) {
         try {
             name = vals.getString("description")

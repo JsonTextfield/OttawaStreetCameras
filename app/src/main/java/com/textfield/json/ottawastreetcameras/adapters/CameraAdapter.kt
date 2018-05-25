@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.widget.*
 import com.textfield.json.ottawastreetcameras.Camera
 import com.textfield.json.ottawastreetcameras.R
+import com.textfield.json.ottawastreetcameras.activities.AlternateMainActivity
+import com.textfield.json.ottawastreetcameras.activities.addRemoveFavourites
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -55,26 +57,13 @@ class CameraAdapter(private val _context: Context, list: ArrayList<Camera>) : Ar
         } else {
             ContextCompat.getDrawable(context, R.drawable.outline_star_border_white_18)
         })
-        viewHolder.star!!.setOnClickListener(object : View.OnClickListener{
-            override fun onClick(v: View?) {
-                camera.isFavourite = !camera.isFavourite
-                val sharedPreferences = context.getSharedPreferences(context.applicationContext.packageName, Context.MODE_PRIVATE)
-                val edit = sharedPreferences.edit()
-                val favs = sharedPreferences.getStringSet("favourites", HashSet<String>())
-                if(camera.isFavourite){
-                    favs.add(camera.num.toString())
-                }else{
-                    favs.remove(camera.num.toString())
-                }
-                edit.putStringSet("favourites", favs)
-                edit.apply()
-                viewHolder.star!!.setImageDrawable(if (camera.isFavourite) {
-                    ContextCompat.getDrawable(context, R.drawable.outline_star_white_18)
-                } else {
-                    ContextCompat.getDrawable(context, R.drawable.outline_star_border_white_18)
-                })
-            }
-        })
+        viewHolder.star!!.setOnClickListener {
+            (context as AlternateMainActivity).addRemoveFavourites(ArrayList<Camera>(Arrays.asList(camera)), !camera.isFavourite)
+            camera.isFavourite = !camera.isFavourite
+            viewHolder.star!!.setImageDrawable(ContextCompat.getDrawable(context,
+                    if (camera.isFavourite) R.drawable.outline_star_white_18 else R.drawable.outline_star_border_white_18))
+        }
+
         // Return the completed view to render on screen
         return convertView
     }
@@ -89,9 +78,13 @@ class CameraAdapter(private val _context: Context, list: ArrayList<Camera>) : Ar
             override fun performFiltering(constraint: CharSequence): Filter.FilterResults {
                 val sharedPrefs = context.getSharedPreferences(context.applicationContext.packageName, Context.MODE_PRIVATE)
 
-                val filteredResults = if (constraint == "*favourites*") {
+                val filteredResults = if (constraint.startsWith("f: ")) {
                     wholeCameras.filter {
-                        sharedPrefs.getStringSet("favourites", HashSet<String>()).contains(it.num.toString())
+                        it.getName().contains(constraint.removePrefix("f: "), true) && sharedPrefs.getStringSet("favourites", HashSet<String>()).contains(it.num.toString())
+                    }
+                } else if (constraint.startsWith("n: ")) {
+                    wholeCameras.filter {
+                        it.neighbourhood.contains(constraint.removePrefix("n: "), true)
                     }
                 } else {
                     wholeCameras.filter {
