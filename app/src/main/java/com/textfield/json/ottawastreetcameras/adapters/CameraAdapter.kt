@@ -5,14 +5,16 @@ import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ArrayAdapter
+import android.widget.Filter
+import android.widget.ImageView
+import android.widget.TextView
 import com.textfield.json.ottawastreetcameras.Camera
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.activities.AlternateMainActivity
 import com.textfield.json.ottawastreetcameras.activities.addRemoveFavourites
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 
 /**
@@ -62,6 +64,8 @@ class CameraAdapter(private val _context: Context, list: ArrayList<Camera>) : Ar
             camera.isFavourite = !camera.isFavourite
             viewHolder.star!!.setImageDrawable(ContextCompat.getDrawable(context,
                     if (camera.isFavourite) R.drawable.outline_star_white_18 else R.drawable.outline_star_border_white_18))
+            (context as AlternateMainActivity).refreshMarkers()
+            notifyDataSetChanged()
         }
 
         // Return the completed view to render on screen
@@ -78,16 +82,15 @@ class CameraAdapter(private val _context: Context, list: ArrayList<Camera>) : Ar
             override fun performFiltering(constraint: CharSequence): Filter.FilterResults {
                 val sharedPrefs = context.getSharedPreferences(context.applicationContext.packageName, Context.MODE_PRIVATE)
 
-                val filteredResults = if (constraint.startsWith("f: ")) {
-                    wholeCameras.filter {
-                        it.getName().contains(constraint.removePrefix("f: "), true) && sharedPrefs.getStringSet("favourites", HashSet<String>()).contains(it.num.toString())
+                val filteredResults = when {
+                    constraint.startsWith("f: ") -> wholeCameras.filter {
+                        it.getName().contains(constraint.removePrefix("f: "), true) &&
+                                sharedPrefs.getStringSet("favourites", HashSet<String>()).contains(it.num.toString())
                     }
-                } else if (constraint.startsWith("n: ")) {
-                    wholeCameras.filter {
+                    constraint.startsWith("n: ") -> wholeCameras.filter {
                         it.neighbourhood.contains(constraint.removePrefix("n: "), true)
                     }
-                } else {
-                    wholeCameras.filter {
+                    else -> wholeCameras.filter {
                         it.getName().contains(constraint, true)
                     }
                 }
