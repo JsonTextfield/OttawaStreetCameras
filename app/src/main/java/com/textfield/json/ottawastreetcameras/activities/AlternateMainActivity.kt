@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
+import android.util.Log
 import android.view.*
 import android.widget.AbsListView
 import android.widget.AdapterView
@@ -160,17 +161,18 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                     .forEach { neighbourhoods.add(Neighbourhood(it)) }
 
             AsyncTask.execute({
-                fun run() {
-                    for (camera in cameras) {
-                        for (neighbourhood in neighbourhoods) {
-                            if (isCameraInNeighbourhood(camera, neighbourhood)) {
-                                camera.neighbourhood = neighbourhood.getName()
-                                break
-                            }
+                Log.w("ASYNC", "Executing")
+                for (camera in cameras) {
+                    for (neighbourhood in neighbourhoods) {
+                        if (isCameraInNeighbourhood(camera, neighbourhood)) {
+                            camera.neighbourhood = neighbourhood.getName()
+                            break
                         }
                     }
-                    refreshListView()
                 }
+                runOnUiThread({
+                    refreshListView()
+                })
             })
         }, Response.ErrorListener {
             println(it)
