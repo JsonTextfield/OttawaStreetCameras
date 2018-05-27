@@ -12,18 +12,17 @@ import android.widget.TextView
 import com.textfield.json.ottawastreetcameras.Camera
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.activities.AlternateMainActivity
-import com.textfield.json.ottawastreetcameras.activities.addRemoveFavourites
+import com.textfield.json.ottawastreetcameras.activities.modifyPrefs
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashSet
 
 /**
  * Created by Jason on 24/10/2017.
  */
 
 class CameraAdapter(private val _context: Context, list: ArrayList<Camera>) : ArrayAdapter<Camera>(_context, 0, list) {
-    private var cameras = list
-    private val wholeCameras = list
+    private var cameras = list.filter({ it.isVisible })
+    private var wholeCameras = list
 
     private class ViewHolder {
         internal var title: TextView? = null
@@ -60,11 +59,8 @@ class CameraAdapter(private val _context: Context, list: ArrayList<Camera>) : Ar
             ContextCompat.getDrawable(context, R.drawable.outline_star_border_white_18)
         })
         viewHolder.star!!.setOnClickListener {
-            (context as AlternateMainActivity).addRemoveFavourites(ArrayList<Camera>(Arrays.asList(camera)), !camera.isFavourite)
+            (context as AlternateMainActivity).modifyPrefs("favourites", Arrays.asList(camera), !camera.isFavourite)
             camera.isFavourite = !camera.isFavourite
-            viewHolder.star!!.setImageDrawable(ContextCompat.getDrawable(context,
-                    if (camera.isFavourite) R.drawable.outline_star_white_18 else R.drawable.outline_star_border_white_18))
-            (context as AlternateMainActivity).refreshMarkers()
             notifyDataSetChanged()
         }
 
@@ -80,18 +76,18 @@ class CameraAdapter(private val _context: Context, list: ArrayList<Camera>) : Ar
             }
 
             override fun performFiltering(constraint: CharSequence): Filter.FilterResults {
-                val sharedPrefs = context.getSharedPreferences(context.applicationContext.packageName, Context.MODE_PRIVATE)
-
                 val filteredResults = when {
                     constraint.startsWith("f: ") -> wholeCameras.filter {
-                        it.getName().contains(constraint.removePrefix("f: "), true) &&
-                                sharedPrefs.getStringSet("favourites", HashSet<String>()).contains(it.num.toString())
+                        it.getName().contains(constraint.removePrefix("f: "), true) && it.isFavourite
+                    }
+                    constraint.startsWith("h: ") -> wholeCameras.filter {
+                        it.getName().contains(constraint.removePrefix("h: "), true) && !it.isVisible
                     }
                     constraint.startsWith("n: ") -> wholeCameras.filter {
                         it.neighbourhood.contains(constraint.removePrefix("n: "), true)
                     }
                     else -> wholeCameras.filter {
-                        it.getName().contains(constraint, true)
+                        it.getName().contains(constraint, true) && it.isVisible
                     }
                 }
 
@@ -101,5 +97,12 @@ class CameraAdapter(private val _context: Context, list: ArrayList<Camera>) : Ar
                 return results
             }
         }
+    }
+
+    fun modify(someCameras: Collection<Camera>) {
+        for (camera in someCameras) {
+            wholeCameras[wholeCameras.indexOf(camera)] = camera
+        }
+        notifyDataSetChanged()
     }
 }

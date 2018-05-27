@@ -14,9 +14,11 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
-import android.util.Log
 import android.view.*
-import android.widget.*
+import android.widget.AbsListView
+import android.widget.AdapterView
+import android.widget.LinearLayout
+import android.widget.TextView
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
@@ -57,6 +59,8 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
     private var showCameras: MenuItem? = null
     private var addFav: MenuItem? = null
     private var removeFav: MenuItem? = null
+    private var hide: MenuItem? = null
+    private var unhide: MenuItem? = null
 
     private var searchview: MenuItem? = null
 
@@ -89,13 +93,14 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
 
             override fun onQueryTextChange(newText: String): Boolean {
                 for (marker in markers) {
-                    if (newText.startsWith("f: ")) {
-                        marker.isVisible = (marker.tag as Camera).isFavourite &&
-                                (marker.tag as Camera).getName().contains(newText.removePrefix("f: "), true)
-                    } else if (newText.startsWith("n: ")) {
-                        marker.isVisible = (marker.tag as Camera).neighbourhood.contains(newText.removePrefix("n: "))
-                    } else {
-                        marker.isVisible = (marker.tag as Camera).getName().contains(newText, true)
+                    val camera = marker.tag as Camera
+                    when {
+                        newText.startsWith("f: ") -> marker.isVisible = camera.isFavourite &&
+                                camera.getName().contains(newText.removePrefix("f: "), true)
+                        newText.startsWith("h: ") -> marker.isVisible = !camera.isVisible &&
+                                camera.getName().contains(newText.removePrefix("h: "), true)
+                        newText.startsWith("n: ") -> marker.isVisible = camera.neighbourhood.contains(newText.removePrefix("n: "), true)
+                        else -> marker.isVisible = camera.getName().contains(newText, true)
                     }
                 }
                 myAdapter.filter.filter(newText)
@@ -135,7 +140,11 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             }
             R.id.favourites -> {
                 searchview!!.expandActionView()
-                (searchview!!.actionView as SearchView).setQuery("f: ", false)
+                (searchview!!.actionView as SearchView).setQuery("f: ", true)
+            }
+            R.id.hidden -> {
+                searchview!!.expandActionView()
+                (searchview!!.actionView as SearchView).setQuery("h: ", true)
             }
         }
         return true
@@ -160,7 +169,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                             }
                         }
                     }
-                    myAdapter.notifyDataSetChanged()
+                    refreshListView()
                 }
             })
         }, Response.ErrorListener {
@@ -171,6 +180,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
 
     private fun downloadJson() {
         val sharedPrefs = getSharedPreferences(applicationContext.packageName, Context.MODE_PRIVATE)
+        val favsList = sharedPrefs.getStringSet("favourites", HashSet<String>())
         val url = "https://traffic.ottawa.ca/map/camera_list"
         val queue = Volley.newRequestQueue(this)
         val jsObjRequest = JsonArrayRequest(url, Response.Listener { response ->
@@ -178,7 +188,8 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                     .map { response.get(it) as JSONObject }
                     .forEach {
                         val camera = Camera(it)
-                        camera.isFavourite = camera.num.toString() in sharedPrefs.getStringSet("favourites", HashSet<String>())
+                        camera.isFavourite = favsList.contains(camera.num.toString())
+                        camera.isVisible = !sharedPrefs.getStringSet("hidden", HashSet<String>()).contains(camera.num.toString())
                         cameras.add(camera)
                     }
 
@@ -188,7 +199,6 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
 
             toolbar.setOnClickListener {
                 listView.setSelection(0)
-                (searchview!!.actionView as SearchView).setQuery("", false)
             }
             setSupportActionBar(toolbar)
 
@@ -282,12 +292,19 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
 
             //add a marker for every camera available
             for (camera in cameras) {
-                val m = map!!.addMarker(MarkerOptions().position(LatLng(camera.lat, camera.lng)).title(camera.getName())
-                        .icon(if (camera.isFavourite) BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)
-                        else BitmapDescriptorFactory.defaultMarker()))
+                val m = map!!.addMarker(MarkerOptions()
+                        .position(LatLng(camera.lat, camera.lng))
+                        .title(camera.getName()))
+                if (camera.isFavourite) {
+                    m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
+                } else {
+                    m.setIcon(BitmapDescriptorFactory.defaultMarker())
+                }
                 m.tag = camera
                 markers.add(m)
                 builder.include(m.position)
+
+                m.isVisible = camera.isVisible
             }
 
             map!!.setLatLngBoundsForCameraTarget(builder.build())
@@ -298,10 +315,8 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
     }
 
     private fun requestPermissions(requestCode: Int) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED
-                || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, permissionArray[0]) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this, permissionArray[1]) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, permissionArray, requestCode)
         } else {
             when (requestCode) {
@@ -352,6 +367,14 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             removeFav!!.isVisible = false
         }
 
+        if (selectedCameras.filter({ !it.isVisible }).size == selectedCameras.size) {
+            hide!!.isVisible = false
+            unhide!!.isVisible = true
+        } else {
+            hide!!.isVisible = true
+            unhide!!.isVisible = false
+        }
+
         showCameras!!.isVisible = selectedCameras.size <= maxCameras
 
         if (!selectedCameras.isEmpty()) {
@@ -384,12 +407,20 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                 addRemoveFavs(false)
                 return true
             }
+            R.id.hide -> {
+                showOrHide(true)
+                return true
+            }
+            R.id.unhide -> {
+                showOrHide(false)
+                return true
+            }
         }
         return false
     }
 
     private fun addRemoveFavs(willAdd: Boolean) {
-        addRemoveFavourites(selectedCameras, willAdd)
+        modifyPrefs("favourites", selectedCameras, willAdd)
 
         for (camera in cameras) {
             if (camera in selectedCameras) {
@@ -407,7 +438,29 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
         addFav!!.isVisible = !willAdd
         removeFav!!.isVisible = willAdd
 
-        myAdapter.notifyDataSetChanged()
+        refreshListView()
+    }
+
+    private fun showOrHide(willHide: Boolean) {
+        modifyPrefs("hidden", selectedCameras, willHide)
+
+        for (camera in cameras) {
+            if (camera in selectedCameras) {
+                camera.isVisible = !willHide
+            }
+        }
+        for (marker in markers) {
+            marker.isVisible = (marker.tag as Camera).isVisible
+        }
+
+        hide!!.isVisible = !willHide
+        unhide!!.isVisible = willHide
+
+        refreshListView()
+    }
+
+    private fun refreshListView() {
+        myAdapter.modify(selectedCameras)
     }
 
 
@@ -419,6 +472,9 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
         removeFav = menu.findItem(R.id.remove_favourite)
         removeFav!!.isVisible = false
         addFav = menu.findItem(R.id.add_favourites)
+        unhide = menu.findItem(R.id.unhide)
+        unhide!!.isVisible = false
+        hide = menu.findItem(R.id.hide)
         return true
     }
 
@@ -451,11 +507,6 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                 intersectCount++
             }
         }
-        if ((intersectCount % 2) == 1) {
-            println("$camera is in $neighbourhood")
-
-        }
-
         return ((intersectCount % 2) == 1) // odd = inside, even = outside
     }
 
@@ -468,8 +519,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
         val pY = location.latitude
         val pX = location.longitude
 
-        if ((aY > pY && bY > pY) || (aY < pY && bY < pY)
-                || (aX < pX && bX < pX)) {
+        if ((aY > pY && bY > pY) || (aY < pY && bY < pY) || (aX < pX && bX < pX)) {
             return false // a and b can't both be above or below pt.y, and a or
             // b must be east of pt.x
         }
@@ -480,8 +530,6 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
 
         return x > pX
     }
-
-
 }
 
 fun AppCompatActivity.showErrorDialogue(context: Context) {
@@ -495,18 +543,15 @@ fun AppCompatActivity.showErrorDialogue(context: Context) {
     dialog.show()
 }
 
-fun AppCompatActivity.addRemoveFavourites(selectedCameras: ArrayList<Camera>, willAdd: Boolean) {
-    Log.w("FAVS", "$selectedCameras")
+fun AppCompatActivity.modifyPrefs(pref: String, selectedCameras: Collection<Camera>, willAdd: Boolean) {
     val sharedPrefs = getSharedPreferences(applicationContext.packageName, Context.MODE_PRIVATE)
-    val favs = sharedPrefs.getStringSet("favourites", HashSet<String>())
+    val prefList = HashSet<String>(sharedPrefs.getStringSet(pref, HashSet<String>()))
     val editor = sharedPrefs.edit()
 
     if (willAdd) {
-        favs.addAll(selectedCameras.map { it.num.toString() })
+        prefList.addAll(selectedCameras.map { it.num.toString() })
     } else {
-        favs.removeAll(selectedCameras.map { it.num.toString() })
+        prefList.removeAll(selectedCameras.map { it.num.toString() })
     }
-    editor.putStringSet("favourites", favs)
-    editor.apply()
-
+    editor.putStringSet(pref, prefList).apply()
 }

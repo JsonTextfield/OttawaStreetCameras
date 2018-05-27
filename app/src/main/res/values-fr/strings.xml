@@ -13,6 +13,9 @@
     <string name="favourites">Favoris</string>
     <string name="remove_from_favourites">Supprimer des favoris</string>
     <string name="add_to_favourites">Ajouter aux favourites</string>
+    <string name="hidden_cameras">Caméras cachées</string>
+    <string name="unhide">Révéler</string>
+    <string name="hide">Cacher</string>
 
     <plurals name="selectedCameras">
         <item quantity="one">%d caméra sélectionnée</item>

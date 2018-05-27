@@ -16,4 +16,14 @@
         android:icon="@drawable/outline_star_white_24"
         android:title="@string/add_to_favourites"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/hide"
+        android:icon="@drawable/baseline_visibility_off_white_24"
+        android:title="@string/hide"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/unhide"
+        android:icon="@drawable/baseline_visibility_white_24"
+        android:title="@string/unhide"
+        app:showAsAction="ifRoom" />
 </menu>

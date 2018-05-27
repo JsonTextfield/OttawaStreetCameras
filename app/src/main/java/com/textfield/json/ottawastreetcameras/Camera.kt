@@ -24,6 +24,7 @@ class Camera : Parcelable {
     var id = 0
         private set
     var isFavourite = false
+    var isVisible = true
 
     var neighbourhood = ""
     constructor(vals: JSONObject) {
@@ -93,6 +94,10 @@ class Camera : Parcelable {
         parcel.writeDouble(lng)
         parcel.writeInt(id)
         parcel.writeInt(num)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return this.num == (other as Camera).num
     }
 
     companion object CREATOR : Parcelable.Creator<Camera> {

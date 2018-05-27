@@ -33,7 +33,6 @@ class CameraActivity : AppCompatActivity() {
 
     fun download(index: Int) {
         val bmImage = getViewByPosition(index, image_listView).findViewById(R.id.source) as ImageView
-
         val url = "https://traffic.ottawa.ca/map/camera?id=" + imageAdapter.getItem(index).num
 
         val request = ImageRequest(url, Response.Listener<Bitmap> { response ->
@@ -58,8 +57,7 @@ class CameraActivity : AppCompatActivity() {
         return if (pos < firstListItemPosition || pos > lastListItemPosition) {
             listView.adapter.getView(pos, null, listView)
         } else {
-            val childIndex = pos - firstListItemPosition
-            listView.getChildAt(childIndex)
+            listView.getChildAt(pos - firstListItemPosition)
         }
     }
 
@@ -77,7 +75,6 @@ class CameraActivity : AppCompatActivity() {
             override fun parseNetworkResponse(response: NetworkResponse): Response<String> {
                 sessionId = response.headers["Set-Cookie"]!!
                 return Response.success(sessionId, HttpHeaderParser.parseCacheHeaders(response))
-
             }
         }
         sessionRequest.tag = tag

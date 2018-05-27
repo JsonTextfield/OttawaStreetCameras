@@ -27,6 +27,12 @@
         android:title="@string/favourites"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/hidden"
+        android:icon="@drawable/baseline_visibility_off_white_24"
+        android:title="@string/hidden_cameras"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/random_camera"
         android:icon="@drawable/baseline_shuffle_white_24"
         android:title="@string/random_camera"
