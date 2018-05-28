@@ -21,15 +21,16 @@ import kotlin.collections.ArrayList
  */
 
 class CameraAdapter(private val _context: Context, list: ArrayList<Camera>) : ArrayAdapter<Camera>(_context, 0, list) {
-    private var cameras = list.filter({ it.isVisible })
-    private var wholeCameras = list
+
+    private var allCameras = list
+    private var cameras = allCameras
 
     private class ViewHolder {
         internal var title: TextView? = null
         internal var star: ImageView? = null
     }
 
-    override fun getItem(position: Int): Camera? {
+    override fun getItem(position: Int): Camera {
         return cameras[position]
     }
 
@@ -77,16 +78,16 @@ class CameraAdapter(private val _context: Context, list: ArrayList<Camera>) : Ar
 
             override fun performFiltering(constraint: CharSequence): Filter.FilterResults {
                 val filteredResults = when {
-                    constraint.startsWith("f: ") -> wholeCameras.filter {
+                    constraint.startsWith("f: ") -> allCameras.filter {
                         it.getName().contains(constraint.removePrefix("f: "), true) && it.isFavourite
                     }
-                    constraint.startsWith("h: ") -> wholeCameras.filter {
+                    constraint.startsWith("h: ") -> allCameras.filter {
                         it.getName().contains(constraint.removePrefix("h: "), true) && !it.isVisible
                     }
-                    constraint.startsWith("n: ") -> wholeCameras.filter {
+                    constraint.startsWith("n: ") -> allCameras.filter {
                         it.neighbourhood.contains(constraint.removePrefix("n: "), true)
                     }
-                    else -> wholeCameras.filter {
+                    else -> allCameras.filter {
                         it.getName().contains(constraint, true) && it.isVisible
                     }
                 }
@@ -97,12 +98,5 @@ class CameraAdapter(private val _context: Context, list: ArrayList<Camera>) : Ar
                 return results
             }
         }
-    }
-
-    fun modify(someCameras: Collection<Camera>) {
-        for (camera in someCameras) {
-            wholeCameras[wholeCameras.indexOf(camera)] = camera
-        }
-        notifyDataSetChanged()
     }
 }

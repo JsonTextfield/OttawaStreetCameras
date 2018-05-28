@@ -9,7 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 
 class MyLinearLayout : LinearLayout {
-    private var onTouchingLetterChangedListener: OnTouchingLetterChangedListener? = null
+    private var onLetterTouchListener: OnLetterTouchListener? = null
 
     private var choose = -1
 
@@ -24,7 +24,7 @@ class MyLinearLayout : LinearLayout {
         val action = event.action
         val yCoordinates = event.y
         val oldChoose = choose
-        val listener = onTouchingLetterChangedListener
+        val listener = onLetterTouchListener
         var selectedIndex = (yCoordinates / height * childCount).toInt()
         if (selectedIndex < 0) {
             selectedIndex = 0
@@ -45,7 +45,7 @@ class MyLinearLayout : LinearLayout {
                     }
                     val t = (getChildAt(selectedIndex) as TextView)
                     t.setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
-                    listener?.onTouchingLetterChanged(t.text[0])
+                    listener?.onLetterTouch(t.text[0])
                     choose = selectedIndex
                 }
             }
@@ -53,12 +53,12 @@ class MyLinearLayout : LinearLayout {
         return true
     }
 
-    fun setOnTouchingLetterChangedListener(onTouchingLetterChangedListener: OnTouchingLetterChangedListener) {
-        this.onTouchingLetterChangedListener = onTouchingLetterChangedListener
+    fun setOnTouchingLetterChangedListener(onLetterTouchListener: OnLetterTouchListener) {
+        this.onLetterTouchListener = onLetterTouchListener
     }
 
 
-    interface OnTouchingLetterChangedListener {
-        fun onTouchingLetterChanged(c: Char)
+    interface OnLetterTouchListener {
+        fun onLetterTouch(c: Char)
     }
 }
