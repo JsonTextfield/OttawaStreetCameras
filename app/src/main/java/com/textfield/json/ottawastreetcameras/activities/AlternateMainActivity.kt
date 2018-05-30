@@ -53,15 +53,14 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
     private var map: GoogleMap? = null
     private var actionMode: android.view.ActionMode? = null
 
-    private var sortName: MenuItem? = null
-    private var sortDistance: MenuItem? = null
-    private var showCameras: MenuItem? = null
-    private var addFav: MenuItem? = null
-    private var removeFav: MenuItem? = null
-    private var hide: MenuItem? = null
-    private var unhide: MenuItem? = null
-
-    private var searchview: MenuItem? = null
+    private lateinit var sortName: MenuItem
+    private lateinit var sortDistance: MenuItem
+    private lateinit var showCameras: MenuItem
+    private lateinit var addFav: MenuItem
+    private lateinit var removeFav: MenuItem
+    private lateinit var hide: MenuItem
+    private lateinit var unhide: MenuItem
+    private lateinit var searchview: MenuItem
 
     private val index = HashMap<Char, Int>()
 
@@ -81,6 +80,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
 
         sortName = menu.findItem(R.id.sort_name)
         sortDistance = menu.findItem(R.id.distance_sort)
+        searchview = menu.findItem(R.id.user_searchView)
         val searchView = menu.findItem(R.id.user_searchView).actionView as SearchView
 
         searchView.queryHint = String.format(resources.getString(R.string.search_hint), cameras.size)
@@ -108,7 +108,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                     }
                 }
                 myAdapter.filter.filter(newText)
-                if (newText.isEmpty() && sortDistance!!.isVisible) {
+                if (newText.isEmpty() && sortDistance.isVisible) {
                     sectionIndex.visibility = View.VISIBLE
                 } else {
                     sectionIndex.visibility = View.INVISIBLE
@@ -116,23 +116,20 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                 return true
             }
         })
-
-        searchview = menu.findItem(R.id.user_searchView)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menuItemMap -> {
-                selectedCameras.clear()
                 view_switcher.showNext()
             }
             R.id.sort_name -> {
                 myAdapter.sort(SortByName())
 
                 sectionIndex.visibility = View.VISIBLE
-                sortDistance?.isVisible = true
-                sortName?.isVisible = false
+                sortDistance.isVisible = true
+                sortName.isVisible = false
             }
             R.id.distance_sort -> {
                 requestPermissions(requestForList)
@@ -143,12 +140,12 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                 startActivity(intent)
             }
             R.id.favourites -> {
-                searchview!!.expandActionView()
-                (searchview!!.actionView as SearchView).setQuery("f: ", false)
+                searchview.expandActionView()
+                (searchview.actionView as SearchView).setQuery("f: ", false)
             }
             R.id.hidden -> {
-                searchview!!.expandActionView()
-                (searchview!!.actionView as SearchView).setQuery("h: ", false)
+                searchview.expandActionView()
+                (searchview.actionView as SearchView).setQuery("h: ", false)
             }
         }
         return true
@@ -166,7 +163,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             AsyncTask.execute({
                 for (camera in cameras) {
                     for (neighbourhood in neighbourhoods) {
-                        if (isCameraInNeighbourhood(camera, neighbourhood)) {
+                        if (neighbourhood.containsCamera(camera)) {
                             camera.neighbourhood = neighbourhood.getName()
                             break
                         }
@@ -179,7 +176,6 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                             println(camera)
                         }
                     }
-                    refreshListView()
                 })
             })
         }, Response.ErrorListener {
@@ -237,17 +233,8 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
 
             //get the first character
             val c = cameras[i].getName().replace(Regex("\\W"), "")[0]
-
             if (c !in index.keys) {
-                val t = TextView(this)
-                val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f)
-
-                t.layoutParams = layoutParams
-                t.text = c.toString()
-                t.textSize = 10f
-                t.setTextColor(Color.WHITE)
-                t.gravity = Gravity.CENTER
-                sectionIndex.addView(t)
+                sectionIndex.add(c.toString())
                 index[c] = i
             }
         }
@@ -275,15 +262,15 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
     }
 
     private fun loadMarkers() {
-        if (map != null) {
-            map!!.setOnInfoWindowLongClickListener { marker ->
+        map?.let { map ->
+            map.setOnInfoWindowLongClickListener { marker ->
                 if (actionMode == null) {
                     actionMode = startActionMode(this)
                     selectedCameras.clear()
                 }
                 selectMarker(marker, selectCamera(marker.tag as Camera))
             }
-            map!!.setOnInfoWindowClickListener { marker ->
+            map.setOnInfoWindowClickListener { marker ->
                 val camera = marker.tag as Camera
                 if (actionMode != null) {
                     selectMarker(marker, selectCamera(camera))
@@ -300,7 +287,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
 
             //add a marker for every camera available
             for (camera in cameras) {
-                val m = map!!.addMarker(MarkerOptions()
+                val m = map.addMarker(MarkerOptions()
                         .position(LatLng(camera.lat, camera.lng))
                         .title(camera.getName()))
                 if (camera.isFavourite) {
@@ -315,9 +302,9 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                 m.isVisible = camera.isVisible
             }
 
-            map!!.setLatLngBoundsForCameraTarget(builder.build())
-            map!!.setOnMapLoadedCallback {
-                map!!.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50))
+            map.setLatLngBoundsForCameraTarget(builder.build())
+            map.setOnMapLoadedCallback {
+                map.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50))
             }
         }
     }
@@ -413,8 +400,8 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                 showOrHide(false)
                 return true
             }
+            else -> return false
         }
-        return false
     }
 
     private fun addRemoveFavs(willAdd: Boolean) {
@@ -430,8 +417,6 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
 
         addFav!!.isVisible = !willAdd
         removeFav!!.isVisible = willAdd
-
-        refreshListView()
     }
 
     private fun showOrHide(willHide: Boolean) {
@@ -441,14 +426,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
 
         hide!!.isVisible = !willHide
         unhide!!.isVisible = willHide
-
-        refreshListView()
     }
-
-    private fun refreshListView() {
-
-    }
-
 
     override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
         selectedCameras.clear()
@@ -480,42 +458,6 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
         }
     }
 
-    //http://en.wikipedia.org/wiki/Point_in_polygon
-    //https://stackoverflow.com/questions/26014312/identify-if-point-is-in-the-polygon
-    private fun isCameraInNeighbourhood(camera: Camera, neighbourhood: Neighbourhood): Boolean {
-        var intersectCount = 0
-        val cameraLocation = LatLng(camera.lat, camera.lng)
-
-        for (vertices in neighbourhood.boundaries) {
-            for (j in 0 until vertices.size - 1) {
-                if (rayCastIntersect(cameraLocation, vertices[j], vertices[j + 1])) {
-                    intersectCount++
-                }
-            }
-        }
-        return ((intersectCount % 2) == 1) // odd = inside, even = outside
-    }
-
-    private fun rayCastIntersect(location: LatLng, vertA: LatLng, vertB: LatLng): Boolean {
-
-        val aY = vertA.latitude
-        val bY = vertB.latitude
-        val aX = vertA.longitude
-        val bX = vertB.longitude
-        val pY = location.latitude
-        val pX = location.longitude
-
-        if ((aY > pY && bY > pY) || (aY < pY && bY < pY) || (aX < pX && bX < pX)) {
-            return false // a and b can't both be above or below pt.y, and a or
-            // b must be east of pt.x
-        }
-
-        val m = (aY - bY) / (aX - bX) // Rise over run
-        val bee = (-aX) * m + aY // y = mx + b
-        val x = (pY - bee) / m // algebra is neat!
-
-        return x > pX
-    }
 }
 
 fun AppCompatActivity.showErrorDialogue(context: Context) {
