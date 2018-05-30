@@ -27,7 +27,7 @@ class Neighbourhood {
             var neighbourhoodZones = JSONArray()
 
             if (geo.getString("type") == "Polygon") {
-                neighbourhoodZones.put(geo.getJSONArray("coordinates").getJSONArray(0))
+                neighbourhoodZones.put(geo.getJSONArray("coordinates"))
             } else {
                 neighbourhoodZones = geo.getJSONArray("coordinates")
             }

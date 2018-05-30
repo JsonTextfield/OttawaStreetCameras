@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.location.LocationManager
 import android.os.AsyncTask
 import android.os.Bundle
@@ -13,11 +12,12 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
-import android.view.*
+import android.view.ActionMode
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.AbsListView
 import android.widget.AdapterView
-import android.widget.LinearLayout
-import android.widget.TextView
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
@@ -137,7 +137,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             R.id.random_camera -> {
                 val intent = Intent(this@AlternateMainActivity, CameraActivity::class.java)
                 intent.putExtra("cameras", ArrayList(Arrays.asList(cameras[Random().nextInt(cameras.size)])))
-                startActivity(intent)
+                startActivityForResult(intent, 0)
             }
             R.id.favourites -> {
                 searchview.expandActionView()
@@ -185,6 +185,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
     }
 
     private fun downloadJson() {
+        progress_bar.visibility = View.VISIBLE
         val sharedPrefs = getSharedPreferences(applicationContext.packageName, Context.MODE_PRIVATE)
         val url = "https://traffic.ottawa.ca/map/camera_list"
         val queue = Volley.newRequestQueue(this)
@@ -210,7 +211,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, i, _ ->
                 val intent = Intent(this, CameraActivity::class.java)
                 intent.putParcelableArrayListExtra("cameras", ArrayList(Arrays.asList(myAdapter.getItem(i))))
-                startActivity(intent)
+                startActivityForResult(intent, 0)
             }
 
             listView.setMultiChoiceModeListener(this)
@@ -261,6 +262,24 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        /*data?.let {
+            for (camera in cameras) {
+                for (cam in it.getParcelableArrayListExtra<Camera>("cameras")) {
+                    if (camera.num == cam.num) {
+                        camera.isFavourite = cam.isFavourite
+                        camera.isVisible = cam.isVisible
+                        break
+                    }
+                }
+            }
+
+        }
+        cameras.clear()
+        downloadJson()*/
+
+    }
+
     private fun loadMarkers() {
         map?.let { map ->
             map.setOnInfoWindowLongClickListener { marker ->
@@ -280,7 +299,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                 } else {
                     val intent = Intent(this, CameraActivity::class.java)
                     intent.putParcelableArrayListExtra("cameras", ArrayList(Arrays.asList(camera)))
-                    startActivity(intent)
+                    startActivityForResult(intent, 0)
                 }
             }
             val builder = LatLngBounds.Builder()
@@ -318,8 +337,8 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                 requestForList -> {
                     myAdapter.sort(SortByDistance(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)))
                     sectionIndex.visibility = View.INVISIBLE
-                    sortDistance?.isVisible = false
-                    sortName?.isVisible = true
+                    sortDistance.isVisible = false
+                    sortName.isVisible = true
                 }
                 requestForMap ->
                     map?.isMyLocationEnabled = true
@@ -345,22 +364,22 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
         }
 
         if (selectedCameras.filter({ it.isFavourite }).size == selectedCameras.size) {
-            addFav!!.isVisible = false
-            removeFav!!.isVisible = true
+            addFav.isVisible = false
+            removeFav.isVisible = true
         } else {
-            addFav!!.isVisible = true
-            removeFav!!.isVisible = false
+            addFav.isVisible = true
+            removeFav.isVisible = false
         }
 
         if (selectedCameras.filter({ !it.isVisible }).size == selectedCameras.size) {
-            hide!!.isVisible = false
-            unhide!!.isVisible = true
+            hide.isVisible = false
+            unhide.isVisible = true
         } else {
-            hide!!.isVisible = true
-            unhide!!.isVisible = false
+            hide.isVisible = true
+            unhide.isVisible = false
         }
 
-        showCameras!!.isVisible = selectedCameras.size <= maxCameras
+        showCameras.isVisible = selectedCameras.size <= maxCameras
 
         if (!selectedCameras.isEmpty()) {
             actionMode?.title = String.format(resources.getQuantityString(R.plurals.selectedCameras, selectedCameras.size), selectedCameras.size)
@@ -381,7 +400,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             R.id.open_cameras -> {
                 val intent = Intent(this, CameraActivity::class.java)
                 intent.putParcelableArrayListExtra("cameras", selectedCameras)
-                startActivity(intent)
+                startActivityForResult(intent, 0)
                 return true
             }
             R.id.add_favourites -> {
@@ -415,8 +434,8 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             }
         }
 
-        addFav!!.isVisible = !willAdd
-        removeFav!!.isVisible = willAdd
+        addFav.isVisible = !willAdd
+        removeFav.isVisible = willAdd
     }
 
     private fun showOrHide(willHide: Boolean) {
@@ -424,8 +443,8 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
         cameras.filter { it in selectedCameras }.forEach { it.isVisible = !willHide }
         markers.forEach { it.isVisible = (it.tag as Camera).isVisible }
 
-        hide!!.isVisible = !willHide
-        unhide!!.isVisible = willHide
+        hide.isVisible = !willHide
+        unhide.isVisible = willHide
     }
 
     override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
@@ -434,10 +453,10 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
         actionMode!!.menuInflater.inflate(R.menu.contextual_menu, menu)
         showCameras = menu!!.findItem(R.id.open_cameras)
         removeFav = menu.findItem(R.id.remove_favourite)
-        removeFav!!.isVisible = false
+        removeFav.isVisible = false
         addFav = menu.findItem(R.id.add_favourites)
         unhide = menu.findItem(R.id.unhide)
-        unhide!!.isVisible = false
+        unhide.isVisible = false
         hide = menu.findItem(R.id.hide)
         return true
     }
@@ -453,7 +472,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
     }
 
     override fun onItemCheckedStateChanged(actionMode: android.view.ActionMode, i: Int, l: Long, b: Boolean) {
-        if (!selectCamera(myAdapter.getItem(i)!!) && b) {
+        if (!selectCamera(myAdapter.getItem(i)) && b) {
             listView.setItemChecked(i, false)
         }
     }
