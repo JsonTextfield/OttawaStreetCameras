@@ -172,7 +172,13 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                         }
                     }
                 }
+
                 runOnUiThread({
+                    for (camera in cameras) {
+                        if (camera.neighbourhood == "") {
+                            println(camera)
+                        }
+                    }
                     refreshListView()
                 })
             })
@@ -479,10 +485,12 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
     private fun isCameraInNeighbourhood(camera: Camera, neighbourhood: Neighbourhood): Boolean {
         var intersectCount = 0
         val cameraLocation = LatLng(camera.lat, camera.lng)
-        val vertices = neighbourhood.boundaries
-        for (j in 0 until vertices.size - 1) {
-            if (rayCastIntersect(cameraLocation, vertices[j], vertices[j + 1])) {
-                intersectCount++
+
+        for (vertices in neighbourhood.boundaries) {
+            for (j in 0 until vertices.size - 1) {
+                if (rayCastIntersect(cameraLocation, vertices[j], vertices[j + 1])) {
+                    intersectCount++
+                }
             }
         }
         return ((intersectCount % 2) == 1) // odd = inside, even = outside

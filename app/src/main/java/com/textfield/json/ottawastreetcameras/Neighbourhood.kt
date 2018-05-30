@@ -1,6 +1,7 @@
 package com.textfield.json.ottawastreetcameras
 
 import com.google.android.gms.maps.model.LatLng
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
@@ -12,8 +13,8 @@ class Neighbourhood {
     var id = 0
         private set
 
-    var boundaries = ArrayList<LatLng>()
-    var cameras = ArrayList<Camera>()
+    var boundaries = ArrayList<ArrayList<LatLng>>()
+        private set
 
     constructor(vals: JSONObject) {
         try {
@@ -21,19 +22,29 @@ class Neighbourhood {
             name = props.getString("Name")
             nameFr = props.getString("Name_FR")
             id = props.getInt("ONS_ID")
-            val neighbourhoodPoints = vals.getJSONObject("geometry").getJSONArray("coordinates").getJSONArray(0)
-            (0 until neighbourhoodPoints.length()).map {
-                boundaries.add(LatLng(neighbourhoodPoints.getJSONArray(it).getDouble(1),
-                        neighbourhoodPoints.getJSONArray(it).getDouble(0)))
+
+            val geo = vals.getJSONObject("geometry")
+            var neighbourhoodZones = JSONArray()
+
+            if (geo.getString("type") == "Polygon") {
+                neighbourhoodZones.put(geo.getJSONArray("coordinates").getJSONArray(0))
+            } else {
+                neighbourhoodZones = geo.getJSONArray("coordinates")
+            }
+            (0 until neighbourhoodZones.length()).forEach {
+                val neighbourhoodPoints = neighbourhoodZones.getJSONArray(it).getJSONArray(0)
+                val list = (0 until neighbourhoodPoints.length()).map {
+                    LatLng(neighbourhoodPoints.getJSONArray(it).getDouble(1), neighbourhoodPoints.getJSONArray(it).getDouble(0))
+                }
+                boundaries.add(ArrayList<LatLng>(list))
             }
 
         } catch (e: JSONException) {
             nameFr = ""
             name = nameFr
             id = 0
-            boundaries = ArrayList<LatLng>()
+            boundaries = ArrayList<ArrayList<LatLng>>()
         }
-
     }
 
     fun getName(): String {

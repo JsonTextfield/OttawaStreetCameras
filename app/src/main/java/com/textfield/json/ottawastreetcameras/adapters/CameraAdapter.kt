@@ -41,7 +41,7 @@ class CameraAdapter(private val _context: Context, list: ArrayList<Camera>) : Ar
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
         var convertView = view
         val viewHolder: ViewHolder
-        val camera = getItem(position)!!
+        val camera = getItem(position)
         if (convertView == null) {
             viewHolder = ViewHolder()
             convertView = LayoutInflater.from(_context).inflate(R.layout.list_item, parent, false)
@@ -53,13 +53,13 @@ class CameraAdapter(private val _context: Context, list: ArrayList<Camera>) : Ar
             viewHolder = convertView.tag as ViewHolder
         }
 
-        viewHolder.title!!.text = camera.getName()
-        viewHolder.star!!.setImageDrawable(if (camera.isFavourite) {
+        viewHolder.title?.text = camera.getName()
+        viewHolder.star?.setImageDrawable(if (camera.isFavourite) {
             ContextCompat.getDrawable(context, R.drawable.outline_star_white_18)
         } else {
             ContextCompat.getDrawable(context, R.drawable.outline_star_border_white_18)
         })
-        viewHolder.star!!.setOnClickListener {
+        viewHolder.star?.setOnClickListener {
             (context as AlternateMainActivity).modifyPrefs("favourites", Arrays.asList(camera), !camera.isFavourite)
             camera.isFavourite = !camera.isFavourite
             notifyDataSetChanged()
