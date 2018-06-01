@@ -158,26 +158,25 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             val array = response.getJSONArray("features")
             (0 until array.length())
                     .map { array.get(it) as JSONObject }
-                    .forEach { neighbourhoods.add(Neighbourhood(it)) }
-
+                    .forEach {
+                        val neighbourhood = Neighbourhood(it)
+                        neighbourhoods.add(neighbourhood)
+                    }
+            val d = Date()
             AsyncTask.execute({
                 for (camera in cameras) {
-                    for (neighbourhood in neighbourhoods) {
+                    for (neighbourhood in neighbourhoods)
                         if (neighbourhood.containsCamera(camera)) {
                             camera.neighbourhood = neighbourhood.getName()
                             break
                         }
-                    }
                 }
-
                 runOnUiThread({
-                    for (camera in cameras) {
-                        if (camera.neighbourhood == "") {
-                            println(camera)
-                        }
-                    }
+                    println(Date().time - d.time)
+                    progress_bar.visibility = View.INVISIBLE
                 })
             })
+
         }, Response.ErrorListener {
             println(it)
         })
@@ -219,7 +218,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             setupSectionIndex()
             loadMarkers()
             getNeighbourhoods()
-            progress_bar.visibility = View.INVISIBLE
+
 
         }, Response.ErrorListener {
             showErrorDialogue(this)
@@ -320,10 +319,10 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
 
                 m.isVisible = camera.isVisible
             }
-
-            map.setLatLngBoundsForCameraTarget(builder.build())
+            val bounds = builder.build()
+            map.setLatLngBoundsForCameraTarget(bounds)
             map.setOnMapLoadedCallback {
-                map.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50))
+                map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50))
             }
         }
     }
