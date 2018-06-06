@@ -5,10 +5,9 @@ apply plugin: 'kotlin-android-extensions'
 android {
     signingConfigs {
         config {
-            keyAlias 'key0'
-            keyPassword 'bromfield'
-            storeFile file('C:/Users/Jason/.android/test.keystore')
-            storePassword 'password'
+            keyAlias 'streetcams'
+            keyPassword 'streetcams'
+            storePassword 'scams'
         }
     }
     compileSdkVersion 27

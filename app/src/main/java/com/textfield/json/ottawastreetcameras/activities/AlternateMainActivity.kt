@@ -362,7 +362,13 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             selectedCameras.add(camera)
         }
 
-        if (selectedCameras.filter({ it.isFavourite }).size == selectedCameras.size) {
+        if (selectedCameras.isEmpty()){
+            return false
+        }
+
+        val allFav = selectedCameras.map { it.isFavourite }.reduce{ acc, b ->  acc && b}
+
+        if (allFav) {
             addFav.isVisible = false
             removeFav.isVisible = true
         } else {
@@ -370,7 +376,9 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             removeFav.isVisible = false
         }
 
-        if (selectedCameras.filter({ !it.isVisible }).size == selectedCameras.size) {
+        val allInvis = selectedCameras.map { !it.isVisible }.reduce{ acc, b ->  acc && b}
+
+        if (allInvis) {
             hide.isVisible = false
             unhide.isVisible = true
         } else {
