@@ -23,7 +23,7 @@ import kotlin.collections.ArrayList
 
 class CameraAdapter(private val _context: Context, list: ArrayList<Camera>) : ArrayAdapter<Camera>(_context, 0, list) {
 
-    private var allCameras = list
+    private val allCameras = list
     private var cameras = allCameras
 
     private class ViewHolder {

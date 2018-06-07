@@ -5,7 +5,6 @@ package com.textfield.json.ottawastreetcameras
  */
 class SortByName : Comparator<Camera> {
     override fun compare(cam1: Camera, cam2: Camera): Int {
-        return cam1.getName().replace(Regex("\\W"), "").toLowerCase()
-                .compareTo(cam2.getName().replace(Regex("\\W"), "").toLowerCase())
+        return cam1.getSortableName().compareTo(cam2.getSortableName())
     }
 }
