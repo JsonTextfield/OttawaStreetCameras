@@ -79,6 +79,10 @@ class Camera : Parcelable {
         return if (Locale.getDefault().displayLanguage.contains("fr")) nameFr else name
     }
 
+    fun getSortableName(): String {
+        return getName().replace(Regex("\\W"), "")
+    }
+
     override fun toString(): String {
         return getName()
     }

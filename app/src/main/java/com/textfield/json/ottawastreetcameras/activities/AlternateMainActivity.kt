@@ -18,6 +18,8 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AbsListView
 import android.widget.AdapterView
+import android.widget.Filter
+import android.widget.ImageView
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
@@ -44,6 +46,8 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
     private val markers = ArrayList<Marker>()
     private val requestForList = 0
     private val requestForMap = 1
+    private val prefNameHidden = "hidden"
+    private val prefNameFavourites = "favourites"
     private val permissionArray = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
     private val maxCameras = 4
 
@@ -61,6 +65,9 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
     private lateinit var hide: MenuItem
     private lateinit var unhide: MenuItem
     private lateinit var searchview: MenuItem
+    private lateinit var selectAll: MenuItem
+
+    private var mapIsLoaded = false
 
     private val index = HashMap<Char, Int>()
 
@@ -71,8 +78,8 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
         downloadJson()
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         sectionIndex.setOnTouchingLetterChangedListener(this)
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+
+        (supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -92,21 +99,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                for (marker in markers) {
-                    val camera = marker.tag as Camera
-                    when {
-                        newText.startsWith("f: ") -> marker.isVisible =
-                                camera.isFavourite && camera.getName().contains(newText.removePrefix("f: "), true)
-
-                        newText.startsWith("h: ") -> marker.isVisible =
-                                !camera.isVisible && camera.getName().contains(newText.removePrefix("h: "), true)
-
-                        newText.startsWith("n: ") -> marker.isVisible =
-                                camera.neighbourhood.contains(newText.removePrefix("n: "), true)
-
-                        else -> marker.isVisible = camera.getName().contains(newText, true) && camera.isVisible
-                    }
-                }
+                map?.getFilter(cameras, markers)?.filter(newText)
                 myAdapter.filter.filter(newText)
                 if (newText.isEmpty() && sortDistance.isVisible) {
                     sectionIndex.visibility = View.VISIBLE
@@ -136,7 +129,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             }
             R.id.random_camera -> {
                 val intent = Intent(this@AlternateMainActivity, CameraActivity::class.java)
-                intent.putExtra("cameras", ArrayList(Arrays.asList(cameras[Random().nextInt(cameras.size)])))
+                intent.putExtra("cameras", arrayListOf(cameras[Random().nextInt(cameras.size)]))
                 startActivityForResult(intent, 0)
             }
             R.id.favourites -> {
@@ -193,8 +186,8 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                     .map { response.get(it) as JSONObject }
                     .forEach {
                         val camera = Camera(it)
-                        camera.isFavourite = sharedPrefs.getStringSet("favourites", HashSet<String>()).contains(camera.num.toString())
-                        camera.isVisible = !sharedPrefs.getStringSet("hidden", HashSet<String>()).contains(camera.num.toString())
+                        camera.isFavourite = camera.num.toString() in sharedPrefs.getStringSet(prefNameFavourites, HashSet<String>())
+                        camera.isVisible = camera.num.toString() !in sharedPrefs.getStringSet(prefNameHidden, HashSet<String>())
                         cameras.add(camera)
                     }
 
@@ -202,6 +195,8 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             myAdapter = CameraAdapter(this, cameras)
             listView.adapter = myAdapter
             myAdapter.filter.filter("")
+            println(myAdapter.count)
+
 
             toolbar.setOnClickListener {
                 listView.setSelection(0)
@@ -209,15 +204,17 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
 
             listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, i, _ ->
                 val intent = Intent(this, CameraActivity::class.java)
-                intent.putParcelableArrayListExtra("cameras", ArrayList(Arrays.asList(myAdapter.getItem(i))))
+                intent.putParcelableArrayListExtra("cameras", arrayListOf(myAdapter.getItem(i)))
                 startActivityForResult(intent, 0)
             }
 
             listView.setMultiChoiceModeListener(this)
             setSupportActionBar(toolbar)
+            myAdapter.filter.filter("")
             setupSectionIndex()
             loadMarkers()
-            getNeighbourhoods()
+            progress_bar.visibility = View.INVISIBLE
+            //getNeighbourhoods()
 
 
         }, Response.ErrorListener {
@@ -227,13 +224,14 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
     }
 
     private fun setupSectionIndex() {
-
+        index.clear()
+        sectionIndex.removeAllViews()
         //assumes cameras are sorted
-        for (i in cameras.indices) {
+        for (i in 0 until myAdapter.count) {
 
             //get the first character
-            val c = cameras[i].getName().replace(Regex("\\W"), "")[0]
-            if (c !in index.keys) {
+            val c = myAdapter.getItem(i).getSortableName()[0]
+            if (c !in index.keys && myAdapter.getItem(i).isVisible) {
                 sectionIndex.add(c.toString())
                 index[c] = i
             }
@@ -249,42 +247,11 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
         requestPermissions(requestForMap)
     }
 
-    private fun refreshMarkers() {
-        for (marker in markers) {
-            val camera = marker.tag as Camera
-            if (camera.isFavourite) {
-                marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
-            } else {
-                marker.setIcon(BitmapDescriptorFactory.defaultMarker())
-            }
-            marker.isVisible = camera.isVisible
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        /*data?.let {
-            for (camera in cameras) {
-                for (cam in it.getParcelableArrayListExtra<Camera>("cameras")) {
-                    if (camera.num == cam.num) {
-                        camera.isFavourite = cam.isFavourite
-                        camera.isVisible = cam.isVisible
-                        break
-                    }
-                }
-            }
-
-        }
-        cameras.clear()
-        downloadJson()*/
-
-    }
-
     private fun loadMarkers() {
         map?.let { map ->
             map.setOnInfoWindowLongClickListener { marker ->
                 if (actionMode == null) {
                     actionMode = startActionMode(this)
-                    selectedCameras.clear()
                 }
                 selectMarker(marker, selectCamera(marker.tag as Camera))
             }
@@ -292,12 +259,9 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                 val camera = marker.tag as Camera
                 if (actionMode != null) {
                     selectMarker(marker, selectCamera(camera))
-                    if (selectedCameras.isEmpty()) {
-                        actionMode!!.finish()
-                    }
                 } else {
                     val intent = Intent(this, CameraActivity::class.java)
-                    intent.putParcelableArrayListExtra("cameras", ArrayList(Arrays.asList(camera)))
+                    intent.putParcelableArrayListExtra("cameras", arrayListOf(camera))
                     startActivityForResult(intent, 0)
                 }
             }
@@ -322,14 +286,37 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             val bounds = builder.build()
             map.setLatLngBoundsForCameraTarget(bounds)
             map.setOnMapLoadedCallback {
+                mapIsLoaded = true
                 map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50))
             }
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        /*data?.let {
+            for (camera in cameras) {
+                for (cam in it.getParcelableArrayListExtra<Camera>("cameras")) {
+                    if (camera.num == cam.num) {
+                        camera.isFavourite = cam.isFavourite
+                        camera.isVisible = cam.isVisible
+                        break
+                    }
+                }
+            }
+
+        }
+        cameras.clear()
+        downloadJson()*/
+
+    }
+
+
     private fun requestPermissions(requestCode: Int) {
-        if (ContextCompat.checkSelfPermission(this, permissionArray[0]) != PackageManager.PERMISSION_GRANTED
-                || ContextCompat.checkSelfPermission(this, permissionArray[1]) != PackageManager.PERMISSION_GRANTED) {
+        val allTrue = permissionArray
+                .map { ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED }
+                .reduce { acc, b -> acc && b }
+
+        if (allTrue) {
             ActivityCompat.requestPermissions(this, permissionArray, requestCode)
         } else {
             when (requestCode) {
@@ -362,41 +349,33 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             selectedCameras.add(camera)
         }
 
-        if (selectedCameras.isEmpty()){
+        if (selectedCameras.isEmpty()) {
+            actionMode!!.finish()
             return false
         }
 
-        val allFav = selectedCameras.map { it.isFavourite }.reduce{ acc, b ->  acc && b}
+        val allFav = selectedCameras.map { it.isFavourite }.reduce { acc, b -> acc && b }
+        addFav.isVisible = !allFav
+        removeFav.isVisible = allFav
 
-        if (allFav) {
-            addFav.isVisible = false
-            removeFav.isVisible = true
-        } else {
-            addFav.isVisible = true
-            removeFav.isVisible = false
-        }
-
-        val allInvis = selectedCameras.map { !it.isVisible }.reduce{ acc, b ->  acc && b}
-
-        if (allInvis) {
-            hide.isVisible = false
-            unhide.isVisible = true
-        } else {
-            hide.isVisible = true
-            unhide.isVisible = false
-        }
+        val allInvis = selectedCameras.map { !it.isVisible }.reduce { acc, b -> acc && b }
+        hide.isVisible = !allInvis
+        unhide.isVisible = allInvis
 
         showCameras.isVisible = selectedCameras.size <= maxCameras
 
-        if (!selectedCameras.isEmpty()) {
-            actionMode?.title = String.format(resources.getQuantityString(R.plurals.selectedCameras, selectedCameras.size), selectedCameras.size)
-        }
+        selectAll.isVisible = selectedCameras.size < myAdapter.count
+
+        actionMode?.title = resources.getQuantityString(R.plurals.selectedCameras, selectedCameras.size, selectedCameras.size)
+
         return camera in selectedCameras
     }
 
     private fun selectMarker(marker: Marker, boolean: Boolean) {
         if (boolean) {
             marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+        } else if ((marker.tag as Camera).isFavourite) {
+            marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
         } else {
             marker.setIcon(BitmapDescriptorFactory.defaultMarker())
         }
@@ -426,13 +405,22 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                 showOrHide(false)
                 return true
             }
+
+            R.id.select_all -> {
+                selectedCameras.clear()
+                for (i in 0 until myAdapter.count) {
+                    listView.setItemChecked(i, true)
+                }
+                return true
+            }
             else -> return false
         }
     }
 
     private fun addRemoveFavs(willAdd: Boolean) {
-        modifyPrefs("favourites", selectedCameras, willAdd)
+        modifyPrefs(prefNameFavourites, selectedCameras, willAdd)
         cameras.filter { it in selectedCameras }.forEach { it.isFavourite = willAdd }
+
         for (marker in markers) {
             if ((marker.tag as Camera).isFavourite) {
                 marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
@@ -441,30 +429,47 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             }
         }
 
+        for (i in 0 until myAdapter.count) {
+            if (listView.checkedItemPositions[i]) {
+                val view = listView.getViewByPosition(i)
+                val starImageView = view.findViewById<ImageView>(R.id.star)
+                starImageView.setImageDrawable(if (willAdd) {
+                    ContextCompat.getDrawable(this, R.drawable.outline_star_white_18)
+                } else {
+                    ContextCompat.getDrawable(this, R.drawable.outline_star_border_white_18)
+                })
+            }
+        }
+
         addFav.isVisible = !willAdd
         removeFav.isVisible = willAdd
     }
 
     private fun showOrHide(willHide: Boolean) {
-        modifyPrefs("hidden", selectedCameras, willHide)
+        modifyPrefs(prefNameHidden, selectedCameras, willHide)
         cameras.filter { it in selectedCameras }.forEach { it.isVisible = !willHide }
         markers.forEach { it.isVisible = (it.tag as Camera).isVisible }
 
         hide.isVisible = !willHide
         unhide.isVisible = willHide
+
+        setupSectionIndex()
     }
 
     override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-        selectedCameras.clear()
         actionMode = mode
         actionMode!!.menuInflater.inflate(R.menu.contextual_menu, menu)
-        showCameras = menu!!.findItem(R.id.open_cameras)
+
+        selectAll = menu!!.findItem(R.id.select_all)
+        showCameras = menu.findItem(R.id.open_cameras)
         removeFav = menu.findItem(R.id.remove_favourite)
-        removeFav.isVisible = false
         addFav = menu.findItem(R.id.add_favourites)
         unhide = menu.findItem(R.id.unhide)
-        unhide.isVisible = false
         hide = menu.findItem(R.id.hide)
+
+        removeFav.isVisible = false
+        unhide.isVisible = false
+
         return true
     }
 
@@ -473,9 +478,10 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
     }
 
     override fun onDestroyActionMode(mode: ActionMode?) {
+        actionMode = null
         markers.filter { it.tag in selectedCameras }.forEach { selectMarker(it, false) }
         selectedCameras.clear()
-        actionMode = null
+        myAdapter.filter.filter((searchview.actionView as SearchView).query)
     }
 
     override fun onItemCheckedStateChanged(actionMode: android.view.ActionMode, i: Int, l: Long, b: Boolean) {
@@ -508,4 +514,27 @@ fun AppCompatActivity.modifyPrefs(pref: String, selectedCameras: Collection<Came
         prefList.removeAll(selectedCameras.map { it.num.toString() })
     }
     editor.putStringSet(pref, prefList).apply()
+}
+
+fun GoogleMap.getFilter(list: ArrayList<Camera>, markers: ArrayList<Marker>): Filter {
+    return object : MyFilter(list) {
+        override fun refresh(list: ArrayList<Camera>) {
+            val latLngBounds = LatLngBounds.Builder()
+            var noneVisible = true
+
+            for (marker in markers) {
+                val camera = marker.tag as Camera
+                marker.isVisible = camera in list
+
+                if (marker.isVisible) {
+                    latLngBounds.include(marker.position)
+                    noneVisible = false
+                }
+            }
+
+            if (!noneVisible) {
+                animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds.build(), 50))
+            }
+        }
+    }
 }

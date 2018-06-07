@@ -26,4 +26,9 @@
         android:icon="@drawable/baseline_visibility_white_24"
         android:title="@string/unhide"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/select_all"
+        android:icon="@drawable/baseline_select_all_white_24"
+        android:title="@string/select_all"
+        app:showAsAction="ifRoom"/>
 </menu>

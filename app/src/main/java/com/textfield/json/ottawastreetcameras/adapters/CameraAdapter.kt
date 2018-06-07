@@ -10,6 +10,7 @@ import android.widget.Filter
 import android.widget.ImageView
 import android.widget.TextView
 import com.textfield.json.ottawastreetcameras.Camera
+import com.textfield.json.ottawastreetcameras.MyFilter
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.activities.AlternateMainActivity
 import com.textfield.json.ottawastreetcameras.activities.modifyPrefs
@@ -70,32 +71,10 @@ class CameraAdapter(private val _context: Context, list: ArrayList<Camera>) : Ar
     }
 
     override fun getFilter(): Filter {
-        return object : Filter() {
-            override fun publishResults(constraint: CharSequence, results: Filter.FilterResults) {
-                cameras = results.values as ArrayList<Camera>
+        return object : MyFilter(allCameras){
+            override fun refresh(list: ArrayList<Camera>) {
+                cameras = list
                 notifyDataSetChanged()
-            }
-
-            override fun performFiltering(constraint: CharSequence): Filter.FilterResults {
-                val filteredResults = when {
-                    constraint.startsWith("f: ") -> allCameras.filter {
-                        it.getName().contains(constraint.removePrefix("f: "), true) && it.isFavourite
-                    }
-                    constraint.startsWith("h: ") -> allCameras.filter {
-                        it.getName().contains(constraint.removePrefix("h: "), true) && !it.isVisible
-                    }
-                    constraint.startsWith("n: ") -> allCameras.filter {
-                        it.neighbourhood.contains(constraint.removePrefix("n: "), true)
-                    }
-                    else -> allCameras.filter {
-                        it.getName().contains(constraint, true) && it.isVisible
-                    }
-                }
-
-                val results = Filter.FilterResults()
-                results.values = filteredResults
-
-                return results
             }
         }
     }
