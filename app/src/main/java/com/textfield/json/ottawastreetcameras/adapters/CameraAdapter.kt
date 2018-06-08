@@ -21,7 +21,7 @@ import kotlin.collections.ArrayList
  * Created by Jason on 24/10/2017.
  */
 
-class CameraAdapter(private val _context: Context, list: ArrayList<Camera>) : ArrayAdapter<Camera>(_context, 0, list) {
+abstract class CameraAdapter(private val _context: Context, list: ArrayList<Camera>) : ArrayAdapter<Camera>(_context, 0, list) {
 
     private val allCameras = list
     private var cameras = allCameras
@@ -75,7 +75,9 @@ class CameraAdapter(private val _context: Context, list: ArrayList<Camera>) : Ar
             override fun refresh(list: ArrayList<Camera>) {
                 cameras = list
                 notifyDataSetChanged()
+                complete()
             }
         }
     }
+    abstract fun complete()
 }

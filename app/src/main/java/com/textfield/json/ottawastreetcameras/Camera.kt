@@ -80,7 +80,7 @@ class Camera : Parcelable {
     }
 
     fun getSortableName(): String {
-        return getName().replace(Regex("\\W"), "").toLowerCase()
+        return getName().replace(Regex("\\W"), "").toUpperCase()
     }
 
     override fun toString(): String {

@@ -192,7 +192,12 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                     }
 
             Collections.sort(cameras, SortByName())
-            myAdapter = CameraAdapter(this, cameras)
+            myAdapter = object : CameraAdapter(this, cameras){
+                override fun complete() {
+                    setupSectionIndex()
+                }
+
+            }
             listView.adapter = myAdapter
             myAdapter.filter.filter("")
             println(myAdapter.count)
@@ -522,9 +527,10 @@ fun GoogleMap.getFilter(list: ArrayList<Camera>, markers: ArrayList<Marker>): Fi
             val latLngBounds = LatLngBounds.Builder()
             var noneVisible = true
 
+            val nums = list.map{it.num}
             for (marker in markers) {
                 val camera = marker.tag as Camera
-                marker.isVisible = camera in list
+                marker.isVisible = camera.num in nums
 
                 if (marker.isVisible) {
                     latLngBounds.include(marker.position)
@@ -533,7 +539,11 @@ fun GoogleMap.getFilter(list: ArrayList<Camera>, markers: ArrayList<Marker>): Fi
             }
 
             if (!noneVisible) {
-                animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds.build(), 50))
+                try {
+                    animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds.build(), 50))
+                } catch (e: Exception){
+                    
+                }
             }
         }
     }
