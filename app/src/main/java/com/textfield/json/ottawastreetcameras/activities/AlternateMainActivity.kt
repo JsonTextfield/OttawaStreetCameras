@@ -205,6 +205,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             }
             listView.adapter = myAdapter
             myAdapter.filter.filter("")
+            map?.getFilter(markers, mapIsLoaded)?.filter("")
 
 
             toolbar.setOnClickListener {
