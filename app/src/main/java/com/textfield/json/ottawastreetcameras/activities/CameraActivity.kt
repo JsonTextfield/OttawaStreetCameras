@@ -1,9 +1,11 @@
 package com.textfield.json.ottawastreetcameras.activities
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Handler
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.ImageView
@@ -13,7 +15,7 @@ import com.android.volley.NetworkResponse
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.*
-import com.textfield.json.ottawastreetcameras.Camera
+import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.adapters.ImageAdapter
 import kotlinx.android.synthetic.main.activity_camera.*
@@ -121,4 +123,15 @@ fun ListView.getViewByPosition(pos: Int): View {
     } else {
         getChildAt(pos - firstVisiblePosition)
     }
+}
+
+fun AppCompatActivity.showErrorDialogue(context: Context) {
+    val builder = AlertDialog.Builder(context)
+
+    builder.setTitle(resources.getString(R.string.no_network_title))
+            .setMessage(resources.getString(R.string.no_network_content))
+            .setPositiveButton("OK") { _, _ -> finish() }
+            .setOnDismissListener { finish() }
+    val dialog = builder.create()
+    dialog.show()
 }

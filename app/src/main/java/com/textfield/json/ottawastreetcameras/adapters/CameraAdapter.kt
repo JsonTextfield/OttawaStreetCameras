@@ -9,11 +9,12 @@ import android.widget.ArrayAdapter
 import android.widget.Filter
 import android.widget.ImageView
 import android.widget.TextView
-import com.textfield.json.ottawastreetcameras.Camera
-import com.textfield.json.ottawastreetcameras.MyFilter
+import com.textfield.json.ottawastreetcameras.entities.Camera
+import com.textfield.json.ottawastreetcameras.CameraFilter
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.activities.AlternateMainActivity
 import com.textfield.json.ottawastreetcameras.activities.modifyPrefs
+import kotlinx.android.synthetic.main.activity_alternate_main.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -25,6 +26,7 @@ abstract class CameraAdapter(private val _context: Context, list: ArrayList<Came
 
     private val allCameras = list
     private var cameras = allCameras
+    private val index = HashMap<Char, Int>()
 
     private class ViewHolder {
         internal var title: TextView? = null
@@ -70,8 +72,21 @@ abstract class CameraAdapter(private val _context: Context, list: ArrayList<Came
         return convertView
     }
 
+    private fun setupSectionIndex() {
+        index.clear()
+        //assumes cameras are sorted
+        for (i in 0 until count) {
+
+            //get the first character
+            val c = getItem(i).getSortableName()[0]
+            if (c !in index.keys && getItem(i).isVisible) {
+                index[c] = i
+            }
+        }
+    }
+
     override fun getFilter(): Filter {
-        return object : MyFilter(allCameras){
+        return object : CameraFilter(allCameras){
             override fun refresh(list: ArrayList<Camera>) {
                 cameras = list
                 notifyDataSetChanged()
@@ -79,5 +94,6 @@ abstract class CameraAdapter(private val _context: Context, list: ArrayList<Came
             }
         }
     }
+
     abstract fun complete()
 }

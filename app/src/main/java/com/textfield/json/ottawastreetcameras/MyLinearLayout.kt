@@ -43,10 +43,14 @@ class MyLinearLayout : LinearLayout {
                     if (oldChoose > -1) {
                         (getChildAt(oldChoose) as TextView).setTextColor(Color.WHITE)
                     }
-                    val t = (getChildAt(selectedIndex) as TextView)
-                    t.setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
-                    listener?.onLetterTouch(t.text[0])
-                    choose = selectedIndex
+                    try {
+                        val t = (getChildAt(selectedIndex) as TextView)
+                        t.setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
+                        listener?.onLetterTouch(t.text[0])
+                        choose = selectedIndex
+                    } catch (e: Exception) {
+
+                    }
                 }
             }
         }

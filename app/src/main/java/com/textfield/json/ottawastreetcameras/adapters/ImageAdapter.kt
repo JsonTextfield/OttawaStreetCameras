@@ -1,14 +1,12 @@
 package com.textfield.json.ottawastreetcameras.adapters
 
 import android.content.Context
-import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import com.textfield.json.ottawastreetcameras.Camera
+import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.R
-import com.textfield.json.ottawastreetcameras.activities.AlternateMainActivity
 import com.textfield.json.ottawastreetcameras.activities.CameraActivity
 import com.textfield.json.ottawastreetcameras.activities.modifyPrefs
 import java.util.*

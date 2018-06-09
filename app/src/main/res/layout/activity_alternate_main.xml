@@ -31,6 +31,7 @@
                 android:scrollbars="none" />
 
             <com.textfield.json.ottawastreetcameras.MyLinearLayout
+                android:visibility="visible"
                 android:id="@+id/sectionIndex"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"

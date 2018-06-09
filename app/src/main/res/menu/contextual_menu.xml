@@ -10,6 +10,7 @@
         android:id="@+id/remove_favourite"
         android:icon="@drawable/outline_star_border_white_24"
         android:title="@string/remove_from_favourites"
+        android:visible="false"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/add_favourites"
@@ -25,10 +26,11 @@
         android:id="@+id/unhide"
         android:icon="@drawable/baseline_visibility_white_24"
         android:title="@string/unhide"
+        android:visible="false"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/select_all"
         android:icon="@drawable/baseline_select_all_white_24"
         android:title="@string/select_all"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
 </menu>

@@ -31,6 +31,10 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.textfield.json.ottawastreetcameras.*
 import com.textfield.json.ottawastreetcameras.adapters.CameraAdapter
+import com.textfield.json.ottawastreetcameras.comparators.SortByDistance
+import com.textfield.json.ottawastreetcameras.comparators.SortByName
+import com.textfield.json.ottawastreetcameras.entities.Camera
+import com.textfield.json.ottawastreetcameras.entities.Neighbourhood
 import kotlinx.android.synthetic.main.activity_alternate_main.*
 import org.json.JSONObject
 import java.util.*
@@ -88,7 +92,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
         sortName = menu.findItem(R.id.sort_name)
         sortDistance = menu.findItem(R.id.distance_sort)
         searchview = menu.findItem(R.id.user_searchView)
-        val searchView = menu.findItem(R.id.user_searchView).actionView as SearchView
+        val searchView = searchview.actionView as SearchView
 
         searchView.queryHint = String.format(resources.getString(R.string.search_hint), cameras.size)
 
@@ -99,12 +103,13 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                map?.getFilter(cameras, markers)?.filter(newText)
+                map?.getFilter(markers, mapIsLoaded)?.filter(newText)
                 myAdapter.filter.filter(newText)
-                if (newText.isEmpty() && sortDistance.isVisible) {
-                    sectionIndex.visibility = View.VISIBLE
-                } else {
+
+                if (newText.isNotEmpty() || sortName.isVisible) {
                     sectionIndex.visibility = View.INVISIBLE
+                } else {
+                    sectionIndex.visibility = View.VISIBLE
                 }
                 return true
             }
@@ -192,7 +197,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                     }
 
             Collections.sort(cameras, SortByName())
-            myAdapter = object : CameraAdapter(this, cameras){
+            myAdapter = object : CameraAdapter(this, cameras) {
                 override fun complete() {
                     setupSectionIndex()
                 }
@@ -200,7 +205,6 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             }
             listView.adapter = myAdapter
             myAdapter.filter.filter("")
-            println(myAdapter.count)
 
 
             toolbar.setOnClickListener {
@@ -215,7 +219,6 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
 
             listView.setMultiChoiceModeListener(this)
             setSupportActionBar(toolbar)
-            myAdapter.filter.filter("")
             setupSectionIndex()
             loadMarkers()
             progress_bar.visibility = View.INVISIBLE
@@ -410,7 +413,6 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                 showOrHide(false)
                 return true
             }
-
             R.id.select_all -> {
                 selectedCameras.clear()
                 for (i in 0 until myAdapter.count) {
@@ -472,9 +474,6 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
         unhide = menu.findItem(R.id.unhide)
         hide = menu.findItem(R.id.hide)
 
-        removeFav.isVisible = false
-        unhide.isVisible = false
-
         return true
     }
 
@@ -487,6 +486,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
         markers.filter { it.tag in selectedCameras }.forEach { selectMarker(it, false) }
         selectedCameras.clear()
         myAdapter.filter.filter((searchview.actionView as SearchView).query)
+        map?.getFilter(markers, mapIsLoaded)?.filter((searchview.actionView as SearchView).query)
     }
 
     override fun onItemCheckedStateChanged(actionMode: android.view.ActionMode, i: Int, l: Long, b: Boolean) {
@@ -495,17 +495,6 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
         }
     }
 
-}
-
-fun AppCompatActivity.showErrorDialogue(context: Context) {
-    val builder = AlertDialog.Builder(context)
-
-    builder.setTitle(resources.getString(R.string.no_network_title))
-            .setMessage(resources.getString(R.string.no_network_content))
-            .setPositiveButton("OK") { _, _ -> finish() }
-            .setOnDismissListener { finish() }
-    val dialog = builder.create()
-    dialog.show()
 }
 
 fun AppCompatActivity.modifyPrefs(pref: String, selectedCameras: Collection<Camera>, willAdd: Boolean) {
@@ -521,29 +510,23 @@ fun AppCompatActivity.modifyPrefs(pref: String, selectedCameras: Collection<Came
     editor.putStringSet(pref, prefList).apply()
 }
 
-fun GoogleMap.getFilter(list: ArrayList<Camera>, markers: ArrayList<Marker>): Filter {
-    return object : MyFilter(list) {
+fun GoogleMap.getFilter(markers: ArrayList<Marker>, mapIsLoaded: Boolean): Filter {
+    return object : CameraFilter(markers.map { it.tag as Camera }) {
         override fun refresh(list: ArrayList<Camera>) {
             val latLngBounds = LatLngBounds.Builder()
-            var noneVisible = true
+            var anyVisible = false
 
-            val nums = list.map{it.num}
             for (marker in markers) {
-                val camera = marker.tag as Camera
-                marker.isVisible = camera.num in nums
+                marker.isVisible = marker.tag in list
 
                 if (marker.isVisible) {
                     latLngBounds.include(marker.position)
-                    noneVisible = false
+                    anyVisible = true
                 }
             }
 
-            if (!noneVisible) {
-                try {
-                    animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds.build(), 50))
-                } catch (e: Exception){
-                    
-                }
+            if (anyVisible && mapIsLoaded) {
+                animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds.build(), 50))
             }
         }
     }
