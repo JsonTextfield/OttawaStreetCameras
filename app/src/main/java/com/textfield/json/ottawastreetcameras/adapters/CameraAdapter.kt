@@ -42,6 +42,11 @@ abstract class CameraAdapter(private val _context: Context, list: ArrayList<Came
         return cameras.size
     }
 
+    override fun sort(comparator: Comparator<in Camera>?) {
+        Collections.sort(cameras, comparator)
+        notifyDataSetChanged()
+    }
+
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
         var convertView = view
         val viewHolder: ViewHolder

@@ -9,7 +9,6 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
 import android.view.ActionMode
@@ -29,7 +28,9 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import com.textfield.json.ottawastreetcameras.*
+import com.textfield.json.ottawastreetcameras.CameraFilter
+import com.textfield.json.ottawastreetcameras.MyLinearLayout
+import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.adapters.CameraAdapter
 import com.textfield.json.ottawastreetcameras.comparators.SortByDistance
 import com.textfield.json.ottawastreetcameras.comparators.SortByName

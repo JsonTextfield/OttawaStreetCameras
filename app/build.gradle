@@ -6,8 +6,9 @@ android {
     signingConfigs {
         config {
             keyAlias 'streetcams'
-            keyPassword 'streetcams'
-            storePassword 'scams'
+            keyPassword 'Lupin111'
+            storePassword 'Lupin111'
+            storeFile file('/Users/rileypeckford/Desktop/debug.keystore')
         }
     }
     compileSdkVersion 27
