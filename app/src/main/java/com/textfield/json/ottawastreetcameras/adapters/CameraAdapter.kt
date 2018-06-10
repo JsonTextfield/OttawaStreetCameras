@@ -14,6 +14,7 @@ import com.textfield.json.ottawastreetcameras.CameraFilter
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.activities.AlternateMainActivity
 import com.textfield.json.ottawastreetcameras.activities.modifyPrefs
+import com.textfield.json.ottawastreetcameras.comparators.SortByName
 import kotlinx.android.synthetic.main.activity_alternate_main.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -74,7 +75,7 @@ abstract class CameraAdapter(private val _context: Context, list: ArrayList<Came
 
     private fun setupSectionIndex() {
         index.clear()
-        //assumes cameras are sorted
+        sort(SortByName())
         for (i in 0 until count) {
 
             //get the first character

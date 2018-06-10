@@ -14,26 +14,26 @@ abstract class CameraFilter(private val allCameras: List<Camera>) : Filter() {
     override fun performFiltering(constraint: CharSequence): Filter.FilterResults {
 
         val filteredResults = when {
-            constraint.startsWith("f: ") -> allCameras.filter {
-                it.getName().contains(constraint.removePrefix("f: "), true) && it.isFavourite
+            constraint.startsWith("f: ", true) -> allCameras.filter {
+                it.getName().contains(constraint.removePrefix("f: ", true), true) && it.isFavourite
             }
-            constraint.startsWith("h: ") -> allCameras.filter {
-                it.getName().contains(constraint.removePrefix("h: "), true) && !it.isVisible
+            constraint.startsWith("h: ", true) -> allCameras.filter {
+                it.getName().contains(constraint.removePrefix("h: ", true), true) && !it.isVisible
             }
-            constraint.startsWith("n: ") -> allCameras.filter {
-                it.neighbourhood.contains(constraint.removePrefix("n: "), true)
+            constraint.startsWith("n: ", true) -> allCameras.filter {
+                it.neighbourhood.contains(constraint.removePrefix("n: ", true), true)
             }
-            constraint . startsWith ("!f: ") -> allCameras.filter {
-                !it.getName().contains(constraint.removePrefix("!f: "), true) && it.isFavourite
+            constraint . startsWith ("!f: ", true) -> allCameras.filter {
+                !it.getName().contains(constraint.removePrefix("!f: ", true), true) && it.isFavourite
             }
-            constraint.startsWith("!h: ") -> allCameras.filter {
-                !it.getName().contains(constraint.removePrefix("!h: "), true) && !it.isVisible
+            constraint.startsWith("!h: ", true) -> allCameras.filter {
+                !it.getName().contains(constraint.removePrefix("!h: ", true), true) && !it.isVisible
             }
-            constraint.startsWith("!n: ") -> allCameras.filter {
-                !it.neighbourhood.contains(constraint.removePrefix("!n: "), true)
+            constraint.startsWith("!n: ", true) -> allCameras.filter {
+                !it.neighbourhood.contains(constraint.removePrefix("!n: ", true), true)
             }
-            constraint.startsWith("! ") -> allCameras.filter {
-                !it.getName().contains(constraint.removePrefix("! "), true) && it.isVisible
+            constraint.startsWith("! ", true) -> allCameras.filter {
+                !it.getName().contains(constraint.removePrefix("! ", true), true) && it.isVisible
             }
             else -> allCameras.filter {
                 it.getName().contains(constraint, true) && it.isVisible
@@ -45,4 +45,7 @@ abstract class CameraFilter(private val allCameras: List<Camera>) : Filter() {
 
         return results
     }
+}
+fun CharSequence.removePrefix(prefix: CharSequence, ignoreCase: Boolean): CharSequence{
+    return toString().toLowerCase().removePrefix(prefix)
 }
