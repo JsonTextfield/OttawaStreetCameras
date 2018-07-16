@@ -6,8 +6,7 @@ import com.textfield.json.ottawastreetcameras.entities.Camera
 /**
  * Created by Jason on 24/02/2018.
  */
-class SortByDistance(location: Location) : Comparator<Camera> {
-    private val userLocation = location
+class SortByDistance(private val userLocation: Location) : Comparator<Camera> {
     override fun compare(cam1: Camera, cam2: Camera): Int {
         val result1 = FloatArray(3)
         val result2 = FloatArray(3)

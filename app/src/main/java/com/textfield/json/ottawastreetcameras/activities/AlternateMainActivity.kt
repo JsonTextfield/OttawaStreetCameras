@@ -162,7 +162,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                         neighbourhoods.add(neighbourhood)
                     }
             val d = Date()
-            AsyncTask.execute({
+            AsyncTask.execute {
                 for (camera in cameras) {
                     for (neighbourhood in neighbourhoods)
                         if (neighbourhood.containsCamera(camera)) {
@@ -170,11 +170,11 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                             break
                         }
                 }
-                runOnUiThread({
+                runOnUiThread {
                     println(Date().time - d.time)
                     progress_bar.visibility = View.INVISIBLE
-                })
-            })
+                }
+            }
 
         }, Response.ErrorListener {
             println(it)
