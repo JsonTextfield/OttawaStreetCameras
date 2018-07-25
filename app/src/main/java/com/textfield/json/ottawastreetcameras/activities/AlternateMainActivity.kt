@@ -42,6 +42,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
+import android.Manifest.permission
 
 class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListView.MultiChoiceModeListener, MyLinearLayout.OnLetterTouchListener {
 
@@ -53,7 +54,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
     private val requestForMap = 1
     private val prefNameHidden = "hidden"
     private val prefNameFavourites = "favourites"
-    private val permissionArray = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+    private val permissionArray = arrayOf(permission.ACCESS_FINE_LOCATION, permission.ACCESS_COARSE_LOCATION)
     private val maxCameras = 4
 
     private lateinit var myAdapter: CameraAdapter
@@ -158,8 +159,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             (0 until array.length())
                     .map { array.get(it) as JSONObject }
                     .forEach {
-                        val neighbourhood = Neighbourhood(it)
-                        neighbourhoods.add(neighbourhood)
+                        neighbourhoods.add(Neighbourhood(it))
                     }
             val d = Date()
             AsyncTask.execute {
@@ -224,7 +224,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             setupSectionIndex()
             loadMarkers()
             progress_bar.visibility = View.INVISIBLE
-            //getNeighbourhoods()
+            getNeighbourhoods()
 
 
         }, Response.ErrorListener {
@@ -382,12 +382,10 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
     }
 
     private fun selectMarker(marker: Marker, boolean: Boolean) {
-        if (boolean) {
-            marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-        } else if ((marker.tag as Camera).isFavourite) {
-            marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
-        } else {
-            marker.setIcon(BitmapDescriptorFactory.defaultMarker())
+        when {
+            boolean -> marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+            (marker.tag as Camera).isFavourite -> marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
+            else -> marker.setIcon(BitmapDescriptorFactory.defaultMarker())
         }
     }
 

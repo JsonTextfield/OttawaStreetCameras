@@ -7,7 +7,7 @@ import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayList
 
-class Neighbourhood {
+class Neighbourhood(vals: JSONObject) {
     private var name = ""
     private var nameFr = ""
     var id = 0
@@ -16,7 +16,7 @@ class Neighbourhood {
     var boundaries = ArrayList<ArrayList<LatLng>>()
         private set
 
-    constructor(vals: JSONObject) {
+    init {
         try {
             val props = vals.getJSONObject("properties")
             name = props.getString("Name")
