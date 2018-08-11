@@ -5,8 +5,9 @@ This app shows live images from traffic cameras in the Ottawa area
 
 ## Screenshots
 ![alt text](https://github.com/JsonTextfield/OttawaStreetCameras/blob/master/Screenshot_1522555538.png)
-![alt text](https://github.com/JsonTextfield/OttawaStreetCameras/blob/master/Screenshot_1522555559.png)
-![alt text](https://github.com/JsonTextfield/OttawaStreetCameras/blob/master/Screenshot_1522555612.png)
 ![alt text](https://github.com/JsonTextfield/OttawaStreetCameras/blob/master/Screenshot_1522555696.png)
 ![alt text](https://github.com/JsonTextfield/OttawaStreetCameras/blob/master/Screenshot_1522555795.png)
+![alt text](https://github.com/JsonTextfield/OttawaStreetCameras/blob/master/Screenshot_1533309203.png)
+![alt text](https://github.com/JsonTextfield/OttawaStreetCameras/blob/master/Screenshot_1533309482.png)
+![alt text](https://github.com/JsonTextfield/OttawaStreetCameras/blob/master/Screenshot_1533309917.png)
 
