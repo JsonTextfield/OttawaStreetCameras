@@ -1,6 +1,6 @@
 package com.textfield.json.ottawastreetcameras.activities
 
-import android.Manifest
+import android.Manifest.permission
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -27,7 +27,10 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MarkerOptions
 import com.textfield.json.ottawastreetcameras.CameraFilter
 import com.textfield.json.ottawastreetcameras.MyLinearLayout
 import com.textfield.json.ottawastreetcameras.R
@@ -42,14 +45,12 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
-import android.Manifest.permission
 
 class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListView.MultiChoiceModeListener, MyLinearLayout.OnLetterTouchListener {
 
     private val neighbourhoods = ArrayList<Neighbourhood>()
     private val cameras = ArrayList<Camera>()
     private val selectedCameras = ArrayList<Camera>()
-    private val markers = ArrayList<Marker>()
     private val requestForList = 0
     private val requestForMap = 1
     private val prefNameHidden = "hidden"
@@ -61,7 +62,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
     private lateinit var locationManager: LocationManager
 
     private var map: GoogleMap? = null
-    private var actionMode: android.view.ActionMode? = null
+    private var actionMode: ActionMode? = null
 
     private lateinit var sortName: MenuItem
     private lateinit var sortDistance: MenuItem
@@ -105,7 +106,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                map?.getFilter(markers, mapIsLoaded)?.filter(newText)
+                map?.getFilter(cameras, mapIsLoaded)?.filter(newText)
                 myAdapter.filter.filter(newText)
 
                 if (newText.isNotEmpty() || sortName.isVisible) {
@@ -193,7 +194,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                     .forEach {
                         val camera = Camera(it)
                         camera.isFavourite = camera.num.toString() in sharedPrefs.getStringSet(prefNameFavourites, HashSet<String>())
-                        camera.isVisible = camera.num.toString() !in sharedPrefs.getStringSet(prefNameHidden, HashSet<String>())
+                        camera.setVisibility(camera.num.toString() !in sharedPrefs.getStringSet(prefNameHidden, HashSet<String>()))
                         cameras.add(camera)
                     }
 
@@ -206,7 +207,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             }
             listView.adapter = myAdapter
             myAdapter.filter.filter("")
-            map?.getFilter(markers, mapIsLoaded)?.filter("")
+            //map?.getFilter(cameras, mapIsLoaded)?.filter("")
 
 
             toolbar.setOnClickListener {
@@ -255,6 +256,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         requestPermissions(requestForMap)
+        googleMap.setOnMapLoadedCallback { loadMarkers() }
     }
 
     private fun loadMarkers() {
@@ -263,12 +265,12 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                 if (actionMode == null) {
                     actionMode = startActionMode(this)
                 }
-                selectMarker(marker, selectCamera(marker.tag as Camera))
+                selectCamera(marker.tag as Camera)
             }
             map.setOnInfoWindowClickListener { marker ->
                 val camera = marker.tag as Camera
                 if (actionMode != null) {
-                    selectMarker(marker, selectCamera(camera))
+                    selectCamera(camera)
                 } else {
                     val intent = Intent(this, CameraActivity::class.java)
                     intent.putParcelableArrayListExtra("cameras", arrayListOf(camera))
@@ -288,7 +290,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                     m.setIcon(BitmapDescriptorFactory.defaultMarker())
                 }
                 m.tag = camera
-                markers.add(m)
+                camera.marker = m
                 builder.include(m.position)
 
                 m.isVisible = camera.isVisible
@@ -300,6 +302,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                 map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50))
             }
         }
+        //map?.getFilter(cameras, mapIsLoaded)?.filter("")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -355,8 +358,13 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
     private fun selectCamera(camera: Camera): Boolean {
         if (camera in selectedCameras) {
             selectedCameras.remove(camera)
+            camera.marker?.setIcon(BitmapDescriptorFactory.defaultMarker())
+            if (camera.isFavourite) {
+                camera.marker?.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
+            }
         } else {
             selectedCameras.add(camera)
+            camera.marker?.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
         }
 
         if (selectedCameras.isEmpty()) {
@@ -379,14 +387,6 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
         actionMode?.title = resources.getQuantityString(R.plurals.selectedCameras, selectedCameras.size, selectedCameras.size)
 
         return camera in selectedCameras
-    }
-
-    private fun selectMarker(marker: Marker, boolean: Boolean) {
-        when {
-            boolean -> marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-            (marker.tag as Camera).isFavourite -> marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
-            else -> marker.setIcon(BitmapDescriptorFactory.defaultMarker())
-        }
     }
 
     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
@@ -428,11 +428,11 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
         modifyPrefs(prefNameFavourites, selectedCameras, willAdd)
         cameras.filter { it in selectedCameras }.forEach { it.isFavourite = willAdd }
 
-        for (marker in markers) {
-            if ((marker.tag as Camera).isFavourite) {
-                marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
+        for (camera in cameras) {
+            if (camera.isFavourite) {
+                camera.marker?.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
             } else {
-                marker.setIcon(BitmapDescriptorFactory.defaultMarker())
+                camera.marker?.setIcon(BitmapDescriptorFactory.defaultMarker())
             }
         }
 
@@ -454,8 +454,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
 
     private fun showOrHide(willHide: Boolean) {
         modifyPrefs(prefNameHidden, selectedCameras, willHide)
-        cameras.filter { it in selectedCameras }.forEach { it.isVisible = !willHide }
-        markers.forEach { it.isVisible = (it.tag as Camera).isVisible }
+        cameras.filter { it in selectedCameras }.forEach { it.setVisibility(!willHide) }
 
         hide.isVisible = !willHide
         unhide.isVisible = willHide
@@ -482,11 +481,12 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
     }
 
     override fun onDestroyActionMode(mode: ActionMode?) {
-        actionMode = null
-        markers.filter { it.tag in selectedCameras }.forEach { selectMarker(it, false) }
-        selectedCameras.clear()
+        cameras.filter { it in selectedCameras }.forEach { selectCamera(it) }
+
         myAdapter.filter.filter((searchview.actionView as SearchView).query)
-        map?.getFilter(markers, mapIsLoaded)?.filter((searchview.actionView as SearchView).query)
+        map?.getFilter(cameras, mapIsLoaded)?.filter((searchview.actionView as SearchView).query)
+
+        actionMode = null
     }
 
     override fun onItemCheckedStateChanged(actionMode: android.view.ActionMode, i: Int, l: Long, b: Boolean) {
@@ -510,17 +510,17 @@ fun AppCompatActivity.modifyPrefs(pref: String, selectedCameras: Collection<Came
     editor.putStringSet(pref, prefList).apply()
 }
 
-fun GoogleMap.getFilter(markers: ArrayList<Marker>, mapIsLoaded: Boolean): Filter {
-    return object : CameraFilter(markers.map { it.tag as Camera }) {
+fun GoogleMap.getFilter(cameras: ArrayList<Camera>, mapIsLoaded: Boolean): Filter {
+    return object : CameraFilter(cameras) {
         override fun refresh(list: ArrayList<Camera>) {
             val latLngBounds = LatLngBounds.Builder()
             var anyVisible = false
 
-            for (marker in markers) {
-                marker.isVisible = marker.tag in list
+            for (camera in cameras) {
+                camera.setVisibility(camera in list)
 
-                if (marker.isVisible) {
-                    latLngBounds.include(marker.position)
+                if (camera.isVisible && mapIsLoaded) {
+                    latLngBounds.include(camera.marker?.position)
                     anyVisible = true
                 }
             }

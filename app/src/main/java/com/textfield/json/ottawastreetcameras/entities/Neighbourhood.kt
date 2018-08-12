@@ -7,9 +7,8 @@ import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayList
 
-class Neighbourhood(vals: JSONObject) {
-    private var name = ""
-    private var nameFr = ""
+class Neighbourhood(vals: JSONObject) : BilingualObject() {
+
     var id = 0
         private set
 
@@ -19,7 +18,7 @@ class Neighbourhood(vals: JSONObject) {
     init {
         try {
             val props = vals.getJSONObject("properties")
-            name = props.getString("Name")
+            nameEn = props.getString("Name")
             nameFr = props.getString("Name_FR")
             id = props.getInt("ONS_ID")
 
@@ -31,8 +30,8 @@ class Neighbourhood(vals: JSONObject) {
             } else {
                 neighbourhoodZones = geo.getJSONArray("coordinates")
             }
-            (0 until neighbourhoodZones.length()).forEach {
-                val neighbourhoodPoints = neighbourhoodZones.getJSONArray(it).getJSONArray(0)
+            (0 until neighbourhoodZones.length()).forEach { item ->
+                val neighbourhoodPoints = neighbourhoodZones.getJSONArray(item).getJSONArray(0)
                 val list = (0 until neighbourhoodPoints.length()).map {
                     LatLng(neighbourhoodPoints.getJSONArray(it).getDouble(1), neighbourhoodPoints.getJSONArray(it).getDouble(0))
                 }
@@ -40,10 +39,7 @@ class Neighbourhood(vals: JSONObject) {
             }
 
         } catch (e: JSONException) {
-            nameFr = ""
-            name = nameFr
-            id = 0
-            boundaries = ArrayList<ArrayList<LatLng>>()
+            nameFr = nameEn
         }
     }
 
@@ -82,13 +78,5 @@ class Neighbourhood(vals: JSONObject) {
         val x = (pY - bee) / m // algebra is neat!
 
         return x > pX
-    }
-
-    fun getName(): String {
-        return if (Locale.getDefault().displayLanguage.contains("fr")) nameFr else name
-    }
-
-    override fun toString(): String {
-        return getName()
     }
 }

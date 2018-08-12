@@ -1,18 +1,15 @@
 package com.textfield.json.ottawastreetcameras.entities
 
-import android.database.Cursor
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.android.gms.maps.model.Marker
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.*
 
 /**
  * Created by Jason on 25/04/2016.
  */
-class Camera : Parcelable {
-    private var name = ""
-    private var nameFr = ""
+class Camera : BilingualObject, Parcelable {
     var owner = ""
         private set
     var lat = 0.0
@@ -25,12 +22,14 @@ class Camera : Parcelable {
         private set
     var isFavourite = false
     var isVisible = true
+        private set
 
     var neighbourhood = ""
+    var marker : Marker? = null
 
     constructor(vals: JSONObject) {
         try {
-            name = vals.getString("description")
+            nameEn = vals.getString("description")
             nameFr = vals.getString("descriptionFr")
             owner = vals.getString("type")
             id = vals.getInt("id")
@@ -42,18 +41,17 @@ class Camera : Parcelable {
             lng = vals.getDouble("longitude")
         } catch (e: JSONException) {
             nameFr = ""
-            owner = nameFr
-            name = owner
+            owner = ""
+            nameEn = ""
             id = 0
             num = 0
             lng = 0.0
             lat = 0.0
         }
-
     }
 
     constructor(`in`: Parcel) {
-        name = `in`.readString()
+        nameEn = `in`.readString()
         nameFr = `in`.readString()
         owner = `in`.readString()
         lat = `in`.readDouble()
@@ -62,29 +60,9 @@ class Camera : Parcelable {
         num = `in`.readInt()
     }
 
-    constructor(cursor: Cursor) {
-        name = cursor.getString(cursor.getColumnIndex("name"))
-        nameFr = cursor.getString(cursor.getColumnIndex("nameFr"))
-        owner = cursor.getString(cursor.getColumnIndex("owner"))
-        lat = cursor.getDouble(cursor.getColumnIndex("latitude"))
-        lng = cursor.getDouble(cursor.getColumnIndex("longitude"))
-        id = cursor.getInt(cursor.getColumnIndex("id"))
-        num = cursor.getInt(cursor.getColumnIndex("num"))
-        if (owner == "MTO") {
-            num += 2000
-        }
-    }
-
-    fun getName(): String {
-        return if (Locale.getDefault().displayLanguage.contains("fr")) nameFr else name
-    }
-
-    fun getSortableName(): String {
-        return getName().replace(Regex("\\W"), "").toUpperCase()
-    }
-
-    override fun toString(): String {
-        return getName()
+    fun setVisibility(b: Boolean) {
+        marker?.isVisible = b
+        isVisible = b
     }
 
     override fun describeContents(): Int {
@@ -92,7 +70,7 @@ class Camera : Parcelable {
     }
 
     override fun writeToParcel(parcel: Parcel, i: Int) {
-        parcel.writeString(name)
+        parcel.writeString(nameEn)
         parcel.writeString(nameFr)
         parcel.writeString(owner)
         parcel.writeDouble(lat)

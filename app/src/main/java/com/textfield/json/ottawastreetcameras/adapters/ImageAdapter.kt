@@ -53,7 +53,7 @@ class ImageAdapter(private val _context: Context, list: ArrayList<Camera>) : Arr
         viewHolder.eye?.isChecked = !(camera.isVisible)
         viewHolder.eye?.setOnCheckedChangeListener { buttonView, isChecked ->
             (context as CameraActivity).modifyPrefs("hidden", Arrays.asList(camera), !isChecked)
-            camera.isVisible = !isChecked
+            camera.setVisibility(!isChecked)
             notifyDataSetChanged()
         }
 
