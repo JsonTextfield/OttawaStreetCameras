@@ -2,6 +2,7 @@ package com.textfield.json.ottawastreetcameras.entities
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
 import org.json.JSONException
 import org.json.JSONObject
@@ -17,8 +18,6 @@ class Camera : BilingualObject, Parcelable {
     var lng = 0.0
         private set
     var num = 0
-        private set
-    var id = 0
         private set
     var isFavourite = false
     var isVisible = true

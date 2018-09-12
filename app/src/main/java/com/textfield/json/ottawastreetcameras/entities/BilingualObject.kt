@@ -5,6 +5,7 @@ import java.util.*
 open class BilingualObject {
     protected var nameEn = ""
     protected var nameFr = ""
+    protected var id = 0
 
     override fun toString(): String {
         return getName()

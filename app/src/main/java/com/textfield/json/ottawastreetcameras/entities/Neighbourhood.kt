@@ -4,25 +4,21 @@ import com.google.android.gms.maps.model.LatLng
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.*
 import kotlin.collections.ArrayList
 
-class Neighbourhood(vals: JSONObject) : BilingualObject() {
-
-    var id = 0
-        private set
+class Neighbourhood(values: JSONObject) : BilingualObject() {
 
     var boundaries = ArrayList<ArrayList<LatLng>>()
         private set
 
     init {
         try {
-            val props = vals.getJSONObject("properties")
+            val props = values.getJSONObject("properties")
             nameEn = props.getString("Name")
             nameFr = props.getString("Name_FR")
             id = props.getInt("ONS_ID")
 
-            val geo = vals.getJSONObject("geometry")
+            val geo = values.getJSONObject("geometry")
             var neighbourhoodZones = JSONArray()
 
             if (geo.getString("type") == "Polygon") {

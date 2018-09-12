@@ -31,6 +31,10 @@
         android:icon="@drawable/baseline_visibility_off_white_24"
         android:title="@string/hidden_cameras"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/neighbourhood"
+        android:title="@string/neighbourhoods"
+        android:visible="false" />
 
     <item
         android:id="@+id/random_camera"

@@ -107,6 +107,9 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
 
             override fun onQueryTextChange(newText: String): Boolean {
                 map?.getFilter(cameras, mapIsLoaded)?.filter(newText)
+                //searchView.suggestionsAdapter = NeighbourhoodAdapter(this@AlternateMainActivity, neighbourhoods)
+
+
                 myAdapter.filter.filter(newText)
 
                 if (newText.isNotEmpty() || sortName.isVisible) {
@@ -163,6 +166,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
                         neighbourhoods.add(Neighbourhood(it))
                     }
             val d = Date()
+
             AsyncTask.execute {
                 for (camera in cameras) {
                     for (neighbourhood in neighbourhoods)
@@ -186,7 +190,7 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
     private fun downloadJson() {
         progress_bar.visibility = View.VISIBLE
         val sharedPrefs = getSharedPreferences(applicationContext.packageName, Context.MODE_PRIVATE)
-        val url = "https://traffic.ottawa.ca/map/camera_list"
+        val url = "http://traffic.ottawa.ca/map/camera_list"
         val queue = Volley.newRequestQueue(this)
         val jsObjRequest = JsonArrayRequest(url, Response.Listener { response ->
             (0 until response.length())
@@ -225,10 +229,11 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             setupSectionIndex()
             loadMarkers()
             progress_bar.visibility = View.INVISIBLE
-            getNeighbourhoods()
+            //getNeighbourhoods()
 
 
         }, Response.ErrorListener {
+            print(it)
             showErrorDialogue(this)
         })
         queue.add(jsObjRequest)
