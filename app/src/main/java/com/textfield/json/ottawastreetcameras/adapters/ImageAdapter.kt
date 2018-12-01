@@ -8,7 +8,6 @@ import android.widget.*
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.activities.CameraActivity
-import com.textfield.json.ottawastreetcameras.activities.modifyPrefs
 import java.util.*
 
 /**

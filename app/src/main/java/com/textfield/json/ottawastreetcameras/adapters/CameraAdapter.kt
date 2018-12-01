@@ -9,13 +9,11 @@ import android.widget.ArrayAdapter
 import android.widget.Filter
 import android.widget.ImageView
 import android.widget.TextView
-import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.CameraFilter
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.activities.AlternateMainActivity
-import com.textfield.json.ottawastreetcameras.activities.modifyPrefs
 import com.textfield.json.ottawastreetcameras.comparators.SortByName
-import kotlinx.android.synthetic.main.activity_alternate_main.*
+import com.textfield.json.ottawastreetcameras.entities.Camera
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -23,10 +21,8 @@ import kotlin.collections.ArrayList
  * Created by Jason on 24/10/2017.
  */
 
-abstract class CameraAdapter(private val _context: Context, list: ArrayList<Camera>) : ArrayAdapter<Camera>(_context, 0, list) {
-
-    private val allCameras = list
-    private var cameras = allCameras
+abstract class CameraAdapter(private val _context: Context, private val list: ArrayList<Camera>) : ArrayAdapter<Camera>(_context, 0, list) {
+    private var cameras = list
     private val index = HashMap<Char, Int>()
 
     private class ViewHolder {
@@ -54,7 +50,7 @@ abstract class CameraAdapter(private val _context: Context, list: ArrayList<Came
         if (convertView == null) {
             viewHolder = ViewHolder()
             convertView = LayoutInflater.from(_context).inflate(R.layout.list_item, parent, false)
-            viewHolder.title = convertView!!.findViewById<TextView>(R.id.listtitle)
+            viewHolder.title = convertView.findViewById<TextView>(R.id.listtitle)
             viewHolder.star = convertView.findViewById<ImageView>(R.id.star)
             convertView.tag = viewHolder
 
@@ -63,11 +59,9 @@ abstract class CameraAdapter(private val _context: Context, list: ArrayList<Came
         }
 
         viewHolder.title?.text = camera.getName()
-        viewHolder.star?.setImageDrawable(if (camera.isFavourite) {
-            ContextCompat.getDrawable(context, R.drawable.outline_star_white_18)
-        } else {
-            ContextCompat.getDrawable(context, R.drawable.outline_star_border_white_18)
-        })
+
+        val icon =  if (camera.isFavourite) R.drawable.outline_star_white_18 else R.drawable.outline_star_border_white_18
+        viewHolder.star?.setImageDrawable(ContextCompat.getDrawable(_context, icon))
         viewHolder.star?.setOnClickListener {
             (context as AlternateMainActivity).modifyPrefs("favourites", Arrays.asList(camera), !camera.isFavourite)
             camera.isFavourite = !camera.isFavourite
@@ -75,7 +69,7 @@ abstract class CameraAdapter(private val _context: Context, list: ArrayList<Came
         }
 
         // Return the completed view to render on screen
-        return convertView
+        return convertView!!
     }
 
     private fun setupSectionIndex() {
@@ -92,12 +86,13 @@ abstract class CameraAdapter(private val _context: Context, list: ArrayList<Came
     }
 
     override fun getFilter(): Filter {
-        return object : CameraFilter(allCameras){
+        return object : CameraFilter(list) {
             override fun refresh(list: ArrayList<Camera>) {
                 cameras = list
                 notifyDataSetChanged()
                 complete()
             }
+
         }
     }
 

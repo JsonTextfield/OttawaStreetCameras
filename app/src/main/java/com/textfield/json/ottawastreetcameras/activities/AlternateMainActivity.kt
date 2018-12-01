@@ -9,7 +9,6 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
 import android.view.ActionMode
 import android.view.Menu
@@ -46,7 +45,7 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 
-class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListView.MultiChoiceModeListener, MyLinearLayout.OnLetterTouchListener {
+class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView.MultiChoiceModeListener, MyLinearLayout.OnLetterTouchListener {
 
     private val neighbourhoods = ArrayList<Neighbourhood>()
     private val cameras = ArrayList<Camera>()
@@ -377,11 +376,11 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
             return false
         }
 
-        val allFav = selectedCameras.map { it.isFavourite }.reduce { acc, b -> acc && b }
+        val allFav = selectedCameras.asSequence().map { it.isFavourite }.reduce { acc, b -> acc && b }
         addFav.isVisible = !allFav
         removeFav.isVisible = allFav
 
-        val allInvis = selectedCameras.map { !it.isVisible }.reduce { acc, b -> acc && b }
+        val allInvis = selectedCameras.asSequence().map { !it.isVisible }.reduce { acc, b -> acc && b }
         hide.isVisible = !allInvis
         unhide.isVisible = allInvis
 
@@ -502,19 +501,6 @@ class AlternateMainActivity : AppCompatActivity(), OnMapReadyCallback, AbsListVi
 
 }
 
-fun AppCompatActivity.modifyPrefs(pref: String, selectedCameras: Collection<Camera>, willAdd: Boolean) {
-    val sharedPrefs = getSharedPreferences(applicationContext.packageName, Context.MODE_PRIVATE)
-    val prefList = HashSet<String>(sharedPrefs.getStringSet(pref, HashSet<String>()))
-    val editor = sharedPrefs.edit()
-
-    if (willAdd) {
-        prefList.addAll(selectedCameras.map { it.num.toString() })
-    } else {
-        prefList.removeAll(selectedCameras.map { it.num.toString() })
-    }
-    editor.putStringSet(pref, prefList).apply()
-}
-
 fun GoogleMap.getFilter(cameras: ArrayList<Camera>, mapIsLoaded: Boolean): Filter {
     return object : CameraFilter(cameras) {
         override fun refresh(list: ArrayList<Camera>) {
@@ -522,7 +508,7 @@ fun GoogleMap.getFilter(cameras: ArrayList<Camera>, mapIsLoaded: Boolean): Filte
             var anyVisible = false
 
             for (camera in cameras) {
-                camera.setVisibility(camera in list)
+                camera.marker?.isVisible = camera in list
 
                 if (camera.isVisible && mapIsLoaded) {
                     latLngBounds.include(camera.marker?.position)

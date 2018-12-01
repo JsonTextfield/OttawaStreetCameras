@@ -12,13 +12,13 @@ android {
         }
     }
     compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.textfield.json.ottawastreetcameras"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 7
-        versionName "1.41"
+        versionCode 8
+        versionName "1.42"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -36,7 +36,7 @@ dependencies {
     //implementation 'com.google.maps.android:android-maps-utils:0.5'
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.google.android.gms:play-services-maps:15.0.1'
+    implementation 'com.google.android.gms:play-services-maps:16.0.0'
     implementation 'com.android.support:support-v4:27.1.1'
     implementation 'com.android.support:support-vector-drawable:27.1.1'
     testImplementation 'junit:junit:4.12'

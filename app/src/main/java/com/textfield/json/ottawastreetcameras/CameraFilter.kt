@@ -15,25 +15,13 @@ abstract class CameraFilter(private val allCameras: List<Camera>) : Filter() {
 
         val filteredResults = when {
             constraint.startsWith("f: ", true) -> allCameras.filter {
-                it.getName().contains(constraint.removePrefix("f: ", true), true) && it.isFavourite
+                it.getName().contains(constraint.removePrefix("f: "), true) && it.isFavourite
             }
             constraint.startsWith("h: ", true) -> allCameras.filter {
-                it.getName().contains(constraint.removePrefix("h: ", true), true) && !it.isVisible
+                it.getName().contains(constraint.removePrefix("h: "), true) && !it.isVisible
             }
             constraint.startsWith("n: ", true) -> allCameras.filter {
-                it.neighbourhood.contains(constraint.removePrefix("n: ", true), true)
-            }
-            constraint . startsWith ("!f: ", true) -> allCameras.filter {
-                !it.getName().contains(constraint.removePrefix("!f: ", true), true) && it.isFavourite
-            }
-            constraint.startsWith("!h: ", true) -> allCameras.filter {
-                !it.getName().contains(constraint.removePrefix("!h: ", true), true) && !it.isVisible
-            }
-            constraint.startsWith("!n: ", true) -> allCameras.filter {
-                !it.neighbourhood.contains(constraint.removePrefix("!n: ", true), true)
-            }
-            constraint.startsWith("! ", true) -> allCameras.filter {
-                !it.getName().contains(constraint.removePrefix("! ", true), true) && it.isVisible
+                it.neighbourhood.contains(constraint.removePrefix("n: "), true)
             }
             else -> allCameras.filter {
                 it.getName().contains(constraint, true) && it.isVisible
@@ -42,10 +30,6 @@ abstract class CameraFilter(private val allCameras: List<Camera>) : Filter() {
 
         val results = Filter.FilterResults()
         results.values = filteredResults
-
         return results
     }
-}
-fun CharSequence.removePrefix(prefix: CharSequence, ignoreCase: Boolean): CharSequence{
-    return toString().toLowerCase().removePrefix(prefix)
 }
