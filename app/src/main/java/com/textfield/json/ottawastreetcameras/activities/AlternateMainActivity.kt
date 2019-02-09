@@ -70,7 +70,7 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
     private lateinit var removeFav: MenuItem
     private lateinit var hide: MenuItem
     private lateinit var unhide: MenuItem
-    private lateinit var searchview: MenuItem
+    private lateinit var searchMenuItem: MenuItem
     private lateinit var selectAll: MenuItem
 
     private var mapIsLoaded = false
@@ -93,8 +93,8 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
 
         sortName = menu.findItem(R.id.sort_name)
         sortDistance = menu.findItem(R.id.distance_sort)
-        searchview = menu.findItem(R.id.user_searchView)
-        val searchView = searchview.actionView as SearchView
+        searchMenuItem = menu.findItem(R.id.user_searchView)
+        val searchView = searchMenuItem.actionView as SearchView
 
         searchView.queryHint = String.format(resources.getString(R.string.search_hint), cameras.size)
 
@@ -107,7 +107,6 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
             override fun onQueryTextChange(newText: String): Boolean {
                 map?.getFilter(cameras, mapIsLoaded)?.filter(newText)
                 //searchView.suggestionsAdapter = NeighbourhoodAdapter(this@AlternateMainActivity, neighbourhoods)
-
 
                 myAdapter.filter.filter(newText)
 
@@ -143,12 +142,12 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
                 startActivityForResult(intent, 0)
             }
             R.id.favourites -> {
-                searchview.expandActionView()
-                (searchview.actionView as SearchView).setQuery("f: ", false)
+                searchMenuItem.expandActionView()
+                (searchMenuItem.actionView as SearchView).setQuery("f: ", false)
             }
             R.id.hidden -> {
-                searchview.expandActionView()
-                (searchview.actionView as SearchView).setQuery("h: ", false)
+                searchMenuItem.expandActionView()
+                (searchMenuItem.actionView as SearchView).setQuery("h: ", false)
             }
         }
         return true
@@ -196,8 +195,8 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
                     .map { response.get(it) as JSONObject }
                     .forEach {
                         val camera = Camera(it)
-                        camera.isFavourite = camera.num.toString() in sharedPrefs.getStringSet(prefNameFavourites, HashSet<String>())
-                        camera.setVisibility(camera.num.toString() !in sharedPrefs.getStringSet(prefNameHidden, HashSet<String>()))
+                        camera.isFavourite = camera.num.toString() in sharedPrefs.getStringSet(prefNameFavourites, HashSet<String>())!!
+                        camera.setVisibility(camera.num.toString() !in sharedPrefs.getStringSet(prefNameHidden, HashSet<String>())!!)
                         cameras.add(camera)
                     }
 
@@ -211,7 +210,6 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
             listView.adapter = myAdapter
             myAdapter.filter.filter("")
             //map?.getFilter(cameras, mapIsLoaded)?.filter("")
-
 
             toolbar.setOnClickListener {
                 listView.setSelection(0)
@@ -228,7 +226,7 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
             setupSectionIndex()
             loadMarkers()
             progress_bar.visibility = View.INVISIBLE
-            //getNeighbourhoods()
+            getNeighbourhoods()
 
 
         }, Response.ErrorListener {
@@ -366,29 +364,27 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
             if (camera.isFavourite) {
                 camera.marker?.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
             }
+            if (selectedCameras.isEmpty()) {
+                actionMode!!.finish()
+                return false
+            }
         } else {
             selectedCameras.add(camera)
             camera.marker?.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
         }
 
-        if (selectedCameras.isEmpty()) {
-            actionMode!!.finish()
-            return false
-        }
+        actionMode?.title = resources.getQuantityString(R.plurals.selectedCameras, selectedCameras.size, selectedCameras.size)
 
-        val allFav = selectedCameras.asSequence().map { it.isFavourite }.reduce { acc, b -> acc && b }
+        val allFav = selectedCameras.map { it.isFavourite }.reduce { acc, b -> acc && b }
         addFav.isVisible = !allFav
         removeFav.isVisible = allFav
 
-        val allInvis = selectedCameras.asSequence().map { !it.isVisible }.reduce { acc, b -> acc && b }
+        val allInvis = selectedCameras.map { !it.isVisible }.reduce { acc, b -> acc && b }
         hide.isVisible = !allInvis
         unhide.isVisible = allInvis
 
         showCameras.isVisible = selectedCameras.size <= maxCameras
-
         selectAll.isVisible = selectedCameras.size < myAdapter.count
-
-        actionMode?.title = resources.getQuantityString(R.plurals.selectedCameras, selectedCameras.size, selectedCameras.size)
 
         return camera in selectedCameras
     }
@@ -439,7 +435,6 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
                 camera.marker?.setIcon(BitmapDescriptorFactory.defaultMarker())
             }
         }
-
         for (i in 0 until myAdapter.count) {
             if (listView.checkedItemPositions[i]) {
                 val view = listView.getViewByPosition(i)
@@ -486,10 +481,8 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
 
     override fun onDestroyActionMode(mode: ActionMode?) {
         cameras.filter { it in selectedCameras }.forEach { selectCamera(it) }
-
-        myAdapter.filter.filter((searchview.actionView as SearchView).query)
-        map?.getFilter(cameras, mapIsLoaded)?.filter((searchview.actionView as SearchView).query)
-
+        myAdapter.filter.filter((searchMenuItem.actionView as SearchView).query)
+        map?.getFilter(cameras, mapIsLoaded)?.filter((searchMenuItem.actionView as SearchView).query)
         actionMode = null
     }
 
@@ -509,13 +502,11 @@ fun GoogleMap.getFilter(cameras: ArrayList<Camera>, mapIsLoaded: Boolean): Filte
 
             for (camera in cameras) {
                 camera.marker?.isVisible = camera in list
-
                 if (camera.isVisible && mapIsLoaded) {
                     latLngBounds.include(camera.marker?.position)
                     anyVisible = true
                 }
             }
-
             if (anyVisible && mapIsLoaded) {
                 animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds.build(), 50))
             }

@@ -24,11 +24,9 @@ import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
 import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.SSLContext
-import javax.net.ssl.SSLSocketFactory
 import javax.net.ssl.TrustManagerFactory
 
 class CameraActivity : GenericActivity() {
-    private var socketFactory: SSLSocketFactory? = null
     private var cameras = ArrayList<Camera>()
     private var timers = ArrayList<CameraRunnable>()
     private val handler = Handler()
@@ -49,36 +47,49 @@ class CameraActivity : GenericActivity() {
         getSessionId()
     }
 
-    override fun onDestroy() {
+    fun stop() {
         queue.cancelAll(tag)
         for (timer in timers) {
             handler.removeCallbacks(timer)
         }
+    }
+
+    override fun onResume() {
+        createSSL()
+        getSessionId()
+        super.onResume()
+    }
+    override fun onPause() {
+        stop()
+        super.onPause()
+    }
+    override fun onDestroy() {
+        stop()
         super.onDestroy()
     }
 
     private fun saveToInternalStorage(bitmapImage: Bitmap, id: Int) {
-        val mypath = File(ContextWrapper(applicationContext).getDir("images", Context.MODE_PRIVATE), "$id.jpg");
+        val mypath = File(ContextWrapper(applicationContext).getDir("images", Context.MODE_PRIVATE), "$id.jpg")
 
-        var fos: FileOutputStream? = null;
+        var fos: FileOutputStream? = null
         try {
-            fos = FileOutputStream(mypath);
+            fos = FileOutputStream(mypath)
             // Use the compress method on the BitMap object to write image to the OutputStream
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos)
         } catch (e: Exception) {
-            e.printStackTrace();
+            e.printStackTrace()
         } finally {
             try {
-                fos?.close();
+                fos?.close()
             } catch (e: IOException) {
-                e.printStackTrace();
+                e.printStackTrace()
             }
         }
     }
 
     private fun createSSL() {
         val cf: CertificateFactory = CertificateFactory.getInstance("X.509")
-        val caInput: InputStream = BufferedInputStream(assets.open("certificate.cer"))
+        val caInput: InputStream = BufferedInputStream(assets.open("trafficottawaca.cer"))
         val ca: X509Certificate = caInput.use {
             cf.generateCertificate(it) as X509Certificate
         }
@@ -100,7 +111,6 @@ class CameraActivity : GenericActivity() {
         val context: SSLContext = SSLContext.getInstance("TLS").apply {
             init(null, tmf.trustManagers, null)
         }
-        socketFactory = context.socketFactory
 
         queue = Volley.newRequestQueue(this, object : HurlStack() {
             override fun createConnection(url: URL): HttpsURLConnection {
@@ -116,7 +126,7 @@ class CameraActivity : GenericActivity() {
         val i = index
         override fun run() {
             download(i)
-            handler.postDelayed(this, 500L)
+            handler.postDelayed(this, 6000L)
         }
     }
 
@@ -129,7 +139,7 @@ class CameraActivity : GenericActivity() {
 
     fun download(index: Int) {
         val bmImage = image_listView.getViewByPosition(index).findViewById(R.id.source) as ImageView
-        val url = "https://traffic.ottawa.ca/map/camera?id=" + imageAdapter.getItem(index).num
+        val url = "https://traffic.ottawa.ca/map/camera?id=${imageAdapter.getItem(index)?.num}"
 
         val request = ImageRequest(url, Response.Listener<Bitmap> { response ->
             camera_progress_bar.visibility = View.INVISIBLE
@@ -147,7 +157,6 @@ class CameraActivity : GenericActivity() {
     }
 
     private fun getSessionId() {
-
         val url = "https://traffic.ottawa.ca/map/"
         val sessionRequest = object : StringRequest(url, Response.Listener {
             for (i in 0 until imageAdapter.count) {
@@ -156,7 +165,7 @@ class CameraActivity : GenericActivity() {
                 cameraRunnable.run()
             }
         }, Response.ErrorListener {
-            print(it)
+            println(it)
             showErrorDialogue(this)
         }) {
             override fun parseNetworkResponse(response: NetworkResponse): Response<String> {
