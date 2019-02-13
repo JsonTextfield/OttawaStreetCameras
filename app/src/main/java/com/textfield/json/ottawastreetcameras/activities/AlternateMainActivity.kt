@@ -226,7 +226,7 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
             setupSectionIndex()
             loadMarkers()
             progress_bar.visibility = View.INVISIBLE
-            getNeighbourhoods()
+            //getNeighbourhoods()
 
 
         }, Response.ErrorListener {
