@@ -49,9 +49,9 @@ class Camera : BilingualObject, Parcelable {
     }
 
     constructor(`in`: Parcel) {
-        nameEn = `in`.readString()
-        nameFr = `in`.readString()
-        owner = `in`.readString()
+        nameEn = `in`.readString()!!
+        nameFr = `in`.readString()!!
+        owner = `in`.readString()!!
         lat = `in`.readDouble()
         lng = `in`.readDouble()
         id = `in`.readInt()

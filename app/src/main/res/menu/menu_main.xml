@@ -35,7 +35,6 @@
         android:id="@+id/neighbourhood"
         android:title="@string/neighbourhoods"
         android:visible="false" />
-
     <item
         android:id="@+id/random_camera"
         android:icon="@drawable/baseline_shuffle_white_24"

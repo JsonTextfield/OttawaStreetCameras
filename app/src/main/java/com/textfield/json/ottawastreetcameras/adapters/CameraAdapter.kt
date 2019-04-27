@@ -5,23 +5,19 @@ import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.Filter
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import com.textfield.json.ottawastreetcameras.CameraFilter
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.activities.AlternateMainActivity
 import com.textfield.json.ottawastreetcameras.comparators.SortByName
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Created by Jason on 24/10/2017.
  */
 
-abstract class CameraAdapter(private val _context: Context, private val list: ArrayList<Camera>) : ArrayAdapter<Camera>(_context, 0, list) {
+abstract class CameraAdapter(private val _context: Context, private val list: List<Camera>) : ArrayAdapter<Camera>(_context, 0, list) {
     private var cameras = list
     private val index = HashMap<Char, Int>()
 
@@ -50,8 +46,8 @@ abstract class CameraAdapter(private val _context: Context, private val list: Ar
         if (convertView == null) {
             viewHolder = ViewHolder()
             convertView = LayoutInflater.from(_context).inflate(R.layout.list_item, parent, false)
-            viewHolder.title = convertView.findViewById<TextView>(R.id.listtitle)
-            viewHolder.star = convertView.findViewById<ImageView>(R.id.star)
+            viewHolder.title = convertView.findViewById(R.id.listtitle)
+            viewHolder.star = convertView.findViewById(R.id.star)
             convertView.tag = viewHolder
 
         } else {
@@ -90,11 +86,10 @@ abstract class CameraAdapter(private val _context: Context, private val list: Ar
             override fun refresh(list: ArrayList<Camera>) {
                 cameras = list
                 notifyDataSetChanged()
-                complete()
+                onComplete()
             }
-
         }
     }
 
-    abstract fun complete()
+    abstract fun onComplete()
 }

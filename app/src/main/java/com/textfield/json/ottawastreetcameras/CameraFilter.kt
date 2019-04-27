@@ -7,11 +7,11 @@ abstract class CameraFilter(private val allCameras: List<Camera>) : Filter() {
 
     abstract fun refresh(list: ArrayList<Camera>)
 
-    override fun publishResults(constraint: CharSequence, results: Filter.FilterResults) {
+    override fun publishResults(constraint: CharSequence, results: FilterResults) {
         refresh(results.values as ArrayList<Camera>)
     }
 
-    override fun performFiltering(constraint: CharSequence): Filter.FilterResults {
+    override fun performFiltering(constraint: CharSequence): FilterResults {
 
         val filteredResults = when {
             constraint.startsWith("f: ", true) -> allCameras.filter {
@@ -28,7 +28,7 @@ abstract class CameraFilter(private val allCameras: List<Camera>) : Filter() {
             }
         }
 
-        val results = Filter.FilterResults()
+        val results = FilterResults()
         results.values = filteredResults
         return results
     }

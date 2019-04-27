@@ -3,10 +3,12 @@ package com.textfield.json.ottawastreetcameras.activities
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
 import android.view.View
 import android.widget.ImageView
 import android.widget.ListView
+import android.widget.Toast
 import com.android.volley.NetworkResponse
 import com.android.volley.Response
 import com.android.volley.toolbox.HttpHeaderParser
@@ -17,6 +19,11 @@ import com.textfield.json.ottawastreetcameras.StreetCamsRequestQueue
 import com.textfield.json.ottawastreetcameras.adapters.ImageAdapter
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import kotlinx.android.synthetic.main.activity_camera.*
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.util.*
+import kotlin.collections.ArrayList
 
 class CameraActivity : GenericActivity() {
     private var cameras = ArrayList<Camera>()
@@ -111,6 +118,28 @@ class CameraActivity : GenericActivity() {
         }
         sessionRequest.tag = tag
         StreetCamsRequestQueue.getInstance(this).add(sessionRequest)
+    }
+    private fun saveToInternalStorage(bitmapImage: Bitmap) {
+        val streetCamsDirectory = File(Environment.getExternalStorageDirectory(), "/Ottawa StreetCams/")
+        if (!streetCamsDirectory.exists()) {
+            streetCamsDirectory.mkdirs()
+        }
+        val imageFile = File(streetCamsDirectory, Date().time.toString() + ".jpg")
+        var fos: FileOutputStream? = null
+        try {
+            fos = FileOutputStream(imageFile)
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos)
+            Toast.makeText(this, "Image saved at: $imageFile", Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            try {
+                fos?.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
     }
 }
 

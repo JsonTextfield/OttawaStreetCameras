@@ -1,19 +1,15 @@
 package com.textfield.json.ottawastreetcameras.adapters
 
 import android.content.Context
-import android.content.CursorLoader
 import android.database.Cursor
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.CursorAdapter
 import android.widget.Filter
 import android.widget.TextView
 import com.textfield.json.ottawastreetcameras.NeighbourhoodFilter
 import com.textfield.json.ottawastreetcameras.R
-import com.textfield.json.ottawastreetcameras.entities.Neighbourhood
-import java.util.*
 
 abstract class NeighbourhoodAdapter(var context: Context, cursor: Cursor) : CursorAdapter(context, cursor, false) {
 
@@ -29,7 +25,7 @@ abstract class NeighbourhoodAdapter(var context: Context, cursor: Cursor) : Curs
         if (convertView == null) {
             viewHolder = ViewHolder()
             convertView = LayoutInflater.from(context).inflate(R.layout.list_item, parent, false)
-            viewHolder.title = convertView!!.findViewById<TextView>(R.id.listtitle)
+            viewHolder.title = convertView!!.findViewById(R.id.listtitle)
             convertView.tag = viewHolder
 
         } else {
