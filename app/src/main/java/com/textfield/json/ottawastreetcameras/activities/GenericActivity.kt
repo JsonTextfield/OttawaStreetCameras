@@ -7,6 +7,10 @@ import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
 
 abstract class GenericActivity : AppCompatActivity() {
+    companion object {
+        const val prefNameHidden = "hidden"
+        const val prefNameFavourites = "favourites"
+    }
 
     fun modifyPrefs(pref: String, selectedCameras: Collection<Camera>, willAdd: Boolean) {
         val sharedPrefs = getSharedPreferences(applicationContext.packageName, Context.MODE_PRIVATE)
