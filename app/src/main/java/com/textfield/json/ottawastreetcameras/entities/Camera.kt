@@ -77,6 +77,10 @@ class Camera : BilingualObject, Parcelable {
         parcel.writeInt(num)
     }
 
+    override fun toString(): String {
+        return getSortableName()
+    }
+
     companion object CREATOR : Parcelable.Creator<Camera> {
         override fun createFromParcel(`in`: Parcel): Camera {
             return Camera(`in`)

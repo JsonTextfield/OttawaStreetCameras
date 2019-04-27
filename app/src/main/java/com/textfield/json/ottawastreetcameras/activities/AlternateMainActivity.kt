@@ -14,10 +14,7 @@ import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.AbsListView
-import android.widget.AdapterView
-import android.widget.Filter
-import android.widget.ImageView
+import android.widget.*
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
@@ -30,7 +27,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.textfield.json.ottawastreetcameras.CameraFilter
-import com.textfield.json.ottawastreetcameras.MyLinearLayout
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.StreetCamsRequestQueue
 import com.textfield.json.ottawastreetcameras.adapters.CameraAdapter
@@ -43,10 +39,9 @@ import org.json.JSONObject
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 
-class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView.MultiChoiceModeListener, MyLinearLayout.OnLetterTouchListener {
+class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView.MultiChoiceModeListener {
 
     private var neighbourhoods: List<Neighbourhood> = ArrayList()
     private var cameras: List<Camera> = ArrayList()
@@ -73,16 +68,16 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
     private lateinit var selectAll: MenuItem
 
     private var mapIsLoaded = false
-
-    private val index = HashMap<Char, Int>()
+    private lateinit var listView: ListView
+    private lateinit var sectionIndex: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alternate_main)
-
+        listView = section_index_listview.listview
+        sectionIndex = section_index_listview.sectionindex
         downloadJson()
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        sectionIndex.setOnTouchingLetterChangedListener(this)
 
         (supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
     }
@@ -187,7 +182,7 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
         Collections.sort(cameras, SortByName())
         myAdapter = object : CameraAdapter(this, cameras) {
             override fun onComplete() {
-                setupSectionIndex()
+                section_index_listview.updateIndex()
             }
         }
         listView.adapter = myAdapter
@@ -203,7 +198,7 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
         }
         listView.setMultiChoiceModeListener(this)
         setSupportActionBar(toolbar)
-        setupSectionIndex()
+        section_index_listview.updateIndex()
         loadMarkers()
         getNeighbourhoods()
     }
@@ -227,24 +222,6 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
             showErrorDialogue(this)
         })
         StreetCamsRequestQueue.getInstance(this).add(jsObjRequest)
-    }
-
-    private fun setupSectionIndex() {
-        index.clear()
-        sectionIndex.removeAllViews()
-        //assumes cameras are sorted
-        for (i in 0 until myAdapter.count) {
-            //get the first character
-            val c = myAdapter.getItem(i).getSortableName()[0]
-            if (c !in index.keys && myAdapter.getItem(i).isVisible) {
-                sectionIndex.add(c.toString())
-                index[c] = i
-            }
-        }
-    }
-
-    override fun onLetterTouch(c: Char) {
-        listView.setSelection(index[c]!!)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -437,7 +414,7 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
         hide.isVisible = !willHide
         unhide.isVisible = willHide
 
-        setupSectionIndex()
+        section_index_listview.updateIndex()
     }
 
     override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
@@ -474,7 +451,7 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
 
 fun GoogleMap.getFilter(cameras: List<Camera>, mapIsLoaded: Boolean): Filter {
     return object : CameraFilter(cameras) {
-        override fun refresh(list: ArrayList<Camera>) {
+        override fun onPublishResults(list: ArrayList<Camera>) {
             val latLngBounds = LatLngBounds.Builder()
             var anyVisible = false
 

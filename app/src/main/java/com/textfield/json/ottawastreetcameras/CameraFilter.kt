@@ -5,10 +5,10 @@ import com.textfield.json.ottawastreetcameras.entities.Camera
 
 abstract class CameraFilter(private val allCameras: List<Camera>) : Filter() {
 
-    abstract fun refresh(list: ArrayList<Camera>)
+    abstract fun onPublishResults(list: ArrayList<Camera>)
 
     override fun publishResults(constraint: CharSequence, results: FilterResults) {
-        refresh(results.values as ArrayList<Camera>)
+        onPublishResults(results.values as ArrayList<Camera>)
     }
 
     override fun performFiltering(constraint: CharSequence): FilterResults {

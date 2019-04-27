@@ -12,34 +12,12 @@
         android:layout_below="@+id/toolbar"
         android:background="@color/backgroundColor">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="2dp">
+        <com.textfield.json.ottawastreetcameras.SectionIndexListView
+            android:id="@+id/section_index_listview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
-            <ListView
-                android:id="@+id/listView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/sectionIndex"
-                android:layout_toStartOf="@+id/sectionIndex"
-                android:choiceMode="multipleChoiceModal"
-                android:divider="@null"
-                android:scrollbars="none" />
-
-            <com.textfield.json.ottawastreetcameras.MyLinearLayout
-                android:id="@+id/sectionIndex"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:orientation="vertical"
-                android:padding="5dp" />
-
-        </RelativeLayout>
-
-        <fragment xmlns:tools="http://schemas.android.com/tools"
+        <fragment
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"

@@ -5,11 +5,13 @@ import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ArrayAdapter
+import android.widget.Filter
+import android.widget.ImageView
+import android.widget.TextView
 import com.textfield.json.ottawastreetcameras.CameraFilter
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.activities.AlternateMainActivity
-import com.textfield.json.ottawastreetcameras.comparators.SortByName
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import java.util.*
 
@@ -56,7 +58,7 @@ abstract class CameraAdapter(private val _context: Context, private val list: Li
 
         viewHolder.title?.text = camera.getName()
 
-        val icon =  if (camera.isFavourite) R.drawable.outline_star_white_18 else R.drawable.outline_star_border_white_18
+        val icon = if (camera.isFavourite) R.drawable.outline_star_white_18 else R.drawable.outline_star_border_white_18
         viewHolder.star?.setImageDrawable(ContextCompat.getDrawable(_context, icon))
         viewHolder.star?.setOnClickListener {
             (context as AlternateMainActivity).modifyPrefs("favourites", Arrays.asList(camera), !camera.isFavourite)
@@ -68,22 +70,9 @@ abstract class CameraAdapter(private val _context: Context, private val list: Li
         return convertView!!
     }
 
-    private fun setupSectionIndex() {
-        index.clear()
-        sort(SortByName())
-        for (i in 0 until count) {
-
-            //get the first character
-            val c = getItem(i).getSortableName()[0]
-            if (c !in index.keys && getItem(i).isVisible) {
-                index[c] = i
-            }
-        }
-    }
-
     override fun getFilter(): Filter {
         return object : CameraFilter(list) {
-            override fun refresh(list: ArrayList<Camera>) {
+            override fun onPublishResults(list: ArrayList<Camera>) {
                 cameras = list
                 notifyDataSetChanged()
                 onComplete()
