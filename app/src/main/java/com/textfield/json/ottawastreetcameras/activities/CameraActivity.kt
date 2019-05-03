@@ -1,13 +1,15 @@
 package com.textfield.json.ottawastreetcameras.activities
 
-import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
+import android.view.ActionMode
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
-import android.widget.ListView
 import android.widget.Toast
 import com.android.volley.NetworkResponse
 import com.android.volley.Response
@@ -26,7 +28,6 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class CameraActivity : GenericActivity() {
-    private var cameras = ArrayList<Camera>()
     private var timers = ArrayList<CameraRunnable>()
     private val handler = Handler()
     private val tag = "camera"
@@ -35,11 +36,36 @@ class CameraActivity : GenericActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
-
+        listView = image_listView
         cameras = intent.getParcelableArrayListExtra<Camera>("cameras")
         imageAdapter = ImageAdapter(this, cameras)
-        image_listView.adapter = imageAdapter
+        listView.adapter = imageAdapter
+        listView.setMultiChoiceModeListener(this)
         getSessionId()
+    }
+
+    override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+        super.onCreateActionMode(mode, menu)
+        showCameras.isVisible = false
+        return true
+    }
+
+    override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
+        if (!super.onActionItemClicked(mode, item)) {
+            return when (item.itemId) {
+                R.id.save -> {
+                    for (i in 0..cameras.size) {
+                        if (cameras[i] in selectedCameras) {
+                            val imageView = listView.getViewByPosition(i).findViewById<ImageView>(R.id.source)
+                            saveToInternalStorage((imageView.drawable as BitmapDrawable).bitmap)
+                        }
+                    }
+                    return true
+                }
+                else -> false
+            }
+        }
+        return true
     }
 
     private fun stop() {
@@ -73,9 +99,7 @@ class CameraActivity : GenericActivity() {
     }
 
     fun back(v: View) {
-        val intent = Intent()
-        intent.putParcelableArrayListExtra("cameras", cameras)
-        setResult(0, intent)
+        setResult(0)
         finish()
     }
 
@@ -142,15 +166,3 @@ class CameraActivity : GenericActivity() {
         }
     }
 }
-
-//https://stackoverflow.com/questions/24811536/android-listview-get-item-view-by-position/24864536
-fun ListView.getViewByPosition(pos: Int): View {
-    val lastListItemPosition = firstVisiblePosition + childCount - 1
-    return if (pos < firstVisiblePosition || pos > lastListItemPosition) {
-        adapter.getView(pos, null, this)
-    } else {
-        getChildAt(pos - firstVisiblePosition)
-    }
-}
-
-

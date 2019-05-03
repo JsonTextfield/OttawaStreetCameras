@@ -21,7 +21,6 @@ import java.util.*
 
 abstract class CameraAdapter(private val _context: Context, private val list: List<Camera>) : ArrayAdapter<Camera>(_context, 0, list) {
     private var cameras = list
-    private val index = HashMap<Char, Int>()
 
     private class ViewHolder {
         internal var title: TextView? = null

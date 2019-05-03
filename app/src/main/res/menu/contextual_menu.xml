@@ -7,6 +7,11 @@
         android:title="@string/show"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/save"
+        android:icon="@drawable/baseline_save_alt_white_24"
+        android:title="@string/save_image"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/remove_favourite"
         android:icon="@drawable/outline_star_border_white_24"
         android:title="@string/remove_from_favourites"

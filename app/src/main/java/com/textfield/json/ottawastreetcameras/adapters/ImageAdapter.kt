@@ -14,7 +14,7 @@ import java.util.*
 /**
  * Created by Jason on 08/02/2018.
  */
-class ImageAdapter(private val _context: Context, private val list: ArrayList<Camera>) : ArrayAdapter<Camera>(_context, 0, list) {
+class ImageAdapter(private val _context: Context, private val list: List<Camera>) : ArrayAdapter<Camera>(_context, 0, list) {
 
     private class ViewHolder {
         internal var title: TextView? = null

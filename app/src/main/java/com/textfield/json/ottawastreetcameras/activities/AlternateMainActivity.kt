@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.AsyncTask
 import android.os.Bundle
+import android.support.annotation.Dimension
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.SearchView
@@ -44,8 +45,6 @@ import kotlin.collections.HashSet
 class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView.MultiChoiceModeListener {
 
     private var neighbourhoods: List<Neighbourhood> = ArrayList()
-    private var cameras: List<Camera> = ArrayList()
-    private val selectedCameras = ArrayList<Camera>()
     private val requestForList = 0
     private val requestForMap = 1
     private val permissionArray = arrayOf(permission.ACCESS_FINE_LOCATION, permission.ACCESS_COARSE_LOCATION)
@@ -57,18 +56,7 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
     private var map: GoogleMap? = null
     private var actionMode: ActionMode? = null
 
-    private lateinit var sortName: MenuItem
-    private lateinit var sortDistance: MenuItem
-    private lateinit var showCameras: MenuItem
-    private lateinit var addFav: MenuItem
-    private lateinit var removeFav: MenuItem
-    private lateinit var hide: MenuItem
-    private lateinit var unhide: MenuItem
-    private lateinit var searchMenuItem: MenuItem
-    private lateinit var selectAll: MenuItem
-
     private var mapIsLoaded = false
-    private lateinit var listView: ListView
     private lateinit var sectionIndex: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,8 +66,6 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
         sectionIndex = section_index_listview.sectionindex
         downloadJson()
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-
-        (supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -141,6 +127,12 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
         return true
     }
 
+    override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+        super.onCreateActionMode(mode, menu)
+        saveImage.isVisible = false
+        return true
+    }
+
     private fun getNeighbourhoods() {
         val url = "http://data.ottawa.ca/dataset/302ade92-51ec-4b26-a715-627802aa62a8/resource/f1163794-de80-4682-bda5-b13034984087/download/onsboundariesgen1.shp.json"
         val jsObjRequest = JsonObjectRequest(url, null, Response.Listener { response ->
@@ -199,8 +191,8 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
         listView.setMultiChoiceModeListener(this)
         setSupportActionBar(toolbar)
         section_index_listview.updateIndex()
-        loadMarkers()
         getNeighbourhoods()
+        (supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
     }
 
     private fun downloadJson() {
@@ -225,25 +217,24 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
+        googleMap.setOnInfoWindowLongClickListener { marker ->
+            if (actionMode == null) {
+                actionMode = startActionMode(this)
+            }
+            selectCamera(marker.tag as Camera)
+        }
+        googleMap.setOnInfoWindowClickListener { marker ->
+            if (selectCamera(marker.tag as Camera) && actionMode == null) {
+                showSelectedCameras()
+            }
+        }
         map = googleMap
+        loadMarkers()
         requestPermissions(requestForMap)
-        googleMap.setOnMapLoadedCallback { loadMarkers() }
     }
 
     private fun loadMarkers() {
         map?.let { map ->
-            map.setOnInfoWindowLongClickListener { marker ->
-                if (actionMode == null) {
-                    actionMode = startActionMode(this)
-                }
-                selectCamera(marker.tag as Camera)
-            }
-            map.setOnInfoWindowClickListener { marker ->
-                val camera = marker.tag as Camera
-                if (selectCamera(camera) && actionMode == null) {
-                    showSelectedCameras()
-                }
-            }
             val builder = LatLngBounds.Builder()
 
             //add a marker for every camera available
@@ -265,15 +256,15 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
             val bounds = builder.build()
             map.setLatLngBoundsForCameraTarget(bounds)
             map.setOnMapLoadedCallback {
-                mapIsLoaded = true
                 map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50))
+                mapIsLoaded = true
             }
         }
         //map?.getFilter(cameras, mapIsLoaded)?.filter("")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (actionMode == null && selectedCameras.isNotEmpty()) {
+        if (actionMode == null) {
             selectedCameras.clear()
         }
     }
@@ -309,36 +300,12 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
         }
     }
 
-    private fun selectCamera(camera: Camera): Boolean {
-        if (camera in selectedCameras) {
-            selectedCameras.remove(camera)
-            camera.marker?.setIcon(BitmapDescriptorFactory.defaultMarker())
-            if (camera.isFavourite) {
-                camera.marker?.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
-            }
-            if (selectedCameras.isEmpty()) {
-                actionMode!!.finish()
-                return false
-            }
-        } else {
-            selectedCameras.add(camera)
-            camera.marker?.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-        }
-        actionMode?.let { actionMode ->
-            actionMode.title = resources.getQuantityString(R.plurals.selectedCameras, selectedCameras.size, selectedCameras.size)
-
-            val allFav = selectedCameras.map { it.isFavourite }.reduce { acc, b -> acc && b }
-            addFav.isVisible = !allFav
-            removeFav.isVisible = allFav
-
-            val allInvis = selectedCameras.map { !it.isVisible }.reduce { acc, b -> acc && b }
-            hide.isVisible = !allInvis
-            unhide.isVisible = allInvis
-
+    override fun selectCamera(camera: Camera): Boolean {
+        val result = super.selectCamera(camera)
+        actionMode?.let {
             showCameras.isVisible = selectedCameras.size <= maxCameras
-            selectAll.isVisible = selectedCameras.size < myAdapter.count
         }
-        return camera in selectedCameras
+        return result
     }
 
     private fun showSelectedCameras() {
@@ -347,105 +314,23 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
         startActivityForResult(intent, 0)
     }
 
-    override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-        when (item!!.itemId) {
-            R.id.open_cameras -> {
-                showSelectedCameras()
-                return true
-            }
-            R.id.add_favourites -> {
-                addRemoveFavs(true)
-                return true
-            }
-            R.id.remove_favourite -> {
-                addRemoveFavs(false)
-                return true
-            }
-            R.id.hide -> {
-                showOrHide(true)
-                return true
-            }
-            R.id.unhide -> {
-                showOrHide(false)
-                return true
-            }
-            R.id.select_all -> {
-                selectedCameras.clear()
-                for (i in 0 until myAdapter.count) {
-                    listView.setItemChecked(i, true)
+    override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
+        if (!super.onActionItemClicked(mode, item)) {
+            return when (item.itemId) {
+                R.id.open_cameras -> {
+                    showSelectedCameras()
+                    true
                 }
-                return true
-            }
-            else -> return false
-        }
-    }
-
-    private fun addRemoveFavs(willAdd: Boolean) {
-        modifyPrefs(prefNameFavourites, selectedCameras, willAdd)
-        cameras.filter { it in selectedCameras }.forEach { it.isFavourite = willAdd }
-
-        for (camera in cameras) {
-            if (camera.isFavourite) {
-                camera.marker?.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
-            } else {
-                camera.marker?.setIcon(BitmapDescriptorFactory.defaultMarker())
+                else -> false
             }
         }
-        for (i in 0 until myAdapter.count) {
-            if (listView.checkedItemPositions[i]) {
-                val view = listView.getViewByPosition(i)
-                val starImageView = view.findViewById<ImageView>(R.id.star)
-                starImageView.setImageDrawable(if (willAdd) {
-                    ContextCompat.getDrawable(this, R.drawable.outline_star_white_18)
-                } else {
-                    ContextCompat.getDrawable(this, R.drawable.outline_star_border_white_18)
-                })
-            }
-        }
-
-        addFav.isVisible = !willAdd
-        removeFav.isVisible = willAdd
-    }
-
-    private fun showOrHide(willHide: Boolean) {
-        modifyPrefs(prefNameHidden, selectedCameras, willHide)
-        cameras.filter { it in selectedCameras }.forEach { it.setVisibility(!willHide) }
-
-        hide.isVisible = !willHide
-        unhide.isVisible = willHide
-
-        section_index_listview.updateIndex()
-    }
-
-    override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-        actionMode = mode
-        actionMode!!.menuInflater.inflate(R.menu.contextual_menu, menu)
-
-        selectAll = menu!!.findItem(R.id.select_all)
-        showCameras = menu.findItem(R.id.open_cameras)
-        removeFav = menu.findItem(R.id.remove_favourite)
-        addFav = menu.findItem(R.id.add_favourites)
-        unhide = menu.findItem(R.id.unhide)
-        hide = menu.findItem(R.id.hide)
-
         return true
     }
 
-    override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-        return false
-    }
-
     override fun onDestroyActionMode(mode: ActionMode?) {
-        cameras.filter { it in selectedCameras }.forEach { selectCamera(it) }
         myAdapter.filter.filter((searchMenuItem.actionView as SearchView).query)
         map?.getFilter(cameras, mapIsLoaded)?.filter((searchMenuItem.actionView as SearchView).query)
-        actionMode = null
-    }
-
-    override fun onItemCheckedStateChanged(actionMode: ActionMode, i: Int, l: Long, b: Boolean) {
-        if (!selectCamera(myAdapter.getItem(i)) && b) {
-            listView.setItemChecked(i, false)
-        }
+        super.onDestroyActionMode(mode)
     }
 }
 

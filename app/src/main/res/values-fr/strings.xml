@@ -18,6 +18,7 @@
     <string name="hide">Cacher</string>
     <string name="select_all">Tout sélectionner</string>
     <string name="neighbourhoods">Quartiers</string>
+    <string name="save_image">Télécharger l\'image</string>
 
     <plurals name="selectedCameras">
         <item quantity="one">%d caméra sélectionnée</item>
