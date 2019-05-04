@@ -1,6 +1,6 @@
 package com.textfield.json.ottawastreetcameras;
 
-/*
+
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -31,4 +31,4 @@ public class MainActivityTest {
         mActivityRule.getActivity().getViewSwitcher().showNext();
     }
 }
- */
+
