@@ -23,7 +23,7 @@ class Camera : BilingualObject, Parcelable {
         private set
 
     var neighbourhood = ""
-    var marker : Marker? = null
+    var marker: Marker? = null
 
     constructor(vals: JSONObject) {
         try {
@@ -48,14 +48,14 @@ class Camera : BilingualObject, Parcelable {
         }
     }
 
-    constructor(`in`: Parcel) {
-        nameEn = `in`.readString()!!
-        nameFr = `in`.readString()!!
-        owner = `in`.readString()!!
-        lat = `in`.readDouble()
-        lng = `in`.readDouble()
-        id = `in`.readInt()
-        num = `in`.readInt()
+    constructor(parcel: Parcel) {
+        nameEn = parcel.readString()!!
+        nameFr = parcel.readString()!!
+        owner = parcel.readString()!!
+        lat = parcel.readDouble()
+        lng = parcel.readDouble()
+        id = parcel.readInt()
+        num = parcel.readInt()
     }
 
     fun setVisibility(b: Boolean) {
@@ -89,5 +89,28 @@ class Camera : BilingualObject, Parcelable {
         override fun newArray(size: Int): Array<Camera?> {
             return arrayOfNulls(size)
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is Camera) return false
+        return (nameEn == other.nameEn)
+                && (nameFr == other.nameFr)
+                && (lat == other.lat)
+                && (lng == other.lng)
+                && (owner == other.owner)
+                && (id == other.id)
+                && (num == other.num)
+    }
+
+    override fun hashCode(): Int {
+        var result = owner.hashCode()
+        result = 31 * result + lat.hashCode()
+        result = 31 * result + lng.hashCode()
+        result = 31 * result + num
+        result = 31 * result + isFavourite.hashCode()
+        result = 31 * result + isVisible.hashCode()
+        result = 31 * result + neighbourhood.hashCode()
+        result = 31 * result + (marker?.hashCode() ?: 0)
+        return result
     }
 }
