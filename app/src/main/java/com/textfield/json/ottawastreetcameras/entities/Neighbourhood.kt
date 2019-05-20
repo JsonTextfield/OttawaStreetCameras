@@ -8,8 +8,7 @@ import kotlin.collections.ArrayList
 
 class Neighbourhood(values: JSONObject) : BilingualObject() {
 
-    var boundaries = ArrayList<ArrayList<LatLng>>()
-        private set
+    private var boundaries = ArrayList<List<LatLng>>()
 
     init {
         try {
@@ -31,7 +30,7 @@ class Neighbourhood(values: JSONObject) : BilingualObject() {
                 val list = (0 until neighbourhoodPoints.length()).map {
                     LatLng(neighbourhoodPoints.getJSONArray(it).getDouble(1), neighbourhoodPoints.getJSONArray(it).getDouble(0))
                 }
-                boundaries.add(ArrayList<LatLng>(list))
+                boundaries.add(list)
             }
 
         } catch (e: JSONException) {
@@ -65,8 +64,8 @@ class Neighbourhood(values: JSONObject) : BilingualObject() {
         val pX = location.longitude
 
         if ((aY > pY && bY > pY) || (aY < pY && bY < pY) || (aX < pX && bX < pX)) {
-            return false // a and b can't both be above or below pt.y, and a or
-            // b must be east of pt.x
+            return false
+            // a and b can't both be above or below pt.y, and a or b must be east of pt.x
         }
 
         val m = (aY - bY) / (aX - bX) // Rise over run
