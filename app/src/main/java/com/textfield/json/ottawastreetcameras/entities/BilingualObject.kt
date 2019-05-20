@@ -2,7 +2,7 @@ package com.textfield.json.ottawastreetcameras.entities
 
 import java.util.*
 
-open class BilingualObject {
+abstract class BilingualObject {
     protected var nameEn = ""
     protected var nameFr = ""
     protected var id = 0

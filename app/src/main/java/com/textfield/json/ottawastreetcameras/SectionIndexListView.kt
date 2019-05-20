@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
+import com.textfield.json.ottawastreetcameras.activities.GenericActivity
 import kotlinx.android.synthetic.main.section_index_listview.view.*
 
 class SectionIndexListView : LinearLayout {
@@ -31,21 +32,24 @@ class SectionIndexListView : LinearLayout {
         sectionIndex.setOnTouchListener { _, event ->
             val action = event.action
             val yCoordinates = event.y
-            val oldChoose = choose
             var selectedIndex = (yCoordinates / height * sectionIndex.childCount).toInt()
-            if (selectedIndex < 0) {
-                selectedIndex = 0
-            }
+            selectedIndex = Math.max(0, selectedIndex)
             when (action) {
                 MotionEvent.ACTION_UP -> {
                     choose = -1
-                    (0 until sectionIndex.childCount).forEach { (sectionIndex.getChildAt(it) as TextView).setTextColor(Color.WHITE) }
+                    (sectionIndex.getChildAt(selectedIndex) as TextView)
+                            .setTextColor(if ((context as GenericActivity).isNightModeOn()) Color.WHITE else Color.BLACK)
+                    /*(0 until sectionIndex.childCount).forEach {
+                        (sectionIndex.getChildAt(it) as TextView)
+                                .setTextColor(if ((context as GenericActivity).isNightModeOn()) Color.WHITE else Color.BLACK)
+                }*/
                 }
                 else -> {
-                    if (oldChoose != selectedIndex) {
+                    if (choose != selectedIndex) {
 
-                        if (oldChoose > -1) {
-                            (sectionIndex.getChildAt(oldChoose) as TextView).setTextColor(Color.WHITE)
+                        if (choose > -1) {
+                            (sectionIndex.getChildAt(choose) as TextView)
+                                    .setTextColor(if ((context as GenericActivity).isNightModeOn()) Color.WHITE else Color.BLACK)
                         }
                         try {
                             val t = (sectionIndex.getChildAt(selectedIndex) as TextView)
@@ -72,6 +76,7 @@ class SectionIndexListView : LinearLayout {
                 index[c] = i
                 val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val t = inflater.inflate(R.layout.section_index_title, this, false) as TextView
+                t.setTextColor(if ((context as GenericActivity).isNightModeOn()) Color.WHITE else Color.BLACK)
                 t.text = c.toString()
                 sectionIndex.addView(t)
                 sectionindex.invalidate()

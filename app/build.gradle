@@ -15,6 +15,7 @@ android {
     buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.textfield.json.ottawastreetcameras"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         minSdkVersion 15
         targetSdkVersion 28
         versionCode 10
@@ -39,6 +40,8 @@ dependencies {
     implementation 'com.android.support:support-vector-drawable:28.0.0'
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.json:json:20080701'
+    androidTestImplementation 'androidx.test:runner:1.1.1'
+    androidTestImplementation 'androidx.test:rules:1.1.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {

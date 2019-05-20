@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras
+package com.textfield.json.ottawastreetcameras.adapters.filters
 
 import android.widget.Filter
 

@@ -5,6 +5,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
+import android.support.v7.app.AppCompatDelegate
 import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
@@ -34,6 +35,7 @@ class CameraActivity : GenericActivity() {
     private lateinit var imageAdapter: ImageAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(if (isNightModeOn()) R.style.AppTheme else R.style.AppTheme_Light)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
         listView = image_listView
@@ -143,6 +145,7 @@ class CameraActivity : GenericActivity() {
         sessionRequest.tag = tag
         StreetCamsRequestQueue.getInstance(this).add(sessionRequest)
     }
+
     private fun saveToInternalStorage(bitmapImage: Bitmap) {
         val streetCamsDirectory = File(Environment.getExternalStorageDirectory(), "/Ottawa StreetCams/")
         if (!streetCamsDirectory.exists()) {

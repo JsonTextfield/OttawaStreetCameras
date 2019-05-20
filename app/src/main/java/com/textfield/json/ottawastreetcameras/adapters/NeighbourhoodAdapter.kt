@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.CursorAdapter
 import android.widget.Filter
 import android.widget.TextView
-import com.textfield.json.ottawastreetcameras.NeighbourhoodFilter
+import com.textfield.json.ottawastreetcameras.adapters.filters.NeighbourhoodFilter
 import com.textfield.json.ottawastreetcameras.R
 
 abstract class NeighbourhoodAdapter(var context: Context, cursor: Cursor) : CursorAdapter(context, cursor, false) {

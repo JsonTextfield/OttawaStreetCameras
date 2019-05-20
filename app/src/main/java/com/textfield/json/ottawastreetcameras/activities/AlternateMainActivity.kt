@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.AsyncTask
 import android.os.Bundle
-import android.support.annotation.Dimension
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.SearchView
@@ -15,7 +14,9 @@ import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.*
+import android.widget.AbsListView
+import android.widget.AdapterView
+import android.widget.Filter
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
@@ -27,7 +28,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
-import com.textfield.json.ottawastreetcameras.CameraFilter
+import com.textfield.json.ottawastreetcameras.adapters.filters.CameraFilter
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.StreetCamsRequestQueue
 import com.textfield.json.ottawastreetcameras.adapters.CameraAdapter
@@ -48,7 +49,7 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
     private val requestForList = 0
     private val requestForMap = 1
     private val permissionArray = arrayOf(permission.ACCESS_FINE_LOCATION, permission.ACCESS_COARSE_LOCATION)
-    private val maxCameras = 4
+    val maxCameras = 4
 
     private lateinit var myAdapter: CameraAdapter
     private lateinit var locationManager: LocationManager
@@ -60,6 +61,11 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
     private lateinit var sectionIndex: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (isNightModeOn()) {
+            setTheme(R.style.AppTheme)
+        } else {
+            setTheme(R.style.AppTheme_Light)
+        }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alternate_main)
         listView = section_index_listview.listview
@@ -74,6 +80,8 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
         sortName = menu.findItem(R.id.sort_name)
         sortDistance = menu.findItem(R.id.distance_sort)
         searchMenuItem = menu.findItem(R.id.user_searchView)
+        val nightMode = menu.findItem(R.id.night_mode)
+        nightMode.isChecked = isNightModeOn()
         val searchView = searchMenuItem.actionView as SearchView
 
         searchView.queryHint = String.format(resources.getString(R.string.search_hint), cameras.size)
@@ -93,6 +101,15 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
                 return true
             }
         })
+        for (i in 0 until menu.size()) {
+            if (isNightModeOn()) {
+                menu.getItem(i)?.icon?.setColorFilter(ContextCompat.getColor(this,
+                        android.R.color.white), android.graphics.PorterDuff.Mode.SRC_IN)
+            } else {
+                menu.getItem(i)?.icon?.setColorFilter(ContextCompat.getColor(this,
+                        android.R.color.black), android.graphics.PorterDuff.Mode.SRC_IN)
+            }
+        }
         return true
     }
 
@@ -122,6 +139,12 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
             R.id.hidden -> {
                 searchMenuItem.expandActionView()
                 (searchMenuItem.actionView as SearchView).setQuery("h: ", false)
+            }
+            R.id.night_mode -> {
+                item.isChecked = !item.isChecked
+                setNightModeOn(item.isChecked)
+                startActivity(Intent(this, AlternateMainActivity::class.java))
+                finish()
             }
         }
         return true
@@ -300,7 +323,7 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
         }
     }
 
-    override fun selectCamera(camera: Camera): Boolean {
+    public override fun selectCamera(camera: Camera): Boolean {
         val result = super.selectCamera(camera)
         actionMode?.let {
             showCameras.isVisible = selectedCameras.size <= maxCameras
@@ -331,6 +354,7 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback, AbsListView
         myAdapter.filter.filter((searchMenuItem.actionView as SearchView).query)
         map?.getFilter(cameras, mapIsLoaded)?.filter((searchMenuItem.actionView as SearchView).query)
         super.onDestroyActionMode(mode)
+        actionMode = null
     }
 }
 

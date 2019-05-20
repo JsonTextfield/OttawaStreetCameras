@@ -26,8 +26,8 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
 
     private var actionMode: ActionMode? = null
     lateinit var listView: ListView
-    protected var cameras: List<Camera> = ArrayList()
-    protected val selectedCameras = ArrayList<Camera>()
+    var cameras: List<Camera> = ArrayList()
+    val selectedCameras = ArrayList<Camera>()
 
     protected lateinit var sortName: MenuItem
     protected lateinit var sortDistance: MenuItem
@@ -43,14 +43,23 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
     fun modifyPrefs(pref: String, selectedCameras: Collection<Camera>, willAdd: Boolean) {
         val sharedPrefs = getSharedPreferences(applicationContext.packageName, Context.MODE_PRIVATE)
         val prefList = HashSet<String>(sharedPrefs.getStringSet(pref, HashSet<String>()))
-        val editor = sharedPrefs.edit()
 
         if (willAdd) {
             prefList.addAll(selectedCameras.map { it.num.toString() })
         } else {
             prefList.removeAll(selectedCameras.map { it.num.toString() })
         }
-        editor.putStringSet(pref, prefList).apply()
+        sharedPrefs.edit().putStringSet(pref, prefList).apply()
+    }
+
+    fun isNightModeOn(): Boolean {
+        val sharedPrefs = getSharedPreferences(applicationContext.packageName, Context.MODE_PRIVATE)
+        return sharedPrefs.getBoolean("isNightModeOn", true)
+    }
+
+    fun setNightModeOn(value: Boolean) {
+        val sharedPrefs = getSharedPreferences(applicationContext.packageName, Context.MODE_PRIVATE)
+        sharedPrefs.edit().putBoolean("isNightModeOn", value).apply()
     }
 
     fun showErrorDialogue(context: Context) {
@@ -162,12 +171,14 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
                 camera.marker?.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
             }
             if (selectedCameras.isEmpty()) {
-                actionMode!!.finish()
+                actionMode?.finish()
                 return false
             }
         } else {
             selectedCameras.add(camera)
-            camera.marker?.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+            if (actionMode != null) {
+                camera.marker?.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+            }
         }
         actionMode?.let { actionMode ->
             actionMode.title = resources.getQuantityString(R.plurals.selectedCameras, selectedCameras.size, selectedCameras.size)

@@ -9,9 +9,10 @@ import android.widget.ArrayAdapter
 import android.widget.Filter
 import android.widget.ImageView
 import android.widget.TextView
-import com.textfield.json.ottawastreetcameras.CameraFilter
+import com.textfield.json.ottawastreetcameras.adapters.filters.CameraFilter
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.activities.AlternateMainActivity
+import com.textfield.json.ottawastreetcameras.activities.GenericActivity
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import java.util.*
 
@@ -59,6 +60,13 @@ abstract class CameraAdapter(private val _context: Context, private val list: Li
 
         val icon = if (camera.isFavourite) R.drawable.outline_star_white_18 else R.drawable.outline_star_border_white_18
         viewHolder.star?.setImageDrawable(ContextCompat.getDrawable(_context, icon))
+
+        if ((context as GenericActivity).isNightModeOn()) {
+            viewHolder.star?.setColorFilter(ContextCompat.getColor(context, android.R.color.white), android.graphics.PorterDuff.Mode.SRC_IN)
+        } else {
+            viewHolder.star?.setColorFilter(ContextCompat.getColor(context, android.R.color.black), android.graphics.PorterDuff.Mode.SRC_IN)
+
+        }
         viewHolder.star?.setOnClickListener {
             (context as AlternateMainActivity).modifyPrefs("favourites", Arrays.asList(camera), !camera.isFavourite)
             camera.isFavourite = !camera.isFavourite
