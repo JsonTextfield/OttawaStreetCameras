@@ -17,13 +17,12 @@
     <string name="unhide">Unhide</string>
     <string name="hide">Hide</string>
     <string name="select_all">Select all</string>
+    <string name="night_mode">Night mode</string>
     <string name="neighbourhoods">Neighbourhoods</string>
 
     <plurals name="selectedCameras">
         <item quantity="one">%d camera selected</item>
         <item quantity="other">%d cameras selected</item>
     </plurals>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
     <string name="save_image">Save Image</string>
 </resources>

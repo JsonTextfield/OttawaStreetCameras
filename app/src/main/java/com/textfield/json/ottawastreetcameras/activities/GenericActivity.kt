@@ -24,18 +24,15 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
         const val prefNameFavourites = "favourites"
     }
 
-    private var actionMode: ActionMode? = null
+    protected var actionMode: ActionMode? = null
     lateinit var listView: ListView
-    var cameras: List<Camera> = ArrayList()
+    var cameras = ArrayList<Camera>()
     val selectedCameras = ArrayList<Camera>()
 
-    protected lateinit var sortName: MenuItem
-    protected lateinit var sortDistance: MenuItem
     private lateinit var addFav: MenuItem
     private lateinit var removeFav: MenuItem
     private lateinit var hide: MenuItem
     private lateinit var unhide: MenuItem
-    protected lateinit var searchMenuItem: MenuItem
     private lateinit var selectAll: MenuItem
     protected lateinit var showCameras: MenuItem
     protected lateinit var saveImage: MenuItem
@@ -83,7 +80,11 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
         unhide = menu.findItem(R.id.unhide)
         hide = menu.findItem(R.id.hide)
         saveImage = menu.findItem(R.id.save)
-
+        for (i in 0 until menu.size()) {
+            menu.getItem(i)?.icon?.setColorFilter(ContextCompat.getColor(this,
+                    if (isNightModeOn()) android.R.color.white else android.R.color.black),
+                    android.graphics.PorterDuff.Mode.SRC_IN)
+        }
         return true
     }
 

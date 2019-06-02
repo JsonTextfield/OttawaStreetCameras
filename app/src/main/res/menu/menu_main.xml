@@ -42,8 +42,8 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/night_mode"
-        android:title="Night Mode"
         android:checkable="true"
         android:checked="true"
+        android:title="@string/night_mode"
         app:showAsAction="never" />
 </menu>

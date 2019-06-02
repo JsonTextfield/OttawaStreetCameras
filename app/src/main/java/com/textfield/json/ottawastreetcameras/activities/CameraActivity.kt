@@ -1,11 +1,11 @@
 package com.textfield.json.ottawastreetcameras.activities
 
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
-import android.support.v7.app.AppCompatDelegate
 import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
@@ -24,7 +24,6 @@ import com.textfield.json.ottawastreetcameras.entities.Camera
 import kotlinx.android.synthetic.main.activity_camera.*
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -38,6 +37,9 @@ class CameraActivity : GenericActivity() {
         setTheme(if (isNightModeOn()) R.style.AppTheme else R.style.AppTheme_Light)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
+        arrayOf(image_listView, camera_activity_layout).forEach {
+            it.setBackgroundColor(if (isNightModeOn()) Color.BLACK else Color.WHITE)
+        }
         listView = image_listView
         cameras = intent.getParcelableArrayListExtra<Camera>("cameras")
         imageAdapter = ImageAdapter(this, cameras)
@@ -56,7 +58,7 @@ class CameraActivity : GenericActivity() {
         if (!super.onActionItemClicked(mode, item)) {
             return when (item.itemId) {
                 R.id.save -> {
-                    for (i in 0..cameras.size) {
+                    for (i in 0 until cameras.size) {
                         if (cameras[i] in selectedCameras) {
                             val imageView = listView.getViewByPosition(i).findViewById<ImageView>(R.id.source)
                             saveToInternalStorage((imageView.drawable as BitmapDrawable).bitmap)
@@ -147,25 +149,19 @@ class CameraActivity : GenericActivity() {
     }
 
     private fun saveToInternalStorage(bitmapImage: Bitmap) {
-        val streetCamsDirectory = File(Environment.getExternalStorageDirectory(), "/Ottawa StreetCams/")
+        val streetCamsDirectory = File(Environment.getExternalStorageDirectory(), "/Ottawa StreetCams")
         if (!streetCamsDirectory.exists()) {
             streetCamsDirectory.mkdirs()
         }
         val imageFile = File(streetCamsDirectory, Date().time.toString() + ".jpg")
-        var fos: FileOutputStream? = null
         try {
-            fos = FileOutputStream(imageFile)
-            // Use the compress method on the BitMap object to write image to the OutputStream
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos)
+            val out = FileOutputStream(imageFile)
+            bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, out)
+            out.flush()
+            out.close()
             Toast.makeText(this, "Image saved at: $imageFile", Toast.LENGTH_LONG).show()
         } catch (e: Exception) {
             e.printStackTrace()
-        } finally {
-            try {
-                fos?.close()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
         }
     }
 }
