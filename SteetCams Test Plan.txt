@@ -1,0 +1,19 @@
+main screen
+list of cameras
+search cameras
+switch to map
+sort by distance
+favourites
+hidden
+random camera
+shuffle
+night mode
+
+
+click the favourite button on on of the list items. does it become a favourite?
+
+is everything translated
+rotating
+device sleep/locked
+
+data usage
