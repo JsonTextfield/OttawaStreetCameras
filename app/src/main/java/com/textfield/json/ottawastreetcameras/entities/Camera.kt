@@ -2,6 +2,7 @@ package com.textfield.json.ottawastreetcameras.entities
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.Marker
 import org.json.JSONException
 import org.json.JSONObject
@@ -19,6 +20,7 @@ class Camera : BilingualObject, Parcelable {
     var num = 0
         private set
     var isFavourite = false
+        private set
     var isVisible = true
         private set
 
@@ -58,9 +60,17 @@ class Camera : BilingualObject, Parcelable {
         num = parcel.readInt()
     }
 
-    fun setVisibility(b: Boolean) {
+    fun setVisible(b: Boolean) {
         marker?.isVisible = b
         isVisible = b
+    }
+
+    fun setFavourite(b: Boolean) {
+        isFavourite = b
+        if (b)
+            marker?.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
+        else
+            marker?.setIcon(BitmapDescriptorFactory.defaultMarker())
     }
 
     override fun describeContents(): Int {

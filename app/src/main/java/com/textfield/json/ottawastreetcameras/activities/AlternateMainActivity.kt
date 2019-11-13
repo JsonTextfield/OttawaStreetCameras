@@ -7,18 +7,16 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.LocationManager
 import android.os.AsyncTask
-import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.SearchView
 import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Filter
+import androidx.appcompat.widget.SearchView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
@@ -50,7 +48,6 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback {
     private var neighbourhoods = ArrayList<Neighbourhood>()
     private val requestForList = 0
     private val requestForMap = 1
-    private val permissionArray = arrayOf(permission.ACCESS_FINE_LOCATION, permission.ACCESS_COARSE_LOCATION)
     private val maxCameras = 4
 
     private lateinit var myAdapter: CameraAdapter
@@ -59,14 +56,16 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback {
     private var map: GoogleMap? = null
 
     private var mapIsLoaded = false
-
+    private var searchView: SearchView? = null
     private var searchMenuItem: MenuItem? = null
     private var sortName: MenuItem? = null
     private var sortDistance: MenuItem? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(if (isNightModeOn()) R.style.AppTheme else R.style.AppTheme_Light)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alternate_main)
+
         arrayOf(section_index_listview.listview, section_index_listview.sectionindex,
                 main_layout, view_switcher, toolbar).forEach {
             it.setBackgroundColor(if (isNightModeOn()) Color.BLACK else Color.WHITE)
@@ -106,11 +105,7 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback {
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
-        if (actionMode != null) {
-            outState?.putParcelableArrayList("selectedCameras", selectedCameras)
-        }
-        outState?.putInt("firstVisibleListItem", listView.firstVisiblePosition)
-        outState?.putParcelableArrayList("cameras", cameras)
+        outState?.putBoolean("sortByName", sortDistance?.isVisible!!)
         super.onSaveInstanceState(outState)
     }
 
@@ -122,13 +117,13 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback {
         searchMenuItem = menu.findItem(R.id.user_searchView)
         val nightMode = menu.findItem(R.id.night_mode)
         nightMode.isChecked = isNightModeOn()
-        val searchView = searchMenuItem?.actionView as SearchView
+        searchView = searchMenuItem?.actionView as SearchView?
 
-        searchView.queryHint = String.format(resources.getString(R.string.search_hint), cameras.size)
+        searchView?.queryHint = String.format(resources.getString(R.string.search_hint), cameras.size)
 
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                searchView.clearFocus()
+                searchView?.clearFocus()
                 return true
             }
 
@@ -176,13 +171,19 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback {
                 selectCamera(cameras[Random().nextInt(cameras.size)])
                 showSelectedCameras()
             }
+            R.id.shuffle -> {
+                val intent = Intent(this, CameraActivity::class.java)
+                intent.putParcelableArrayListExtra("cameras", cameras)
+                intent.putExtra("shuffle", true)
+                startActivityForResult(intent, 0)
+            }
             R.id.favourites -> {
                 searchMenuItem?.expandActionView()
-                (searchMenuItem?.actionView as SearchView).setQuery("f: ", false)
+                searchView?.setQuery("f: ", false)
             }
             R.id.hidden -> {
                 searchMenuItem?.expandActionView()
-                (searchMenuItem?.actionView as SearchView).setQuery("h: ", false)
+                searchView?.setQuery("h: ", false)
             }
             R.id.night_mode -> {
                 item.isChecked = !item.isChecked
@@ -245,12 +246,13 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback {
             cameras = (0 until response.length())
                     .map {
                         val camera = Camera(response.getJSONObject(it))
-                        camera.isFavourite = camera.num.toString() in sharedPrefs.getStringSet(prefNameFavourites, HashSet<String>())!!
-                        camera.setVisibility(camera.num.toString() !in sharedPrefs.getStringSet(prefNameHidden, HashSet<String>())!!)
+                        camera.setFavourite(camera.num.toString() in sharedPrefs.getStringSet(prefNameFavourites, HashSet<String>())!!)
+                        camera.setVisible(camera.num.toString() !in sharedPrefs.getStringSet(prefNameHidden, HashSet<String>())!!)
                         camera
                     } as ArrayList<Camera>
             Collections.sort(cameras, SortByName())
             myAdapter.addAll(cameras)
+            searchView?.queryHint = String.format(resources.getString(R.string.search_hint), cameras.size)
             (supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
             section_index_listview.updateIndex()
             //getNeighbourhoods()
@@ -317,6 +319,10 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback {
     }
 
     private fun requestPermissions(requestCode: Int) {
+        val permissionArray = arrayOf(
+                permission.ACCESS_FINE_LOCATION,
+                permission.ACCESS_COARSE_LOCATION
+        )
         val allTrue = permissionArray
                 .map { ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED }
                 .reduce { acc, b -> acc && b }

@@ -1,5 +1,6 @@
 package com.textfield.json.ottawastreetcameras.activities
 
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
@@ -11,12 +12,15 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
-import android.widget.Toast
+import android.widget.TextView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.android.volley.NetworkResponse
 import com.android.volley.Response
 import com.android.volley.toolbox.HttpHeaderParser
 import com.android.volley.toolbox.ImageRequest
 import com.android.volley.toolbox.StringRequest
+import com.google.android.material.snackbar.Snackbar
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.StreetCamsRequestQueue
 import com.textfield.json.ottawastreetcameras.adapters.ImageAdapter
@@ -28,10 +32,13 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class CameraActivity : GenericActivity() {
+    private val requestForSave = 0
     private var timers = ArrayList<CameraRunnable>()
     private val handler = Handler()
     private val tag = "camera"
     private lateinit var imageAdapter: ImageAdapter
+    private var shuffle = false
+    private var workaround = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(if (isNightModeOn()) R.style.AppTheme else R.style.AppTheme_Light)
@@ -41,17 +48,32 @@ class CameraActivity : GenericActivity() {
             it.setBackgroundColor(if (isNightModeOn()) Color.BLACK else Color.WHITE)
         }
         listView = image_listView
+        shuffle = intent.getBooleanExtra("shuffle", false)
         cameras = intent.getParcelableArrayListExtra<Camera>("cameras")
-        imageAdapter = ImageAdapter(this, cameras)
+        imageAdapter = ImageAdapter(this, if (shuffle) cameras.subList(0, 1) else cameras)
         listView.adapter = imageAdapter
         listView.setMultiChoiceModeListener(this)
         getSessionId()
+        if (savedInstanceState != null) {
+            if (savedInstanceState.getParcelableArrayList<Camera>("selectedCameras") != null) {
+                val cameras = savedInstanceState.getParcelableArrayList<Camera>("selectedCameras")!!
+                startActionMode(this)
+                (0 until imageAdapter.count).forEach {
+                    if (imageAdapter.getItem(it) in cameras) {
+                        listView.setItemChecked(it, true)
+                    }
+                }
+            }
+        }
     }
 
     override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-        super.onCreateActionMode(mode, menu)
-        showCameras.isVisible = false
-        return true
+        if (!shuffle) {
+            super.onCreateActionMode(mode, menu)
+            showCameras.isVisible = false
+            return true
+        }
+        return false
     }
 
     override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
@@ -60,11 +82,14 @@ class CameraActivity : GenericActivity() {
                 R.id.save -> {
                     for (i in 0 until cameras.size) {
                         if (cameras[i] in selectedCameras) {
-                            val imageView = listView.getViewByPosition(i).findViewById<ImageView>(R.id.source)
-                            saveToInternalStorage((imageView.drawable as BitmapDrawable).bitmap)
+                            val imageDrawable = listView.getViewByPosition(i).findViewById<ImageView>(R.id.source).drawable
+                            val title = listView.getViewByPosition(i).findViewById<TextView>(R.id.label)
+                            if (imageDrawable != null) {
+                                saveToInternalStorage((imageDrawable as BitmapDrawable).bitmap, title.text.toString())
+                            }
                         }
                     }
-                    return true
+                    true
                 }
                 else -> false
             }
@@ -97,7 +122,11 @@ class CameraActivity : GenericActivity() {
     private inner class CameraRunnable(index: Int) : Runnable {
         val i = index
         override fun run() {
-            download(i)
+            if (shuffle) {
+                shuffleDownload()
+            } else {
+                download(i)
+            }
             handler.postDelayed(this, 6000L)
         }
     }
@@ -105,6 +134,29 @@ class CameraActivity : GenericActivity() {
     fun back(v: View) {
         setResult(0)
         finish()
+    }
+
+    fun shuffleDownload() {
+        val camera = cameras[Random().nextInt(cameras.size)]
+        val url = "https://traffic.ottawa.ca/map/camera?id=${camera.num}"
+        val request = ImageRequest(url, Response.Listener<Bitmap> { response ->
+            camera_progress_bar.visibility = View.INVISIBLE
+            if (workaround) {
+                try {
+                    val bmImage = image_listView.getViewByPosition(0).findViewById(R.id.source) as ImageView
+                    val textView = image_listView.getViewByPosition(0).findViewById(R.id.label) as TextView
+                    bmImage.setImageResource(android.R.color.transparent)
+                    bmImage.setImageBitmap(response)
+                    textView.text = camera.getName()
+                } catch (e: NullPointerException) {
+                }
+            }
+            workaround = !workaround
+        }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.RGB_565, Response.ErrorListener {
+            it.printStackTrace()
+        })
+        request.tag = tag
+        StreetCamsRequestQueue.getInstance(this).add(request)
     }
 
     fun download(index: Int) {
@@ -148,18 +200,44 @@ class CameraActivity : GenericActivity() {
         StreetCamsRequestQueue.getInstance(this).add(sessionRequest)
     }
 
-    private fun saveToInternalStorage(bitmapImage: Bitmap) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+            if (requestCode == requestForSave) {
+                for (i in 0 until cameras.size) {
+                    if (cameras[i] in selectedCameras) {
+                        val imageDrawable = listView.getViewByPosition(i).findViewById<ImageView>(R.id.source).drawable
+                        val title = listView.getViewByPosition(i).findViewById<TextView>(R.id.label)
+                        if (imageDrawable != null) {
+                            saveToInternalStorage((imageDrawable as BitmapDrawable).bitmap, title.text.toString())
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun saveToInternalStorage(bitmapImage: Bitmap, fileName: String) {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), requestForSave)
+        }
         val streetCamsDirectory = File(Environment.getExternalStorageDirectory(), "/Ottawa StreetCams")
         if (!streetCamsDirectory.exists()) {
             streetCamsDirectory.mkdirs()
         }
-        val imageFile = File(streetCamsDirectory, Date().time.toString() + ".jpg")
+        val imageFile = File(streetCamsDirectory, fileName.replace(" ", "_")
+                + "_" + Date().toString().replace(" ", "_") + ".jpg")
         try {
             val out = FileOutputStream(imageFile)
             bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, out)
             out.flush()
             out.close()
-            Toast.makeText(this, "Image saved at: $imageFile", Toast.LENGTH_LONG).show()
+
+            val s = Snackbar.make(this.listView,
+                    resources.getString(R.string.image_saved_at, imageFile.toString()),
+                    Snackbar.LENGTH_LONG)
+            s.show()
+            //Toast.makeText(this, "Image saved at: $imageFile", Toast.LENGTH_LONG).show()
         } catch (e: Exception) {
             e.printStackTrace()
         }

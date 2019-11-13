@@ -1,9 +1,7 @@
 package com.textfield.json.ottawastreetcameras.activities
 
 import android.content.Context
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
+import android.os.Bundle
 import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
@@ -12,6 +10,9 @@ import android.widget.AbsListView
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.ListView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.adapters.CameraAdapter
@@ -128,15 +129,8 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
 
     private fun addRemoveFavs(willAdd: Boolean) {
         modifyPrefs(prefNameFavourites, selectedCameras, willAdd)
-        cameras.filter { it in selectedCameras }.forEach { it.isFavourite = willAdd }
+        cameras.filter { it in selectedCameras }.forEach { it.setFavourite(willAdd) }
 
-        for (camera in cameras) {
-            if (camera.isFavourite) {
-                camera.marker?.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
-            } else {
-                camera.marker?.setIcon(BitmapDescriptorFactory.defaultMarker())
-            }
-        }
         if (listView.adapter is CameraAdapter)
             for (i in 0 until listView.adapter.count) {
                 if (listView.checkedItemPositions[i]) {
@@ -156,14 +150,21 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
 
     private fun showOrHide(willHide: Boolean) {
         modifyPrefs(prefNameHidden, selectedCameras, willHide)
-        cameras.filter { it in selectedCameras }.forEach { it.setVisibility(!willHide) }
+        cameras.filter { it in selectedCameras }.forEach { it.setVisible(!willHide) }
 
         hide.isVisible = !willHide
         unhide.isVisible = willHide
 
-        section_index_listview.updateIndex()
+        section_index_listview?.updateIndex()
     }
-
+    override fun onSaveInstanceState(outState: Bundle?) {
+        if (actionMode != null) {
+            outState?.putParcelableArrayList("selectedCameras", selectedCameras)
+        }
+        outState?.putInt("firstVisibleListItem", listView.firstVisiblePosition)
+        outState?.putParcelableArrayList("cameras", cameras)
+        super.onSaveInstanceState(outState)
+    }
     protected open fun selectCamera(camera: Camera): Boolean {
         if (camera in selectedCameras) {
             selectedCameras.remove(camera)

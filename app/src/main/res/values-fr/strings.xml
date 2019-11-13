@@ -10,6 +10,7 @@
     <string name="sort_by_name">Triez-les par nom</string>
     <string name="switch_view">Change la vue</string>
     <string name="random_camera">Caméra aléatoire</string>
+    <string name="shuffle">Mélanger</string>
     <string name="favourites">Favoris</string>
     <string name="remove_from_favourites">Supprimer des favoris</string>
     <string name="add_to_favourites">Ajouter aux favourites</string>
@@ -20,6 +21,7 @@
     <string name="night_mode">Mode nuit</string>
     <string name="neighbourhoods">Quartiers</string>
     <string name="save_image">Télécharger l\'image</string>
+    <string name="image_saved_at">L\'image a été enregistrée dans %s</string>
 
     <plurals name="selectedCameras">
         <item quantity="one">%d caméra sélectionnée</item>

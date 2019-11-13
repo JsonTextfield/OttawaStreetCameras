@@ -2,15 +2,16 @@ package com.textfield.json.ottawastreetcameras
 
 import android.content.Context
 import android.graphics.Color
-import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.textfield.json.ottawastreetcameras.activities.GenericActivity
 import kotlinx.android.synthetic.main.section_index_listview.view.*
+import kotlin.math.max
 
 class SectionIndexListView : LinearLayout {
     var listview: ListView
@@ -33,16 +34,14 @@ class SectionIndexListView : LinearLayout {
             val action = event.action
             val yCoordinates = event.y
             var selectedIndex = (yCoordinates / height * sectionIndex.childCount).toInt()
-            selectedIndex = Math.max(0, selectedIndex)
+            selectedIndex = max(0, selectedIndex)
             when (action) {
                 MotionEvent.ACTION_UP -> {
                     choose = -1
-                    (sectionIndex.getChildAt(selectedIndex) as TextView)
-                            .setTextColor(if ((context as GenericActivity).isNightModeOn()) Color.WHITE else Color.BLACK)
-                    /*(0 until sectionIndex.childCount).forEach {
-                        (sectionIndex.getChildAt(it) as TextView)
+                    if (sectionIndex.getChildAt(selectedIndex) != null) {
+                        (sectionIndex.getChildAt(selectedIndex) as TextView)
                                 .setTextColor(if ((context as GenericActivity).isNightModeOn()) Color.WHITE else Color.BLACK)
-                }*/
+                    }
                 }
                 else -> {
                     if (choose != selectedIndex) {

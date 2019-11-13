@@ -1,7 +1,6 @@
 package com.textfield.json.ottawastreetcameras.adapters
 
 import android.content.Context
-import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +8,7 @@ import android.widget.ArrayAdapter
 import android.widget.Filter
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.textfield.json.ottawastreetcameras.adapters.filters.CameraFilter
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.activities.AlternateMainActivity
@@ -69,7 +69,8 @@ abstract class CameraAdapter(private val _context: Context, private val list: Li
         }
         viewHolder.star?.setOnClickListener {
             (context as AlternateMainActivity).modifyPrefs("favourites", Arrays.asList(camera), !camera.isFavourite)
-            camera.isFavourite = !camera.isFavourite
+            camera.setFavourite(!camera.isFavourite)
+            camera.marker
             notifyDataSetChanged()
         }
 

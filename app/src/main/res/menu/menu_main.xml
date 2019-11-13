@@ -5,7 +5,7 @@
         android:id="@+id/user_searchView"
         android:icon="@drawable/ic_search_white_24dp"
         android:title="@string/search"
-        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always|collapseActionView" />
     <item
         android:id="@+id/menuItemMap"
@@ -39,7 +39,12 @@
         android:id="@+id/random_camera"
         android:icon="@drawable/baseline_shuffle_white_24"
         android:title="@string/random_camera"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/shuffle"
+        android:icon="@drawable/baseline_shuffle_white_24"
+        android:title="@string/shuffle"
+        app:showAsAction="never" />
     <item
         android:id="@+id/night_mode"
         android:checkable="true"

@@ -8,7 +8,7 @@ android {
             keyAlias 'streetcams'
             keyPassword 'Lupin111'
             storePassword 'Lupin111'
-            storeFile file('/Users/rileypeckford/Desktop/debug.keystore')
+            storeFile file(var)
         }
     }
     compileSdkVersion 28
@@ -18,8 +18,8 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         minSdkVersion 15
         targetSdkVersion 28
-        versionCode 10
-        versionName "1.44"
+        versionCode 11
+        versionName "1.5"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -35,13 +35,14 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.google.android.gms:play-services-maps:16.1.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.android.support:design:28.0.0'
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support:support-vector-drawable:28.0.0'
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.json:json:20080701'
-    androidTestImplementation 'androidx.test:runner:1.1.1'
-    androidTestImplementation 'androidx.test:rules:1.1.1'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {

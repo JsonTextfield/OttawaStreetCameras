@@ -10,6 +10,7 @@
     <string name="sort_by_name">Sort by name</string>
     <string name="switch_view">Switch view</string>
     <string name="random_camera">Random</string>
+    <string name="shuffle">Shuffle</string>
     <string name="favourites">Favourites</string>
     <string name="remove_from_favourites">Unfavourite</string>
     <string name="add_to_favourites">Favourite</string>
@@ -25,4 +26,5 @@
         <item quantity="other">%d cameras selected</item>
     </plurals>
     <string name="save_image">Save Image</string>
+    <string name="image_saved_at">Image saved at %s</string>
 </resources>
