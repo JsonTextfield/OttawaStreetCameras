@@ -13,9 +13,9 @@ class Neighbourhood(values: JSONObject) : BilingualObject() {
     init {
         try {
             val props = values.getJSONObject("properties")
-            nameEn = props.getString("Name")
-            nameFr = props.getString("Name_FR")
-            id = props.getInt("ONS_ID")
+            nameEn = props.getString("NAMES")
+            nameFr = props.getString("NAMES_FR")
+            id = props.getInt("OBJECTID")
 
             val geo = values.getJSONObject("geometry")
             var neighbourhoodZones = JSONArray()

@@ -13,13 +13,17 @@
         android:title="@string/switch_view"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/distance_sort"
+        android:id="@+id/sort_distance"
         android:title="@string/sort_by_distance"
         app:showAsAction="never" />
     <item
         android:id="@+id/sort_name"
         android:title="@string/sort_by_name"
         android:visible="false"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/sort_neighbourhood"
+        android:title="Sort by neighbourhood"
         app:showAsAction="never" />
     <item
         android:id="@+id/favourites"

@@ -12,10 +12,13 @@ abstract class BilingualObject {
     }
 
     fun getName(): String {
-        return if (Locale.getDefault().displayLanguage.contains("fr")) nameFr else nameEn
+        return if (Locale.getDefault().displayLanguage.contains("fr", true)) nameFr else nameEn
     }
 
+    /**
+     * Returns an alphanumeric, uppercase version of the name of the location.
+     */
     fun getSortableName(): String {
-        return getName().replace(Regex("\\W"), "").toUpperCase()
+        return getName().replace(Regex("\\W"), "").toUpperCase(Locale.ROOT)
     }
 }
