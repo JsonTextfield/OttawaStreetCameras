@@ -4,7 +4,9 @@ import com.google.android.gms.maps.model.LatLng
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import kotlin.collections.ArrayList
+import kotlin.math.max
+import kotlin.math.min
+
 
 class Neighbourhood(values: JSONObject) : BilingualObject() {
 
@@ -13,9 +15,9 @@ class Neighbourhood(values: JSONObject) : BilingualObject() {
     init {
         try {
             val props = values.getJSONObject("properties")
-            nameEn = props.getString("NAMES")
-            nameFr = props.getString("NAMES_FR")
-            id = props.getInt("OBJECTID")
+            nameEn = props.getString("name")
+            nameFr = props.getString("nameFr")
+            id = props.getInt("id")
 
             val geo = values.getJSONObject("geometry")
             var neighbourhoodZones = JSONArray()
@@ -46,12 +48,22 @@ class Neighbourhood(values: JSONObject) : BilingualObject() {
 
         for (vertices in boundaries) {
             for (j in 0 until vertices.size - 1) {
+                if (onSegment(vertices[j], cameraLocation, vertices[j + 1])) {
+                    return true
+                }
                 if (rayCastIntersect(cameraLocation, vertices[j], vertices[j + 1])) {
                     intersectCount++
                 }
             }
         }
         return ((intersectCount % 2) == 1) // odd = inside, even = outside
+    }
+
+    private fun onSegment(a: LatLng, location: LatLng, b: LatLng): Boolean {
+        return location.longitude <= max(a.longitude, b.longitude)
+                && location.longitude >= min(a.longitude, b.longitude)
+                && location.latitude <= max(a.latitude, b.latitude)
+                && location.latitude >= min(a.latitude, b.latitude)
     }
 
     private fun rayCastIntersect(location: LatLng, vertA: LatLng, vertB: LatLng): Boolean {

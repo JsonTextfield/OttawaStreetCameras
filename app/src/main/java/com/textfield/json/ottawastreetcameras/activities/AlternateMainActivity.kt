@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.location.LocationManager
 import android.os.AsyncTask
 import android.os.Bundle
+import android.util.Log
 import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
@@ -28,6 +29,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.gson.GsonBuilder
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.StreetCamsRequestQueue
 import com.textfield.json.ottawastreetcameras.adapters.CameraAdapter
@@ -38,6 +40,7 @@ import com.textfield.json.ottawastreetcameras.comparators.SortByNeighbourhood
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.entities.Neighbourhood
 import kotlinx.android.synthetic.main.activity_alternate_main.*
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 import java.util.*
@@ -214,16 +217,19 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback {
 
     private fun processNeighbourhoods(callback: () -> Unit) {
         AsyncTask.execute {
+            val startTime = Date().time
             val byteArray = assets.open("neighbourhoods.geojson").readBytes()
             val jsonObject = JSONObject(String(byteArray))
             val array = jsonObject.getJSONArray("features")
             neighbourhoods = (0 until array.length()).map { Neighbourhood(array.getJSONObject(it)) } as ArrayList<Neighbourhood>
+            Log.w("NEIGHBOURHOOD", "Loading file took ${(Date().time - startTime) / 1000.0} seconds")
             for (camera in cameras)
                 for (neighbourhood in neighbourhoods)
                     if (neighbourhood.containsCamera(camera)) {
                         camera.neighbourhood = neighbourhood.getName()
                         break
                     }
+            Log.w("NEIGHBOURHOOD", "Whole processing took ${(Date().time - startTime) / 1000.0} seconds")
             runOnUiThread {
                 callback.invoke()
                 progress_bar.visibility = View.INVISIBLE
@@ -243,12 +249,14 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback {
                         camera.setVisible(camera.num.toString() !in sharedPrefs.getStringSet(prefNameHidden, HashSet<String>())!!)
                         camera
                     } as ArrayList<Camera>
-            Collections.sort(cameras, SortByName())
-            myAdapter.addAll(cameras)
-            searchView?.queryHint = String.format(resources.getString(R.string.search_hint), cameras.size)
-            (supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
-            section_index_listview.updateIndex()
-            processNeighbourhoods(callback)
+            processNeighbourhoods {
+                Collections.sort(cameras, SortByName())
+                myAdapter.addAll(cameras)
+                searchView?.queryHint = String.format(resources.getString(R.string.search_hint), cameras.size)
+                (supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
+                section_index_listview.updateIndex()
+                callback.invoke()
+            }
             //callback.invoke()
             //progress_bar.visibility = View.INVISIBLE
         }, Response.ErrorListener {

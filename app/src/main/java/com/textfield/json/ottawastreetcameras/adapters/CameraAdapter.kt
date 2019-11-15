@@ -25,6 +25,7 @@ abstract class CameraAdapter(private val _context: Context, private val list: Li
 
     private class ViewHolder {
         internal var title: TextView? = null
+        internal var neighbourhood: TextView? = null
         internal var star: ImageView? = null
     }
 
@@ -49,6 +50,7 @@ abstract class CameraAdapter(private val _context: Context, private val list: Li
             viewHolder = ViewHolder()
             convertView = LayoutInflater.from(_context).inflate(R.layout.list_item, parent, false)
             viewHolder.title = convertView.findViewById(R.id.listtitle)
+            viewHolder.neighbourhood = convertView.findViewById(R.id.neighbourhood)
             viewHolder.star = convertView.findViewById(R.id.star)
             convertView.tag = viewHolder
 
@@ -57,7 +59,8 @@ abstract class CameraAdapter(private val _context: Context, private val list: Li
         }
 
         viewHolder.title?.text = camera.getName()
-
+        viewHolder.neighbourhood?.text = camera.neighbourhood
+        viewHolder.neighbourhood?.visibility = if (camera.neighbourhood.isEmpty()) View.GONE else View.VISIBLE
         val icon = if (camera.isFavourite) R.drawable.outline_star_white_18 else R.drawable.outline_star_border_white_18
         viewHolder.star?.setImageDrawable(ContextCompat.getDrawable(_context, icon))
 
@@ -65,7 +68,6 @@ abstract class CameraAdapter(private val _context: Context, private val list: Li
             viewHolder.star?.setColorFilter(ContextCompat.getColor(context, android.R.color.white), android.graphics.PorterDuff.Mode.SRC_IN)
         } else {
             viewHolder.star?.setColorFilter(ContextCompat.getColor(context, android.R.color.black), android.graphics.PorterDuff.Mode.SRC_IN)
-
         }
         viewHolder.star?.setOnClickListener {
             (context as AlternateMainActivity).modifyPrefs("favourites", Arrays.asList(camera), !camera.isFavourite)
