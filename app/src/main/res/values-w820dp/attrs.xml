@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SectionIndexListView">
+        <attr name="default_colour" format="color" />
+        <attr name="selected_colour" format="color" />
+        <attr name="index_location" format="enum">
+            <enum name="left" value="0" />
+            <enum name="right" value="1" />
+        </attr>
+        <attr name="defaultTextColour" format="color" />
+    </declare-styleable>
+</resources>

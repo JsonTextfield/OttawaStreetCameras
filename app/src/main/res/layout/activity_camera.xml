@@ -4,7 +4,7 @@
     android:id="@+id/camera_activity_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.textfield.json.ottawastreetcameras.activities.CameraActivity">
+    tools:context=".activities.CameraActivity">
 
     <ListView
         android:id="@+id/image_listView"
