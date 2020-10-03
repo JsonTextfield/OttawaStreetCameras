@@ -9,16 +9,16 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import java.util.*
 
 /**
  * Created by Jason on 08/02/2018.
  */
-class ImageAdapter(private val _context: Context, private val list: List<Camera>) : ArrayAdapter<Camera>(_context, 0, list) {
+class ImageAdapter(private val _context: Context, private val list: List<Camera>)
+    : ArrayAdapter<Camera>(_context, 0, list) {
 
     private class ViewHolder {
-        internal var title: TextView? = null
-        internal var image: ImageView? = null
+        var title: TextView? = null
+        var image: ImageView? = null
     }
 
     override fun getItem(position: Int): Camera {

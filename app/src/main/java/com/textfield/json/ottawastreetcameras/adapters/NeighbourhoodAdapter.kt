@@ -15,7 +15,7 @@ abstract class NeighbourhoodAdapter(var context: Context, cursor: Cursor) : Curs
 
 
     private class ViewHolder {
-        internal var title: TextView? = null
+        var title: TextView? = null
     }
 
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {

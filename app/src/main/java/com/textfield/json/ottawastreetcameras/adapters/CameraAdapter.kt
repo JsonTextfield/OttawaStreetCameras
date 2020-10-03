@@ -24,9 +24,9 @@ abstract class CameraAdapter(private val _context: Context, private val list: Li
     private var cameras = list
 
     private class ViewHolder {
-        internal var title: TextView? = null
-        internal var neighbourhood: TextView? = null
-        internal var star: ImageView? = null
+        var title: TextView? = null
+        var neighbourhood: TextView? = null
+        var star: ImageView? = null
     }
 
     override fun getItem(position: Int): Camera {
@@ -37,7 +37,7 @@ abstract class CameraAdapter(private val _context: Context, private val list: Li
         return cameras.size
     }
 
-    override fun sort(comparator: Comparator<in Camera>?) {
+    override fun sort(comparator: Comparator<in Camera>) {
         Collections.sort(cameras, comparator)
         notifyDataSetChanged()
     }
@@ -70,7 +70,7 @@ abstract class CameraAdapter(private val _context: Context, private val list: Li
             viewHolder.star?.setColorFilter(ContextCompat.getColor(context, android.R.color.black), android.graphics.PorterDuff.Mode.SRC_IN)
         }
         viewHolder.star?.setOnClickListener {
-            (context as AlternateMainActivity).modifyPrefs("favourites", Arrays.asList(camera), !camera.isFavourite)
+            (context as AlternateMainActivity).modifyPrefs("favourites", listOf(camera), !camera.isFavourite)
             camera.setFavourite(!camera.isFavourite)
             camera.marker
             notifyDataSetChanged()
