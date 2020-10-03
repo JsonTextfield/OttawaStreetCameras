@@ -17,9 +17,9 @@
             android:id="@+id/section_index_listview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:default_colour="@android:color/white"
+            app:default_text_colour="@android:color/white"
             app:index_location="left"
-            app:selected_colour="@color/colorAccent" />
+            app:selected_text_colour="@color/colorAccent" />
 
         <fragment
             android:id="@+id/map"

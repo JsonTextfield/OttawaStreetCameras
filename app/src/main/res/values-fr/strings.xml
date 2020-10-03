@@ -4,7 +4,6 @@
     <string name="map">Carte</string>
     <string name="show">Montre</string>
     <string name="sort_by_distance">Triez-les par distance</string>
-    <string name="search_hint">Recherche de %d emplacements</string>
     <string name="no_network_title">Pas de connexion réseau</string>
     <string name="no_network_content">Veuillez vous connecter à un réseau et réessayer</string>
     <string name="sort_by_name">Triez-les par nom</string>
@@ -26,5 +25,10 @@
     <plurals name="selectedCameras">
         <item quantity="one">%d caméra sélectionnée</item>
         <item quantity="other">%d caméras sélectionnées</item>
+    </plurals>
+
+    <plurals name="search_hint">
+        <item quantity="one">Recherche de %d emplacement</item>
+        <item quantity="other">Recherche de %d emplacements</item>
     </plurals>
 </resources>
