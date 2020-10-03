@@ -6,7 +6,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
-import android.util.Log
 import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
@@ -44,7 +43,7 @@ class CameraActivity : GenericActivity() {
         setContentView(R.layout.activity_camera)
         listView = image_listView
         shuffle = intent.getBooleanExtra("shuffle", false)
-        cameras = intent.getParcelableArrayListExtra<Camera>("cameras")
+        cameras = intent.getParcelableArrayListExtra("cameras")
         imageAdapter = ImageAdapter(this, if (shuffle) cameras.subList(0, 1) else cameras)
         listView.adapter = imageAdapter
         listView.setMultiChoiceModeListener(this)
@@ -131,7 +130,6 @@ class CameraActivity : GenericActivity() {
     }
 
     fun download(index: Int) {
-        Log.d("ImageAdapter", imageAdapter.count.toString())
         val selectedCamera = if (shuffle) cameras[Random().nextInt(cameras.size)] else imageAdapter.getItem(index)
         val bmImage = image_listView.getViewByPosition(index).findViewById(R.id.source) as ImageView
         val textView = image_listView.getViewByPosition(index).findViewById(R.id.label) as TextView

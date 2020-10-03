@@ -17,7 +17,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.adapters.CameraAdapter
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import kotlinx.android.synthetic.main.activity_alternate_main.*
+import kotlinx.android.synthetic.main.activity_main.*
 
 abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceModeListener {
     companion object {
@@ -37,6 +37,11 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
     private lateinit var selectAll: MenuItem
     protected lateinit var showCameras: MenuItem
     protected lateinit var saveImage: MenuItem
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(if (isNightModeOn()) R.style.AppTheme else R.style.AppTheme_Light)
+        super.onCreate(savedInstanceState)
+    }
 
     fun modifyPrefs(pref: String, selectedCameras: Collection<Camera>, willAdd: Boolean) {
         val sharedPrefs = getSharedPreferences(applicationContext.packageName, Context.MODE_PRIVATE)
@@ -61,13 +66,12 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
     }
 
     fun showErrorDialogue(context: Context) {
-        val builder = AlertDialog.Builder(context)
-
-        builder.setTitle(resources.getString(R.string.no_network_title))
+        val dialog = AlertDialog.Builder(context)
+                .setTitle(resources.getString(R.string.no_network_title))
                 .setMessage(resources.getString(R.string.no_network_content))
                 .setPositiveButton("OK") { _, _ -> finish() }
                 .setOnDismissListener { finish() }
-        val dialog = builder.create()
+                .create()
         dialog.show()
     }
 
@@ -131,7 +135,7 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
         modifyPrefs(prefNameFavourites, selectedCameras, willAdd)
         cameras.filter { it in selectedCameras }.forEach { it.setFavourite(willAdd) }
 
-        if (listView.adapter is CameraAdapter)
+        if (listView.adapter is CameraAdapter) {
             for (i in 0 until listView.adapter.count) {
                 if (listView.checkedItemPositions[i]) {
                     val view = listView.getViewByPosition(i)
@@ -143,7 +147,7 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
                     })
                 }
             }
-
+        }
         addFav.isVisible = !willAdd
         removeFav.isVisible = willAdd
     }
@@ -157,14 +161,16 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
 
         section_index_listview?.updateIndex()
     }
-    override fun onSaveInstanceState(outState: Bundle?) {
+
+    override fun onSaveInstanceState(outState: Bundle) {
         if (actionMode != null) {
-            outState?.putParcelableArrayList("selectedCameras", selectedCameras)
+            outState.putParcelableArrayList("selectedCameras", selectedCameras)
         }
-        outState?.putInt("firstVisibleListItem", listView.firstVisiblePosition)
-        outState?.putParcelableArrayList("cameras", cameras)
+        outState.putInt("firstVisibleListItem", listView.firstVisiblePosition)
+        outState.putParcelableArrayList("cameras", cameras)
         super.onSaveInstanceState(outState)
     }
+
     protected open fun selectCamera(camera: Camera): Boolean {
         if (camera in selectedCameras) {
             selectedCameras.remove(camera)

@@ -23,8 +23,8 @@ class SectionIndexListView : LinearLayout {
     private val index = HashMap<Char, Int>()
     private var choose = -1
     private var indexTextViewLayout = R.layout.section_index_title
-    var selectedColour = Color.WHITE
-    var defaultColour = Color.BLUE
+    var selectedTextColour = Color.WHITE
+    var defaultTextColour = Color.BLUE
 
     constructor(context: Context) : super(context) {
         initialise()
@@ -37,8 +37,8 @@ class SectionIndexListView : LinearLayout {
                 0, 0
         ).apply {
             try {
-                defaultColour = getColor(R.styleable.SectionIndexListView_default_colour, Color.WHITE)
-                selectedColour = getColor(R.styleable.SectionIndexListView_selected_colour, Color.BLUE)
+                defaultTextColour = getColor(R.styleable.SectionIndexListView_default_text_colour, Color.WHITE)
+                selectedTextColour = getColor(R.styleable.SectionIndexListView_selected_text_colour, Color.BLUE)
                 indexLocation = getInteger(R.styleable.SectionIndexListView_index_location, 0)
             } finally {
                 recycle()
@@ -74,17 +74,17 @@ class SectionIndexListView : LinearLayout {
                 MotionEvent.ACTION_UP -> {
                     choose = -1
                     if (sectionIndex.getChildAt(selectedIndex) != null) {
-                        (sectionIndex.getChildAt(selectedIndex) as TextView).setTextColor(defaultColour)
+                        (sectionIndex.getChildAt(selectedIndex) as TextView).setTextColor(defaultTextColour)
                     }
                 }
                 else -> {
                     if (choose != selectedIndex) {
                         if (choose > -1) {
-                            (sectionIndex.getChildAt(choose) as TextView).setTextColor(defaultColour)
+                            (sectionIndex.getChildAt(choose) as TextView).setTextColor(defaultTextColour)
                         }
                         try {
                             val t = (sectionIndex.getChildAt(selectedIndex) as TextView)
-                            t.setTextColor(selectedColour)
+                            t.setTextColor(selectedTextColour)
                             listView.setSelection(index[t.text[0]]!!)
                             choose = selectedIndex
                         } catch (e: Exception) {
@@ -104,7 +104,7 @@ class SectionIndexListView : LinearLayout {
         for (i in 0 until listView.adapter.count) {
             //get the first character
             val t = inflater.inflate(indexTextViewLayout, this, false) as TextView
-            t.setTextColor(defaultColour)
+            t.setTextColor(defaultTextColour)
             val c = listView.adapter.getItem(i).toString().toUpperCase(Locale.ENGLISH)[0]
             if (c !in index.keys && c in "ABCDEFGHIJKLMNOPQRESTUVWXYZ") {
                 index[c] = i
