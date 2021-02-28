@@ -13,11 +13,12 @@ import android.widget.ListView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.libraries.maps.model.BitmapDescriptorFactory
 import com.textfield.json.ottawastreetcameras.R
+import com.textfield.json.ottawastreetcameras.SectionIndexListView
 import com.textfield.json.ottawastreetcameras.adapters.CameraAdapter
+import com.textfield.json.ottawastreetcameras.databinding.SectionIndexListviewBinding
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import kotlinx.android.synthetic.main.activity_main.*
 
 abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceModeListener {
     companion object {
@@ -159,7 +160,7 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
         hide.isVisible = !willHide
         unhide.isVisible = willHide
 
-        section_index_listview?.updateIndex()
+        findViewById<SectionIndexListView>(R.id.section_index_listview)?.updateIndex()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

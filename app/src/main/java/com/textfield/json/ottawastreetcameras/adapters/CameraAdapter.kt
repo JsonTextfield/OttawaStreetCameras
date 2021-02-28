@@ -11,7 +11,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.textfield.json.ottawastreetcameras.adapters.filters.CameraFilter
 import com.textfield.json.ottawastreetcameras.R
-import com.textfield.json.ottawastreetcameras.activities.AlternateMainActivity
+import com.textfield.json.ottawastreetcameras.activities.MainActivity
 import com.textfield.json.ottawastreetcameras.activities.GenericActivity
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import java.util.*
@@ -70,7 +70,7 @@ abstract class CameraAdapter(private val _context: Context, private val list: Li
             viewHolder.star?.setColorFilter(ContextCompat.getColor(context, android.R.color.black), android.graphics.PorterDuff.Mode.SRC_IN)
         }
         viewHolder.star?.setOnClickListener {
-            (context as AlternateMainActivity).modifyPrefs("favourites", listOf(camera), !camera.isFavourite)
+            (context as MainActivity).modifyPrefs("favourites", listOf(camera), !camera.isFavourite)
             camera.setFavourite(!camera.isFavourite)
             camera.marker
             notifyDataSetChanged()

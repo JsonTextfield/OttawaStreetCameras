@@ -5,11 +5,8 @@ import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.HurlStack
 import com.android.volley.toolbox.Volley
-import java.io.BufferedInputStream
-import java.io.InputStream
 import java.net.URL
 import java.security.KeyStore
-import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
 import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.SSLContext
@@ -21,6 +18,8 @@ class StreetCamsRequestQueue constructor(context: Context) {
         private var INSTANCE: StreetCamsRequestQueue? = null
         @Volatile
         var sessionId = ""
+        @Volatile
+        var cert : X509Certificate? = null
 
         fun getInstance(context: Context) =
                 INSTANCE ?: synchronized(this) {
@@ -39,18 +38,19 @@ class StreetCamsRequestQueue constructor(context: Context) {
         createSSL(context.applicationContext)
     }
 
+
     private fun createSSL(context: Context): RequestQueue {
-        val cf: CertificateFactory = CertificateFactory.getInstance("X.509")
-        val caInput: InputStream = BufferedInputStream(context.assets.open("trafficottawaca.cer"))
-        val ca: X509Certificate = caInput.use {
-            cf.generateCertificate(it) as X509Certificate
-        }
+        /*val destinationURL = URL("https://traffic.ottawa.ca/map/")
+        val conn = destinationURL.openConnection() as HttpsURLConnection
+        conn.connect()
+        val certs = conn.serverCertificates
+        val cert = certs.first { it is javax.security.cert.X509Certificate }*/
 
         // Create a KeyStore containing our trusted CAs
         val keyStoreType = KeyStore.getDefaultType()
         val keyStore = KeyStore.getInstance(keyStoreType).apply {
             load(null, null)
-            setCertificateEntry("ca", ca)
+            setCertificateEntry("ca", cert)
         }
 
         // Create a TrustManager that trusts the CAs inputStream our KeyStore

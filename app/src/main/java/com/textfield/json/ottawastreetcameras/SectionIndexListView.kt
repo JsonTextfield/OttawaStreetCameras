@@ -8,16 +8,15 @@ import android.view.MotionEvent
 import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
-import kotlinx.android.synthetic.main.section_index_listview.view.*
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.math.max
 import kotlin.math.min
 
 class SectionIndexListView : LinearLayout {
-    lateinit var listview: ListView
+    lateinit var listView: ListView
         private set
-    lateinit var sectionindex: LinearLayout
+    lateinit var sectionIndex: LinearLayout
         private set
     private var indexLocation = 0
     private val index = HashMap<Char, Int>()
@@ -54,17 +53,18 @@ class SectionIndexListView : LinearLayout {
     private fun initialise() {
         val mInflater = LayoutInflater.from(context)
         mInflater.inflate(R.layout.section_index_listview, this, true)
-        sectionindex = sectionIndex
-        listview = listView
-        section_index_listview_layout.removeAllViews()
+        sectionIndex = findViewById(R.id.sectionIndex)
+        listView = findViewById(R.id.listView)
+        val sectionIndexListviewLayout = findViewById<LinearLayout>(R.id.section_index_listview_layout)
+        sectionIndexListviewLayout.removeAllViews()
         if (indexLocation == 0) {
-            section_index_listview_layout.addView(sectionindex)
-            section_index_listview_layout.addView(listview)
+            sectionIndexListviewLayout.addView(sectionIndex)
+            sectionIndexListviewLayout.addView(listView)
         } else {
-            section_index_listview_layout.addView(listview)
-            section_index_listview_layout.addView(sectionindex)
+            sectionIndexListviewLayout.addView(listView)
+            sectionIndexListviewLayout.addView(sectionIndex)
         }
-        section_index_listview_layout.invalidate()
+        sectionIndexListviewLayout.invalidate()
         sectionIndex.setOnTouchListener { _, event ->
             val action = event.action
             val yCoordinates = event.y
@@ -110,17 +110,17 @@ class SectionIndexListView : LinearLayout {
                 index[c] = i
                 t.text = c.toString()
                 sectionIndex.addView(t)
-                sectionindex.invalidate()
+                sectionIndex.invalidate()
             } else if (c in "0123456789" && !index.containsKey('#')) {
                 index['#'] = 0
                 t.text = "#"
                 sectionIndex.addView(t)
-                sectionindex.invalidate()
+                sectionIndex.invalidate()
             } else if (c !in "0123456789ABCDEFGHIJKLMNOPQRESTUVWXYZ") {
                 index['*'] = i
                 t.text = "*"
                 sectionIndex.addView(t)
-                sectionindex.invalidate()
+                sectionIndex.invalidate()
                 break
             }
         }
