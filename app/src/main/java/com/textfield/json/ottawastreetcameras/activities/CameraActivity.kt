@@ -4,8 +4,8 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.os.Environment
 import android.os.Handler
+import android.os.Looper
 import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
@@ -23,8 +23,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.StreetCamsRequestQueue
 import com.textfield.json.ottawastreetcameras.adapters.ImageAdapter
+import com.textfield.json.ottawastreetcameras.databinding.ActivityCameraBinding
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import kotlinx.android.synthetic.main.activity_camera.*
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
@@ -33,17 +33,18 @@ import kotlin.collections.ArrayList
 class CameraActivity : GenericActivity() {
     private val requestForSave = 0
     private val timers = ArrayList<CameraRunnable>()
-    private val handler = Handler()
+    private val handler = Handler(Looper.getMainLooper())
     private val tag = "camera"
     private lateinit var imageAdapter: ImageAdapter
+    private lateinit var binding: ActivityCameraBinding
     private var shuffle = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_camera)
-        listView = image_listView
+        binding = ActivityCameraBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        listView = binding.imageListView
         shuffle = intent.getBooleanExtra("shuffle", false)
-        cameras = intent.getParcelableArrayListExtra("cameras")
+        cameras = intent.getParcelableArrayListExtra("cameras") ?: ArrayList()
         imageAdapter = ImageAdapter(this, if (shuffle) cameras.subList(0, 1) else cameras)
         listView.adapter = imageAdapter
         listView.setMultiChoiceModeListener(this)
@@ -131,8 +132,8 @@ class CameraActivity : GenericActivity() {
 
     fun download(index: Int) {
         val selectedCamera = if (shuffle) cameras[Random().nextInt(cameras.size)] else imageAdapter.getItem(index)
-        val bmImage = image_listView.getViewByPosition(index).findViewById(R.id.source) as ImageView
-        val textView = image_listView.getViewByPosition(index).findViewById(R.id.label) as TextView
+        val bmImage = binding.imageListView.getViewByPosition(index).findViewById(R.id.source) as ImageView
+        val textView = binding.imageListView.getViewByPosition(index).findViewById(R.id.label) as TextView
         val url = "https://traffic.ottawa.ca/map/camera?id=${selectedCamera.num}"
         val request = ImageRequest(url, { response ->
                 try {
@@ -141,7 +142,7 @@ class CameraActivity : GenericActivity() {
                     textView.visibility = View.VISIBLE
                 } catch (e: NullPointerException) {
                 } finally {
-                    camera_progress_bar.visibility = View.INVISIBLE
+                    binding.cameraProgressBar.visibility = View.INVISIBLE
                 }
         }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.RGB_565, {
             it.printStackTrace()
@@ -171,7 +172,7 @@ class CameraActivity : GenericActivity() {
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), requestForSave)
         }
-        val streetCamsDirectory = File(Environment.getExternalStorageDirectory(), "/Ottawa StreetCams")
+        val streetCamsDirectory = File(getExternalFilesDir(null), "/Ottawa StreetCams")
         if (!streetCamsDirectory.exists()) {
             streetCamsDirectory.mkdirs()
         }
