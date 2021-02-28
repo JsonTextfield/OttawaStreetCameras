@@ -1,6 +1,6 @@
 package com.textfield.json.ottawastreetcameras.entities
 
-import com.google.android.libraries.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLng
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject

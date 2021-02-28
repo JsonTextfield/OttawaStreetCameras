@@ -13,11 +13,10 @@ import android.widget.ListView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.google.android.libraries.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.SectionIndexListView
 import com.textfield.json.ottawastreetcameras.adapters.CameraAdapter
-import com.textfield.json.ottawastreetcameras.databinding.SectionIndexListviewBinding
 import com.textfield.json.ottawastreetcameras.entities.Camera
 
 abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceModeListener {

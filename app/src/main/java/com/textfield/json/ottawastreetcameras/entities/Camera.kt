@@ -2,8 +2,8 @@ package com.textfield.json.ottawastreetcameras.entities
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.google.android.libraries.maps.model.BitmapDescriptorFactory
-import com.google.android.libraries.maps.model.Marker
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.Marker
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -120,7 +120,7 @@ class Camera : BilingualObject, Parcelable {
         result = 31 * result + isFavourite.hashCode()
         result = 31 * result + isVisible.hashCode()
         result = 31 * result + neighbourhood.hashCode()
-        result = 31 * result + (marker?.hashCode() ?: 0)
+        result = 31 * result + (marker.hashCode() ?: 0)
         return result
     }
 }
