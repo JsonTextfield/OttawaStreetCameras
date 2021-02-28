@@ -6,8 +6,10 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.LocationManager
+import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
@@ -18,32 +20,33 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.android.volley.toolbox.JsonArrayRequest
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.libraries.maps.CameraUpdateFactory
+import com.google.android.libraries.maps.GoogleMap
+import com.google.android.libraries.maps.OnMapReadyCallback
+import com.google.android.libraries.maps.SupportMapFragment
+import com.google.android.libraries.maps.model.*
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.StreetCamsRequestQueue
 import com.textfield.json.ottawastreetcameras.adapters.CameraAdapter
 import com.textfield.json.ottawastreetcameras.adapters.filters.CameraFilter
 import com.textfield.json.ottawastreetcameras.comparators.SortByDistance
 import com.textfield.json.ottawastreetcameras.comparators.SortByName
+import com.textfield.json.ottawastreetcameras.databinding.ActivityMainBinding
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import kotlinx.android.synthetic.main.activity_main.*
+import java.net.URL
+import java.security.cert.X509Certificate
 import java.util.*
+import javax.net.ssl.HttpsURLConnection
 import kotlin.collections.HashSet
 
-class AlternateMainActivity : GenericActivity(), OnMapReadyCallback {
+class MainActivity : GenericActivity(), OnMapReadyCallback {
 
     private val requestForList = 0
     private val requestForMap = 1
     private val maxCameras = 4
 
     private lateinit var myAdapter: CameraAdapter
+    private lateinit var binding: ActivityMainBinding
 
     private var map: GoogleMap? = null
 
@@ -55,14 +58,15 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        section_index_listview.defaultTextColour = if (isNightModeOn()) Color.WHITE else Color.BLACK
-        progress_bar.visibility = View.VISIBLE
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.sectionIndexListview.defaultTextColour = if (isNightModeOn()) Color.WHITE else Color.BLACK
+        binding.progressBar.visibility = View.VISIBLE
 
-        listView = section_index_listview.listview
+        listView = binding.sectionIndexListview.listView
         myAdapter = object : CameraAdapter(this, cameras) {
             override fun onComplete() {
-                section_index_listview.updateIndex()
+                binding.sectionIndexListview.updateIndex()
             }
         }
         listView.adapter = myAdapter
@@ -71,16 +75,26 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback {
             showSelectedCameras()
         }
         listView.setMultiChoiceModeListener(this)
-        toolbar.setOnClickListener {
+        binding.toolbar.setOnClickListener {
             listView.setSelection(0)
         }
-        setSupportActionBar(toolbar)
-        if (savedInstanceState == null) {
-            downloadJson()
-        } else {
-            cameras = savedInstanceState.getParcelableArrayList("cameras") ?: cameras
-            loadList()
+        setSupportActionBar(binding.toolbar)
+        AsyncTask.execute {
+            val destinationURL = URL("https://traffic.ottawa.ca/map/")
+            val conn = destinationURL.openConnection() as HttpsURLConnection
+            conn.connect()
+            StreetCamsRequestQueue.cert = conn.serverCertificates.filterIsInstance<X509Certificate>().first()
+            runOnUiThread {
+                if (savedInstanceState == null) {
+                    downloadJson()
+                } else {
+                    cameras = savedInstanceState.getParcelableArrayList("cameras") ?: cameras
+                    loadList()
+                }
+            }
         }
+
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -107,7 +121,7 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback {
                 //searchView.suggestionsAdapter = NeighbourhoodAdapter(this@AlternateMainActivity, neighbourhoods)
 
                 myAdapter.filter.filter(newText)
-                section_index_listview.sectionindex.visibility =
+                binding.sectionIndexListview.sectionIndex.visibility =
                         if (newText.isNotEmpty() || sortName?.isVisible!!)
                             View.INVISIBLE
                         else
@@ -126,12 +140,12 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menuItemMap -> {
-                view_switcher.showNext()
+                binding.viewSwitcher.showNext()
             }
             R.id.sort_name -> {
                 myAdapter.sort(SortByName())
 
-                section_index_listview.sectionindex.visibility = View.VISIBLE
+                binding.sectionIndexListview.sectionIndex.visibility = View.VISIBLE
                 sortDistance?.isVisible = true
                 //sortNeighbourhood?.isVisible = true
                 sortName?.isVisible = false
@@ -167,8 +181,8 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback {
             R.id.night_mode -> {
                 item.isChecked = !item.isChecked
                 setNightModeOn(item.isChecked)
-                Handler().postDelayed({
-                    startActivity(Intent(this, AlternateMainActivity::class.java))
+                Handler(Looper.getMainLooper()).postDelayed({
+                    startActivity(Intent(this, MainActivity::class.java))
                     finish()
                 }, 500)
             }
@@ -204,11 +218,14 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback {
         myAdapter.addAll(cameras)
         searchView?.queryHint = resources.getQuantityString(R.plurals.search_hint, cameras.size, cameras.size)
         (supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
-        section_index_listview.updateIndex()
-        progress_bar.visibility = View.INVISIBLE
+        binding.sectionIndexListview.updateIndex()
+        binding.progressBar.visibility = View.INVISIBLE
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
+        if (isNightModeOn()) {
+            googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this@MainActivity, R.raw.dark_mode))
+        }
         googleMap.setOnInfoWindowLongClickListener { marker ->
             actionMode = actionMode ?: startActionMode(this)
             selectCamera(marker.tag as Camera)
@@ -276,7 +293,7 @@ class AlternateMainActivity : GenericActivity(), OnMapReadyCallback {
                 requestForList -> {
                     val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
                     myAdapter.sort(SortByDistance(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)!!))
-                    section_index_listview.sectionindex.visibility = View.INVISIBLE
+                    binding.sectionIndexListview.sectionIndex.visibility = View.INVISIBLE
                     sortDistance?.isVisible = false
                     sortName?.isVisible = true
                     //sortNeighbourhood?.isVisible = true
