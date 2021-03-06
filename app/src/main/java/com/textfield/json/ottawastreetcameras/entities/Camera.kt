@@ -103,24 +103,12 @@ class Camera : BilingualObject, Parcelable {
 
     override fun equals(other: Any?): Boolean {
         if (other !is Camera) return false
-        return (nameEn == other.nameEn)
-                && (nameFr == other.nameFr)
-                && (lat == other.lat)
-                && (lng == other.lng)
-                && (owner == other.owner)
-                && (id == other.id)
-                && (num == other.num)
+        return  (id == other.id) && (num == other.num)
     }
 
     override fun hashCode(): Int {
-        var result = owner.hashCode()
-        result = 31 * result + lat.hashCode()
-        result = 31 * result + lng.hashCode()
+        var result = id.hashCode()
         result = 31 * result + num
-        result = 31 * result + isFavourite.hashCode()
-        result = 31 * result + isVisible.hashCode()
-        result = 31 * result + neighbourhood.hashCode()
-        result = 31 * result + (marker.hashCode() ?: 0)
         return result
     }
 }

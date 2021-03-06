@@ -13,11 +13,13 @@ import android.widget.ListView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.SectionIndexListView
 import com.textfield.json.ottawastreetcameras.adapters.CameraAdapter
 import com.textfield.json.ottawastreetcameras.entities.Camera
+
 
 abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceModeListener {
     companion object {
@@ -75,6 +77,16 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
         dialog.show()
     }
 
+    protected fun tintMenuItemIcon(item: MenuItem) {
+        item.icon?.let { drawable ->
+            val wrapped = DrawableCompat.wrap(drawable)
+            drawable.mutate()
+            DrawableCompat.setTint(wrapped, ContextCompat.getColor(this,
+                    if (isNightModeOn()) android.R.color.white else android.R.color.black))
+            item.icon = drawable
+        }
+    }
+
     override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
         actionMode = mode
         actionMode?.menuInflater?.inflate(R.menu.contextual_menu, menu)
@@ -86,9 +98,7 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
         hide = menu.findItem(R.id.hide)
         saveImage = menu.findItem(R.id.save)
         for (i in 0 until menu.size()) {
-            menu.getItem(i)?.icon?.setColorFilter(ContextCompat.getColor(this,
-                    if (isNightModeOn()) android.R.color.white else android.R.color.black),
-                    android.graphics.PorterDuff.Mode.SRC_IN)
+            tintMenuItemIcon(menu.getItem(i))
         }
         return true
     }

@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.LocationManager
-import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -33,6 +32,9 @@ import com.textfield.json.ottawastreetcameras.comparators.SortByDistance
 import com.textfield.json.ottawastreetcameras.comparators.SortByName
 import com.textfield.json.ottawastreetcameras.databinding.ActivityMainBinding
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.net.URL
 import java.security.cert.X509Certificate
 import java.util.*
@@ -79,7 +81,8 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
             listView.setSelection(0)
         }
         setSupportActionBar(binding.toolbar)
-        AsyncTask.execute {
+
+        GlobalScope.launch(Dispatchers.IO) {
             val destinationURL = URL("https://traffic.ottawa.ca/map/")
             val conn = destinationURL.openConnection() as HttpsURLConnection
             conn.connect()
@@ -93,8 +96,6 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
                 }
             }
         }
-
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -130,9 +131,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
             }
         })
         for (i in 0 until menu.size()) {
-            menu.getItem(i)?.icon?.setColorFilter(ContextCompat.getColor(this,
-                    if (isNightModeOn()) android.R.color.white else android.R.color.black),
-                    android.graphics.PorterDuff.Mode.SRC_IN)
+            tintMenuItemIcon(menu.getItem(i))
         }
         return true
     }
