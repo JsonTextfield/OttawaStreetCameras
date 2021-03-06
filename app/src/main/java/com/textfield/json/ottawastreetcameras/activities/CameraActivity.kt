@@ -12,8 +12,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.android.volley.NetworkResponse
 import com.android.volley.Response
 import com.android.volley.toolbox.HttpHeaderParser
@@ -168,10 +166,6 @@ class CameraActivity : GenericActivity() {
     }
 
     private fun saveToInternalStorage(bitmapImage: Bitmap, fileName: String) {
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), requestForSave)
-        }
         val streetCamsDirectory = File(getExternalFilesDir(null), "/Ottawa StreetCams")
         if (!streetCamsDirectory.exists()) {
             streetCamsDirectory.mkdirs()
