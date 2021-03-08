@@ -47,13 +47,8 @@ class CameraActivity : GenericActivity() {
         listView.adapter = imageAdapter
         listView.setMultiChoiceModeListener(this)
         if (savedInstanceState?.getParcelableArrayList<Camera>("selectedCameras") != null) {
-            val cameras = savedInstanceState.getParcelableArrayList<Camera>("selectedCameras")!!
+            previouslySelectedCameras = savedInstanceState.getParcelableArrayList("selectedCameras")!!
             startActionMode(this)
-            for (i in 0 until imageAdapter.count) {
-                if (imageAdapter.getItem(i) in cameras) {
-                    listView.setItemChecked(i, true)
-                }
-            }
         }
     }
 
@@ -88,6 +83,14 @@ class CameraActivity : GenericActivity() {
     }
 
     override fun onResume() {
+        super.onResume()
+        for (i in 0 until imageAdapter.count) {
+            if (imageAdapter.getItem(i) in previouslySelectedCameras) {
+                listView.setItemChecked(i, true)
+            }
+        }
+        previouslySelectedCameras.clear()
+
         val url = "https://traffic.ottawa.ca/map/"
         val sessionRequest = object : StringRequest(url, Response.Listener {
             for (i in 0 until imageAdapter.count) {
@@ -107,7 +110,6 @@ class CameraActivity : GenericActivity() {
         }
         sessionRequest.tag = tag
         StreetCamsRequestQueue.getInstance(this).add(sessionRequest)
-        super.onResume()
     }
 
     override fun onPause() {
@@ -134,14 +136,14 @@ class CameraActivity : GenericActivity() {
         val textView = binding.imageListView.getViewByPosition(index).findViewById(R.id.label) as TextView
         val url = "https://traffic.ottawa.ca/map/camera?id=${selectedCamera.num}"
         val request = ImageRequest(url, { response ->
-                try {
-                    bmImage.setImageBitmap(response)
-                    textView.text = selectedCamera.getName()
-                    textView.visibility = View.VISIBLE
-                } catch (e: NullPointerException) {
-                } finally {
-                    binding.cameraProgressBar.visibility = View.INVISIBLE
-                }
+            try {
+                bmImage.setImageBitmap(response)
+                textView.text = selectedCamera.getName()
+                textView.visibility = View.VISIBLE
+            } catch (e: NullPointerException) {
+            } finally {
+                binding.cameraProgressBar.visibility = View.INVISIBLE
+            }
         }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.RGB_565, {
             it.printStackTrace()
         })

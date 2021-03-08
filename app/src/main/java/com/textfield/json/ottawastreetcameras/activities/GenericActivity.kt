@@ -28,9 +28,10 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
     }
 
     protected var actionMode: ActionMode? = null
-    lateinit var listView: ListView
-    var cameras = ArrayList<Camera>()
-    val selectedCameras = ArrayList<Camera>()
+    protected lateinit var listView: ListView
+    protected var cameras = ArrayList<Camera>()
+    protected val selectedCameras = ArrayList<Camera>()
+    protected var previouslySelectedCameras = ArrayList<Camera>()
 
     private lateinit var addFav: MenuItem
     private lateinit var removeFav: MenuItem
@@ -105,6 +106,7 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
 
     override fun onDestroyActionMode(mode: ActionMode?) {
         cameras.filter { it in selectedCameras }.forEach { selectCamera(it) }
+        selectedCameras.clear()
         actionMode = null
     }
 

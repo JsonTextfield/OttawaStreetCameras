@@ -47,7 +47,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
     private val requestForMap = 1
     private val maxCameras = 4
 
-    private lateinit var myAdapter: CameraAdapter
+    private lateinit var cameraAdapter: CameraAdapter
     private lateinit var binding: ActivityMainBinding
 
     private var map: GoogleMap? = null
@@ -66,14 +66,14 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
         binding.progressBar.visibility = View.VISIBLE
 
         listView = binding.sectionIndexListview.listView
-        myAdapter = object : CameraAdapter(this, cameras) {
+        cameraAdapter = object : CameraAdapter(this, cameras) {
             override fun onComplete() {
                 binding.sectionIndexListview.updateIndex()
             }
         }
-        listView.adapter = myAdapter
+        listView.adapter = cameraAdapter
         listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, i, _ ->
-            selectCamera(myAdapter.getItem(i))
+            selectCamera(cameraAdapter.getItem(i))
             showSelectedCameras()
         }
         listView.setMultiChoiceModeListener(this)
@@ -82,18 +82,20 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
         }
         setSupportActionBar(binding.toolbar)
 
-        GlobalScope.launch(Dispatchers.IO) {
-            val destinationURL = URL("https://traffic.ottawa.ca/map/")
-            val conn = destinationURL.openConnection() as HttpsURLConnection
-            conn.connect()
-            StreetCamsRequestQueue.cert = conn.serverCertificates.filterIsInstance<X509Certificate>().first()
-            runOnUiThread {
-                if (savedInstanceState == null) {
-                    downloadJson()
-                } else {
-                    cameras = savedInstanceState.getParcelableArrayList("cameras") ?: cameras
-                    loadList()
-                }
+        if (savedInstanceState == null) {
+            GlobalScope.launch(Dispatchers.IO) {
+                val destinationURL = URL("https://traffic.ottawa.ca/map/")
+                val conn = destinationURL.openConnection() as HttpsURLConnection
+                conn.connect()
+                StreetCamsRequestQueue.cert = conn.serverCertificates.filterIsInstance<X509Certificate>().first()
+                downloadJson()
+            }
+        } else {
+            cameras = savedInstanceState.getParcelableArrayList("cameras") ?: cameras
+            loadList()
+            if (savedInstanceState.getParcelableArrayList<Camera>("selectedCameras") != null) {
+                previouslySelectedCameras = savedInstanceState.getParcelableArrayList("selectedCameras")!!
+                startActionMode(this@MainActivity)
             }
         }
     }
@@ -121,7 +123,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
                 map?.getFilter(cameras, mapIsLoaded)?.filter(newText)
                 //searchView.suggestionsAdapter = NeighbourhoodAdapter(this@AlternateMainActivity, neighbourhoods)
 
-                myAdapter.filter.filter(newText)
+                cameraAdapter.filter.filter(newText)
                 binding.sectionIndexListview.sectionIndex.visibility =
                         if (newText.isNotEmpty() || sortName?.isVisible!!)
                             View.INVISIBLE
@@ -142,7 +144,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
                 binding.viewSwitcher.showNext()
             }
             R.id.sort_name -> {
-                myAdapter.sort(SortByName())
+                cameraAdapter.sort(SortByName())
 
                 binding.sectionIndexListview.sectionIndex.visibility = View.VISIBLE
                 sortDistance?.isVisible = true
@@ -195,6 +197,16 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
         return true
     }
 
+    override fun onResume() {
+        super.onResume()
+        for (i in 0 until cameraAdapter.count) {
+            if (cameraAdapter.getItem(i) in previouslySelectedCameras) {
+                listView.setItemChecked(i, true)
+            }
+        }
+        previouslySelectedCameras.clear()
+    }
+
     private fun downloadJson() {
         val jsObjRequest = JsonArrayRequest("https://traffic.ottawa.ca/map/camera_list", { response ->
             val sharedPrefs = getSharedPreferences(applicationContext.packageName, Context.MODE_PRIVATE)
@@ -214,7 +226,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
 
     private fun loadList() {
         Collections.sort(cameras, SortByName())
-        myAdapter.addAll(cameras)
+        cameraAdapter.addAll(cameras)
         searchView?.queryHint = resources.getQuantityString(R.plurals.search_hint, cameras.size, cameras.size)
         (supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
         binding.sectionIndexListview.updateIndex()
@@ -291,7 +303,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
             when (requestCode) {
                 requestForList -> {
                     val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-                    myAdapter.sort(SortByDistance(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)!!))
+                    cameraAdapter.sort(SortByDistance(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)!!))
                     binding.sectionIndexListview.sectionIndex.visibility = View.INVISIBLE
                     sortDistance?.isVisible = false
                     sortName?.isVisible = true
@@ -342,7 +354,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
     override fun onDestroyActionMode(mode: ActionMode?) {
         super.onDestroyActionMode(mode)
         if (searchMenuItem != null) {
-            myAdapter.filter.filter((searchMenuItem!!.actionView as SearchView).query)
+            cameraAdapter.filter.filter((searchMenuItem!!.actionView as SearchView).query)
             map?.getFilter(cameras, mapIsLoaded)?.filter((searchMenuItem!!.actionView as SearchView).query)
         }
     }
