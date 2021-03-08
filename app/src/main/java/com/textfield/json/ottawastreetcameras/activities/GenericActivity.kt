@@ -29,6 +29,7 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
 
     protected var actionMode: ActionMode? = null
     protected lateinit var listView: ListView
+    protected lateinit var adapter: ArrayAdapter<Camera>
     protected var cameras = ArrayList<Camera>()
     protected val selectedCameras = ArrayList<Camera>()
     protected var previouslySelectedCameras = ArrayList<Camera>()
@@ -44,6 +45,15 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(if (isNightModeOn()) R.style.AppTheme else R.style.AppTheme_Light)
         super.onCreate(savedInstanceState)
+    }
+    override fun onResume() {
+        super.onResume()
+        for (i in 0 until adapter.count) {
+            if (adapter.getItem(i) in previouslySelectedCameras) {
+                listView.setItemChecked(i, true)
+            }
+        }
+        previouslySelectedCameras.clear()
     }
 
     fun modifyPrefs(pref: String, selectedCameras: Collection<Camera>, willAdd: Boolean) {

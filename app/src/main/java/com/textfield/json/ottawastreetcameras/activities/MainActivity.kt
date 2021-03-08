@@ -47,7 +47,6 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
     private val requestForMap = 1
     private val maxCameras = 4
 
-    private lateinit var cameraAdapter: CameraAdapter
     private lateinit var binding: ActivityMainBinding
 
     private var map: GoogleMap? = null
@@ -66,14 +65,14 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
         binding.progressBar.visibility = View.VISIBLE
 
         listView = binding.sectionIndexListview.listView
-        cameraAdapter = object : CameraAdapter(this, cameras) {
+        adapter = object : CameraAdapter(this, cameras) {
             override fun onComplete() {
                 binding.sectionIndexListview.updateIndex()
             }
         }
-        listView.adapter = cameraAdapter
+        listView.adapter = adapter
         listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, i, _ ->
-            selectCamera(cameraAdapter.getItem(i))
+            selectCamera(adapter.getItem(i)!!)
             showSelectedCameras()
         }
         listView.setMultiChoiceModeListener(this)
@@ -123,7 +122,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
                 map?.getFilter(cameras, mapIsLoaded)?.filter(newText)
                 //searchView.suggestionsAdapter = NeighbourhoodAdapter(this@AlternateMainActivity, neighbourhoods)
 
-                cameraAdapter.filter.filter(newText)
+                adapter.filter.filter(newText)
                 binding.sectionIndexListview.sectionIndex.visibility =
                         if (newText.isNotEmpty() || sortName?.isVisible!!)
                             View.INVISIBLE
@@ -144,7 +143,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
                 binding.viewSwitcher.showNext()
             }
             R.id.sort_name -> {
-                cameraAdapter.sort(SortByName())
+                adapter.sort(SortByName())
 
                 binding.sectionIndexListview.sectionIndex.visibility = View.VISIBLE
                 sortDistance?.isVisible = true
@@ -197,16 +196,6 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
         return true
     }
 
-    override fun onResume() {
-        super.onResume()
-        for (i in 0 until cameraAdapter.count) {
-            if (cameraAdapter.getItem(i) in previouslySelectedCameras) {
-                listView.setItemChecked(i, true)
-            }
-        }
-        previouslySelectedCameras.clear()
-    }
-
     private fun downloadJson() {
         val jsObjRequest = JsonArrayRequest("https://traffic.ottawa.ca/map/camera_list", { response ->
             val sharedPrefs = getSharedPreferences(applicationContext.packageName, Context.MODE_PRIVATE)
@@ -226,7 +215,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
 
     private fun loadList() {
         Collections.sort(cameras, SortByName())
-        cameraAdapter.addAll(cameras)
+        adapter.addAll(cameras)
         searchView?.queryHint = resources.getQuantityString(R.plurals.search_hint, cameras.size, cameras.size)
         (supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
         binding.sectionIndexListview.updateIndex()
@@ -303,7 +292,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
             when (requestCode) {
                 requestForList -> {
                     val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-                    cameraAdapter.sort(SortByDistance(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)!!))
+                    adapter.sort(SortByDistance(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)!!))
                     binding.sectionIndexListview.sectionIndex.visibility = View.INVISIBLE
                     sortDistance?.isVisible = false
                     sortName?.isVisible = true
@@ -354,7 +343,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
     override fun onDestroyActionMode(mode: ActionMode?) {
         super.onDestroyActionMode(mode)
         if (searchMenuItem != null) {
-            cameraAdapter.filter.filter((searchMenuItem!!.actionView as SearchView).query)
+            adapter.filter.filter((searchMenuItem!!.actionView as SearchView).query)
             map?.getFilter(cameras, mapIsLoaded)?.filter((searchMenuItem!!.actionView as SearchView).query)
         }
     }

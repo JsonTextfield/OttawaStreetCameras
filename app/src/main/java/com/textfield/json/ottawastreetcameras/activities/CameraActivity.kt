@@ -33,7 +33,6 @@ class CameraActivity : GenericActivity() {
     private val timers = ArrayList<CameraRunnable>()
     private val handler = Handler(Looper.getMainLooper())
     private val tag = "camera"
-    private lateinit var imageAdapter: ImageAdapter
     private lateinit var binding: ActivityCameraBinding
     private var shuffle = false
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,8 +42,8 @@ class CameraActivity : GenericActivity() {
         listView = binding.imageListView
         shuffle = intent.getBooleanExtra("shuffle", false)
         cameras = intent.getParcelableArrayListExtra("cameras") ?: ArrayList()
-        imageAdapter = ImageAdapter(this, if (shuffle) cameras.subList(0, 1) else cameras)
-        listView.adapter = imageAdapter
+        adapter = ImageAdapter(this, if (shuffle) cameras.subList(0, 1) else cameras)
+        listView.adapter = adapter
         listView.setMultiChoiceModeListener(this)
         if (savedInstanceState?.getParcelableArrayList<Camera>("selectedCameras") != null) {
             previouslySelectedCameras = savedInstanceState.getParcelableArrayList("selectedCameras")!!
@@ -84,16 +83,10 @@ class CameraActivity : GenericActivity() {
 
     override fun onResume() {
         super.onResume()
-        for (i in 0 until imageAdapter.count) {
-            if (imageAdapter.getItem(i) in previouslySelectedCameras) {
-                listView.setItemChecked(i, true)
-            }
-        }
-        previouslySelectedCameras.clear()
 
         val url = "https://traffic.ottawa.ca/map/"
         val sessionRequest = object : StringRequest(url, Response.Listener {
-            for (i in 0 until imageAdapter.count) {
+            for (i in 0 until adapter.count) {
                 val cameraRunnable = CameraRunnable(i)
                 timers.add(cameraRunnable)
                 handler.post(cameraRunnable)
@@ -131,7 +124,7 @@ class CameraActivity : GenericActivity() {
     }
 
     fun download(index: Int) {
-        val selectedCamera = if (shuffle) cameras[Random().nextInt(cameras.size)] else imageAdapter.getItem(index)
+        val selectedCamera = if (shuffle) cameras[Random().nextInt(cameras.size)] else adapter.getItem(index)!!
         val bmImage = binding.imageListView.getViewByPosition(index).findViewById(R.id.source) as ImageView
         val textView = binding.imageListView.getViewByPosition(index).findViewById(R.id.label) as TextView
         val url = "https://traffic.ottawa.ca/map/camera?id=${selectedCamera.num}"
