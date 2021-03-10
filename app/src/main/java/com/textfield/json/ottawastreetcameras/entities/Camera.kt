@@ -34,9 +34,6 @@ class Camera : BilingualObject, Parcelable {
             owner = vals.getString("type")
             id = vals.getInt("id")
             num = vals.getInt("number")
-            if (owner == "MTO") {
-                num += 2000
-            }
             lat = vals.getDouble("latitude")
             lng = vals.getDouble("longitude")
         } catch (e: JSONException) {
