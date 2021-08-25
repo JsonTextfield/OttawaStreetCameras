@@ -3,11 +3,11 @@
     <string name="search">Chercher</string>
     <string name="map">Carte</string>
     <string name="show">Montre</string>
-    <string name="sort_by_distance">Triez-les par distance</string>
+    <string name="sort_by_distance">Triez par distance</string>
     <string name="no_network_title">Pas de connexion réseau</string>
     <string name="no_network_content">Veuillez vous connecter à un réseau et réessayer</string>
-    <string name="sort_by_name">Triez-les par nom</string>
-    <string name="switch_view">Change la vue</string>
+    <string name="sort_by_name">Triez par nom</string>
+    <string name="switch_view">Changer la vue</string>
     <string name="random_camera">Caméra aléatoire</string>
     <string name="shuffle">Mélanger</string>
     <string name="favourites">Favoris</string>
