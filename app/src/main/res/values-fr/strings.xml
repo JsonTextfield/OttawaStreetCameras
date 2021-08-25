@@ -28,7 +28,7 @@
     </plurals>
 
     <plurals name="search_hint">
-        <item quantity="one">Recherche de %d emplacement</item>
-        <item quantity="other">Recherche de %d emplacements</item>
+        <item quantity="one">Recherche de %d lieu</item>
+        <item quantity="other">Recherche de %d lieux</item>
     </plurals>
 </resources>
