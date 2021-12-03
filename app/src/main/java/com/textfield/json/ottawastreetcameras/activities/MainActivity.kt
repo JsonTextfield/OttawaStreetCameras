@@ -197,7 +197,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
     }
 
     private fun downloadJson() {
-        val jsObjRequest = JsonArrayRequest("https://traffic.ottawa.ca/map/camera_list", { response ->
+        val jsObjRequest = JsonArrayRequest("https://traffic.ottawa.ca/beta/camera_list", { response ->
             val sharedPrefs = getSharedPreferences(applicationContext.packageName, Context.MODE_PRIVATE)
             cameras = (0 until response.length()).map {
                 val camera = Camera(response.getJSONObject(it))

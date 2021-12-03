@@ -127,7 +127,7 @@ class CameraActivity : GenericActivity() {
         val selectedCamera = if (shuffle) cameras[Random().nextInt(cameras.size)] else adapter.getItem(index)!!
         val bmImage = binding.imageListView.getViewByPosition(index).findViewById(R.id.source) as ImageView
         val textView = binding.imageListView.getViewByPosition(index).findViewById(R.id.label) as TextView
-        val url = "https://traffic.ottawa.ca/map/camera?id=${selectedCamera.num}"
+        val url = "https://traffic.ottawa.ca/beta/camera?id=${selectedCamera.num}"
         val request = ImageRequest(url, { response ->
             try {
                 bmImage.setImageBitmap(response)
