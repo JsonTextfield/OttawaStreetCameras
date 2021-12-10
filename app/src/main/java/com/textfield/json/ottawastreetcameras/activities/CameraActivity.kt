@@ -84,7 +84,7 @@ class CameraActivity : GenericActivity() {
     override fun onResume() {
         super.onResume()
 
-        val url = "https://traffic.ottawa.ca/map/"
+        val url = "https://traffic.ottawa.ca/beta/"
         val sessionRequest = object : StringRequest(url, Response.Listener {
             for (i in 0 until adapter.count) {
                 val cameraRunnable = CameraRunnable(i)
@@ -96,7 +96,7 @@ class CameraActivity : GenericActivity() {
             showErrorDialogue(this)
         }) {
             override fun parseNetworkResponse(response: NetworkResponse): Response<String> {
-                val sessionId = response.headers["Set-Cookie"] ?: StreetCamsRequestQueue.sessionId
+                val sessionId = response.headers?.get("Set-Cookie") ?: StreetCamsRequestQueue.sessionId
                 StreetCamsRequestQueue.sessionId = sessionId
                 return Response.success(StreetCamsRequestQueue.sessionId, HttpHeaderParser.parseCacheHeaders(response))
             }
@@ -127,7 +127,7 @@ class CameraActivity : GenericActivity() {
         val selectedCamera = if (shuffle) cameras[Random().nextInt(cameras.size)] else adapter.getItem(index)!!
         val bmImage = binding.imageListView.getViewByPosition(index).findViewById(R.id.source) as ImageView
         val textView = binding.imageListView.getViewByPosition(index).findViewById(R.id.label) as TextView
-        val url = "https://traffic.ottawa.ca/beta/camera?id=${selectedCamera.num}"
+        val url = "https://traffic.ottawa.ca/beta/camera?id=${selectedCamera.num}&timems=${Date().time}"
         val request = ImageRequest(url, { response ->
             try {
                 bmImage.setImageBitmap(response)
