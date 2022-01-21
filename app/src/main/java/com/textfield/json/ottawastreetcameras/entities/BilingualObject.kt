@@ -19,6 +19,6 @@ abstract class BilingualObject {
      * Returns an alphanumeric, uppercase version of the name of the location.
      */
     fun getSortableName(): String {
-        return getName().replace(Regex("\\W"), "").toUpperCase(Locale.ROOT)
+        return getName().replace(Regex("\\W"), "").uppercase(Locale.ROOT)
     }
 }

@@ -105,7 +105,7 @@ class SectionIndexListView : LinearLayout {
             //get the first character
             val t = inflater.inflate(indexTextViewLayout, this, false) as TextView
             t.setTextColor(defaultTextColour)
-            val c = listView.adapter.getItem(i).toString().toUpperCase(Locale.ENGLISH)[0]
+            val c = listView.adapter.getItem(i).toString().uppercase(Locale.ENGLISH)[0]
             if (c !in index.keys && c in "ABCDEFGHIJKLMNOPQRESTUVWXYZ") {
                 index[c] = i
                 t.text = c.toString()
