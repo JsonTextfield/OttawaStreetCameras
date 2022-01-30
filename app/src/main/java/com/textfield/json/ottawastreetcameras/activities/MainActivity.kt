@@ -39,7 +39,6 @@ import java.net.URL
 import java.security.cert.X509Certificate
 import java.util.*
 import javax.net.ssl.HttpsURLConnection
-import kotlin.collections.HashSet
 
 class MainActivity : GenericActivity(), OnMapReadyCallback {
 
@@ -249,16 +248,18 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
                 val m = map.addMarker(MarkerOptions()
                         .position(LatLng(camera.lat, camera.lng))
                         .title(camera.getName()))
-                if (camera.isFavourite) {
-                    m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
-                } else {
-                    m.setIcon(BitmapDescriptorFactory.defaultMarker())
-                }
-                m.tag = camera
-                camera.marker = m
-                builder.include(m.position)
+                m?.let {
+                    if (camera.isFavourite) {
+                        it.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
+                    } else {
+                        it.setIcon(BitmapDescriptorFactory.defaultMarker())
+                    }
+                    it.tag = camera
+                    camera.marker = m
+                    builder.include(m.position)
 
-                m.isVisible = camera.isVisible
+                    it.isVisible = camera.isVisible
+                }
             }
             val bounds = builder.build()
             map.setLatLngBoundsForCameraTarget(bounds)
@@ -358,7 +359,7 @@ fun GoogleMap.getFilter(cameras: List<Camera>, mapIsLoaded: Boolean): Filter {
             for (camera in cameras) {
                 camera.marker?.isVisible = camera in list
                 if (camera.isVisible && mapIsLoaded) {
-                    latLngBounds.include(camera.marker?.position)
+                    latLngBounds.include(camera.marker?.position!!)
                     anyVisible = true
                 }
             }
