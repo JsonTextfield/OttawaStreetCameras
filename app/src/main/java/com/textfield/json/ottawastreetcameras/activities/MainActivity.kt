@@ -15,6 +15,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.Filter
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -35,6 +36,7 @@ import com.textfield.json.ottawastreetcameras.entities.Camera
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.io.IOException
 import java.net.URL
 import java.security.cert.X509Certificate
 import java.util.*
@@ -82,11 +84,16 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
 
         if (savedInstanceState == null) {
             GlobalScope.launch(Dispatchers.IO) {
-                val destinationURL = URL("https://traffic.ottawa.ca/map/")
-                val conn = destinationURL.openConnection() as HttpsURLConnection
-                conn.connect()
-                StreetCamsRequestQueue.cert = conn.serverCertificates.filterIsInstance<X509Certificate>().first()
-                downloadJson()
+                try {
+                    val destinationURL = URL("https://traffic.ottawa.ca/map/")
+                    val conn = destinationURL.openConnection() as HttpsURLConnection
+                    conn.connect()
+                    StreetCamsRequestQueue.cert = conn.serverCertificates.filterIsInstance<X509Certificate>().first()
+                    downloadJson()
+                } catch (exception: IOException) {
+                    Looper.prepare()
+                    showErrorDialogue(this@MainActivity)
+                }
             }
         } else {
             cameras = savedInstanceState.getParcelableArrayList("cameras") ?: cameras
@@ -167,7 +174,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
                 val intent = Intent(this, CameraActivity::class.java)
                 intent.putParcelableArrayListExtra("cameras", cameras)
                 intent.putExtra("shuffle", true)
-                startActivityForResult(intent, 0)
+                getResult.launch(intent)
             }
             R.id.favourites -> {
                 searchMenuItem?.expandActionView()
@@ -207,7 +214,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
             loadList()
         }, {
             it.printStackTrace()
-            showErrorDialogue(this)
+            showErrorDialogue(this, it.message ?: "")
         })
         StreetCamsRequestQueue.getInstance(this).add(jsObjRequest)
     }
@@ -271,12 +278,14 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
         //map?.getFilter(cameras, mapIsLoaded)?.filter("")
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (actionMode == null) {
-            selectedCameras.clear()
-        }
-    }
+    private val getResult =
+            registerForActivityResult(
+                ActivityResultContracts.StartActivityForResult()
+            ) {
+                if (actionMode == null) {
+                    selectedCameras.clear()
+                }
+            }
 
     private fun requestPermissions(requestCode: Int) {
         val permissionArray = arrayOf(
@@ -305,6 +314,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
             if (requestCode == requestForList) {
                 requestPermissions(requestForList)
@@ -325,7 +335,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
     private fun showSelectedCameras() {
         val intent = Intent(this, CameraActivity::class.java)
         intent.putParcelableArrayListExtra("cameras", selectedCameras)
-        startActivityForResult(intent, 0)
+        getResult.launch(intent)
     }
 
     override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {

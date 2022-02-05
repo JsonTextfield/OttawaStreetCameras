@@ -79,12 +79,16 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
     }
 
     fun showErrorDialogue(context: Context) {
+        showErrorDialogue(context, resources.getString(R.string.no_network_content))
+    }
+
+    fun showErrorDialogue(context: Context, message: String) {
         val dialog = AlertDialog.Builder(context)
-                .setTitle(resources.getString(R.string.no_network_title))
-                .setMessage(resources.getString(R.string.no_network_content))
-                .setPositiveButton("OK") { _, _ -> finish() }
-                .setOnDismissListener { finish() }
-                .create()
+            .setTitle(resources.getString(R.string.no_network_title))
+            .setMessage(message)
+            .setPositiveButton("OK") { _, _ -> finish() }
+            .setOnDismissListener { finish() }
+            .create()
         dialog.show()
     }
 

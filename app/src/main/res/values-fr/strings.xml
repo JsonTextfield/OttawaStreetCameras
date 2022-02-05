@@ -24,11 +24,11 @@
 
     <plurals name="selectedCameras">
         <item quantity="one">%d caméra sélectionnée</item>
-        <item quantity="other">%d caméras sélectionnées</item>
+        <item quantity="many">%d caméras sélectionnées</item>
     </plurals>
 
     <plurals name="search_hint">
         <item quantity="one">Recherche de %d lieu</item>
-        <item quantity="other">Recherche de %d lieux</item>
+        <item quantity="many">Recherche de %d lieux</item>
     </plurals>
 </resources>

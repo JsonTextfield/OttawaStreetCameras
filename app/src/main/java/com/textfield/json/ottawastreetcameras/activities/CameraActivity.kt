@@ -26,7 +26,6 @@ import com.textfield.json.ottawastreetcameras.entities.Camera
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
-import kotlin.collections.ArrayList
 
 class CameraActivity : GenericActivity() {
     private val requestForSave = 0
@@ -83,7 +82,6 @@ class CameraActivity : GenericActivity() {
 
     override fun onResume() {
         super.onResume()
-
         val url = "https://traffic.ottawa.ca/beta/"
         val sessionRequest = object : StringRequest(url, Response.Listener {
             for (i in 0 until adapter.count) {
@@ -118,10 +116,10 @@ class CameraActivity : GenericActivity() {
         }
     }
 
-    fun back(v: View) {
+    /*private fun back() {
         setResult(0)
         finish()
-    }
+    }*/
 
     fun download(index: Int) {
         val selectedCamera = if (shuffle) cameras[Random().nextInt(cameras.size)] else adapter.getItem(index)!!
@@ -139,12 +137,14 @@ class CameraActivity : GenericActivity() {
             }
         }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.RGB_565, {
             it.printStackTrace()
+            showErrorDialogue(this@CameraActivity)
         })
         request.tag = tag
         StreetCamsRequestQueue.getInstance(this).add(request)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
             if (requestCode == requestForSave) {
                 for (i in 0 until cameras.size) {
