@@ -231,8 +231,8 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
     }
 
     override fun onItemCheckedStateChanged(mode: ActionMode?, position: Int, id: Long, checked: Boolean) {
-        val adapter = listView.adapter as ArrayAdapter<Camera>
-        if (!selectCamera(adapter.getItem(position)!!) && checked) {
+        val adapter = listView.adapter as ArrayAdapter<*>
+        if (!selectCamera(adapter.getItem(position) as Camera) && checked) {
             listView.setItemChecked(position, false)
         }
     }

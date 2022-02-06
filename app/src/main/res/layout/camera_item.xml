@@ -23,4 +23,15 @@
         android:gravity="center"
         android:textColor="@android:color/white"
         android:visibility="invisible" />
+
+    <View
+        android:id="@+id/overlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/source"
+        android:layout_alignTop="@+id/source"
+        android:layout_alignEnd="@+id/source"
+        android:layout_alignBottom="@+id/source"
+        android:background="#4F00BCD4"
+        android:visibility="invisible" />
 </RelativeLayout>

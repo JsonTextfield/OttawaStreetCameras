@@ -12,6 +12,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import com.android.volley.NetworkResponse
 import com.android.volley.Response
 import com.android.volley.toolbox.HttpHeaderParser
@@ -48,6 +49,19 @@ class CameraActivity : GenericActivity() {
             previouslySelectedCameras = savedInstanceState.getParcelableArrayList("selectedCameras")!!
             startActionMode(this)
         }
+    }
+
+    override fun onDestroyActionMode(mode: ActionMode?) {
+        for (i in 0 until listView.adapter.count) {
+            listView.getViewByPosition(i).findViewById<View>(R.id.overlay).visibility = View.INVISIBLE
+        }
+        super.onDestroyActionMode(mode)
+    }
+
+    override fun onItemCheckedStateChanged(mode: ActionMode?, position: Int, id: Long, checked: Boolean) {
+        val overlay = listView.getViewByPosition(position).findViewById<View>(R.id.overlay)
+        overlay.visibility = if (checked) View.VISIBLE else View.INVISIBLE
+        super.onItemCheckedStateChanged(mode, position, id, checked)
     }
 
     override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
@@ -123,8 +137,8 @@ class CameraActivity : GenericActivity() {
 
     fun download(index: Int) {
         val selectedCamera = if (shuffle) cameras[Random().nextInt(cameras.size)] else adapter.getItem(index)!!
-        val bmImage = binding.imageListView.getViewByPosition(index).findViewById(R.id.source) as ImageView
-        val textView = binding.imageListView.getViewByPosition(index).findViewById(R.id.label) as TextView
+        val bmImage = listView.getViewByPosition(index).findViewById(R.id.source) as ImageView
+        val textView = listView.getViewByPosition(index).findViewById(R.id.label) as TextView
         val url = "https://traffic.ottawa.ca/beta/camera?id=${selectedCamera.num}&timems=${Date().time}"
         val request = ImageRequest(url, { response ->
             try {
@@ -177,7 +191,7 @@ class CameraActivity : GenericActivity() {
                     resources.getString(R.string.image_saved_at, imageFile.toString()),
                     Snackbar.LENGTH_LONG)
             s.show()
-            //Toast.makeText(this, "Image saved at: $imageFile", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Image saved at: $imageFile", Toast.LENGTH_LONG).show()
         } catch (e: Exception) {
             e.printStackTrace()
         }

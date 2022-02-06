@@ -33,17 +33,16 @@ import com.textfield.json.ottawastreetcameras.comparators.SortByDistance
 import com.textfield.json.ottawastreetcameras.comparators.SortByName
 import com.textfield.json.ottawastreetcameras.databinding.ActivityMainBinding
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.io.IOException
 import java.net.URL
 import java.security.cert.X509Certificate
 import java.util.*
 import javax.net.ssl.HttpsURLConnection
 
-class MainActivity : GenericActivity(), OnMapReadyCallback {
+class MainActivity : GenericActivity(), OnMapReadyCallback, CoroutineScope {
 
+    override val coroutineContext = Dispatchers.Main + SupervisorJob()
     private val requestForList = 0
     private val requestForMap = 1
     private val maxCameras = 4
@@ -83,7 +82,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
         setSupportActionBar(binding.toolbar)
 
         if (savedInstanceState == null) {
-            GlobalScope.launch(Dispatchers.IO) {
+            launch(Dispatchers.IO) {
                 try {
                     val destinationURL = URL("https://traffic.ottawa.ca/map/")
                     val conn = destinationURL.openConnection() as HttpsURLConnection
@@ -207,8 +206,8 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
             val sharedPrefs = getSharedPreferences(applicationContext.packageName, Context.MODE_PRIVATE)
             cameras = (0 until response.length()).map {
                 val camera = Camera(response.getJSONObject(it))
-                camera.setFavourite(camera.num.toString() in sharedPrefs.getStringSet(prefNameFavourites, HashSet<String>())!!)
-                camera.setVisible(camera.num.toString() !in sharedPrefs.getStringSet(prefNameHidden, HashSet<String>())!!)
+                camera.setFavourite(camera.num.toString() in sharedPrefs.getStringSet(prefNameFavourites, HashSet())!!)
+                camera.setVisible(camera.num.toString() !in sharedPrefs.getStringSet(prefNameHidden, HashSet())!!)
                 camera
             } as ArrayList<Camera>
             loadList()
@@ -357,6 +356,11 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
             adapter.filter.filter((searchMenuItem!!.actionView as SearchView).query)
             map?.getFilter(cameras, mapIsLoaded)?.filter((searchMenuItem!!.actionView as SearchView).query)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        coroutineContext[Job]!!.cancel()
     }
 }
 
