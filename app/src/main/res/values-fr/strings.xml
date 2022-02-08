@@ -21,6 +21,7 @@
     <string name="neighbourhoods">Quartiers</string>
     <string name="save_image">Télécharger l\'image</string>
     <string name="image_saved_at">L\'image a été enregistrée dans %s</string>
+    <string name="image_saved">L\'image a été enregistrée</string>
 
     <plurals name="selectedCameras">
         <item quantity="one">%d caméra sélectionnée</item>
