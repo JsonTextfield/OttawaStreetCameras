@@ -1,10 +1,9 @@
 package com.textfield.json.ottawastreetcameras
 
-import android.os.Parcel
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import org.junit.Assert.assertEquals
 import org.json.JSONObject
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import java.util.*
@@ -28,10 +27,10 @@ class CameraUnitTest {
 
         val c = Camera(json)
 
-        assertEquals("expected ${json["latitude"]} but got ${c.lat}", json["latitude"], c.lat)
-        assertEquals("expected ${json["longitude"]} but got ${c.lng}", json["longitude"], c.lng)
-        assertEquals("expected ${json["number"]} but got ${c.num}", json["number"], c.num)
-        assertEquals("expected ${json["type"]} but got ${c.owner}", json["type"], c.owner)
+        assertEquals(json["latitude"], c.lat)
+        assertEquals(json["longitude"], c.lng)
+        assertEquals(json["number"], c.num)
+        assertEquals(json["type"], c.owner)
     }
 
     //Testing owner is MTO
@@ -65,10 +64,10 @@ class CameraUnitTest {
         json.put("longitude", -75.6742136)
 
         val c = Camera(json)
-        assertEquals(c.getSortableName(), name.toUpperCase())
+        assertEquals(c.getSortableName(), name.uppercase(Locale.getDefault()))
         val l = Locale("fr")
         Locale.setDefault(l)
-        assertEquals(c.getSortableName(), nameFr.toUpperCase())
+        assertEquals(c.getSortableName(), nameFr.uppercase(Locale.getDefault()))
     }
 
     //Testing language-based name

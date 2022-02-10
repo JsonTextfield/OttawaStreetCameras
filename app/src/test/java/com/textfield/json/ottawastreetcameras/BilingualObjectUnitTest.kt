@@ -1,6 +1,7 @@
 package com.textfield.json.ottawastreetcameras
 
 import com.textfield.json.ottawastreetcameras.entities.BilingualObject
+import org.junit.Before
 import org.junit.Test
 import java.util.*
 
@@ -11,25 +12,37 @@ class BilingualObjectUnitTest {
             this.nameFr = nameFr
         }
     }
+    private lateinit var bilingualObject: MyBilingualObject
+
+    @Before
+    fun setup() {
+        bilingualObject = MyBilingualObject("*English", "%French")
+    }
 
     @Test
-    fun test1() {
-        val b = MyBilingualObject("*English", "%French")
-        assert(b.getName() == "*English")
-        assert(b.getSortableName() == "ENGLISH") {
-            print("Actual was ${b.getSortableName()}")
+    fun testEnglish() {
+        Locale.setDefault(Locale("en"))
+        assert(bilingualObject.getName() == "*English")
+        assert(bilingualObject.getSortableName() == "ENGLISH") {
+            print("Actual was ${bilingualObject.getSortableName()}")
         }
-        var l = Locale("fr")
-        Locale.setDefault(l)
-        assert(b.getName() == "%French")
-        assert(b.getSortableName() == "FRENCH") {
-            print("Actual was ${b.getSortableName()}")
+    }
+
+    @Test
+    fun testFrench() {
+        Locale.setDefault(Locale("fr"))
+        assert(bilingualObject.getName() == "%French")
+        assert(bilingualObject.getSortableName() == "FRENCH") {
+            print("Actual was ${bilingualObject.getSortableName()}")
         }
-        l = Locale("es")
-        Locale.setDefault(l)
-        assert(b.getName() == "*English")
-        assert(b.getSortableName() == "ENGLISH") {
-            print("Actual was ${b.getSortableName()}")
+    }
+
+    @Test
+    fun testOther() {
+        Locale.setDefault(Locale("es"))
+        assert(bilingualObject.getName() == "*English")
+        assert(bilingualObject.getSortableName() == "ENGLISH") {
+            print("Actual was ${bilingualObject.getSortableName()}")
         }
     }
 }
