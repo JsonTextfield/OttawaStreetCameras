@@ -42,6 +42,7 @@ class CameraActivity : GenericActivity() {
     private val tag = "camera"
     private lateinit var binding: ActivityCameraBinding
     private var shuffle = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCameraBinding.inflate(layoutInflater)
@@ -56,6 +57,7 @@ class CameraActivity : GenericActivity() {
             previouslySelectedCameras = savedInstanceState.getParcelableArrayList("selectedCameras")!!
             startActionMode(this)
         }
+        binding.backButton.setOnClickListener { onBackPressed() }
     }
 
     override fun onDestroyActionMode(mode: ActionMode?) {
@@ -151,11 +153,6 @@ class CameraActivity : GenericActivity() {
             handler.postDelayed(this, 6000L)
         }
     }
-
-    /*private fun back() {
-        setResult(0)
-        finish()
-    }*/
 
     fun download(index: Int) {
         val selectedCamera = if (shuffle) cameras[Random().nextInt(cameras.size)] else adapter.getItem(index)!!
