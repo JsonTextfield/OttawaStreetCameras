@@ -156,8 +156,8 @@ class CameraActivity : GenericActivity() {
 
     fun download(index: Int) {
         val selectedCamera = if (shuffle) cameras[Random().nextInt(cameras.size)] else adapter.getItem(index)!!
-        val bmImage = listView.getViewByPosition(index).findViewById(R.id.source) as ImageView
-        val textView = listView.getViewByPosition(index).findViewById(R.id.label) as TextView
+        val bmImage = listView.getViewByPosition(index).findViewById<ImageView>(R.id.source)
+        val textView = listView.getViewByPosition(index).findViewById<TextView>(R.id.label)
         val url = "https://traffic.ottawa.ca/beta/camera?id=${selectedCamera.num}&timems=${Date().time}"
         val request = ImageRequest(url, { response ->
             try {

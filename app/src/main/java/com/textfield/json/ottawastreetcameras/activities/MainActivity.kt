@@ -277,14 +277,11 @@ class MainActivity : GenericActivity(), OnMapReadyCallback, CoroutineScope {
         //map?.getFilter(cameras, mapIsLoaded)?.filter("")
     }
 
-    private val getResult =
-            registerForActivityResult(
-                ActivityResultContracts.StartActivityForResult()
-            ) {
-                if (actionMode == null) {
-                    selectedCameras.clear()
-                }
-            }
+    private val getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (actionMode == null) {
+            selectedCameras.clear()
+        }
+    }
 
     private fun requestPermissions(requestCode: Int) {
         val permissionArray = arrayOf(
@@ -325,7 +322,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback, CoroutineScope {
 
     public override fun selectCamera(camera: Camera): Boolean {
         val result = super.selectCamera(camera)
-        actionMode?.let {
+        if (actionMode != null) {
             showCameras.isVisible = selectedCameras.size <= maxCameras
         }
         return result
