@@ -33,12 +33,12 @@ import com.textfield.json.ottawastreetcameras.comparators.SortByDistance
 import com.textfield.json.ottawastreetcameras.comparators.SortByName
 import com.textfield.json.ottawastreetcameras.databinding.ActivityMainBinding
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 
-class MainActivity : GenericActivity(), OnMapReadyCallback, CoroutineScope {
-
-    override val coroutineContext = Dispatchers.Main + SupervisorJob()
+class MainActivity : GenericActivity(), OnMapReadyCallback {
     private val requestForList = 0
     private val requestForMap = 1
     private val maxCameras = 4
@@ -206,7 +206,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback, CoroutineScope {
             it.printStackTrace()
             showErrorDialogue(this, it.message ?: "")
         })
-        launch(Dispatchers.IO) {
+        CoroutineScope(Dispatchers.IO).launch {
             StreetCamsRequestQueue.getInstance(this@MainActivity).add(jsObjRequest)
         }
     }
@@ -344,11 +344,6 @@ class MainActivity : GenericActivity(), OnMapReadyCallback, CoroutineScope {
             adapter.filter.filter((searchMenuItem!!.actionView as SearchView).query)
             map?.getFilter(cameras, mapIsLoaded)?.filter((searchMenuItem!!.actionView as SearchView).query)
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        coroutineContext[Job]!!.cancel()
     }
 }
 

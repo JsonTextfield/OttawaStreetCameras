@@ -16,7 +16,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.android.volley.toolbox.ImageRequest
@@ -26,7 +25,6 @@ import com.textfield.json.ottawastreetcameras.StreetCamsRequestQueue
 import com.textfield.json.ottawastreetcameras.adapters.ImageAdapter
 import com.textfield.json.ottawastreetcameras.databinding.ActivityCameraBinding
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.*
@@ -38,6 +36,13 @@ class CameraActivity : GenericActivity() {
     private val tag = "camera"
     private lateinit var binding: ActivityCameraBinding
     private var shuffle = false
+
+    private inner class CameraRunnable(val index: Int) : Runnable {
+        override fun run() {
+            download(index)
+            handler.postDelayed(this, 6000L)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,11 +80,7 @@ class CameraActivity : GenericActivity() {
     override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
         if (!shuffle) {
             super.onCreateActionMode(mode, menu)
-            hide.isEnabled = false
-            unhide.isEnabled = false
             showCameras.isVisible = false
-            //addFav.isVisible = false
-            //removeFav.isVisible = false
             return true
         }
         return false
@@ -142,13 +143,6 @@ class CameraActivity : GenericActivity() {
             }
         }
         return true
-    }
-
-    private inner class CameraRunnable(val index: Int) : Runnable {
-        override fun run() {
-            download(index)
-            handler.postDelayed(this, 6000L)
-        }
     }
 
     fun download(index: Int) {
@@ -231,27 +225,5 @@ class CameraActivity : GenericActivity() {
         }
         resolver.update(songContentUri, imageDetails, null, null)
         Snackbar.make(listView, resources.getString(R.string.image_saved), Snackbar.LENGTH_LONG).show()
-    }
-
-    private fun saveToInternalStorage(bitmapImage: Bitmap, fileName: String) {
-        val streetCamsDirectory = File(getExternalFilesDir(null), "/Ottawa StreetCams")
-        if (!streetCamsDirectory.exists()) {
-            streetCamsDirectory.mkdirs()
-        }
-        val imageFile = File(
-                streetCamsDirectory, fileName.replace(" ", "_")
-                + "_" + Date().toString().replace(" ", "_") + ".jpg"
-        )
-        try {
-            val out = FileOutputStream(imageFile)
-            bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, out)
-            out.flush()
-            out.close()
-
-            Snackbar.make(listView, resources.getString(R.string.image_saved_at, imageFile.toString()), Snackbar.LENGTH_LONG).show()
-            Toast.makeText(this, "Image saved at: $imageFile", Toast.LENGTH_LONG).show()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 }
