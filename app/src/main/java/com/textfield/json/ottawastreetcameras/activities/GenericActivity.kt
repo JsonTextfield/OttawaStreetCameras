@@ -34,11 +34,11 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
     protected val selectedCameras = ArrayList<Camera>()
     protected var previouslySelectedCameras = ArrayList<Camera>()
 
-    private lateinit var addFav: MenuItem
-    private lateinit var removeFav: MenuItem
-    private lateinit var hide: MenuItem
-    private lateinit var unhide: MenuItem
-    private lateinit var selectAll: MenuItem
+    protected lateinit var addFav: MenuItem
+    protected lateinit var removeFav: MenuItem
+    protected lateinit var hide: MenuItem
+    protected lateinit var unhide: MenuItem
+    protected lateinit var selectAll: MenuItem
     protected lateinit var showCameras: MenuItem
     protected lateinit var saveImage: MenuItem
 

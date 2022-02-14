@@ -16,17 +16,19 @@ class StreetCamsRequestQueue constructor(context: Context) {
     companion object {
         @Volatile
         private var INSTANCE: StreetCamsRequestQueue? = null
+
         @Volatile
         var sessionId = ""
+
         @Volatile
-        var cert : X509Certificate? = null
+        var cert: X509Certificate? = null
 
         fun getInstance(context: Context) =
-                INSTANCE ?: synchronized(this) {
-                    INSTANCE ?: StreetCamsRequestQueue(context).also {
-                        INSTANCE = it
-                    }
+            INSTANCE ?: synchronized(this) {
+                INSTANCE ?: StreetCamsRequestQueue(context).also {
+                    INSTANCE = it
                 }
+            }
     }
 
     private val httpRequestQueue: RequestQueue by lazy {
@@ -40,11 +42,12 @@ class StreetCamsRequestQueue constructor(context: Context) {
 
 
     private fun createSSL(context: Context): RequestQueue {
-        /*val destinationURL = URL("https://traffic.ottawa.ca/map/")
-        val conn = destinationURL.openConnection() as HttpsURLConnection
+
+        val conn = URL("https://traffic.ottawa.ca/map/").openConnection() as HttpsURLConnection
         conn.connect()
-        val certs = conn.serverCertificates
-        val cert = certs.first { it is javax.security.cert.X509Certificate }*/
+        cert = conn.serverCertificates.filterIsInstance<X509Certificate>().firstOrNull() ?: cert
+        sessionId = conn.getHeaderField("Set-Cookie") ?: sessionId
+
 
         // Create a KeyStore containing our trusted CAs
         val keyStoreType = KeyStore.getDefaultType()
@@ -54,7 +57,7 @@ class StreetCamsRequestQueue constructor(context: Context) {
         }
 
         // Create a TrustManager that trusts the CAs inputStream our KeyStore
-        val tmfAlgorithm: String = TrustManagerFactory.getDefaultAlgorithm()
+        val tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm()
         val tmf: TrustManagerFactory = TrustManagerFactory.getInstance(tmfAlgorithm).apply {
             init(keyStore)
         }
@@ -66,10 +69,10 @@ class StreetCamsRequestQueue constructor(context: Context) {
 
         return Volley.newRequestQueue(context, object : HurlStack() {
             override fun createConnection(url: URL): HttpsURLConnection {
-                val connection = url.openConnection() as HttpsURLConnection
-                connection.sslSocketFactory = sslContext.socketFactory
-                connection.setRequestProperty("Cookie", sessionId)
-                return connection
+                return (url.openConnection() as HttpsURLConnection).apply {
+                    sslSocketFactory = sslContext.socketFactory
+                    setRequestProperty("Cookie", sessionId)
+                }
             }
         })
     }

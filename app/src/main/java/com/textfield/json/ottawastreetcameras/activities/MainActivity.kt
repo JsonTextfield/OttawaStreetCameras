@@ -34,11 +34,7 @@ import com.textfield.json.ottawastreetcameras.comparators.SortByName
 import com.textfield.json.ottawastreetcameras.databinding.ActivityMainBinding
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import kotlinx.coroutines.*
-import java.io.IOException
-import java.net.URL
-import java.security.cert.X509Certificate
 import java.util.*
-import javax.net.ssl.HttpsURLConnection
 
 class MainActivity : GenericActivity(), OnMapReadyCallback, CoroutineScope {
 
@@ -56,6 +52,12 @@ class MainActivity : GenericActivity(), OnMapReadyCallback, CoroutineScope {
     private var searchMenuItem: MenuItem? = null
     private var sortName: MenuItem? = null
     private var sortDistance: MenuItem? = null
+
+    private val getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (actionMode == null) {
+            selectedCameras.clear()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,18 +84,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback, CoroutineScope {
         setSupportActionBar(binding.toolbar)
 
         if (savedInstanceState == null) {
-            launch(Dispatchers.IO) {
-                try {
-                    val destinationURL = URL("https://traffic.ottawa.ca/map/")
-                    val conn = destinationURL.openConnection() as HttpsURLConnection
-                    conn.connect()
-                    StreetCamsRequestQueue.cert = conn.serverCertificates.filterIsInstance<X509Certificate>().first()
-                    downloadJson()
-                } catch (exception: IOException) {
-                    Looper.prepare()
-                    showErrorDialogue(this@MainActivity)
-                }
-            }
+            downloadCameraList()
         } else {
             cameras = savedInstanceState.getParcelableArrayList("cameras") ?: cameras
             loadList()
@@ -129,10 +120,10 @@ class MainActivity : GenericActivity(), OnMapReadyCallback, CoroutineScope {
 
                 adapter.filter.filter(newText)
                 binding.sectionIndexListview.sectionIndex.visibility =
-                        if (newText.isNotEmpty() || sortName?.isVisible!!)
-                            View.INVISIBLE
-                        else
-                            View.VISIBLE
+                    if (newText.isNotEmpty() || sortName?.isVisible!!)
+                        View.INVISIBLE
+                    else
+                        View.VISIBLE
                 return true
             }
         })
@@ -201,25 +192,28 @@ class MainActivity : GenericActivity(), OnMapReadyCallback, CoroutineScope {
         return true
     }
 
-    private fun downloadJson() {
+    private fun downloadCameraList() {
         val jsObjRequest = JsonArrayRequest("https://traffic.ottawa.ca/beta/camera_list", { response ->
             val sharedPrefs = getSharedPreferences(applicationContext.packageName, Context.MODE_PRIVATE)
             cameras = (0 until response.length()).map {
-                val camera = Camera(response.getJSONObject(it))
-                camera.setFavourite(camera.num.toString() in sharedPrefs.getStringSet(prefNameFavourites, HashSet())!!)
-                camera.setVisible(camera.num.toString() !in sharedPrefs.getStringSet(prefNameHidden, HashSet())!!)
-                camera
+                Camera(response.getJSONObject(it)).apply {
+                    setFavourite(num.toString() in sharedPrefs.getStringSet(prefNameFavourites, HashSet())!!)
+                    setVisible(num.toString() !in sharedPrefs.getStringSet(prefNameHidden, HashSet())!!)
+                }
             } as ArrayList<Camera>
             loadList()
         }, {
             it.printStackTrace()
             showErrorDialogue(this, it.message ?: "")
         })
-        StreetCamsRequestQueue.getInstance(this).add(jsObjRequest)
+        launch(Dispatchers.IO) {
+            StreetCamsRequestQueue.getInstance(this@MainActivity).add(jsObjRequest)
+        }
     }
 
     private fun loadList() {
         Collections.sort(cameras, SortByName())
+        adapter.clear()
         adapter.addAll(cameras)
         searchView?.queryHint = resources.getQuantityString(R.plurals.search_hint, cameras.size, cameras.size)
         (supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
@@ -251,9 +245,11 @@ class MainActivity : GenericActivity(), OnMapReadyCallback, CoroutineScope {
 
             //add a marker for every camera available
             for (camera in cameras) {
-                val m = map.addMarker(MarkerOptions()
+                val m = map.addMarker(
+                    MarkerOptions()
                         .position(LatLng(camera.lat, camera.lng))
-                        .title(camera.getName()))
+                        .title(camera.getName())
+                )
                 m?.let {
                     if (camera.isFavourite) {
                         it.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
@@ -277,20 +273,15 @@ class MainActivity : GenericActivity(), OnMapReadyCallback, CoroutineScope {
         //map?.getFilter(cameras, mapIsLoaded)?.filter("")
     }
 
-    private val getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (actionMode == null) {
-            selectedCameras.clear()
-        }
-    }
 
     private fun requestPermissions(requestCode: Int) {
         val permissionArray = arrayOf(
-                permission.ACCESS_FINE_LOCATION,
-                permission.ACCESS_COARSE_LOCATION
+            permission.ACCESS_FINE_LOCATION,
+            permission.ACCESS_COARSE_LOCATION
         )
         val allTrue = permissionArray
-                .map { ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED }
-                .reduce { acc, b -> acc && b }
+            .map { ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED }
+            .reduce { acc, b -> acc && b }
 
         if (allTrue) {
             ActivityCompat.requestPermissions(this, permissionArray, requestCode)
