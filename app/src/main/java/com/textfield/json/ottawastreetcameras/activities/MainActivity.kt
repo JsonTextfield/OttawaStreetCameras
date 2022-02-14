@@ -204,7 +204,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
             loadList()
         }, {
             it.printStackTrace()
-            showErrorDialogue(this, it.message ?: "")
+            showErrorDialogue(this)
         })
         CoroutineScope(Dispatchers.IO).launch {
             StreetCamsRequestQueue.getInstance(this@MainActivity).add(jsObjRequest)

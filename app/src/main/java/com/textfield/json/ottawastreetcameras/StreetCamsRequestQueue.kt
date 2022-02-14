@@ -5,6 +5,7 @@ import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.HurlStack
 import com.android.volley.toolbox.Volley
+import java.io.IOException
 import java.net.URL
 import java.security.KeyStore
 import java.security.cert.X509Certificate
@@ -43,11 +44,14 @@ class StreetCamsRequestQueue constructor(context: Context) {
 
     private fun createSSL(context: Context): RequestQueue {
 
-        val conn = URL("https://traffic.ottawa.ca/map/").openConnection() as HttpsURLConnection
-        conn.connect()
-        cert = conn.serverCertificates.filterIsInstance<X509Certificate>().firstOrNull() ?: cert
-        sessionId = conn.getHeaderField("Set-Cookie") ?: sessionId
-
+        try {
+            val conn = URL("https://traffic.ottawa.ca/map/").openConnection() as HttpsURLConnection
+            conn.connect()
+            cert = conn.serverCertificates.filterIsInstance<X509Certificate>().firstOrNull() ?: cert
+            sessionId = conn.getHeaderField("Set-Cookie") ?: sessionId
+        } catch (exception: IOException) {
+            exception.printStackTrace()
+        }
 
         // Create a KeyStore containing our trusted CAs
         val keyStoreType = KeyStore.getDefaultType()
