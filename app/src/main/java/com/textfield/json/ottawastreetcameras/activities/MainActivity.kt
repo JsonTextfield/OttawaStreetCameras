@@ -25,6 +25,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.android.material.snackbar.Snackbar
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.StreetCamsRequestQueue
 import com.textfield.json.ottawastreetcameras.adapters.CameraAdapter
@@ -289,11 +290,16 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
             when (requestCode) {
                 requestForList -> {
                     val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-                    adapter.sort(SortByDistance(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)!!))
-                    binding.sectionIndexListview.sectionIndex.visibility = View.INVISIBLE
-                    sortDistance?.isVisible = false
-                    sortName?.isVisible = true
-                    //sortNeighbourhood?.isVisible = true
+                    val lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                    if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) && lastLocation != null) {
+                        adapter.sort(SortByDistance(lastLocation))
+                        binding.sectionIndexListview.sectionIndex.visibility = View.INVISIBLE
+                        sortDistance?.isVisible = false
+                        sortName?.isVisible = true
+                        //sortNeighbourhood?.isVisible = true
+                    } else {
+                        Snackbar.make(listView, getString(R.string.location_unavailable), Snackbar.LENGTH_LONG).show()
+                    }
                 }
                 requestForMap -> map?.isMyLocationEnabled = true
             }

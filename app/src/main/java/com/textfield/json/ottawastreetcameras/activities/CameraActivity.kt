@@ -162,6 +162,8 @@ class CameraActivity : GenericActivity() {
         }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.RGB_565, {
             it.printStackTrace()
             showErrorDialogue(this@CameraActivity)
+            StreetCamsRequestQueue.getInstance(this).cancelAll(tag)
+            timers.forEach {item -> handler.removeCallbacks(item) }
         })
         request.tag = tag
         StreetCamsRequestQueue.getInstance(this).add(request)

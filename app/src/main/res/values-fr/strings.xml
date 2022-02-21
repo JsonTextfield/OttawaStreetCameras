@@ -22,6 +22,7 @@
     <string name="save_image">Télécharger l\'image</string>
     <string name="image_saved_at">L\'image a été enregistrée dans %s</string>
     <string name="image_saved">L\'image a été enregistrée</string>
+    <string name="location_unavailable">L\'emplacement n\'est pas disponible</string>
 
     <plurals name="selectedCameras">
         <item quantity="one">%d caméra sélectionnée</item>
