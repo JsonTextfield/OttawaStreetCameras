@@ -9,6 +9,7 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
@@ -20,6 +21,8 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.android.volley.toolbox.JsonArrayRequest
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -27,16 +30,18 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.material.snackbar.Snackbar
 import com.textfield.json.ottawastreetcameras.R
-import com.textfield.json.ottawastreetcameras.StreetCamsRequestQueue
 import com.textfield.json.ottawastreetcameras.adapters.CameraAdapter
 import com.textfield.json.ottawastreetcameras.adapters.filters.CameraFilter
 import com.textfield.json.ottawastreetcameras.comparators.SortByDistance
 import com.textfield.json.ottawastreetcameras.comparators.SortByName
+import com.textfield.json.ottawastreetcameras.comparators.SortByNeighbourhood
 import com.textfield.json.ottawastreetcameras.databinding.ActivityMainBinding
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import com.textfield.json.ottawastreetcameras.entities.Neighbourhood
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import java.util.*
 
 class MainActivity : GenericActivity(), OnMapReadyCallback {
@@ -53,6 +58,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
     private var searchMenuItem: MenuItem? = null
     private var sortName: MenuItem? = null
     private var sortDistance: MenuItem? = null
+    private var sortNeighbourhood: MenuItem? = null
 
     private val getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (actionMode == null) {
@@ -101,7 +107,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
 
         sortName = menu.findItem(R.id.sort_name)
         sortDistance = menu.findItem(R.id.sort_distance)
-        //sortNeighbourhood = menu.findItem(R.id.sort_neighbourhood)
+        sortNeighbourhood = menu.findItem(R.id.sort_neighbourhood)
         searchMenuItem = menu.findItem(R.id.user_searchView)
         val nightMode = menu.findItem(R.id.night_mode)
         nightMode.isChecked = isNightModeOn()
@@ -144,19 +150,19 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
 
                 binding.sectionIndexListview.sectionIndex.visibility = View.VISIBLE
                 sortDistance?.isVisible = true
-                //sortNeighbourhood?.isVisible = true
+                sortNeighbourhood?.isVisible = true
                 sortName?.isVisible = false
             }
             R.id.sort_distance -> {
                 requestPermissions(requestForList)
             }
-            /*R.id.sort_neighbourhood -> {
-                myAdapter.sort(SortByNeighbourhood())
+            R.id.sort_neighbourhood -> {
+                adapter.sort(SortByNeighbourhood())
 
                 sortNeighbourhood?.isVisible = false
                 sortDistance?.isVisible = true
                 sortName?.isVisible = true
-            }*/
+            }
             R.id.random_camera -> {
                 selectCamera(cameras[Random().nextInt(cameras.size)])
                 showSelectedCameras()
@@ -193,6 +199,32 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
         return true
     }
 
+    private fun downloadNeighbourhoodList() {
+        val jsonObjectRequest = JsonObjectRequest(
+            "https://services.arcgis.com/G6F8XLCl5KtAlZ2G/arcgis/rest/services/Gen_2_ONS_Boundaries/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+            { response ->
+                Log.w("JASON", response.toString())
+                val jsonArray = response.getJSONArray("features")
+                neighbourhoods = (0 until jsonArray.length()).map {
+                    val neighbourhood = Neighbourhood(jsonArray[it] as JSONObject)
+                    for (camera in cameras) {
+                        if (neighbourhood.containsCamera(camera)) {
+                            camera.neighbourhood = neighbourhood.getName()
+                        }
+                    }
+                    neighbourhood
+                } as ArrayList<Neighbourhood>
+
+                loadList()
+            }, {
+                it.printStackTrace()
+            })
+        CoroutineScope(Dispatchers.IO).launch {
+            Volley.newRequestQueue(this@MainActivity).add(jsonObjectRequest)
+        }
+
+    }
+
     private fun downloadCameraList() {
         val jsObjRequest = JsonArrayRequest("https://traffic.ottawa.ca/beta/camera_list", { response ->
             val sharedPrefs = getSharedPreferences(applicationContext.packageName, Context.MODE_PRIVATE)
@@ -202,13 +234,13 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
                     setVisible(num.toString() !in sharedPrefs.getStringSet(prefNameHidden, HashSet())!!)
                 }
             } as ArrayList<Camera>
-            loadList()
+            downloadNeighbourhoodList()
         }, {
             it.printStackTrace()
             showErrorDialogue(this)
         })
         CoroutineScope(Dispatchers.IO).launch {
-            StreetCamsRequestQueue.getInstance(this@MainActivity).add(jsObjRequest)
+            Volley.newRequestQueue(this@MainActivity).add(jsObjRequest)
         }
     }
 
@@ -280,9 +312,9 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
             permission.ACCESS_FINE_LOCATION,
             permission.ACCESS_COARSE_LOCATION
         )
-        val allTrue = permissionArray
-            .map { ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED }
-            .reduce { acc, b -> acc && b }
+        val allTrue = permissionArray.all {
+            ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
+        }
 
         if (allTrue) {
             ActivityCompat.requestPermissions(this, permissionArray, requestCode)
@@ -296,7 +328,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
                         binding.sectionIndexListview.sectionIndex.visibility = View.INVISIBLE
                         sortDistance?.isVisible = false
                         sortName?.isVisible = true
-                        //sortNeighbourhood?.isVisible = true
+                        sortNeighbourhood?.isVisible = true
                     } else {
                         Snackbar.make(listView, getString(R.string.location_unavailable), Snackbar.LENGTH_LONG).show()
                     }

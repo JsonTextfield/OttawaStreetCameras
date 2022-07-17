@@ -21,10 +21,10 @@
         android:title="@string/sort_by_name"
         android:visible="false"
         app:showAsAction="never" />
-    <!--item
+    <item
         android:id="@+id/sort_neighbourhood"
-        android:title="Sort by neighbourhood"
-        app:showAsAction="never" /-->
+        android:title="@string/sort_by_neighbourhood"
+        app:showAsAction="never" />
     <item
         android:id="@+id/favourites"
         android:icon="@drawable/outline_star_white_24"
