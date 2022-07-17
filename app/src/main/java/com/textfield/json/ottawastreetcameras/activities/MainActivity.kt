@@ -30,6 +30,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.material.snackbar.Snackbar
 import com.textfield.json.ottawastreetcameras.R
+import com.textfield.json.ottawastreetcameras.StreetCamsRequestQueue
 import com.textfield.json.ottawastreetcameras.adapters.CameraAdapter
 import com.textfield.json.ottawastreetcameras.adapters.filters.CameraFilter
 import com.textfield.json.ottawastreetcameras.comparators.SortByDistance
@@ -240,7 +241,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
             showErrorDialogue(this)
         })
         CoroutineScope(Dispatchers.IO).launch {
-            Volley.newRequestQueue(this@MainActivity).add(jsObjRequest)
+            StreetCamsRequestQueue.getInstance(this@MainActivity).add(jsObjRequest)
         }
     }
 
