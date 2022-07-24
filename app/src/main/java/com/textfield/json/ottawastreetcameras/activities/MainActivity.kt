@@ -348,7 +348,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
         }
     }
 
-    public override fun selectCamera(camera: Camera): Boolean {
+    override fun selectCamera(camera: Camera): Boolean {
         val result = super.selectCamera(camera)
         if (actionMode != null) {
             showCameras.isVisible = selectedCameras.size <= maxCameras

@@ -2,10 +2,12 @@ package com.textfield.json.ottawastreetcameras.adapters
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.Insets
 import android.os.Build
 import android.util.DisplayMetrics
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowInsets
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.RelativeLayout
@@ -50,9 +52,8 @@ class ImageAdapter(private val _context: Context, list: List<Camera>) :
             30
         }
         val height = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val windowMetrics: WindowMetrics = (context as Activity).windowManager.currentWindowMetrics
-            val insets: Insets = windowMetrics.windowInsets
-                .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
+            val windowMetrics = (context as Activity).windowManager.currentWindowMetrics
+            val insets = windowMetrics.windowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
             windowMetrics.bounds.height() - insets.left - insets.right
         } else {
             val displayMetrics = DisplayMetrics()

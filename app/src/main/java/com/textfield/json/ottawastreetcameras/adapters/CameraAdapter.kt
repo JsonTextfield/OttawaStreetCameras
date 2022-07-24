@@ -21,7 +21,8 @@ import java.util.*
  * Created by Jason on 24/10/2017.
  */
 
-abstract class CameraAdapter(private val _context: Context, private val list: List<Camera>) : ArrayAdapter<Camera>(_context, 0, list) {
+abstract class CameraAdapter(private val _context: Context, private val list: List<Camera>) :
+    ArrayAdapter<Camera>(_context, 0, list) {
     private var cameras = list
 
     private class ViewHolder {
@@ -73,7 +74,6 @@ abstract class CameraAdapter(private val _context: Context, private val list: Li
         viewHolder.star?.setOnClickListener {
             (context as MainActivity).modifyPrefs("favourites", listOf(camera), !camera.isFavourite)
             camera.setFavourite(!camera.isFavourite)
-            camera.marker
             notifyDataSetChanged()
         }
 
