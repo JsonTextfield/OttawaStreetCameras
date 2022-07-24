@@ -21,8 +21,8 @@
     <string name="neighbourhoods">Neighbourhoods</string>
 
     <plurals name="selectedCameras">
-        <item quantity="one">%d camera selected</item>
-        <item quantity="other">%d cameras selected</item>
+        <item quantity="one">%d selected</item>
+        <item quantity="other">%d selected</item>
     </plurals>
     <plurals name="search_hint">
         <item quantity="one">Search from %d location</item>

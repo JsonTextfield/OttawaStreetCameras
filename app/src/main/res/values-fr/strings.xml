@@ -26,8 +26,8 @@
     <string name="sort_by_neighbourhood">Triez par quartier</string>
 
     <plurals name="selectedCameras">
-        <item quantity="one">%d caméra sélectionnée</item>
-        <item quantity="many">%d caméras sélectionnées</item>
+        <item quantity="one">%d sélectionnée</item>
+        <item quantity="many">%d sélectionnées</item>
     </plurals>
 
     <plurals name="search_hint">

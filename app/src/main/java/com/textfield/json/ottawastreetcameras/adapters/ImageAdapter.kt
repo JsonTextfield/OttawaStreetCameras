@@ -1,9 +1,11 @@
 package com.textfield.json.ottawastreetcameras.adapters
 
+import android.app.Activity
 import android.content.Context
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.graphics.Insets
+import android.os.Build
+import android.util.DisplayMetrics
+import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.RelativeLayout
@@ -14,17 +16,13 @@ import com.textfield.json.ottawastreetcameras.entities.Camera
 /**
  * Created by Jason on 08/02/2018.
  */
-class ImageAdapter(private val _context: Context, private val list: List<Camera>)
-    : ArrayAdapter<Camera>(_context, 0, list) {
+class ImageAdapter(private val _context: Context, list: List<Camera>) :
+    ArrayAdapter<Camera>(_context, 0, list) {
 
     private class ViewHolder {
         var title: TextView? = null
         var image: ImageView? = null
         var layout: RelativeLayout? = null
-    }
-
-    override fun getItem(position: Int): Camera {
-        return list[position]
     }
 
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
@@ -37,23 +35,31 @@ class ImageAdapter(private val _context: Context, private val list: List<Camera>
             viewHolder.layout = convertView.findViewById(R.id.camera_item_layout) as RelativeLayout
             viewHolder.title = convertView.findViewById(R.id.label) as TextView
             viewHolder.image = convertView.findViewById(R.id.source) as ImageView
-            /*viewHolder.image!!.setOnClickListener {
-                Log.d("IMAGEVIEW", "OnClick")
-                if (viewHolder.image!!.scaleType == ImageView.ScaleType.FIT_CENTER) {
-                    viewHolder.image!!.adjustViewBounds = false
-                    viewHolder.image!!.scaleType = ImageView.ScaleType.CENTER_INSIDE
-                } else {
-                    viewHolder.image!!.adjustViewBounds = true
-                    viewHolder.image!!.scaleType = ImageView.ScaleType.FIT_CENTER
-                }
-            }*/
             convertView.tag = viewHolder
         } else {
             viewHolder = convertView.tag as ViewHolder
         }
 
         val camera = getItem(position)
-        viewHolder.title!!.text = camera.getName()
+        viewHolder.title?.text = camera?.getName()
+
+        val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
+        val result = if (resourceId > 0) {
+            context.resources.getDimensionPixelSize(resourceId)
+        } else {
+            30
+        }
+        val height = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val windowMetrics: WindowMetrics = (context as Activity).windowManager.currentWindowMetrics
+            val insets: Insets = windowMetrics.windowInsets
+                .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
+            windowMetrics.bounds.height() - insets.left - insets.right
+        } else {
+            val displayMetrics = DisplayMetrics()
+            (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+            displayMetrics.heightPixels
+        }
+        viewHolder.image?.maxHeight = height - result
 
         // Return the completed view to render on screen
         return convertView!!

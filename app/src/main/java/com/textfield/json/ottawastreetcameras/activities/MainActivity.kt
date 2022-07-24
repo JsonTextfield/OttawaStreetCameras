@@ -9,7 +9,6 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
@@ -48,7 +47,7 @@ import java.util.*
 class MainActivity : GenericActivity(), OnMapReadyCallback {
     private val requestForList = 0
     private val requestForMap = 1
-    private val maxCameras = 4
+    private val maxCameras = 8
 
     private lateinit var binding: ActivityMainBinding
 
@@ -135,8 +134,8 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
                 return true
             }
         })
-        for (i in 0 until menu.size()) {
-            tintMenuItemIcon(menu.getItem(i))
+        (0 until menu.size()).forEach {
+            tintMenuItemIcon(menu.getItem(it))
         }
         return true
     }
@@ -204,7 +203,6 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
         val jsonObjectRequest = JsonObjectRequest(
             "https://services.arcgis.com/G6F8XLCl5KtAlZ2G/arcgis/rest/services/Gen_2_ONS_Boundaries/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
             { response ->
-                Log.w("JASON", response.toString())
                 val jsonArray = response.getJSONArray("features")
                 neighbourhoods = (0 until jsonArray.length()).map {
                     val neighbourhood = Neighbourhood(jsonArray[it] as JSONObject)

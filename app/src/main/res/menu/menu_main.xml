@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/user_searchView"
-        android:icon="@drawable/ic_search_white_24dp"
+        android:icon="@drawable/ic_baseline_search_24"
         android:title="@string/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always|collapseActionView" />
     <item
         android:id="@+id/menuItemMap"
-        android:icon="@drawable/ic_swap_horiz_white_24dp"
+        android:icon="@drawable/ic_baseline_swap_horiz_24"
         android:title="@string/switch_view"
         app:showAsAction="ifRoom" />
     <item
@@ -27,12 +27,12 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/favourites"
-        android:icon="@drawable/outline_star_white_24"
+        android:icon="@drawable/ic_baseline_star_24"
         android:title="@string/favourites"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/hidden"
-        android:icon="@drawable/baseline_visibility_off_white_24"
+        android:icon="@drawable/ic_baseline_visibility_off_24"
         android:title="@string/hidden_cameras"
         app:showAsAction="ifRoom" />
     <item
@@ -41,12 +41,12 @@
         android:visible="false" />
     <item
         android:id="@+id/random_camera"
-        android:icon="@drawable/baseline_shuffle_white_24"
+        android:icon="@drawable/ic_baseline_casino_24"
         android:title="@string/random_camera"
         app:showAsAction="never" />
     <item
         android:id="@+id/shuffle"
-        android:icon="@drawable/baseline_shuffle_white_24"
+        android:icon="@drawable/ic_baseline_shuffle_24"
         android:title="@string/shuffle"
         app:showAsAction="never" />
     <item

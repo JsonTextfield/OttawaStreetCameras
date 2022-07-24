@@ -87,8 +87,8 @@ class CameraActivity : GenericActivity() {
     }
 
     override fun onDestroyActionMode(mode: ActionMode?) {
-        for (i in 0 until listView.adapter.count) {
-            listView.getViewByPosition(i).findViewById<View>(R.id.overlay).visibility = View.INVISIBLE
+        (0 until listView.adapter.count).forEach {
+            listView.getViewByPosition(it).findViewById<View>(R.id.overlay).visibility = View.INVISIBLE
         }
         super.onDestroyActionMode(mode)
     }
@@ -125,17 +125,8 @@ class CameraActivity : GenericActivity() {
         if (!super.onActionItemClicked(mode, item)) {
             return when (item.itemId) {
                 R.id.save -> {
-                    for (i in 0 until cameras.size) {
-                        if (cameras[i] in selectedCameras) {
-                            val imageDrawable =
-                                listView.getViewByPosition(i).findViewById<ImageView>(R.id.source).drawable
-                            val title = listView.getViewByPosition(i).findViewById<TextView>(R.id.label)
-                            if (imageDrawable != null) {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q || requestStoragePermission()) {
-                                    saveImage((imageDrawable as BitmapDrawable).bitmap, title.text.toString())
-                                }
-                            }
-                        }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q || requestStoragePermission()) {
+                        saveSelectedImages()
                     }
                     true
                 }
@@ -163,7 +154,7 @@ class CameraActivity : GenericActivity() {
             it.printStackTrace()
             showErrorDialogue(this@CameraActivity)
             StreetCamsRequestQueue.getInstance(this).cancelAll(tag)
-            timers.forEach {item -> handler.removeCallbacks(item) }
+            timers.forEach { item -> handler.removeCallbacks(item) }
         })
         request.tag = tag
         StreetCamsRequestQueue.getInstance(this).add(request)
@@ -171,16 +162,21 @@ class CameraActivity : GenericActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-            if (requestCode == requestForSave) {
-                for (i in 0 until cameras.size) {
-                    if (cameras[i] in selectedCameras) {
-                        val imageDrawable = listView.getViewByPosition(i).findViewById<ImageView>(R.id.source).drawable
-                        val title = listView.getViewByPosition(i).findViewById<TextView>(R.id.label)
-                        if (imageDrawable != null) {
-                            saveImage((imageDrawable as BitmapDrawable).bitmap, title.text.toString())
-                        }
-                    }
+        if (grantResults.isNotEmpty()
+            && grantResults[0] == PackageManager.PERMISSION_GRANTED
+            && requestCode == requestForSave
+        ) {
+            saveSelectedImages()
+        }
+    }
+
+    private fun saveSelectedImages() {
+        (0 until cameras.size).forEach {
+            if (cameras[it] in selectedCameras) {
+                val imageDrawable = listView.getViewByPosition(it).findViewById<ImageView>(R.id.source).drawable
+                val title = listView.getViewByPosition(it).findViewById<TextView>(R.id.label)
+                if (imageDrawable != null) {
+                    saveImage((imageDrawable as BitmapDrawable).bitmap, title.text.toString())
                 }
             }
         }

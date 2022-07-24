@@ -1,6 +1,7 @@
 package com.textfield.json.ottawastreetcameras.activities
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.view.ActionMode
 import android.view.Menu
@@ -48,11 +49,12 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
         setTheme(if (isNightModeOn()) R.style.AppTheme else R.style.AppTheme_Light)
         super.onCreate(savedInstanceState)
     }
+
     override fun onResume() {
         super.onResume()
-        for (i in 0 until adapter.count) {
-            if (adapter.getItem(i) in previouslySelectedCameras) {
-                listView.setItemChecked(i, true)
+        (0 until adapter.count).forEach {
+            if (adapter.getItem(it) in previouslySelectedCameras) {
+                listView.setItemChecked(it, true)
             }
         }
         previouslySelectedCameras.clear()
@@ -60,12 +62,12 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
 
     fun modifyPrefs(pref: String, selectedCameras: Collection<Camera>, willAdd: Boolean) {
         val sharedPrefs = getSharedPreferences(applicationContext.packageName, Context.MODE_PRIVATE)
-        val prefList = HashSet<String>(sharedPrefs.getStringSet(pref, HashSet<String>()))
+        val prefList = sharedPrefs.getStringSet(pref, HashSet<String>())?.toHashSet()
 
         if (willAdd) {
-            prefList.addAll(selectedCameras.map { it.num.toString() })
+            prefList?.addAll(selectedCameras.map { it.num.toString() })
         } else {
-            prefList.removeAll(selectedCameras.map { it.num.toString() })
+            prefList?.removeAll(selectedCameras.map { it.num.toString() }.toSet())
         }
         sharedPrefs.edit().putStringSet(pref, prefList).apply()
     }
@@ -94,8 +96,7 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
         item.icon?.let { drawable ->
             val wrapped = DrawableCompat.wrap(drawable)
             drawable.mutate()
-            DrawableCompat.setTint(wrapped, ContextCompat.getColor(this,
-                    if (isNightModeOn()) android.R.color.white else android.R.color.black))
+            DrawableCompat.setTint(wrapped, if (isNightModeOn()) Color.WHITE else Color.BLACK)
             item.icon = drawable
         }
     }
@@ -110,16 +111,16 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
         unhide = menu.findItem(R.id.unhide)
         hide = menu.findItem(R.id.hide)
         saveImage = menu.findItem(R.id.save)
-        for (i in 0 until menu.size()) {
-            tintMenuItemIcon(menu.getItem(i))
+        (0 until menu.size()).forEach {
+            tintMenuItemIcon(menu.getItem(it))
         }
         return true
     }
 
     override fun onDestroyActionMode(mode: ActionMode?) {
+        actionMode = null
         cameras.filter { it in selectedCameras }.forEach { selectCamera(it) }
         selectedCameras.clear()
-        actionMode = null
     }
 
     override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
@@ -146,8 +147,8 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
             }
             R.id.select_all -> {
                 selectedCameras.clear()
-                for (i in 0 until listView.adapter.count) {
-                    listView.setItemChecked(i, true)
+                (0 until listView.adapter.count).forEach {
+                    listView.setItemChecked(it, true)
                 }
                 return true
             }
@@ -160,15 +161,17 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
         cameras.filter { it in selectedCameras }.forEach { it.setFavourite(willAdd) }
 
         if (listView.adapter is CameraAdapter) {
-            for (i in 0 until listView.adapter.count) {
-                if (listView.checkedItemPositions[i]) {
-                    val view = listView.getViewByPosition(i)
+            (0 until listView.adapter.count).forEach {
+                if (listView.checkedItemPositions[it]) {
+                    val view = listView.getViewByPosition(it)
                     val starImageView = view.findViewById<ImageView>(R.id.star)
-                    starImageView.setImageDrawable(if (willAdd) {
-                        ContextCompat.getDrawable(this, R.drawable.outline_star_white_18)
-                    } else {
-                        ContextCompat.getDrawable(this, R.drawable.outline_star_border_white_18)
-                    })
+                    starImageView.setImageDrawable(
+                        if (willAdd) {
+                            ContextCompat.getDrawable(this, R.drawable.outline_star_white_18)
+                        } else {
+                            ContextCompat.getDrawable(this, R.drawable.outline_star_border_white_18)
+                        }
+                    )
                 }
             }
         }
@@ -213,13 +216,14 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
             }
         }
         actionMode?.let { actionMode ->
-            actionMode.title = resources.getQuantityString(R.plurals.selectedCameras, selectedCameras.size, selectedCameras.size)
+            actionMode.title =
+                resources.getQuantityString(R.plurals.selectedCameras, selectedCameras.size, selectedCameras.size)
 
-            val allFav = selectedCameras.map { it.isFavourite }.reduce { acc, b -> acc && b }
+            val allFav = selectedCameras.all { it.isFavourite }
             addFav.isVisible = !allFav
             removeFav.isVisible = allFav
 
-            val allInvis = selectedCameras.map { !it.isVisible }.reduce { acc, b -> acc && b }
+            val allInvis = selectedCameras.all { !it.isVisible }
             hide.isVisible = !allInvis
             unhide.isVisible = allInvis
 
