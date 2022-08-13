@@ -171,7 +171,7 @@ class CameraActivity : GenericActivity() {
     }
 
     private fun saveSelectedImages() {
-        (0 until cameras.size).forEach {
+        (cameras.indices).forEach {
             if (cameras[it] in selectedCameras) {
                 val imageDrawable = listView.getViewByPosition(it).findViewById<ImageView>(R.id.source).drawable
                 val title = listView.getViewByPosition(it).findViewById<TextView>(R.id.label)
