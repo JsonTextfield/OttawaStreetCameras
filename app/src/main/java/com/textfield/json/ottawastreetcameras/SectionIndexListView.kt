@@ -108,23 +108,22 @@ class SectionIndexListView : LinearLayout {
             //get the first character
             val c = listView.adapter.getItem(i).toString().uppercase(Locale.ENGLISH).first()
 
-            if (c !in index.keys || '#' !in index.keys || '*' !in index.keys) {
-                when (c) {
-                    in letters -> {
-                        index[c] = i
-                        textView.text = c.toString()
-                    }
-                    in numbers -> {
-                        index['#'] = 0
-                        textView.text = "#"
-                    }
-                    else -> {
-                        index['*'] = i
-                        textView.text = "*"
-                    }
-                }
+            if (c in letters && c !in index.keys) {
+                index[c] = i
+                textView.text = c.toString()
                 sectionIndex.addView(textView)
                 sectionIndex.invalidate()
+            } else if (c in numbers && '#' !in index.keys) {
+                index['#'] = 0
+                textView.text = "#"
+                sectionIndex.addView(textView)
+                sectionIndex.invalidate()
+            } else if (c !in letters + numbers && '*' !in index.keys) {
+                index['*'] = i
+                textView.text = "*"
+                sectionIndex.addView(textView)
+                sectionIndex.invalidate()
+                break
             }
         }
     }
