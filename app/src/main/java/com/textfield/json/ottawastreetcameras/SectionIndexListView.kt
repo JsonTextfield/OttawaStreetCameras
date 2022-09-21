@@ -9,7 +9,6 @@ import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
 import java.util.*
-import kotlin.collections.HashMap
 import kotlin.math.max
 import kotlin.math.min
 
@@ -31,9 +30,9 @@ class SectionIndexListView : LinearLayout {
 
     constructor(context: Context, attributes: AttributeSet) : super(context, attributes) {
         context.theme.obtainStyledAttributes(
-                attributes,
-                R.styleable.SectionIndexListView,
-                0, 0
+            attributes,
+            R.styleable.SectionIndexListView,
+            0, 0
         ).apply {
             try {
                 defaultTextColour = getColor(R.styleable.SectionIndexListView_default_text_colour, Color.WHITE)
@@ -102,26 +101,30 @@ class SectionIndexListView : LinearLayout {
         sectionIndex.removeAllViews()
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         for (i in 0 until listView.adapter.count) {
+            val textView = inflater.inflate(indexTextViewLayout, this, false) as TextView
+            textView.setTextColor(defaultTextColour)
+            val letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            val numbers = "0123456789"
             //get the first character
-            val t = inflater.inflate(indexTextViewLayout, this, false) as TextView
-            t.setTextColor(defaultTextColour)
-            val c = listView.adapter.getItem(i).toString().uppercase(Locale.ENGLISH)[0]
-            if (c !in index.keys && c in "ABCDEFGHIJKLMNOPQRESTUVWXYZ") {
-                index[c] = i
-                t.text = c.toString()
-                sectionIndex.addView(t)
+            val c = listView.adapter.getItem(i).toString().uppercase(Locale.ENGLISH).first()
+
+            if (c !in index.keys || '#' !in index.keys || '*' !in index.keys) {
+                when (c) {
+                    in letters -> {
+                        index[c] = i
+                        textView.text = c.toString()
+                    }
+                    in numbers -> {
+                        index['#'] = 0
+                        textView.text = "#"
+                    }
+                    else -> {
+                        index['*'] = i
+                        textView.text = "*"
+                    }
+                }
+                sectionIndex.addView(textView)
                 sectionIndex.invalidate()
-            } else if (c in "0123456789" && !index.containsKey('#')) {
-                index['#'] = 0
-                t.text = "#"
-                sectionIndex.addView(t)
-                sectionIndex.invalidate()
-            } else if (c !in "0123456789ABCDEFGHIJKLMNOPQRESTUVWXYZ") {
-                index['*'] = i
-                t.text = "*"
-                sectionIndex.addView(t)
-                sectionIndex.invalidate()
-                break
             }
         }
     }
