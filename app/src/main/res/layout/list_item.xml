@@ -36,5 +36,5 @@
         android:layout_centerVertical="true"
         android:contentDescription="@null"
         android:padding="10dp"
-        android:src="@drawable/outline_star_border_white_18" />
+        android:src="@drawable/ic_baseline_star_border_18" />
 </RelativeLayout>

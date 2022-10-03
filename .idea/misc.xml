@@ -3,6 +3,16 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Jason/AndroidStudioProjects/OttawaStreetCameras/app/src/main/res/drawable-v21/selector_index_title.xml" value="0.173" />
+        <entry key="..\:/Users/Jason/AndroidStudioProjects/OttawaStreetCameras/app/src/main/res/drawable/back_background.xml" value="0.173" />
+        <entry key="..\:/Users/Jason/AndroidStudioProjects/OttawaStreetCameras/app/src/main/res/drawable/eye_checkbox.xml" value="0.173" />
+        <entry key="..\:/Users/Jason/AndroidStudioProjects/OttawaStreetCameras/app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.173" />
+        <entry key="..\:/Users/Jason/AndroidStudioProjects/OttawaStreetCameras/app/src/main/res/drawable/ic_baseline_star_24.xml" value="0.173" />
+        <entry key="..\:/Users/Jason/AndroidStudioProjects/OttawaStreetCameras/app/src/main/res/drawable/ic_baseline_star_border_24.xml" value="0.173" />
+        <entry key="..\:/Users/Jason/AndroidStudioProjects/OttawaStreetCameras/app/src/main/res/drawable/section_index.xml" value="0.173" />
+        <entry key="..\:/Users/Jason/AndroidStudioProjects/OttawaStreetCameras/app/src/main/res/drawable/selected_text.xml" value="0.173" />
+        <entry key="..\:/Users/Jason/AndroidStudioProjects/OttawaStreetCameras/app/src/main/res/drawable/selector_index_title.xml" value="0.173" />
+        <entry key="..\:/Users/Jason/AndroidStudioProjects/OttawaStreetCameras/app/src/main/res/drawable/star_checkbox.xml" value="0.173" />
         <entry key="..\:/Users/Jason/AndroidStudioProjects/OttawaStreetCameras/app/src/main/res/layout/activity_camera.xml" value="0.15625" />
         <entry key="..\:/Users/Jason/AndroidStudioProjects/OttawaStreetCameras/app/src/main/res/layout/activity_main.xml" value="0.15625" />
         <entry key="..\:/Users/Jason/AndroidStudioProjects/OttawaStreetCameras/app/src/main/res/layout/list_item.xml" value="0.33" />
