@@ -1,6 +1,7 @@
 package com.textfield.json.ottawastreetcameras
 
 import android.content.Context
+import android.util.Log
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.HurlStack
@@ -50,7 +51,7 @@ class StreetCamsRequestQueue constructor(context: Context) {
             cert = conn.serverCertificates.filterIsInstance<X509Certificate>().firstOrNull() ?: cert
             sessionId = conn.getHeaderField("Set-Cookie") ?: sessionId
         } catch (exception: IOException) {
-            exception.printStackTrace()
+            Log.e("StreetCams", exception.message ?: exception.stackTraceToString())
         }
 
         // Create a KeyStore containing our trusted CAs

@@ -45,6 +45,8 @@ import org.json.JSONObject
 import java.util.*
 
 class MainActivity : GenericActivity(), OnMapReadyCallback {
+    private var showingMap = false
+
     private val requestForList = 0
     private val requestForMap = 1
     private val maxCameras = 8
@@ -52,7 +54,6 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
     private lateinit var binding: ActivityMainBinding
 
     private var map: GoogleMap? = null
-
     private var mapIsLoaded = false
     private var searchView: SearchView? = null
     private var searchMenuItem: MenuItem? = null
@@ -85,9 +86,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
             showSelectedCameras()
         }
         listView.setMultiChoiceModeListener(this)
-        binding.toolbar.setOnClickListener {
-            listView.setSelection(0)
-        }
+        binding.toolbar.setOnClickListener { listView.setSelection(0) }
         setSupportActionBar(binding.toolbar)
 
         if (savedInstanceState == null) {
@@ -134,16 +133,23 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
                 return true
             }
         })
-        (0 until menu.size()).forEach {
-            tintMenuItemIcon(menu.getItem(it))
-        }
+        (0 until menu.size()).forEach { tintMenuItemIcon(menu.getItem(it)) }
         return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        sortDistance?.isVisible = sortDistance!!.isVisible && !showingMap
+        sortNeighbourhood?.isVisible = sortNeighbourhood!!.isVisible && !showingMap
+        sortName?.isVisible = sortName!!.isVisible && !showingMap
+        return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menuItemMap -> {
+                showingMap = !showingMap
                 binding.viewSwitcher.showNext()
+                invalidateOptionsMenu()
             }
             R.id.sort_name -> {
                 adapter.sort(SortByName())
@@ -164,7 +170,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
                 sortName?.isVisible = true
             }
             R.id.random_camera -> {
-                selectCamera(cameras[Random().nextInt(cameras.size)])
+                selectCamera(cameras.random())
                 showSelectedCameras()
             }
             R.id.shuffle -> {
@@ -216,12 +222,11 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
 
                 loadList()
             }, {
-                it.printStackTrace()
+                showErrorDialogue(this@MainActivity)
             })
         CoroutineScope(Dispatchers.IO).launch {
             Volley.newRequestQueue(this@MainActivity).add(jsonObjectRequest)
         }
-
     }
 
     private fun downloadCameraList() {
@@ -235,7 +240,6 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
             } as ArrayList<Camera>
             downloadNeighbourhoodList()
         }, {
-            it.printStackTrace()
             showErrorDialogue(this)
         })
         CoroutineScope(Dispatchers.IO).launch {
@@ -281,18 +285,18 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
                     MarkerOptions()
                         .position(LatLng(camera.lat, camera.lng))
                         .title(camera.getName())
+                        .icon(
+                            BitmapDescriptorFactory.defaultMarker(
+                                if (camera.isFavourite) BitmapDescriptorFactory.HUE_YELLOW
+                                else BitmapDescriptorFactory.HUE_RED
+                            )
+                        )
                 )
-                m?.let {
-                    if (camera.isFavourite) {
-                        it.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
-                    } else {
-                        it.setIcon(BitmapDescriptorFactory.defaultMarker())
-                    }
-                    it.tag = camera
-                    camera.marker = m
-                    builder.include(m.position)
-
-                    it.isVisible = camera.isVisible
+                m?.let { marker ->
+                    marker.tag = camera
+                    camera.marker = marker
+                    builder.include(marker.position)
+                    marker.isVisible = camera.isVisible
                 }
             }
             val bounds = builder.build()
@@ -311,11 +315,11 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
             permission.ACCESS_FINE_LOCATION,
             permission.ACCESS_COARSE_LOCATION
         )
-        val allTrue = permissionArray.all {
+        val noPermissionsGranted = permissionArray.all {
             ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
         }
 
-        if (allTrue) {
+        if (noPermissionsGranted) {
             ActivityCompat.requestPermissions(this, permissionArray, requestCode)
         } else {
             when (requestCode) {
@@ -339,12 +343,8 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-            if (requestCode == requestForList) {
-                requestPermissions(requestForList)
-            } else { //if (requestCode == requestForMap) {
-                requestPermissions(requestForMap)
-            }
+        if (PackageManager.PERMISSION_GRANTED in grantResults) {
+            requestPermissions(requestCode)
         }
     }
 

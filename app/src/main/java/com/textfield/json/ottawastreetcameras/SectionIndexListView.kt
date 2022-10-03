@@ -3,6 +3,7 @@ package com.textfield.json.ottawastreetcameras
 import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.widget.LinearLayout
@@ -86,8 +87,8 @@ class SectionIndexListView : LinearLayout {
                             t.setTextColor(selectedTextColour)
                             listView.setSelection(index[t.text[0]]!!)
                             choose = selectedIndex
-                        } catch (e: Exception) {
-                            e.printStackTrace()
+                        } catch (e: NullPointerException) {
+                            Log.e("SectionIndex", e.message ?: e.stackTraceToString())
                         }
                     }
                 }

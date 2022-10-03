@@ -12,8 +12,8 @@ abstract class CameraFilter(private val allCameras: List<Camera>) : Filter() {
     }
 
     override fun performFiltering(constraint: CharSequence): FilterResults {
-
-        val filteredResults = when {
+        val results = FilterResults()
+        results.values = when {
             constraint.startsWith("f: ", true) -> allCameras.filter {
                 it.getName().contains(constraint.removePrefix("f: "), true) && it.isFavourite
             }
@@ -27,9 +27,6 @@ abstract class CameraFilter(private val allCameras: List<Camera>) : Filter() {
                 it.getName().contains(constraint, true) && it.isVisible
             }
         }
-
-        val results = FilterResults()
-        results.values = filteredResults
         return results
     }
 }

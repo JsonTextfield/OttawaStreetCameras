@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Filter
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -55,7 +54,6 @@ abstract class CameraAdapter(private val _context: Context, private val list: Li
             viewHolder.neighbourhood = convertView.findViewById(R.id.neighbourhood)
             viewHolder.star = convertView.findViewById(R.id.star)
             convertView.tag = viewHolder
-
         } else {
             viewHolder = convertView.tag as ViewHolder
         }
@@ -63,7 +61,7 @@ abstract class CameraAdapter(private val _context: Context, private val list: Li
         viewHolder.title?.text = camera.getName()
         viewHolder.neighbourhood?.text = camera.neighbourhood
         viewHolder.neighbourhood?.visibility = if (camera.neighbourhood.isEmpty()) View.GONE else View.VISIBLE
-        val icon = if (camera.isFavourite) R.drawable.ic_baseline_star_24 else R.drawable.ic_baseline_star_border_24
+        val icon = if (camera.isFavourite) R.drawable.ic_baseline_star_18 else R.drawable.ic_baseline_star_border_18
         viewHolder.star?.setImageDrawable(ContextCompat.getDrawable(_context, icon))
 
         if ((context as GenericActivity).isNightModeOn()) {
@@ -81,13 +79,11 @@ abstract class CameraAdapter(private val _context: Context, private val list: Li
         return convertView!!
     }
 
-    override fun getFilter(): Filter {
-        return object : CameraFilter(list) {
-            override fun onPublishResults(list: ArrayList<Camera>) {
-                cameras = list
-                notifyDataSetChanged()
-                onComplete()
-            }
+    override fun getFilter() = object : CameraFilter(list) {
+        override fun onPublishResults(list: ArrayList<Camera>) {
+            cameras = list
+            notifyDataSetChanged()
+            onComplete()
         }
     }
 

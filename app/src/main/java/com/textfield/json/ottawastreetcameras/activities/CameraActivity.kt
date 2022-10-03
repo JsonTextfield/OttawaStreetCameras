@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
+import android.util.Log
 import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
@@ -51,6 +52,7 @@ class CameraActivity : GenericActivity() {
         listView = binding.imageListView
         shuffle = intent.getBooleanExtra("shuffle", false)
         cameras = intent.getParcelableArrayListExtra("cameras") ?: ArrayList()
+        // if shuffle is on, show only one camera image at a time
         adapter = ImageAdapter(this, if (shuffle) cameras.subList(0, 1) else cameras)
         listView.adapter = adapter
         listView.setMultiChoiceModeListener(this)
@@ -73,7 +75,7 @@ class CameraActivity : GenericActivity() {
 
     override fun onPause() {
         StreetCamsRequestQueue.getInstance(this).cancelAll(tag)
-        timers.forEach { handler.removeCallbacks(it) }
+        timers.forEach(handler::removeCallbacks)
         super.onPause()
     }
 
@@ -137,10 +139,10 @@ class CameraActivity : GenericActivity() {
     }
 
     fun download(index: Int) {
-        val selectedCamera = if (shuffle) cameras[Random().nextInt(cameras.size)] else adapter.getItem(index)!!
+        val selectedCamera = if (shuffle) cameras.random() else adapter.getItem(index)!!
         val bmImage = listView.getViewByPosition(index).findViewById<ImageView>(R.id.source)
         val textView = listView.getViewByPosition(index).findViewById<TextView>(R.id.label)
-        val url = "https://traffic.ottawa.ca/beta/camera?id=${selectedCamera.num}&timems=${Date().time}"
+        val url = "https://traffic.ottawa.ca/beta/camera?id=${selectedCamera.num}&timems=${System.currentTimeMillis()}"
         val request = ImageRequest(url, { response ->
             try {
                 bmImage.setImageBitmap(response)
@@ -151,10 +153,9 @@ class CameraActivity : GenericActivity() {
                 binding.cameraProgressBar.visibility = View.INVISIBLE
             }
         }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.RGB_565, {
-            it.printStackTrace()
             showErrorDialogue(this@CameraActivity)
             StreetCamsRequestQueue.getInstance(this).cancelAll(tag)
-            timers.forEach { item -> handler.removeCallbacks(item) }
+            timers.forEach(handler::removeCallbacks)
         })
         request.tag = tag
         StreetCamsRequestQueue.getInstance(this).add(request)
@@ -162,16 +163,13 @@ class CameraActivity : GenericActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.isNotEmpty()
-            && grantResults[0] == PackageManager.PERMISSION_GRANTED
-            && requestCode == requestForSave
-        ) {
+        if (PackageManager.PERMISSION_GRANTED in grantResults && requestCode == requestForSave) {
             saveSelectedImages()
         }
     }
 
     private fun saveSelectedImages() {
-        (cameras.indices).forEach {
+        cameras.indices.forEach {
             if (cameras[it] in selectedCameras) {
                 val imageDrawable = listView.getViewByPosition(it).findViewById<ImageView>(R.id.source).drawable
                 val title = listView.getViewByPosition(it).findViewById<TextView>(R.id.label)
@@ -212,7 +210,7 @@ class CameraActivity : GenericActivity() {
                 out.flush()
                 out.close()
             } catch (e: IOException) {
-                e.printStackTrace()
+                Log.e("StreetCams", e.message ?: e.stackTraceToString())
             }
         }
 

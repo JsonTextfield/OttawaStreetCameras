@@ -119,7 +119,7 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
 
     override fun onDestroyActionMode(mode: ActionMode?) {
         actionMode = null
-        cameras.filter { it in selectedCameras }.forEach { selectCamera(it) }
+        cameras.filter { it in selectedCameras }.forEach(::selectCamera)
         selectedCameras.clear()
     }
 
@@ -165,13 +165,8 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
                 if (listView.checkedItemPositions[it]) {
                     val view = listView.getViewByPosition(it)
                     val starImageView = view.findViewById<ImageView>(R.id.star)
-                    starImageView.setImageDrawable(
-                        if (willAdd) {
-                            ContextCompat.getDrawable(this, R.drawable.outline_star_white_18)
-                        } else {
-                            ContextCompat.getDrawable(this, R.drawable.outline_star_border_white_18)
-                        }
-                    )
+                    val icon = if (willAdd) R.drawable.ic_baseline_star_18 else R.drawable.ic_baseline_star_border_18
+                    starImageView.setImageDrawable(ContextCompat.getDrawable(this, icon))
                 }
             }
         }
