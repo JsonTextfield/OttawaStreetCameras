@@ -24,12 +24,19 @@
     <string name="image_saved">L\'image a été enregistrée</string>
     <string name="location_unavailable">L\'emplacement n\'est pas disponible</string>
     <string name="sort_by_neighbourhood">Triez par quartier</string>
+    <string name="rate">Évaluer</string>
+    <string name="about">À propos de</string>
+    <string name="version">Version %s</string>
+    <string name="licences">Licences</string>
 
+    <plurals name="images_saved">
+        <item quantity="one">%d image a été enregistrée</item>
+        <item quantity="many">%d images ont été enregistrée</item>
+    </plurals>
     <plurals name="selectedCameras">
         <item quantity="one">%d sélectionnée</item>
         <item quantity="many">%d sélectionnées</item>
     </plurals>
-
     <plurals name="search_hint">
         <item quantity="one">Recherche de %d lieu</item>
         <item quantity="many">Recherche de %d lieux</item>

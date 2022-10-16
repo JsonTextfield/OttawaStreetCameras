@@ -55,4 +55,8 @@
         android:checked="true"
         android:title="@string/night_mode"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/about"
+        android:title="@string/about"
+        app:showAsAction="never" />
 </menu>
