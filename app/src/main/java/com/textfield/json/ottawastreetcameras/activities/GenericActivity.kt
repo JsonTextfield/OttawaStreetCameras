@@ -2,6 +2,7 @@ package com.textfield.json.ottawastreetcameras.activities
 
 import android.content.Context
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.ActionMode
 import android.view.Menu
@@ -58,6 +59,22 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
             }
         }
         previouslySelectedCameras.clear()
+    }
+
+    protected fun loadPreviouslySelectedCameras(savedInstanceState: Bundle?) {
+        val selectedCamerasIsNull = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            savedInstanceState?.getParcelableArrayList("selectedCameras", Camera::class.java) != null
+        } else {
+            savedInstanceState?.getParcelableArrayList<Camera>("selectedCameras") != null
+        }
+        if (selectedCamerasIsNull) {
+            previouslySelectedCameras = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                savedInstanceState?.getParcelableArrayList("selectedCameras", Camera::class.java)!!
+            } else {
+                savedInstanceState?.getParcelableArrayList("selectedCameras")!!
+            }
+            startActionMode(this)
+        }
     }
 
     fun modifyPrefs(pref: String, selectedCameras: Collection<Camera>, willAdd: Boolean) {

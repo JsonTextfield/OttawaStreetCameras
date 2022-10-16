@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.ContentValues
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Bundle
@@ -51,16 +52,19 @@ class CameraActivity : GenericActivity() {
         setContentView(binding.root)
         listView = binding.imageListView
         shuffle = intent.getBooleanExtra("shuffle", false)
-        cameras = intent.getParcelableArrayListExtra("cameras") ?: ArrayList()
+
+        cameras = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableArrayListExtra("cameras", Camera::class.java) ?: cameras
+        } else {
+            intent.getParcelableArrayListExtra("cameras") ?: ArrayList()
+        }
         // if shuffle is on, show only one camera image at a time
         adapter = ImageAdapter(this, if (shuffle) cameras.subList(0, 1) else cameras)
         listView.adapter = adapter
         listView.setMultiChoiceModeListener(this)
-        if (savedInstanceState?.getParcelableArrayList<Camera>("selectedCameras") != null) {
-            previouslySelectedCameras = savedInstanceState.getParcelableArrayList("selectedCameras")!!
-            startActionMode(this)
-        }
-        binding.backButton.setOnClickListener { onBackPressed() }
+
+        loadPreviouslySelectedCameras(savedInstanceState)
+        binding.backButton.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
     }
 
     override fun onResume() {
@@ -90,15 +94,20 @@ class CameraActivity : GenericActivity() {
 
     override fun onDestroyActionMode(mode: ActionMode?) {
         (0 until listView.adapter.count).forEach {
-            listView.getViewByPosition(it).findViewById<View>(R.id.overlay).visibility = View.INVISIBLE
+            listView.getViewByPosition(it).findViewById<ImageView>(R.id.source).setColorFilter(Color.TRANSPARENT)
         }
         super.onDestroyActionMode(mode)
     }
 
     override fun onItemCheckedStateChanged(mode: ActionMode?, position: Int, id: Long, checked: Boolean) {
         super.onItemCheckedStateChanged(mode, position, id, checked)
-        val overlay = listView.getViewByPosition(position).findViewById<View>(R.id.overlay)
-        overlay.visibility = if (checked) View.VISIBLE else View.INVISIBLE
+        val overlay = listView.getViewByPosition(position).findViewById<ImageView>(R.id.source)
+        if (checked) {
+            overlay.setColorFilter(Color.parseColor("#4F00BCD4"))
+        }
+        else {
+            overlay.setColorFilter(Color.TRANSPARENT)
+        }
         hideMenuOptions()
     }
 
@@ -169,18 +178,30 @@ class CameraActivity : GenericActivity() {
     }
 
     private fun saveSelectedImages() {
+        var imagesSaved = 0
         cameras.indices.forEach {
             if (cameras[it] in selectedCameras) {
                 val imageDrawable = listView.getViewByPosition(it).findViewById<ImageView>(R.id.source).drawable
                 val title = listView.getViewByPosition(it).findViewById<TextView>(R.id.label)
                 if (imageDrawable != null) {
-                    saveImage((imageDrawable as BitmapDrawable).bitmap, title.text.toString())
+                    if (saveImage((imageDrawable as BitmapDrawable).bitmap, title.text.toString())) {
+                        imagesSaved++
+                    }
+                }
+                else {
+                    Log.w("CameraActivity", "$title is null")
                 }
             }
         }
+
+        Snackbar.make(
+            listView,
+            resources.getQuantityString(R.plurals.images_saved, selectedCameras.size, selectedCameras.size),
+            Snackbar.LENGTH_LONG
+        ).show()
     }
 
-    private fun saveImage(bitmapImage: Bitmap, fileName: String) {
+    private fun saveImage(bitmapImage: Bitmap, fileName: String): Boolean {
         // Add a media item that other apps shouldn't see until the item is fully written to the media store.
         val resolver = applicationContext.contentResolver
 
@@ -211,6 +232,7 @@ class CameraActivity : GenericActivity() {
                 out.close()
             } catch (e: IOException) {
                 Log.e("StreetCams", e.message ?: e.stackTraceToString())
+                return false
             }
         }
 
@@ -220,6 +242,6 @@ class CameraActivity : GenericActivity() {
             imageDetails.put(MediaStore.Images.Media.IS_PENDING, 0)
         }
         resolver.update(songContentUri, imageDetails, null, null)
-        Snackbar.make(listView, resources.getString(R.string.image_saved), Snackbar.LENGTH_LONG).show()
+        return true
     }
 }

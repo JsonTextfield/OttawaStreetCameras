@@ -1,14 +1,17 @@
 package com.textfield.json.ottawastreetcameras.activities
 
 import android.Manifest.permission
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
@@ -28,6 +31,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.play.core.review.ReviewManagerFactory
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.StreetCamsRequestQueue
 import com.textfield.json.ottawastreetcameras.adapters.CameraAdapter
@@ -92,12 +96,14 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
         if (savedInstanceState == null) {
             downloadCameraList()
         } else {
-            cameras = savedInstanceState.getParcelableArrayList("cameras") ?: cameras
-            loadList()
-            if (savedInstanceState.getParcelableArrayList<Camera>("selectedCameras") != null) {
-                previouslySelectedCameras = savedInstanceState.getParcelableArrayList("selectedCameras")!!
-                startActionMode(this@MainActivity)
+            cameras = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                savedInstanceState.getParcelableArrayList("cameras", Camera::class.java) ?: cameras
+            } else {
+                savedInstanceState.getParcelableArrayList("cameras") ?: cameras
             }
+
+            loadList()
+            loadPreviouslySelectedCameras(savedInstanceState)
         }
     }
 
@@ -195,8 +201,33 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
                     finish()
                 }, 500)
             }
+            R.id.about -> {
+                AlertDialog.Builder(this)
+                    .setTitle(resources.getString(R.string.app_name))
+                    .setMessage(
+                        resources.getString(
+                            R.string.version,
+                            com.textfield.json.ottawastreetcameras.BuildConfig.VERSION_NAME
+                        )
+                    )
+                    .setPositiveButton(R.string.rate) { _, _ -> rateApp() }
+                    .show()
+            }
         }
         return true
+    }
+
+    private fun rateApp() {
+        val manager = ReviewManagerFactory.create(this@MainActivity)
+        val request = manager.requestReviewFlow()
+        request.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val reviewInfo = task.result
+                manager.launchReviewFlow(this@MainActivity, reviewInfo)
+            } else {
+                Log.w("rateApp", task.exception)
+            }
+        }
     }
 
     override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
