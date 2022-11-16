@@ -27,7 +27,7 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/favourites"
-        android:icon="@drawable/ic_baseline_star_18"
+        android:icon="@drawable/ic_baseline_star_24"
         android:title="@string/favourites"
         app:showAsAction="ifRoom" />
     <item

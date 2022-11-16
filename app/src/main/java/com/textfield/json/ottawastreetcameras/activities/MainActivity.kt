@@ -171,6 +171,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
             R.id.sort_neighbourhood -> {
                 adapter.sort(SortByNeighbourhood())
 
+                binding.sectionIndexListview.sectionIndex.visibility = View.INVISIBLE
                 sortNeighbourhood?.isVisible = false
                 sortDistance?.isVisible = true
                 sortName?.isVisible = true

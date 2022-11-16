@@ -4,6 +4,9 @@ import android.widget.Filter
 import com.textfield.json.ottawastreetcameras.entities.Camera
 
 abstract class CameraFilter(private val allCameras: List<Camera>) : Filter() {
+    private val favouritePrefix = "f:"
+    private val hiddenPrefix = "h:"
+    private val neighbourhoodPrefix = "n:"
 
     abstract fun onPublishResults(list: ArrayList<Camera>)
 
@@ -14,14 +17,14 @@ abstract class CameraFilter(private val allCameras: List<Camera>) : Filter() {
     override fun performFiltering(constraint: CharSequence): FilterResults {
         val results = FilterResults()
         results.values = when {
-            constraint.startsWith("f: ", true) -> allCameras.filter {
-                it.getName().contains(constraint.removePrefix("f: "), true) && it.isFavourite
+            constraint.startsWith(favouritePrefix, true) -> allCameras.filter {
+                it.getName().contains(constraint.removePrefix(favouritePrefix).trim(), true) && it.isFavourite
             }
-            constraint.startsWith("h: ", true) -> allCameras.filter {
-                it.getName().contains(constraint.removePrefix("h: "), true) && !it.isVisible
+            constraint.startsWith(hiddenPrefix, true) -> allCameras.filter {
+                it.getName().contains(constraint.removePrefix(hiddenPrefix).trim(), true) && !it.isVisible
             }
-            constraint.startsWith("n: ", true) -> allCameras.filter {
-                it.neighbourhood.contains(constraint.removePrefix("n: "), true)
+            constraint.startsWith(neighbourhoodPrefix, true) -> allCameras.filter {
+                it.neighbourhood.contains(constraint.removePrefix(neighbourhoodPrefix).trim(), true)
             }
             else -> allCameras.filter {
                 it.getName().contains(constraint, true) && it.isVisible

@@ -182,7 +182,7 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
                 if (listView.checkedItemPositions[it]) {
                     val view = listView.getViewByPosition(it)
                     val starImageView = view.findViewById<ImageView>(R.id.star)
-                    val icon = if (willAdd) R.drawable.ic_baseline_star_18 else R.drawable.ic_baseline_star_border_18
+                    val icon = if (willAdd) R.drawable.ic_baseline_star_24 else R.drawable.ic_baseline_star_border_18
                     starImageView.setImageDrawable(ContextCompat.getDrawable(this, icon))
                 }
             }
