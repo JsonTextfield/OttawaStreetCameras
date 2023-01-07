@@ -14,6 +14,7 @@
     <string name="night_mode">Night mode</string>
     <string name="no_network_content">Try again later</string>
     <string name="no_network_title">Could not load</string>
+    <string name="could_not_load_long">Could not load. Try again later.</string>
     <string name="random_camera">Random</string>
     <string name="rate">Rate</string>
     <string name="remove_from_favourites">Unfavourite</string>

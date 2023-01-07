@@ -153,19 +153,17 @@ class CameraActivity : GenericActivity() {
         val textView = listView.getViewByPosition(index).findViewById<TextView>(R.id.label)
         val url = "https://traffic.ottawa.ca/beta/camera?id=${selectedCamera.num}&timems=${System.currentTimeMillis()}"
         val request = ImageRequest(url, { response ->
-            try {
+            if (response != null) {
+                listView.getViewByPosition(index).findViewById<TextView>(R.id.could_not_load_textview).visibility = View.INVISIBLE
                 bmImage.setImageBitmap(response)
                 textView.text = selectedCamera.getName()
                 textView.visibility = View.VISIBLE
-            } catch (e: NullPointerException) {
-            } finally {
-                binding.cameraProgressBar.visibility = View.INVISIBLE
             }
         }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.RGB_565, {
-            showErrorDialogue(this@CameraActivity)
-            StreetCamsRequestQueue.getInstance(this).cancelAll(tag)
-            timers.forEach(handler::removeCallbacks)
+            it.printStackTrace()
+            listView.getViewByPosition(index).findViewById<TextView>(R.id.could_not_load_textview).visibility = View.VISIBLE
         })
+        binding.cameraProgressBar.visibility = View.INVISIBLE
         request.tag = tag
         StreetCamsRequestQueue.getInstance(this).add(request)
     }

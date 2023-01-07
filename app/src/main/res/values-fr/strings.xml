@@ -2,6 +2,7 @@
     <string name="about">À propos de</string>
     <string name="add_to_favourites">Ajouter aux favourites</string>
     <string name="app_name">RueCams</string>
+    <string name="app_name_long">RueCams Toronto</string>
     <string name="favourites">Favoris</string>
     <string name="hidden_cameras">Caméras cachées</string>
     <string name="hide">Cacher</string>
@@ -14,6 +15,7 @@
     <string name="night_mode">Mode nuit</string>
     <string name="no_network_content">Réessayer plus tard</string>
     <string name="no_network_title">N\'a pas pu charger</string>
+    <string name="could_not_load_long">N\'a pas pu charger. Réessayer plus tard.</string>
     <string name="random_camera">Caméra aléatoire</string>
     <string name="rate">Évaluer</string>
     <string name="remove_from_favourites">Supprimer des favoris</string>

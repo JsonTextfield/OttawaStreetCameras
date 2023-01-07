@@ -2,22 +2,15 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    signingConfigs {
-        config {
-            keyAlias 'streetcams'
-            keyPassword 'Lupin111'
-            storePassword 'Lupin111'
-            storeFile file(var)
-        }
-    }
+    namespace 'com.textfield.json.ottawastreetcameras'
     compileSdk 33
     defaultConfig {
         applicationId "com.textfield.json.ottawastreetcameras"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        minSdk 19
+        minSdk 28
         targetSdk 33
-        versionCode 22
-        versionName "1.8.1"
+        versionCode 23
+        versionName "1.8.2"
         vectorDrawables.useSupportLibrary = true
     }
     buildFeatures {
@@ -32,10 +25,8 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
         }
     }
-    namespace 'com.textfield.json.ottawastreetcameras'
 }
 
 dependencies {

@@ -62,7 +62,7 @@ abstract class CameraAdapter(private val _context: Context, private val list: Li
         viewHolder.neighbourhood?.text = camera.neighbourhood
         viewHolder.neighbourhood?.visibility = if (camera.neighbourhood.isEmpty()) View.GONE else View.VISIBLE
 
-        val icon = if (camera.isFavourite) R.drawable.ic_baseline_star_24 else R.drawable.ic_baseline_star_border_18
+        val icon = if (camera.isFavourite) R.drawable.ic_baseline_star_24 else R.drawable.ic_baseline_star_border_24
         val description = if (camera.isFavourite) R.string.remove_from_favourites else R.string.add_to_favourites
         viewHolder.star?.setImageDrawable(ContextCompat.getDrawable(_context, icon))
         viewHolder.star?.contentDescription = context.resources.getString(description)

@@ -4,6 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <TextView
+        android:minHeight="50dp"
+        android:id="@+id/could_not_load_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:visibility="invisible"
+        android:text="@string/could_not_load_long"/>
+
     <ImageView
         android:id="@+id/source"
         android:layout_width="match_parent"

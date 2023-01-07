@@ -24,7 +24,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -204,7 +203,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
             }
             R.id.about -> {
                 AlertDialog.Builder(this)
-                    .setTitle(resources.getString(R.string.app_name))
+                    .setTitle(resources.getString(R.string.app_name_long))
                     .setMessage(
                         resources.getString(
                             R.string.version,
@@ -254,10 +253,10 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
 
                 loadList()
             }, {
-                showErrorDialogue(this@MainActivity)
+                it.printStackTrace()
             })
         CoroutineScope(Dispatchers.IO).launch {
-            Volley.newRequestQueue(this@MainActivity).add(jsonObjectRequest)
+            StreetCamsRequestQueue.getInstance(this@MainActivity).addHttp(jsonObjectRequest)
         }
     }
 
