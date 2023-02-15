@@ -29,6 +29,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.textfield.json.ottawastreetcameras.R
@@ -210,7 +211,15 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
                             com.textfield.json.ottawastreetcameras.BuildConfig.VERSION_NAME
                         )
                     )
-                    .setPositiveButton(R.string.rate) { _, _ -> rateApp() }
+                    .setNegativeButton(R.string.rate) { _, _ -> rateApp() }
+                    .setPositiveButton(R.string.licences) { _, _ ->
+                        startActivity(
+                            Intent(
+                                this,
+                                OssLicensesMenuActivity::class.java
+                            )
+                        )
+                    }
                     .show()
             }
         }
