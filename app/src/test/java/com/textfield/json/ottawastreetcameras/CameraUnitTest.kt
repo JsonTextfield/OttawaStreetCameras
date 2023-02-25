@@ -4,97 +4,148 @@ import com.textfield.json.ottawastreetcameras.entities.Camera
 import org.json.JSONObject
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Test
 import java.util.*
 
 class CameraUnitTest {
     private var json = JSONObject()
+
     @Before
     fun before() {
         json = JSONObject()
     }
 
     @Test
-    fun test1() {
-        json.put("descriptionFr", "nameFr")
+    fun testJSON() {
         json.put("description", "name")
+        json.put("descriptionFr", "nameFr")
         json.put("number", 100)
         json.put("type", "Ottawa")
-        json.put("id", 0)
         json.put("latitude", 45.451235)
         json.put("longitude", -75.6742136)
 
-        val c = Camera(json)
+        val camera = Camera(json)
 
-        assertEquals(json["latitude"], c.lat)
-        assertEquals(json["longitude"], c.lng)
-        assertEquals(json["number"], c.num)
-        assertEquals(json["type"], c.owner)
+        Locale.setDefault(Locale("en"))
+        assertEquals(json["description"], camera.getName())
+        Locale.setDefault(Locale("fr"))
+        assertEquals(json["descriptionFr"], camera.getName())
+        assertEquals(json["number"], camera.num)
+        assertEquals(json["type"], camera.owner)
+        assertEquals(json["latitude"], camera.lat)
+        assertEquals(json["longitude"], camera.lng)
     }
 
-    //Testing owner is MTO
     @Test
-    fun test2() {
-        val number = 100
-        json.put("descriptionFr", "nameFr")
-        json.put("description", "name")
-        json.put("number", number)
-        json.put("type", "MTO")
-        json.put("id", 0)
-        json.put("latitude", 45.451235)
-        json.put("longitude", -75.6742136)
-
-        val c = Camera(json)
-        assertEquals("MTO", c.owner)
-        assertEquals(number + 2000, c.num)
-    }
-
-    // Testing sortable name
-    @Test
-    fun test3() {
+    fun testSortableName() {
         val name = "name"
         val nameFr = "nameFr"
         json.put("descriptionFr", nameFr)
         json.put("description", name)
-        json.put("number", 100)
-        json.put("type", "MTO")
-        json.put("id", 0)
-        json.put("latitude", 45.451235)
-        json.put("longitude", -75.6742136)
 
-        val c = Camera(json)
-        assertEquals(c.getSortableName(), name.uppercase(Locale.getDefault()))
-        val l = Locale("fr")
-        Locale.setDefault(l)
-        assertEquals(c.getSortableName(), nameFr.uppercase(Locale.getDefault()))
+        val camera = Camera(json)
+
+        Locale.setDefault(Locale("en"))
+        assertEquals(camera.getSortableName(), name.uppercase(Locale.getDefault()))
+
+        Locale.setDefault(Locale("fr"))
+        assertEquals(camera.getSortableName(), nameFr.uppercase(Locale.getDefault()))
     }
 
-    //Testing language-based name
     @Test
-    fun test4() {
+    fun testSortableNameSpecialCharacters() {
+        val name = "!@#\$%^&*()n!@#\$%^&*()a!@#\$%^&*()m!@#\$%^&*()e!@#\$%^&*()"
+        val nameFr = "n!@#\$%^&*()a!@#\$%^&*()m!@#\$%^&*()e!@#\$%^&*()F!@#\$%^&*()r!@#\$%^&*()"
+        json.put("descriptionFr", nameFr)
+        json.put("description", name)
+
+        val camera = Camera(json)
+
+        Locale.setDefault(Locale("en"))
+        assertEquals(camera.getSortableName(), name.uppercase(Locale.getDefault()).replace(Regex("\\W"), ""))
+
+        Locale.setDefault(Locale("fr"))
+        assertEquals(camera.getSortableName(), nameFr.uppercase(Locale.getDefault()).replace(Regex("\\W"), ""))
+    }
+
+    @Test
+    fun testNameBasedOnLocale() {
         json.put("descriptionFr", "nameFr")
         json.put("description", "name")
-        json.put("number", 100)
-        json.put("type", "MTO")
-        json.put("id", 0)
-        json.put("latitude", 45.451235)
-        json.put("longitude", -75.6742136)
 
-        val c = Camera(json)
-        assertEquals(c.getName(), "name")
-        var l = Locale("fr")
-        Locale.setDefault(l)
-        assertEquals(c.getName(), "nameFr")
-        l = Locale("es")
-        Locale.setDefault(l)
-        assertEquals(c.getName(), "name")
+        val camera = Camera(json)
+        Locale.setDefault(Locale("en"))
+        assertEquals(camera.getName(), "name")
+
+        Locale.setDefault(Locale("fr"))
+        assertEquals(camera.getName(), "nameFr")
+
+        Locale.setDefault(Locale("es"))
+        assertEquals(camera.getName(), "name")
+    }
+
+    @Test
+    fun testEquality() {
+        json.put("id", 1337)
+        json.put("number", 133)
+        val camera1 = Camera(json)
+
+        json = JSONObject()
+        json.put("id", 1337)
+        json.put("number", 133)
+        val camera2 = Camera(json)
+
+        assertEquals("These cameras should be equal", camera1, camera2)
+    }
+
+    @Test
+    fun testEqualityDifferentName() {
+        json.put("description", "Camera 1")
+        json.put("id", 1337)
+        json.put("number", 11)
+        val camera1 = Camera(json)
+
+        json = JSONObject()
+        json.put("description", "Camera 2")
+        json.put("id", 1337)
+        json.put("number", 11)
+        val camera2 = Camera(json)
+
+        assertEquals("These cameras should be equal", camera1, camera2)
+    }
+
+    @Test
+    fun testInequalityId() {
+        json.put("id", 1337)
+        json.put("number", 11)
+        val camera1 = Camera(json)
+
+        json = JSONObject()
+        json.put("id", 1331)
+        json.put("number", 11)
+        val camera2 = Camera(json)
+
+        assertNotEquals("These cameras should not be equal", camera1, camera2)
+    }
+
+    @Test
+    fun testInequalityNum() {
+        json.put("id", 1337)
+        json.put("number", 11)
+        val camera1 = Camera(json)
+
+        json = JSONObject()
+        json.put("id", 1337)
+        json.put("number", 12)
+        val camera2 = Camera(json)
+
+        assertNotEquals("These cameras should not be equal", camera1, camera2)
     }
 
     @After
-    fun clear() {
-        json = JSONObject()
-        var l = Locale("en")
-        Locale.setDefault(l)
+    fun after() {
+        Locale.setDefault(Locale("en"))
     }
 }
