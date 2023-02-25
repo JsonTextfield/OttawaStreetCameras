@@ -1,7 +1,7 @@
 package com.textfield.json.ottawastreetcameras
 
 import com.textfield.json.ottawastreetcameras.entities.BilingualObject
-import org.junit.Before
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.util.*
 
@@ -12,37 +12,48 @@ class BilingualObjectUnitTest {
             this.nameFr = nameFr
         }
     }
-    private lateinit var bilingualObject: MyBilingualObject
-
-    @Before
-    fun setup() {
-        bilingualObject = MyBilingualObject("*English", "%French")
-    }
 
     @Test
-    fun testEnglish() {
+    fun testSortableName() {
+        val name = "name"
+        val nameFr = "nameFr"
+        val myBilingualObject = MyBilingualObject(name, nameFr)
+
         Locale.setDefault(Locale("en"))
-        assert(bilingualObject.getName() == "*English")
-        assert(bilingualObject.getSortableName() == "ENGLISH") {
-            print("Actual was ${bilingualObject.getSortableName()}")
-        }
-    }
+        assertEquals(myBilingualObject.getSortableName(), name.uppercase(Locale.getDefault()))
 
-    @Test
-    fun testFrench() {
         Locale.setDefault(Locale("fr"))
-        assert(bilingualObject.getName() == "%French")
-        assert(bilingualObject.getSortableName() == "FRENCH") {
-            print("Actual was ${bilingualObject.getSortableName()}")
-        }
+        assertEquals(myBilingualObject.getSortableName(), nameFr.uppercase(Locale.getDefault()))
     }
 
     @Test
-    fun testOther() {
-        Locale.setDefault(Locale("es"))
-        assert(bilingualObject.getName() == "*English")
-        assert(bilingualObject.getSortableName() == "ENGLISH") {
-            print("Actual was ${bilingualObject.getSortableName()}")
-        }
+    fun testSortableNameSpecialCharacters() {
+        val name = "!@#\$%^&*()n!@#\$%^&*()a!@#\$%^&*()m!@#\$%^&*()e!@#\$%^&*()"
+        val nameFr = "n!@#\$%^&*()a!@#\$%^&*()m!@#\$%^&*()e!@#\$%^&*()F!@#\$%^&*()r!@#\$%^&*()"
+        val myBilingualObject = MyBilingualObject(name, nameFr)
+
+        Locale.setDefault(Locale("en"))
+        assertEquals(myBilingualObject.getSortableName(), "NAME")
+
+        Locale.setDefault(Locale("fr"))
+        assertEquals(myBilingualObject.getSortableName(), "NAMEFR")
     }
+
+    @Test
+    fun testNameBasedOnLocale() {
+        val name = "name"
+        val nameFr = "nameFr"
+        val myBilingualObject = MyBilingualObject(name, nameFr)
+
+        Locale.setDefault(Locale("en"))
+        assertEquals(myBilingualObject.getName(), "name")
+
+        Locale.setDefault(Locale("fr"))
+        assertEquals(myBilingualObject.getName(), "nameFr")
+
+        Locale.setDefault(Locale("es"))
+        assertEquals(myBilingualObject.getName(), "name")
+    }
+
+
 }

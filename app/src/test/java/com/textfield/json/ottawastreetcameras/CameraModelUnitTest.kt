@@ -7,7 +7,7 @@ import org.junit.Before
 import org.junit.Test
 import kotlin.random.Random
 
-class CameraModelTest {
+class CameraModelUnitTest {
     private var cameraModel = CameraModel()
 
     private fun createCamera(): Camera {

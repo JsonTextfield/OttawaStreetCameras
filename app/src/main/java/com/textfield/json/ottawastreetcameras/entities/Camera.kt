@@ -4,7 +4,6 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.Marker
-import org.json.JSONException
 import org.json.JSONObject
 
 /**
@@ -27,24 +26,14 @@ class Camera : BilingualObject, Parcelable {
     var neighbourhood = ""
     var marker: Marker? = null
 
-    constructor(vals: JSONObject) {
-        try {
-            nameEn = vals.getString("description")
-            nameFr = vals.getString("descriptionFr")
-            owner = vals.getString("type")
-            id = vals.getInt("id")
-            num = vals.getInt("number")
-            lat = vals.getDouble("latitude")
-            lng = vals.getDouble("longitude")
-        } catch (e: JSONException) {
-            nameFr = ""
-            owner = ""
-            nameEn = ""
-            id = 0
-            num = 0
-            lng = 0.0
-            lat = 0.0
-        }
+    constructor(jsonObject: JSONObject) {
+        nameEn = if (jsonObject.isNull("description")) "" else jsonObject.getString("description")
+        nameFr = if (jsonObject.isNull("descriptionFr")) "" else jsonObject.getString("descriptionFr")
+        owner = if (jsonObject.isNull("type")) "" else jsonObject.getString("type")
+        id = if (jsonObject.isNull("id")) 0 else jsonObject.getInt("id")
+        num = if (jsonObject.isNull("number")) 0 else jsonObject.getInt("number")
+        lat = if (jsonObject.isNull("latitude")) 0.0 else jsonObject.getDouble("latitude")
+        lng = if (jsonObject.isNull("longitude")) 0.0 else jsonObject.getDouble("longitude")
     }
 
     constructor(parcel: Parcel) {
