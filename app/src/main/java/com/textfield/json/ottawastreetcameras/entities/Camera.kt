@@ -14,7 +14,7 @@ class Camera : BilingualObject, Parcelable {
         private set
     var lat = 0.0
         private set
-    var lng = 0.0
+    var lon = 0.0
         private set
     var num = 0
         private set
@@ -28,12 +28,12 @@ class Camera : BilingualObject, Parcelable {
 
     constructor(jsonObject: JSONObject) {
         nameEn = if (jsonObject.isNull("description")) "" else jsonObject.getString("description")
-        nameFr = if (jsonObject.isNull("descriptionFr")) "" else jsonObject.getString("descriptionFr")
+        nameFr = if (jsonObject.isNull("descriptionFr")) nameEn else jsonObject.getString("descriptionFr")
         owner = if (jsonObject.isNull("type")) "" else jsonObject.getString("type")
         id = if (jsonObject.isNull("id")) 0 else jsonObject.getInt("id")
         num = if (jsonObject.isNull("number")) 0 else jsonObject.getInt("number")
         lat = if (jsonObject.isNull("latitude")) 0.0 else jsonObject.getDouble("latitude")
-        lng = if (jsonObject.isNull("longitude")) 0.0 else jsonObject.getDouble("longitude")
+        lon = if (jsonObject.isNull("longitude")) 0.0 else jsonObject.getDouble("longitude")
     }
 
     constructor(parcel: Parcel) {
@@ -41,7 +41,7 @@ class Camera : BilingualObject, Parcelable {
         nameFr = parcel.readString()!!
         owner = parcel.readString()!!
         lat = parcel.readDouble()
-        lng = parcel.readDouble()
+        lon = parcel.readDouble()
         id = parcel.readInt()
         num = parcel.readInt()
     }
@@ -68,7 +68,7 @@ class Camera : BilingualObject, Parcelable {
         parcel.writeString(nameFr)
         parcel.writeString(owner)
         parcel.writeDouble(lat)
-        parcel.writeDouble(lng)
+        parcel.writeDouble(lon)
         parcel.writeInt(id)
         parcel.writeInt(num)
     }

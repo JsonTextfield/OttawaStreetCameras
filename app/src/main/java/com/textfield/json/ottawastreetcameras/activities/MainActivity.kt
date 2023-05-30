@@ -28,7 +28,11 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.review.ReviewManagerFactory
@@ -46,7 +50,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONObject
-import java.util.*
+import java.util.Collections
 
 class MainActivity : GenericActivity(), OnMapReadyCallback {
     private var showingMap = false
@@ -60,7 +64,9 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
     private var map: GoogleMap? = null
     private var mapIsLoaded = false
     private var searchView: SearchView? = null
+    private var neighbourhoodSearchView: SearchView? = null
     private var searchMenuItem: MenuItem? = null
+    private var neighbourhoodSearchMenuItem: MenuItem? = null
     private var sortName: MenuItem? = null
     private var sortDistance: MenuItem? = null
     private var sortNeighbourhood: MenuItem? = null
@@ -113,12 +119,18 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
         sortName = menu.findItem(R.id.sort_name)
         sortDistance = menu.findItem(R.id.sort_distance)
         sortNeighbourhood = menu.findItem(R.id.sort_neighbourhood)
-        searchMenuItem = menu.findItem(R.id.user_searchView)
+        searchMenuItem = menu.findItem(R.id.camera_searchView)
+        neighbourhoodSearchMenuItem = menu.findItem(R.id.neighbourhood_searchView)
         val nightMode = menu.findItem(R.id.night_mode)
         nightMode.isChecked = isNightModeOn()
         searchView = searchMenuItem?.actionView as SearchView?
+        neighbourhoodSearchView = neighbourhoodSearchMenuItem?.actionView as SearchView?
+        neighbourhoodSearchView
+
 
         searchView?.queryHint = resources.getQuantityString(R.plurals.search_hint, cameras.size, cameras.size)
+        neighbourhoodSearchView?.queryHint =
+            resources.getQuantityString(R.plurals.search_hint_neighbourhood, neighbourhoods.size, neighbourhoods.size)
 
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
@@ -323,7 +335,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
             for (camera in cameras) {
                 val m = map.addMarker(
                     MarkerOptions()
-                        .position(LatLng(camera.lat, camera.lng))
+                        .position(LatLng(camera.lat, camera.lon))
                         .title(camera.getName())
                         .icon(
                             BitmapDescriptorFactory.defaultMarker(

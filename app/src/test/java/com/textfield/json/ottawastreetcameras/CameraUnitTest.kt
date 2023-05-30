@@ -7,7 +7,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Test
-import java.util.*
+import java.util.Locale
 
 class CameraUnitTest {
     private var json = JSONObject()
@@ -37,7 +37,7 @@ class CameraUnitTest {
         assertEquals(json["number"], camera.num)
         assertEquals(json["type"], camera.owner)
         assertEquals(json["latitude"], camera.lat)
-        assertEquals(json["longitude"], camera.lng)
+        assertEquals(json["longitude"], camera.lon)
     }
 
     @Test

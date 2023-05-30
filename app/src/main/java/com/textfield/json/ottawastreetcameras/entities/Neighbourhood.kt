@@ -13,33 +13,33 @@ class Neighbourhood(values: JSONObject) : BilingualObject() {
     private var boundaries = ArrayList<List<LatLng>>()
 
     init {
-        try {
-            val props = values.getJSONObject("properties")
-            nameEn = props.getString("Name")
-            nameFr = props.getString("Name_FR")
-            if (nameFr.isBlank()) {
-                nameFr = nameEn
-            }
-            id = props.getInt("ONS_ID")
+        val properties = values.getJSONObject("properties")
+        nameEn = if (properties.isNull("Name")) "" else properties.getString("Name")
+        nameFr = if (properties.isNull("Name_FR")) nameEn else properties.getString("Name_FR")
+        id = if (properties.isNull("ONS_ID")) 0 else properties.getInt("ONS_ID")
 
-            val geo = values.getJSONObject("geometry")
+        try {
+            val geometry = values.getJSONObject("geometry")
             var neighbourhoodZones = JSONArray()
 
-            if (geo.getString("type") == "Polygon") {
-                neighbourhoodZones.put(geo.getJSONArray("coordinates"))
+            if (geometry.getString("type") == "Polygon") {
+                neighbourhoodZones.put(geometry.getJSONArray("coordinates"))
             } else {
-                neighbourhoodZones = geo.getJSONArray("coordinates")
+                neighbourhoodZones = geometry.getJSONArray("coordinates")
             }
-            (0 until neighbourhoodZones.length()).forEach { item ->
+            for (item in 0 until neighbourhoodZones.length()) {
                 val neighbourhoodPoints = neighbourhoodZones.getJSONArray(item).getJSONArray(0)
                 val list = (0 until neighbourhoodPoints.length()).map {
-                    LatLng(neighbourhoodPoints.getJSONArray(it).getDouble(1), neighbourhoodPoints.getJSONArray(it).getDouble(0))
+                    LatLng(
+                        neighbourhoodPoints.getJSONArray(it).getDouble(1),
+                        neighbourhoodPoints.getJSONArray(it).getDouble(0)
+                    )
                 }
                 boundaries.add(list)
             }
 
         } catch (e: JSONException) {
-            nameFr = nameEn
+          e.printStackTrace()
         }
     }
 
@@ -47,7 +47,7 @@ class Neighbourhood(values: JSONObject) : BilingualObject() {
     //https://stackoverflow.com/questions/26014312/identify-if-point-is-in-the-polygon
     fun containsCamera(camera: Camera): Boolean {
         var intersectCount = 0
-        val cameraLocation = LatLng(camera.lat, camera.lng)
+        val cameraLocation = LatLng(camera.lat, camera.lon)
 
         for (vertices in boundaries) {
             for (j in 0 until vertices.size - 1) {
@@ -79,8 +79,8 @@ class Neighbourhood(values: JSONObject) : BilingualObject() {
         val pX = location.longitude
 
         if ((aY > pY && bY > pY) || (aY < pY && bY < pY) || (aX < pX && bX < pX)) {
-            return false
             // a and b can't both be above or below pt.y, and a or b must be east of pt.x
+            return false
         }
 
         val m = (aY - bY) / (aX - bX) // Rise over run

@@ -2,19 +2,33 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/user_searchView"
+        android:id="@+id/camera_searchView"
         android:icon="@drawable/ic_baseline_search_24"
         android:title="@string/search"
+        android:visible="false"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="always|collapseActionView" />
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/neighbourhood_searchView"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        android:icon="@drawable/baseline_location_city_24"
+        android:title="@string/search_neighbourhood"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menuItemMap"
         android:icon="@drawable/ic_baseline_swap_horiz_24"
         android:title="@string/switch_view"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/sort"
+        android:icon="@drawable/baseline_sort_24"
+        android:title="@string/sort"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/sort_distance"
         android:title="@string/sort_by_distance"
+        android:visible="false"
         app:showAsAction="never" />
     <item
         android:id="@+id/sort_name"
@@ -24,6 +38,7 @@
     <item
         android:id="@+id/sort_neighbourhood"
         android:title="@string/sort_by_neighbourhood"
+        android:visible="false"
         app:showAsAction="never" />
     <item
         android:id="@+id/favourites"
@@ -35,10 +50,6 @@
         android:icon="@drawable/ic_baseline_visibility_off_24"
         android:title="@string/hidden_cameras"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/neighbourhood"
-        android:title="@string/neighbourhoods"
-        android:visible="false" />
     <item
         android:id="@+id/random_camera"
         android:icon="@drawable/ic_baseline_casino_24"

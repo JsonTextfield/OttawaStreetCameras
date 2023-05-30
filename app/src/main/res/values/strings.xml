@@ -21,6 +21,7 @@
     <string name="remove_from_favourites">Unfavourite</string>
     <string name="save_image">Save Image</string>
     <string name="search">Search</string>
+    <string name="search_neighbourhood">Search by Neighbourhood</string>
     <string name="select_all">Select all</string>
     <string name="show">Show</string>
     <string name="shuffle">Shuffle</string>
@@ -30,6 +31,7 @@
     <string name="switch_view">Switch view</string>
     <string name="unhide">Unhide</string>
     <string name="version">Version %s</string>
+    <string name="sort">Sort</string>
 
     <plurals name="images_saved">
         <item quantity="one">%d image saved</item>
@@ -40,7 +42,11 @@
         <item quantity="other">%d selected</item>
     </plurals>
     <plurals name="search_hint">
-        <item quantity="one">Search from %d location</item>
-        <item quantity="other">Search from %d locations</item>
+        <item quantity="one">Search from %d camera</item>
+        <item quantity="other">Search from %d cameras</item>
+    </plurals>
+    <plurals name="search_hint_neighbourhood">
+        <item quantity="one">Search from %d neighbourhood</item>
+        <item quantity="other">Search from %d neighbourhoods</item>
     </plurals>
 </resources>
