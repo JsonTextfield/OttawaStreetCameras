@@ -4,6 +4,7 @@ import com.google.android.gms.maps.model.LatLng
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.min
 
@@ -39,7 +40,7 @@ class Neighbourhood(values: JSONObject) : BilingualObject() {
             }
 
         } catch (e: JSONException) {
-          e.printStackTrace()
+            e.printStackTrace()
         }
     }
 
@@ -49,44 +50,64 @@ class Neighbourhood(values: JSONObject) : BilingualObject() {
         var intersectCount = 0
         val cameraLocation = LatLng(camera.lat, camera.lon)
 
-        for (vertices in boundaries) {
-            for (j in 0 until vertices.size - 1) {
-                if (onSegment(vertices[j], cameraLocation, vertices[j + 1])) {
+        for (points in boundaries) {
+            for (j in 0 until points.size - 1) {
+                if (onSegment(points[j], cameraLocation, points[j + 1])) {
                     return true
                 }
-                if (rayCastIntersect(cameraLocation, vertices[j], vertices[j + 1])) {
+                if (rayCastIntersect(cameraLocation, points[j], points[j + 1])) {
                     intersectCount++
                 }
             }
         }
-        return ((intersectCount % 2) == 1) // odd = inside, even = outside
+        // odd = inside, even = outside
+        return ((intersectCount % 2) == 1)
     }
 
     private fun onSegment(a: LatLng, location: LatLng, b: LatLng): Boolean {
-        return location.longitude <= max(a.longitude, b.longitude)
-                && location.longitude >= min(a.longitude, b.longitude)
-                && location.latitude <= max(a.latitude, b.latitude)
-                && location.latitude >= min(a.latitude, b.latitude)
+        // double division by 0 results in infinity
+        val rise = b.latitude - a.latitude
+        val run = b.longitude - a.longitude
+        val slope = rise / run
+
+        val rise2 = b.latitude - location.latitude
+        val run2 = b.longitude - location.longitude
+        val slope2 = rise2 / run2
+
+        return location.longitude <= max(a.longitude, b.longitude) && location.longitude >= min(
+            a.longitude,
+            b.longitude
+        ) && location.latitude <= max(a.latitude, b.latitude) && location.latitude >= min(
+            a.latitude,
+            b.latitude
+        ) && slope2.absoluteValue == slope.absoluteValue
     }
 
-    private fun rayCastIntersect(location: LatLng, vertA: LatLng, vertB: LatLng): Boolean {
+    private fun rayCastIntersect(location: LatLng, a: LatLng, b: LatLng): Boolean {
+        val aX = a.longitude
+        val aY = a.latitude
+        val bX = b.longitude
+        val bY = b.latitude
+        val locX = location.longitude
+        val locY = location.latitude
 
-        val aY = vertA.latitude
-        val bY = vertB.latitude
-        val aX = vertA.longitude
-        val bX = vertB.longitude
-        val pY = location.latitude
-        val pX = location.longitude
-
-        if ((aY > pY && bY > pY) || (aY < pY && bY < pY) || (aX < pX && bX < pX)) {
+        if ((aY > locY && bY > locY) || (aY < locY && bY < locY) || (aX < locX && bX < locX)) {
             // a and b can't both be above or below pt.y, and a or b must be east of pt.x
             return false
         }
 
-        val m = (aY - bY) / (aX - bX) // Rise over run
-        val bee = (-aX) * m + aY // y = mx + b
-        val x = (pY - bee) / m // algebra is neat!
+        // vertical line
+        if (aX == bX) {
+            return aX >= locX
+        }
 
-        return x > pX
+        val rise = aY - bY
+        val run = aX - bX
+        val slope = rise / run
+
+        val c = -slope * aX + aY // c = -mx + y
+        val x = (locY - c) / slope
+
+        return x >= locX
     }
 }
