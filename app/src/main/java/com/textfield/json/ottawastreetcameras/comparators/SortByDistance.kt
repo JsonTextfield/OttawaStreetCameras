@@ -12,6 +12,7 @@ class SortByDistance(private val userLocation: Location) : Comparator<Camera> {
         val result2 = FloatArray(3)
         Location.distanceBetween(userLocation.latitude, userLocation.longitude, cam1.lat, cam1.lon, result1)
         Location.distanceBetween(userLocation.latitude, userLocation.longitude, cam2.lat, cam2.lon, result2)
-        return result1[0].compareTo(result2[0])
+        val result = result1[0].compareTo(result2[0])
+        return if (result == 0) SortByName().compare(cam1, cam2) else result
     }
 }
