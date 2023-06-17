@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/gallery_item_card"
+    android:layout_width="100dp"
+    android:layout_height="100dp"
+    android:maxWidth="200dp"
+    android:maxHeight="200dp"
+    android:minWidth="100dp"
+    android:minHeight="100dp"
+    app:cardCornerRadius="10dp">
+
+    <RelativeLayout
+        android:id="@+id/camera_item_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/could_not_load_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:minHeight="50dp"
+            android:text="@string/could_not_load_long"
+            android:visibility="invisible" />
+
+        <ImageView
+            android:id="@+id/source"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:contentDescription="@null"
+            android:maxWidth="200dp"
+            android:maxHeight="200dp"
+            android:minWidth="100dp"
+            android:minHeight="100dp"
+            android:scaleType="centerCrop" />
+
+        <ImageView
+            android:id="@+id/favourite_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="2dp"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_baseline_star_24"
+            app:tint="#f6f614" />
+
+        <TextView
+            android:id="@+id/label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/source"
+            android:layout_centerHorizontal="true"
+            android:background="#85000000"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="3"
+            android:padding="2dp"
+            android:textColor="@android:color/white"
+            android:textSize="10sp" />
+
+        <View
+            android:id="@+id/overlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/source"
+            android:layout_alignTop="@+id/source"
+            android:layout_alignEnd="@+id/source"
+            android:layout_alignBottom="@+id/source"
+            android:background="#4F00BCD4"
+            android:visibility="invisible" />
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

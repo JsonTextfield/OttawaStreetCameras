@@ -61,7 +61,7 @@ class Neighbourhood(values: JSONObject) : BilingualObject() {
             }
         }
         // odd = inside, even = outside
-        return ((intersectCount % 2) == 1)
+        return (intersectCount % 2) == 1
     }
 
     private fun onSegment(a: LatLng, location: LatLng, b: LatLng): Boolean {

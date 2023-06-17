@@ -24,6 +24,7 @@ class ImageAdapter(private val _context: Context, list: List<Camera>) :
     private class ViewHolder {
         var title: TextView? = null
         var image: ImageView? = null
+        var background: ImageView? = null
         var layout: RelativeLayout? = null
     }
 
@@ -37,6 +38,7 @@ class ImageAdapter(private val _context: Context, list: List<Camera>) :
             viewHolder.layout = convertView.findViewById(R.id.camera_item_layout) as RelativeLayout
             viewHolder.title = convertView.findViewById(R.id.label) as TextView
             viewHolder.image = convertView.findViewById(R.id.source) as ImageView
+            viewHolder.background = convertView.findViewById(R.id.background) as ImageView
             convertView.tag = viewHolder
         } else {
             viewHolder = convertView.tag as ViewHolder
@@ -61,6 +63,8 @@ class ImageAdapter(private val _context: Context, list: List<Camera>) :
             displayMetrics.heightPixels
         }
         viewHolder.image?.maxHeight = height - result
+        viewHolder.background?.maxHeight = height - result
+
 
         // Return the completed view to render on screen
         return convertView!!

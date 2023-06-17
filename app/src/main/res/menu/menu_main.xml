@@ -5,18 +5,18 @@
         android:id="@+id/camera_searchView"
         android:icon="@drawable/ic_baseline_search_24"
         android:title="@string/search"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="always|collapseActionView" />
+    <item
+        android:id="@+id/neighbourhood_searchView"
+        android:icon="@drawable/baseline_travel_explore_24"
+        android:title="@string/search_neighbourhood"
         android:visible="false"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/neighbourhood_searchView"
-        app:actionViewClass="androidx.appcompat.widget.SearchView"
-        android:icon="@drawable/baseline_location_city_24"
-        android:title="@string/search_neighbourhood"
-        app:showAsAction="ifRoom" />
-    <item
         android:id="@+id/menuItemMap"
-        android:icon="@drawable/ic_baseline_swap_horiz_24"
+        android:icon="@drawable/baseline_place_24"
         android:title="@string/switch_view"
         app:showAsAction="ifRoom" />
 
@@ -25,21 +25,6 @@
         android:icon="@drawable/baseline_sort_24"
         android:title="@string/sort"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/sort_distance"
-        android:title="@string/sort_by_distance"
-        android:visible="false"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/sort_name"
-        android:title="@string/sort_by_name"
-        android:visible="false"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/sort_neighbourhood"
-        android:title="@string/sort_by_neighbourhood"
-        android:visible="false"
-        app:showAsAction="never" />
     <item
         android:id="@+id/favourites"
         android:icon="@drawable/ic_baseline_star_24"
@@ -68,6 +53,7 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/about"
+        android:icon="@drawable/ic_baseline_save_alt_24"
         android:title="@string/about"
         app:showAsAction="never" />
 </menu>

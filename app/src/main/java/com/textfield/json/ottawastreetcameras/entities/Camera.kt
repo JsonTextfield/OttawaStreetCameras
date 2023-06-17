@@ -27,13 +27,13 @@ class Camera : BilingualObject, Parcelable {
     var marker: Marker? = null
 
     constructor(jsonObject: JSONObject) {
-        nameEn = if (jsonObject.isNull("description")) "" else jsonObject.getString("description")
-        nameFr = if (jsonObject.isNull("descriptionFr")) nameEn else jsonObject.getString("descriptionFr")
-        owner = if (jsonObject.isNull("type")) "" else jsonObject.getString("type")
-        id = if (jsonObject.isNull("id")) 0 else jsonObject.getInt("id")
-        num = if (jsonObject.isNull("number")) 0 else jsonObject.getInt("number")
-        lat = if (jsonObject.isNull("latitude")) 0.0 else jsonObject.getDouble("latitude")
-        lon = if (jsonObject.isNull("longitude")) 0.0 else jsonObject.getDouble("longitude")
+        nameEn = jsonObject.optString("description") ?: ""
+        nameFr = jsonObject.optString("descriptionFr") ?: nameEn
+        owner = jsonObject.optString("type") ?: ""
+        id = jsonObject.optInt("id")
+        num = jsonObject.optInt("number")
+        lat = jsonObject.optDouble("latitude")
+        lon = jsonObject.optDouble("longitude")
     }
 
     constructor(parcel: Parcel) {
@@ -58,6 +58,8 @@ class Camera : BilingualObject, Parcelable {
         else
             marker?.setIcon(BitmapDescriptorFactory.defaultMarker())
     }
+
+    fun getUrl() = "https://traffic.ottawa.ca/beta/camera?id=$num&timems=${System.currentTimeMillis()}"
 
     override fun describeContents(): Int {
         return 0
@@ -89,7 +91,7 @@ class Camera : BilingualObject, Parcelable {
 
     override fun equals(other: Any?): Boolean {
         if (other !is Camera) return false
-        return  (id == other.id) && (num == other.num)
+        return (id == other.id) && (num == other.num)
     }
 
     override fun hashCode(): Int {

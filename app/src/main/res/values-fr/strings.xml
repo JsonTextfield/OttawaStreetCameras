@@ -10,7 +10,9 @@
     <string name="image_saved_at">L\'image a été enregistrée dans %s</string>
     <string name="licences">Licences</string>
     <string name="location_unavailable">L\'emplacement n\'est pas disponible</string>
+    <string name="list">List</string>
     <string name="map">Carte</string>
+    <string name="gallery">Galerie</string>
     <string name="neighbourhoods">Quartiers</string>
     <string name="night_mode">Mode nuit</string>
     <string name="no_network_content">Réessayer plus tard</string>
@@ -19,7 +21,7 @@
     <string name="random_camera">Caméra aléatoire</string>
     <string name="rate">Évaluer</string>
     <string name="remove_from_favourites">Supprimer des favoris</string>
-    <string name="save_image">Télécharger l\'image</string>
+    <string name="save_image">Télécharger</string>
     <string name="search">Chercher</string>
     <string name="search_neighbourhood">Chercher par quartier</string>
     <string name="select_all">Tout sélectionner</string>

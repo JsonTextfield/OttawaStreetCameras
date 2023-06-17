@@ -27,6 +27,10 @@ import com.textfield.json.ottawastreetcameras.StreetCamsRequestQueue
 import com.textfield.json.ottawastreetcameras.adapters.ImageAdapter
 import com.textfield.json.ottawastreetcameras.databinding.ActivityCameraBinding
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import jp.wasabeef.blurry.Blurry
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.*
@@ -95,17 +99,21 @@ class CameraActivity : GenericActivity() {
     override fun onDestroyActionMode(mode: ActionMode?) {
         (0 until listView.adapter.count).forEach {
             listView.getViewByPosition(it).findViewById<ImageView>(R.id.source).setColorFilter(Color.TRANSPARENT)
+            listView.getViewByPosition(it).findViewById<ImageView>(R.id.background).setColorFilter(Color.TRANSPARENT)
         }
         super.onDestroyActionMode(mode)
     }
 
     override fun onItemCheckedStateChanged(mode: ActionMode?, position: Int, id: Long, checked: Boolean) {
         super.onItemCheckedStateChanged(mode, position, id, checked)
-        val overlay = listView.getViewByPosition(position).findViewById<ImageView>(R.id.source)
+        val source = listView.getViewByPosition(position).findViewById<ImageView>(R.id.source)
+        val overlay = listView.getViewByPosition(position).findViewById<ImageView>(R.id.background)
+
         if (checked) {
+            source.setColorFilter(Color.parseColor("#4F00BCD4"))
             overlay.setColorFilter(Color.parseColor("#4F00BCD4"))
-        }
-        else {
+        } else {
+            source.setColorFilter(Color.TRANSPARENT)
             overlay.setColorFilter(Color.TRANSPARENT)
         }
         hideMenuOptions()
@@ -141,6 +149,7 @@ class CameraActivity : GenericActivity() {
                     }
                     true
                 }
+
                 else -> false
             }
         }
@@ -150,22 +159,27 @@ class CameraActivity : GenericActivity() {
     fun download(index: Int) {
         val selectedCamera = if (shuffle) cameras.random() else adapter.getItem(index)!!
         val bmImage = listView.getViewByPosition(index).findViewById<ImageView>(R.id.source)
+        val background = listView.getViewByPosition(index).findViewById<ImageView>(R.id.background)
         val textView = listView.getViewByPosition(index).findViewById<TextView>(R.id.label)
-        val url = "https://traffic.ottawa.ca/beta/camera?id=${selectedCamera.num}&timems=${System.currentTimeMillis()}"
-        val request = ImageRequest(url, { response ->
+        val request = ImageRequest(selectedCamera.getUrl(), { response ->
             if (response != null) {
-                listView.getViewByPosition(index).findViewById<TextView>(R.id.could_not_load_textview).visibility = View.INVISIBLE
+                listView.getViewByPosition(index).findViewById<TextView>(R.id.could_not_load_textview).visibility =
+                    View.INVISIBLE
                 bmImage.setImageBitmap(response)
+                Blurry.with(this).from(response).into(background)
                 textView.text = selectedCamera.getName()
                 textView.visibility = View.VISIBLE
             }
         }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.RGB_565, {
             it.printStackTrace()
-            listView.getViewByPosition(index).findViewById<TextView>(R.id.could_not_load_textview).visibility = View.VISIBLE
+            listView.getViewByPosition(index).findViewById<TextView>(R.id.could_not_load_textview).visibility =
+                View.VISIBLE
         })
         binding.cameraProgressBar.visibility = View.INVISIBLE
         request.tag = tag
-        StreetCamsRequestQueue.getInstance(this).add(request)
+        CoroutineScope(Dispatchers.IO).launch {
+            StreetCamsRequestQueue.getInstance(this@CameraActivity).add(request)
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -185,8 +199,7 @@ class CameraActivity : GenericActivity() {
                     if (saveImage((imageDrawable as BitmapDrawable).bitmap, title.text.toString())) {
                         imagesSaved++
                     }
-                }
-                else {
+                } else {
                     Log.w("CameraActivity", "$title is null")
                 }
             }

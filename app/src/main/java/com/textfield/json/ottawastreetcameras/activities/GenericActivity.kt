@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AbsListView
 import android.widget.ArrayAdapter
+import android.widget.GridView
 import android.widget.ImageView
 import android.widget.ListView
 import androidx.appcompat.app.AlertDialog
@@ -25,14 +26,12 @@ import com.textfield.json.ottawastreetcameras.entities.Neighbourhood
 
 
 abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceModeListener {
-    companion object {
-        const val prefNameHidden = "hidden"
-        const val prefNameFavourites = "favourites"
-    }
 
     protected var actionMode: ActionMode? = null
     protected lateinit var listView: ListView
+    protected lateinit var galleryView: GridView
     protected lateinit var adapter: ArrayAdapter<Camera>
+    //protected lateinit var galleryAdapter: GalleryAdapter
     protected var cameras = ArrayList<Camera>()
     protected val selectedCameras = ArrayList<Camera>()
     protected var previouslySelectedCameras = ArrayList<Camera>()
@@ -77,16 +76,12 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
         }
     }
 
-    fun modifyPrefs(pref: String, selectedCameras: Collection<Camera>, willAdd: Boolean) {
+    fun modifyPrefs(selectedCameras: Collection<Camera>) {
         val sharedPrefs = getSharedPreferences(applicationContext.packageName, Context.MODE_PRIVATE)
-        val prefList = sharedPrefs.getStringSet(pref, HashSet<String>())?.toHashSet()
-
-        if (willAdd) {
-            prefList?.addAll(selectedCameras.map { it.num.toString() })
-        } else {
-            prefList?.removeAll(selectedCameras.map { it.num.toString() }.toSet())
+        for (camera in selectedCameras) {
+            sharedPrefs.edit().putBoolean("${camera.num}.isFavourite", camera.isFavourite).apply()
+            sharedPrefs.edit().putBoolean("${camera.num}.isVisible", camera.isVisible).apply()
         }
-        sharedPrefs.edit().putStringSet(pref, prefList).apply()
     }
 
     fun isNightModeOn(): Boolean {
@@ -97,16 +92,6 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
     fun setNightModeOn(value: Boolean) {
         val sharedPrefs = getSharedPreferences(applicationContext.packageName, Context.MODE_PRIVATE)
         sharedPrefs.edit().putBoolean("isNightModeOn", value).apply()
-    }
-
-    fun showErrorDialogue(context: Context) {
-        AlertDialog.Builder(context)
-            .setTitle(resources.getString(R.string.no_network_title))
-            .setMessage(resources.getString(R.string.no_network_content))
-            .setPositiveButton("OK") { _, _ -> finish() }
-            .setOnDismissListener { finish() }
-            .create()
-            .show()
     }
 
     protected fun tintMenuItemIcon(item: MenuItem) {
@@ -174,7 +159,7 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
     }
 
     private fun addRemoveFavs(willAdd: Boolean) {
-        modifyPrefs(prefNameFavourites, selectedCameras, willAdd)
+        modifyPrefs(selectedCameras)
         cameras.filter { it in selectedCameras }.forEach { it.setFavourite(willAdd) }
 
         if (listView.adapter is CameraAdapter) {
@@ -192,7 +177,7 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
     }
 
     private fun showOrHide(willHide: Boolean) {
-        modifyPrefs(prefNameHidden, selectedCameras, willHide)
+        modifyPrefs(selectedCameras)
         cameras.filter { it in selectedCameras }.forEach { it.setVisible(!willHide) }
 
         hide.isVisible = !willHide

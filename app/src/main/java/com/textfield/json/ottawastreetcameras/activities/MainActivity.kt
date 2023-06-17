@@ -11,19 +11,20 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.Window
+import android.view.WindowInsets
 import android.widget.AdapterView
 import android.widget.Filter
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.android.volley.toolbox.JsonArrayRequest
-import com.android.volley.toolbox.JsonObjectRequest
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -36,8 +37,9 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.review.ReviewManagerFactory
+import com.textfield.json.ottawastreetcameras.CameraManager
+import com.textfield.json.ottawastreetcameras.FilterMode
 import com.textfield.json.ottawastreetcameras.R
-import com.textfield.json.ottawastreetcameras.StreetCamsRequestQueue
 import com.textfield.json.ottawastreetcameras.adapters.CameraAdapter
 import com.textfield.json.ottawastreetcameras.adapters.filters.CameraFilter
 import com.textfield.json.ottawastreetcameras.comparators.SortByDistance
@@ -45,12 +47,8 @@ import com.textfield.json.ottawastreetcameras.comparators.SortByName
 import com.textfield.json.ottawastreetcameras.comparators.SortByNeighbourhood
 import com.textfield.json.ottawastreetcameras.databinding.ActivityMainBinding
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import com.textfield.json.ottawastreetcameras.entities.Neighbourhood
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import org.json.JSONObject
 import java.util.Collections
+
 
 class MainActivity : GenericActivity(), OnMapReadyCallback {
     private var showingMap = false
@@ -60,6 +58,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
     private val maxCameras = 8
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var cameraManager: CameraManager
 
     private var map: GoogleMap? = null
     private var mapIsLoaded = false
@@ -67,9 +66,6 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
     private var neighbourhoodSearchView: SearchView? = null
     private var searchMenuItem: MenuItem? = null
     private var neighbourhoodSearchMenuItem: MenuItem? = null
-    private var sortName: MenuItem? = null
-    private var sortDistance: MenuItem? = null
-    private var sortNeighbourhood: MenuItem? = null
 
     private val getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (actionMode == null) {
@@ -85,12 +81,27 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
         binding.progressBar.visibility = View.VISIBLE
 
         listView = binding.sectionIndexListview.listView
+        galleryView = binding.galleryView
+        val width = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val windowMetrics = windowManager.currentWindowMetrics
+            val insets = windowMetrics.windowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
+            windowMetrics.bounds.width() - insets.left - insets.right
+        } else {
+            val displayMetrics = DisplayMetrics()
+            windowManager.defaultDisplay.getMetrics(displayMetrics)
+            displayMetrics.widthPixels
+        }
+        val scale = resources.displayMetrics.density
+        val pixels = (100 * scale + 0.5f).toInt()
+        galleryView.numColumns = kotlin.math.max(3, (width / pixels).coerceIn(3, 9))
         adapter = object : CameraAdapter(this, cameras) {
             override fun onComplete() {
                 binding.sectionIndexListview.updateIndex()
             }
         }
+        //galleryAdapter = GalleryAdapter (this, cameras)
         listView.adapter = adapter
+        //galleryView.adapter = galleryAdapter
         listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, i, _ ->
             selectCamera(adapter.getItem(i)!!)
             showSelectedCameras()
@@ -99,26 +110,37 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
         binding.toolbar.setOnClickListener { listView.setSelection(0) }
         setSupportActionBar(binding.toolbar)
 
-        if (savedInstanceState == null) {
-            downloadCameraList()
-        } else {
-            cameras = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                savedInstanceState.getParcelableArrayList("cameras", Camera::class.java) ?: cameras
-            } else {
-                savedInstanceState.getParcelableArrayList("cameras") ?: cameras
-            }
+        cameraManager = CameraManager.getInstance(this@MainActivity)
 
+        cameraManager.downloadAll {
+            cameras = cameraManager.allCameras
             loadList()
-            loadPreviouslySelectedCameras(savedInstanceState)
         }
+
+    }
+
+    override fun onMenuOpened(featureId: Int, menu: Menu): Boolean {
+        if (featureId == Window.FEATURE_ACTION_BAR) {
+            if (menu.javaClass.simpleName == "MenuBuilder") {
+                try {
+                    val m = menu.javaClass.getDeclaredMethod(
+                        "setOptionalIconsVisible", java.lang.Boolean.TYPE
+                    )
+                    m.isAccessible = true
+                    m.invoke(menu, true)
+                } catch (e: NoSuchMethodException) {
+                    Log.e("", "onMenuOpened", e)
+                } catch (e: Exception) {
+                    throw RuntimeException(e)
+                }
+            }
+        }
+        return super.onMenuOpened(featureId, menu!!)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
 
-        sortName = menu.findItem(R.id.sort_name)
-        sortDistance = menu.findItem(R.id.sort_distance)
-        sortNeighbourhood = menu.findItem(R.id.sort_neighbourhood)
         searchMenuItem = menu.findItem(R.id.camera_searchView)
         neighbourhoodSearchMenuItem = menu.findItem(R.id.neighbourhood_searchView)
         val nightMode = menu.findItem(R.id.night_mode)
@@ -144,7 +166,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
 
                 adapter.filter.filter(newText)
                 binding.sectionIndexListview.sectionIndex.visibility =
-                    if (newText.isNotEmpty() || sortName?.isVisible!!)
+                    if (newText.isNotEmpty())
                         View.INVISIBLE
                     else
                         View.VISIBLE
@@ -155,57 +177,55 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
         return true
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        sortDistance?.isVisible = sortDistance!!.isVisible && !showingMap
-        sortNeighbourhood?.isVisible = sortNeighbourhood!!.isVisible && !showingMap
-        sortName?.isVisible = sortName!!.isVisible && !showingMap
-        return super.onPrepareOptionsMenu(menu)
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menuItemMap -> {
                 showingMap = !showingMap
+                item.setIcon(if (showingMap) R.drawable.baseline_list_24 else R.drawable.baseline_place_24)
                 binding.viewSwitcher.showNext()
                 invalidateOptionsMenu()
             }
+
             R.id.sort_name -> {
                 adapter.sort(SortByName())
 
                 binding.sectionIndexListview.sectionIndex.visibility = View.VISIBLE
-                sortDistance?.isVisible = true
-                sortNeighbourhood?.isVisible = true
-                sortName?.isVisible = false
             }
+
             R.id.sort_distance -> {
                 requestPermissions(requestForList)
             }
+
             R.id.sort_neighbourhood -> {
                 adapter.sort(SortByNeighbourhood())
 
                 binding.sectionIndexListview.sectionIndex.visibility = View.INVISIBLE
-                sortNeighbourhood?.isVisible = false
-                sortDistance?.isVisible = true
-                sortName?.isVisible = true
             }
+
             R.id.random_camera -> {
                 selectCamera(cameras.random())
                 showSelectedCameras()
             }
+
             R.id.shuffle -> {
                 val intent = Intent(this, CameraActivity::class.java)
                 intent.putParcelableArrayListExtra("cameras", cameras)
                 intent.putExtra("shuffle", true)
                 getResult.launch(intent)
             }
+
             R.id.favourites -> {
-                searchMenuItem?.expandActionView()
-                searchView?.setQuery("f: ", false)
+                supportActionBar?.title = if (supportActionBar?.title == "Favourites") "StreetCams" else "Favourites"
+                adapter.clear()
+                adapter.addAll(cameraManager.filterDisplayedCameras(FilterMode.FAVOURITE))
+                adapter.notifyDataSetChanged()
             }
+
             R.id.hidden -> {
                 searchMenuItem?.expandActionView()
                 searchView?.setQuery("h: ", false)
             }
+
             R.id.night_mode -> {
                 item.isChecked = !item.isChecked
                 setNightModeOn(item.isChecked)
@@ -214,6 +234,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
                     finish()
                 }, 500)
             }
+
             R.id.about -> {
                 AlertDialog.Builder(this)
                     .setTitle(resources.getString(R.string.app_name_long))
@@ -257,52 +278,11 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
         return true
     }
 
-    private fun downloadNeighbourhoodList() {
-        val jsonObjectRequest = JsonObjectRequest(
-            "https://services.arcgis.com/G6F8XLCl5KtAlZ2G/arcgis/rest/services/Gen_2_ONS_Boundaries/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
-            { response ->
-                val jsonArray = response.getJSONArray("features")
-                neighbourhoods = (0 until jsonArray.length()).map {
-                    val neighbourhood = Neighbourhood(jsonArray[it] as JSONObject)
-                    for (camera in cameras) {
-                        if (neighbourhood.containsCamera(camera)) {
-                            camera.neighbourhood = neighbourhood.getName()
-                        }
-                    }
-                    neighbourhood
-                } as ArrayList<Neighbourhood>
-
-                loadList()
-            }, {
-                it.printStackTrace()
-            })
-        CoroutineScope(Dispatchers.IO).launch {
-            StreetCamsRequestQueue.getInstance(this@MainActivity).addHttp(jsonObjectRequest)
-        }
-    }
-
-    private fun downloadCameraList() {
-        val jsObjRequest = JsonArrayRequest("https://traffic.ottawa.ca/beta/camera_list", { response ->
-            val sharedPrefs = getSharedPreferences(applicationContext.packageName, Context.MODE_PRIVATE)
-            cameras = (0 until response.length()).map {
-                Camera(response.getJSONObject(it)).apply {
-                    setFavourite(num.toString() in sharedPrefs.getStringSet(prefNameFavourites, HashSet())!!)
-                    setVisible(num.toString() !in sharedPrefs.getStringSet(prefNameHidden, HashSet())!!)
-                }
-            } as ArrayList<Camera>
-            downloadNeighbourhoodList()
-        }, {
-            showErrorDialogue(this)
-        })
-        CoroutineScope(Dispatchers.IO).launch {
-            StreetCamsRequestQueue.getInstance(this@MainActivity).add(jsObjRequest)
-        }
-    }
-
     private fun loadList() {
         Collections.sort(cameras, SortByName())
         adapter.clear()
         adapter.addAll(cameras)
+        //galleryAdapter.addAll(cameras)
         searchView?.queryHint = resources.getQuantityString(R.plurals.search_hint, cameras.size, cameras.size)
         (supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
         binding.sectionIndexListview.updateIndex()
@@ -381,13 +361,11 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
                     if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) && lastLocation != null) {
                         adapter.sort(SortByDistance(lastLocation))
                         binding.sectionIndexListview.sectionIndex.visibility = View.INVISIBLE
-                        sortDistance?.isVisible = false
-                        sortName?.isVisible = true
-                        sortNeighbourhood?.isVisible = true
                     } else {
                         Snackbar.make(listView, getString(R.string.location_unavailable), Snackbar.LENGTH_LONG).show()
                     }
                 }
+
                 requestForMap -> map?.isMyLocationEnabled = true
             }
         }
@@ -421,6 +399,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
                     showSelectedCameras()
                     true
                 }
+
                 else -> false
             }
         }
