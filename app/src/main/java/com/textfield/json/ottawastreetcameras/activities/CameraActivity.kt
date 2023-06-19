@@ -4,20 +4,18 @@ import android.Manifest
 import android.content.ContentValues
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.os.*
 import android.provider.MediaStore
 import android.util.Log
-import android.view.ActionMode
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.android.volley.toolbox.ImageRequest
@@ -27,13 +25,12 @@ import com.textfield.json.ottawastreetcameras.StreetCamsRequestQueue
 import com.textfield.json.ottawastreetcameras.adapters.ImageAdapter
 import com.textfield.json.ottawastreetcameras.databinding.ActivityCameraBinding
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import com.textfield.json.ottawastreetcameras.ui.CameraActivityView
 import jp.wasabeef.blurry.Blurry
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.io.FileOutputStream
 import java.io.IOException
-import java.util.*
+import java.util.Date
 
 class CameraActivity : GenericActivity() {
     private val requestForSave = 0
@@ -50,11 +47,39 @@ class CameraActivity : GenericActivity() {
         }
     }
 
+
+    @Composable
+    fun AppTheme(
+        useDarkTheme: Boolean = isSystemInDarkTheme(),
+        content: @Composable () -> Unit
+    ) {
+        val context = LocalContext.current
+        val colors = if (!useDarkTheme) {
+            lightColorScheme()
+        } else {
+            darkColorScheme()
+        }
+
+        MaterialTheme(
+            colorScheme = colors,
+            content = content
+        )
+    }
+
+    private fun loadView() {
+        setContent {
+            AppTheme() {
+                CameraActivityView(cameras = cameras)
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        /*
         binding = ActivityCameraBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        listView = binding.imageListView
+        listView = binding.imageListView*/
         shuffle = intent.getBooleanExtra("shuffle", false)
 
         cameras = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -64,26 +89,27 @@ class CameraActivity : GenericActivity() {
         }
         // if shuffle is on, show only one camera image at a time
         adapter = ImageAdapter(this, if (shuffle) cameras.subList(0, 1) else cameras)
-        listView.adapter = adapter
+        /*listView.adapter = adapter
         listView.setMultiChoiceModeListener(this)
 
         loadPreviouslySelectedCameras(savedInstanceState)
-        binding.backButton.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
+        binding.backButton.setOnClickListener { onBackPressedDispatcher.onBackPressed() }*/
+        loadView()
     }
 
     override fun onResume() {
         super.onResume()
-        (0 until adapter.count).forEach {
+        /*(0 until adapter.count).forEach {
             CameraRunnable(it).apply {
                 timers.add(this)
                 handler.post(this)
             }
-        }
+        }*/
     }
 
     override fun onPause() {
-        StreetCamsRequestQueue.getInstance(this).cancelAll(tag)
-        timers.forEach(handler::removeCallbacks)
+        /*StreetCamsRequestQueue.getInstance(this).cancelAll(tag)
+        timers.forEach(handler::removeCallbacks)*/
         super.onPause()
     }
 
@@ -98,8 +124,10 @@ class CameraActivity : GenericActivity() {
 
     override fun onDestroyActionMode(mode: ActionMode?) {
         (0 until listView.adapter.count).forEach {
-            listView.getViewByPosition(it).findViewById<ImageView>(R.id.source).setColorFilter(Color.TRANSPARENT)
-            listView.getViewByPosition(it).findViewById<ImageView>(R.id.background).setColorFilter(Color.TRANSPARENT)
+            listView.getViewByPosition(it).findViewById<ImageView>(R.id.source)
+                .setColorFilter(android.graphics.Color.TRANSPARENT)
+            listView.getViewByPosition(it).findViewById<ImageView>(R.id.background)
+                .setColorFilter(android.graphics.Color.TRANSPARENT)
         }
         super.onDestroyActionMode(mode)
     }
@@ -110,11 +138,11 @@ class CameraActivity : GenericActivity() {
         val overlay = listView.getViewByPosition(position).findViewById<ImageView>(R.id.background)
 
         if (checked) {
-            source.setColorFilter(Color.parseColor("#4F00BCD4"))
-            overlay.setColorFilter(Color.parseColor("#4F00BCD4"))
+            source.setColorFilter(android.graphics.Color.parseColor("#4F00BCD4"))
+            overlay.setColorFilter(android.graphics.Color.parseColor("#4F00BCD4"))
         } else {
-            source.setColorFilter(Color.TRANSPARENT)
-            overlay.setColorFilter(Color.TRANSPARENT)
+            source.setColorFilter(android.graphics.Color.TRANSPARENT)
+            overlay.setColorFilter(android.graphics.Color.TRANSPARENT)
         }
         hideMenuOptions()
     }
@@ -161,7 +189,7 @@ class CameraActivity : GenericActivity() {
         val bmImage = listView.getViewByPosition(index).findViewById<ImageView>(R.id.source)
         val background = listView.getViewByPosition(index).findViewById<ImageView>(R.id.background)
         val textView = listView.getViewByPosition(index).findViewById<TextView>(R.id.label)
-        val request = ImageRequest(selectedCamera.getUrl(), { response ->
+        val request = ImageRequest(selectedCamera.url, { response ->
             if (response != null) {
                 listView.getViewByPosition(index).findViewById<TextView>(R.id.could_not_load_textview).visibility =
                     View.INVISIBLE
@@ -207,7 +235,7 @@ class CameraActivity : GenericActivity() {
 
         Snackbar.make(
             listView,
-            resources.getQuantityString(R.plurals.images_saved, selectedCameras.size, selectedCameras.size),
+            resources.getQuantityString(R.plurals.images_saved, imagesSaved, imagesSaved),
             Snackbar.LENGTH_LONG
         ).show()
     }

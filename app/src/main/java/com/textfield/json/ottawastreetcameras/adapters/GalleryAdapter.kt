@@ -6,21 +6,14 @@ import android.graphics.Bitmap
 import android.os.Build
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowInsets
-import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.TextView
+import android.view.*
+import android.widget.*
 import androidx.cardview.widget.CardView
 import com.android.volley.toolbox.ImageRequest
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.StreetCamsRequestQueue
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 
 open class GalleryAdapter(private val _context: Context, private val list: List<Camera>) :
@@ -31,7 +24,7 @@ open class GalleryAdapter(private val _context: Context, private val list: List<
     override fun addAll(collection: MutableCollection<out Camera>) {
         super.addAll(collection)
         for (camera in list) {
-            val request = ImageRequest(camera.getUrl(), { response ->
+            val request = ImageRequest(camera.url, { response ->
                 if (response != null) {
                     images[camera.getName()] = response
                 }

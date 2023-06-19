@@ -135,18 +135,22 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
                 addRemoveFavs(true)
                 return true
             }
+
             R.id.remove_favourite -> {
                 addRemoveFavs(false)
                 return true
             }
+
             R.id.hide -> {
                 showOrHide(true)
                 return true
             }
+
             R.id.unhide -> {
                 showOrHide(false)
                 return true
             }
+
             R.id.select_all -> {
                 selectedCameras.clear()
                 (0 until listView.adapter.count).forEach {
@@ -154,6 +158,7 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
                 }
                 return true
             }
+
             else -> return false
         }
     }
@@ -190,7 +195,7 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
         if (actionMode != null) {
             outState.putParcelableArrayList("selectedCameras", selectedCameras)
         }
-        outState.putInt("firstVisibleListItem", listView.firstVisiblePosition)
+        //outState.putInt("firstVisibleListItem", listView.firstVisiblePosition)
         outState.putParcelableArrayList("cameras", cameras)
         super.onSaveInstanceState(outState)
     }

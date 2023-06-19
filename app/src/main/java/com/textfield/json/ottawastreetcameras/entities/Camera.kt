@@ -26,6 +26,9 @@ class Camera : BilingualObject, Parcelable {
     var neighbourhood = ""
     var marker: Marker? = null
 
+    val url: String
+        get() = "https://traffic.ottawa.ca/beta/camera?id=$num&timems=${System.currentTimeMillis()}"
+
     constructor(jsonObject: JSONObject) {
         nameEn = jsonObject.optString("description") ?: ""
         nameFr = jsonObject.optString("descriptionFr") ?: nameEn
@@ -58,8 +61,6 @@ class Camera : BilingualObject, Parcelable {
         else
             marker?.setIcon(BitmapDescriptorFactory.defaultMarker())
     }
-
-    fun getUrl() = "https://traffic.ottawa.ca/beta/camera?id=$num&timems=${System.currentTimeMillis()}"
 
     override fun describeContents(): Int {
         return 0
