@@ -1,17 +1,22 @@
 package com.textfield.json.ottawastreetcameras
 
 import android.content.Context
+import android.location.Location
 import android.util.Log
+import androidx.lifecycle.ViewModel
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
+import com.textfield.json.ottawastreetcameras.comparators.SortByDistance
 import com.textfield.json.ottawastreetcameras.comparators.SortByName
 import com.textfield.json.ottawastreetcameras.comparators.SortByNeighbourhood
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.entities.Neighbourhood
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 
-class CameraManager private constructor(var context: Context) {
+class CameraManager private constructor() : ViewModel() {
     val tag = "CameraManager"
     var allCameras = ArrayList<Camera>()
         private set
@@ -19,11 +24,10 @@ class CameraManager private constructor(var context: Context) {
     var neighbourhoods = ArrayList<Neighbourhood>()
     var filterMode = FilterMode.VISIBLE
     var searchMode = SearchMode.NONE
-        private set
     var sortMode = SortMode.NAME
     var viewMode = ViewMode.LIST
 
-    private fun loadSharedPrefs() {
+    private fun loadSharedPrefs(context: Context) {
         val sharedPrefs = context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)
         for (camera in allCameras) {
             camera.setFavourite(
@@ -35,7 +39,17 @@ class CameraManager private constructor(var context: Context) {
         }
     }
 
-    private fun downloadCameras(onComplete: () -> Unit) {
+    fun favouriteCamera(context: Context, camera: Camera) {
+        val sharedPrefs = context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)
+        sharedPrefs.edit().putBoolean("${camera.num}.isFavourite", camera.isFavourite).apply()
+        for (cam in allCameras) {
+            if (cam == camera) {
+                cam.setFavourite(camera.isFavourite)
+            }
+        }
+    }
+
+    private fun downloadCameras(context: Context, onComplete: () -> Unit) {
         Log.e(tag, "downloading cameras")
         val jsonRequest = JsonArrayRequest("https://traffic.ottawa.ca/beta/camera_list", { response ->
             allCameras = (0 until response.length()).map {
@@ -51,7 +65,7 @@ class CameraManager private constructor(var context: Context) {
         }
     }
 
-    private fun downloadNeighbourhoods(onComplete: () -> Unit) {
+    private fun downloadNeighbourhoods(context: Context, onComplete: () -> Unit) {
         Log.e("STREETCAMS", "downloading neighbourhoods")
         val jsonObjectRequest = JsonObjectRequest(
             "https://services.arcgis.com/G6F8XLCl5KtAlZ2G/arcgis/rest/services/Gen_2_ONS_Boundaries/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
@@ -76,15 +90,24 @@ class CameraManager private constructor(var context: Context) {
         }
     }
 
-    fun downloadAll(onComplete: () -> Unit) {
+    fun downloadAll(context: Context, onComplete: () -> Unit) {
         Log.e("STREETCAMS", "downloading all")
-        downloadCameras { downloadNeighbourhoods(onComplete) }
+        downloadCameras(context) {
+            loadSharedPrefs(context)
+            downloadNeighbourhoods(context, onComplete)
+        }
     }
 
-    fun sortDisplayedCameras(sortMode: SortMode): ArrayList<Camera> {
+    fun sortDisplayedCameras(sortMode: SortMode, location: Location? = null): ArrayList<Camera> {
         return when (sortMode) {
             SortMode.NAME -> ArrayList(allCameras.sortedWith(SortByName()))
-            SortMode.DISTANCE -> ArrayList(/*allCameras.sortedWith(SortByDistance(location))*/)
+            SortMode.DISTANCE -> {
+                if (location != null) {
+                    ArrayList(allCameras.sortedWith(SortByDistance(location)))
+                }
+                ArrayList(allCameras.sortedWith(SortByName()))
+            }
+
             SortMode.NEIGHBOURHOOD -> ArrayList(allCameras.sortedWith(SortByNeighbourhood()))
         }
     }
@@ -132,9 +155,9 @@ class CameraManager private constructor(var context: Context) {
 
     companion object {
         private var INSTANCE: CameraManager? = null
-        fun getInstance(context: Context): CameraManager =
+        fun getInstance(): CameraManager =
             INSTANCE ?: synchronized(this) {
-                INSTANCE ?: CameraManager(context).also {
+                INSTANCE ?: CameraManager().also {
                     INSTANCE = it
                 }
             }

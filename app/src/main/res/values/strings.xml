@@ -51,4 +51,8 @@
         <item quantity="one">Search from %d neighbourhood</item>
         <item quantity="other">Search from %d neighbourhoods</item>
     </plurals>
+    <plurals name="camera_count">
+        <item quantity="one">%d camera</item>
+        <item quantity="other">%d cameras</item>
+    </plurals>
 </resources>

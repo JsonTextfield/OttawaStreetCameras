@@ -3,6 +3,7 @@ package com.textfield.json.ottawastreetcameras.ui
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -32,15 +33,16 @@ fun SectionIndex(cameras: List<Camera>) {
         }
     }
 
-    Column(modifier = Modifier.fillMaxHeight()) {
+    Column(modifier = Modifier.fillMaxHeight().padding(vertical = 10.dp)) {
         result.keys.map {
             Text(
                 text = it,
                 fontSize = 10.sp,
                 modifier = Modifier
-                    .padding(10.dp)
                     .fillMaxHeight()
-                    .weight(1f),
+                    .weight(1f)
+                    .align(Alignment.CenterHorizontally)
+                    .padding(horizontal = 10.dp),
                 textAlign = TextAlign.Center
             )
         }

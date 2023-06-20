@@ -5,17 +5,20 @@ import android.content.ContentValues
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
-import android.view.*
+import android.view.ActionMode
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.LaunchedEffect
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.android.volley.toolbox.ImageRequest
@@ -25,9 +28,14 @@ import com.textfield.json.ottawastreetcameras.StreetCamsRequestQueue
 import com.textfield.json.ottawastreetcameras.adapters.ImageAdapter
 import com.textfield.json.ottawastreetcameras.databinding.ActivityCameraBinding
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import com.textfield.json.ottawastreetcameras.ui.CameraActivityView
+import com.textfield.json.ottawastreetcameras.ui.AppTheme
+import com.textfield.json.ottawastreetcameras.ui.CameraActivityContent
 import jp.wasabeef.blurry.Blurry
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.Date
@@ -48,28 +56,10 @@ class CameraActivity : GenericActivity() {
     }
 
 
-    @Composable
-    fun AppTheme(
-        useDarkTheme: Boolean = isSystemInDarkTheme(),
-        content: @Composable () -> Unit
-    ) {
-        val context = LocalContext.current
-        val colors = if (!useDarkTheme) {
-            lightColorScheme()
-        } else {
-            darkColorScheme()
-        }
-
-        MaterialTheme(
-            colorScheme = colors,
-            content = content
-        )
-    }
-
     private fun loadView() {
         setContent {
             AppTheme() {
-                CameraActivityView(cameras = cameras)
+                CameraActivityContent(cameras, shuffle)
             }
         }
     }

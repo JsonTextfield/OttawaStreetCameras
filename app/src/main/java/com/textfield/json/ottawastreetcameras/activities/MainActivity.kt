@@ -8,39 +8,94 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
-import android.os.*
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
-import android.view.*
+import android.view.ActionMode
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.Filter
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Place
-import androidx.compose.material.icons.rounded.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.rounded.CameraAlt
+import androidx.compose.material.icons.rounded.Casino
+import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material.icons.rounded.GridView
+import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.rounded.List
+import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.SelectAll
+import androidx.compose.material.icons.rounded.Shuffle
+import androidx.compose.material.icons.rounded.Sort
+import androidx.compose.material.icons.rounded.Star
+import androidx.compose.material.icons.rounded.StarBorder
+import androidx.compose.material.icons.rounded.TravelExplore
+import androidx.compose.material.icons.rounded.Visibility
+import androidx.compose.material.icons.rounded.VisibilityOff
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.*
+import androidx.multidex.BuildConfig
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.review.ReviewManagerFactory
-import com.google.maps.android.compose.*
-import com.textfield.json.ottawastreetcameras.*
+import com.textfield.json.ottawastreetcameras.CameraManager
+import com.textfield.json.ottawastreetcameras.FilterMode
 import com.textfield.json.ottawastreetcameras.R
+import com.textfield.json.ottawastreetcameras.SearchMode
+import com.textfield.json.ottawastreetcameras.SortMode
+import com.textfield.json.ottawastreetcameras.ViewMode
 import com.textfield.json.ottawastreetcameras.adapters.CameraAdapter
 import com.textfield.json.ottawastreetcameras.adapters.filters.CameraFilter
-import com.textfield.json.ottawastreetcameras.comparators.*
+import com.textfield.json.ottawastreetcameras.comparators.SortByDistance
+import com.textfield.json.ottawastreetcameras.comparators.SortByName
+import com.textfield.json.ottawastreetcameras.comparators.SortByNeighbourhood
 import com.textfield.json.ottawastreetcameras.databinding.ActivityMainBinding
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import com.textfield.json.ottawastreetcameras.ui.*
+import com.textfield.json.ottawastreetcameras.ui.AppTheme
+import com.textfield.json.ottawastreetcameras.ui.CameraGalleryView
+import com.textfield.json.ottawastreetcameras.ui.CameraListView
+import com.textfield.json.ottawastreetcameras.ui.MenuItem
+import com.textfield.json.ottawastreetcameras.ui.NeighbourhoodSearchBar
+import com.textfield.json.ottawastreetcameras.ui.OverflowMenuItem
+import com.textfield.json.ottawastreetcameras.ui.SearchBar
+import com.textfield.json.ottawastreetcameras.ui.SectionIndex
+import com.textfield.json.ottawastreetcameras.ui.StreetCamsMap
+import com.textfield.json.ottawastreetcameras.ui.Visibility
 import java.util.Collections
 
 
@@ -68,69 +123,74 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
     }
 
     @Composable
-    fun AppTheme(
-        useDarkTheme: Boolean = isSystemInDarkTheme(),
-        content: @Composable () -> Unit
-    ) {
-        val context = LocalContext.current
-        val colors = if (!useDarkTheme) {
-            lightColorScheme()
-        } else {
-            darkColorScheme()
-        }
-
-        MaterialTheme(
-            colorScheme = colors,
-            content = content
-        )
-    }
-
-    @Composable
     fun ToolbarActions() {
         val width = LocalConfiguration.current.screenWidthDp
-        var remainingActions = width / 48 / 2 - 1
+        var remainingActions = width / 48 / 2
         Log.e("WIDTH", width.toString())
         Log.e("MAX_ACTIONS", remainingActions.toString())
-        var showViewModeMenu by remember { mutableStateOf(false) }
-        if (showViewModeMenu) {
-            ViewModeMenu()
-        }
-        MenuItem(
-            icon = when (cameraManager.viewMode) {
-                ViewMode.LIST -> {
-                    Icons.Rounded.List
-                }
 
-                ViewMode.MAP -> {
-                    Icons.Filled.Place
-                }
+        Box() {
+            var showViewModeMenu by remember { mutableStateOf(false) }
+            ViewModeMenu(showViewModeMenu) {
+                showViewModeMenu = false
+            }
+            MenuItem(
+                icon = when (cameraManager.viewMode) {
+                    ViewMode.LIST -> {
+                        Icons.Rounded.List
+                    }
 
-                ViewMode.GALLERY -> {
-                    Icons.Rounded.GridView
-                }
-            },
-            tooltip = getString(R.string.list),
-            visible = remainingActions-- > 0
-        ) {
-            showViewModeMenu = !showViewModeMenu
-        }
-        var expanded by remember { mutableStateOf(false) }
-        if (expanded) {
-            SortMenu()
+                    ViewMode.MAP -> {
+                        Icons.Filled.Place
+                    }
+
+                    ViewMode.GALLERY -> {
+                        Icons.Rounded.GridView
+                    }
+                },
+                tooltip = when (cameraManager.viewMode) {
+                    ViewMode.LIST -> {
+                        getString(R.string.list)
+                    }
+
+                    ViewMode.MAP -> {
+                        getString(R.string.map)
+                    }
+
+                    ViewMode.GALLERY -> {
+                        getString(R.string.gallery)
+                    }
+                },
+                visible = remainingActions-- > 0
+            ) {
+                showViewModeMenu = !showViewModeMenu
+            }
         }
 
-        MenuItem(icon = Icons.Rounded.Sort, tooltip = getString(R.string.sort), visible = remainingActions-- > 0) {
-            expanded = !expanded
+        Box() {
+            var showSortMenu by remember { mutableStateOf(false) }
+            SortMenu(showSortMenu) {
+                showSortMenu = false
+            }
+
+            MenuItem(icon = Icons.Rounded.Sort, tooltip = getString(R.string.sort), visible = remainingActions-- > 0) {
+                showSortMenu = !showSortMenu
+            }
         }
         MenuItem(icon = Icons.Rounded.Search, tooltip = getString(R.string.search), visible = remainingActions-- > 0) {
 
+            cameraManager.searchMode =
+                if (cameraManager.searchMode != SearchMode.NAME) SearchMode.NAME else SearchMode.NONE
+            loadView()
         }
         MenuItem(
             icon = Icons.Rounded.TravelExplore,
             tooltip = getString(R.string.search_neighbourhood),
             visible = remainingActions-- > 0
         ) {
-
+            cameraManager.searchMode =
+                if (cameraManager.searchMode != SearchMode.NEIGHBOURHOOD) SearchMode.NEIGHBOURHOOD else SearchMode.NONE
+            loadView()
         }
         MenuItem(
             icon = Icons.Rounded.Star,
@@ -169,113 +229,135 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
             showAboutDialog()
         }
         if (remainingActions < 0) {
-            var showOverflowMenu by remember { mutableStateOf(false) }
-            if (showOverflowMenu) {
-                OverflowMenu()
-            }
-            MenuItem(icon = Icons.Rounded.MoreVert, tooltip = "More", visible = true) {
-                showOverflowMenu = !showOverflowMenu
+            Box() {
+                var showOverflowMenu by remember { mutableStateOf(false) }
+                OverflowMenu(showOverflowMenu) { showOverflowMenu = false }
+                MenuItem(icon = Icons.Rounded.MoreVert, tooltip = "More", visible = true) {
+                    showOverflowMenu = true
+                }
             }
         }
 
     }
 
     @Composable
-    fun SortMenu() {
-        var shown by remember { mutableStateOf(true) }
-        DropdownMenu(expanded = shown, onDismissRequest = { shown = !shown }) {
-            var sortMode = cameraManager.sortMode
+    fun SortMenu(expanded: Boolean, onItemSelected: () -> Unit) {
+        DropdownMenu(expanded = expanded, onDismissRequest = { onItemSelected() }) {
+            fun setSortMode(sortMode: SortMode) {
+                cameraManager.sortMode = sortMode
+                loadView()
+                onItemSelected()
+            }
+
             DropdownMenuItem(
                 text = { Text(getString(R.string.sort_by_name)) },
                 leadingIcon = {
-                    RadioButton(selected = sortMode == SortMode.NAME, onClick = { /*TODO*/ })
+                    RadioButton(
+                        selected = cameraManager.sortMode == SortMode.NAME,
+                        onClick = {
+                            setSortMode(SortMode.NAME)
+                        },
+                    )
                 },
                 onClick = {
-                    cameraManager.sortMode = SortMode.NAME
-                    loadView()
+                    setSortMode(SortMode.NAME)
                 },
             )
             DropdownMenuItem(
                 text = { Text(getString(R.string.sort_by_distance)) },
                 leadingIcon = {
-                    RadioButton(selected = sortMode == SortMode.DISTANCE, onClick = { /*TODO*/ })
+                    RadioButton(
+                        selected = cameraManager.sortMode == SortMode.DISTANCE,
+                        onClick = { setSortMode(SortMode.DISTANCE) },
+                    )
                 },
                 onClick = {
-                    cameraManager.sortMode = SortMode.DISTANCE
-                    loadView()
+                    setSortMode(SortMode.DISTANCE)
                 },
             )
             DropdownMenuItem(
                 text = { Text(getString(R.string.sort_by_neighbourhood)) },
                 leadingIcon = {
-                    RadioButton(selected = sortMode == SortMode.NEIGHBOURHOOD, onClick = { /*TODO*/ })
+                    RadioButton(
+                        selected = cameraManager.sortMode == SortMode.NEIGHBOURHOOD,
+                        onClick = { setSortMode(SortMode.NEIGHBOURHOOD) },
+                    )
                 },
                 onClick = {
-                    cameraManager.sortMode = SortMode.NEIGHBOURHOOD
-                    loadView()
+                    setSortMode(SortMode.NEIGHBOURHOOD)
                 },
             )
         }
     }
 
     @Composable
-    fun OverflowMenu() {
+    fun OverflowMenu(expanded: Boolean, onItemSelected: () -> Unit) {
         val width = LocalConfiguration.current.screenWidthDp
         var remainingActions = width / 48 / 2 - 1
 
         Log.e("WIDTH", width.toString())
         Log.e("REMAINING_ACTIONS", remainingActions.toString())
-        var expanded by remember { mutableStateOf(true) }
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = !expanded }) {
 
-            var showViewModeMenu by remember { mutableStateOf(false) }
-            if (showViewModeMenu) {
-                ViewModeMenu()
-            }
-            OverflowMenuItem(
-                icon = when (cameraManager.viewMode) {
-                    ViewMode.LIST -> {
-                        Icons.Rounded.List
-                    }
+        DropdownMenu(expanded = expanded, onDismissRequest = onItemSelected) {
 
-                    ViewMode.MAP -> {
-                        Icons.Filled.Place
-                    }
+            Box() {
+                var showViewModeMenu by remember { mutableStateOf(false) }
+                ViewModeMenu(showViewModeMenu) {
+                    showViewModeMenu = false
+                }
+                OverflowMenuItem(
+                    icon = when (cameraManager.viewMode) {
+                        ViewMode.LIST -> {
+                            Icons.Rounded.List
+                        }
 
-                    ViewMode.GALLERY -> {
-                        Icons.Rounded.GridView
-                    }
-                },
-                tooltip = getString(R.string.list),
-                visible = cameraManager.viewMode != ViewMode.LIST && remainingActions-- < 1
-            ) {
-                showViewModeMenu = !showViewModeMenu
-            }
-            var expanded by remember { mutableStateOf(false) }
-            if (expanded) {
-                SortMenu()
-            }
+                        ViewMode.MAP -> {
+                            Icons.Filled.Place
+                        }
 
-            OverflowMenuItem(
-                icon = Icons.Rounded.Sort,
-                tooltip = getString(R.string.sort),
-                visible = remainingActions-- < 1
-            ) {
-                expanded = !expanded
+                        ViewMode.GALLERY -> {
+                            Icons.Rounded.GridView
+                        }
+                    },
+                    tooltip = getString(R.string.list),
+                    visible = cameraManager.viewMode != ViewMode.LIST && remainingActions-- < 1
+                ) {
+                    showViewModeMenu = !showViewModeMenu
+                    onItemSelected()
+                }
+                var showSortMenu by remember { mutableStateOf(false) }
+                SortMenu(showSortMenu) {
+                    showSortMenu = false
+                }
+
+                OverflowMenuItem(
+                    icon = Icons.Rounded.Sort,
+                    tooltip = getString(R.string.sort),
+                    visible = remainingActions-- < 1
+                ) {
+                    showSortMenu = !showSortMenu
+                    onItemSelected()
+                }
             }
             OverflowMenuItem(
                 icon = Icons.Rounded.Search,
                 tooltip = getString(R.string.search),
                 visible = remainingActions-- < 1
             ) {
-
+                cameraManager.searchMode =
+                    if (cameraManager.searchMode != SearchMode.NAME) SearchMode.NAME else SearchMode.NONE
+                loadView()
+                onItemSelected()
             }
             OverflowMenuItem(
                 icon = Icons.Rounded.TravelExplore,
                 tooltip = getString(R.string.search_neighbourhood),
                 visible = remainingActions-- < 1
             ) {
-
+                cameraManager.searchMode =
+                    if (cameraManager.searchMode != SearchMode.NEIGHBOURHOOD) SearchMode.NEIGHBOURHOOD else SearchMode.NONE
+                loadView()
+                onItemSelected()
             }
             OverflowMenuItem(
                 icon = Icons.Rounded.Star,
@@ -285,6 +367,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
                 cameraManager.filterMode =
                     if (cameraManager.filterMode == FilterMode.FAVOURITE) FilterMode.VISIBLE else FilterMode.FAVOURITE
                 loadView()
+                onItemSelected()
             }
             OverflowMenuItem(
                 icon = Icons.Rounded.VisibilityOff,
@@ -294,6 +377,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
                 cameraManager.filterMode =
                     if (cameraManager.filterMode == FilterMode.HIDDEN) FilterMode.VISIBLE else FilterMode.HIDDEN
                 loadView()
+                onItemSelected()
             }
             OverflowMenuItem(
                 icon = Icons.Rounded.Casino,
@@ -302,6 +386,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
             ) {
                 selectCamera(cameras.random())
                 showSelectedCameras()
+                onItemSelected()
             }
             OverflowMenuItem(
                 icon = Icons.Rounded.Shuffle,
@@ -309,6 +394,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
                 visible = remainingActions-- < 1
             ) {
                 showCameras(true)
+                onItemSelected()
             }
             OverflowMenuItem(
                 icon = Icons.Rounded.Info,
@@ -316,43 +402,59 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
                 visible = remainingActions-- < 1
             ) {
                 showAboutDialog()
+                onItemSelected()
             }
         }
     }
 
     @Composable
-    fun ViewModeMenu() {
-        var shown by remember { mutableStateOf(true) }
-        DropdownMenu(expanded = shown, onDismissRequest = { shown = !shown }) {
-            var viewMode by remember { mutableStateOf(cameraManager.viewMode) }
+    fun ViewModeMenu(expanded: Boolean, onItemSelected: () -> Unit) {
+        DropdownMenu(expanded = expanded, onDismissRequest = { onItemSelected() }) {
+            fun setViewMode(viewMode: ViewMode) {
+                cameraManager.viewMode = viewMode
+                loadView()
+                onItemSelected()
+            }
             DropdownMenuItem(
                 text = { Text(getString(R.string.list)) },
                 leadingIcon = {
-                    RadioButton(selected = viewMode == ViewMode.LIST, onClick = { /*TODO*/ })
+                    RadioButton(
+                        selected = cameraManager.viewMode == ViewMode.LIST,
+                        onClick = {
+                            setViewMode(ViewMode.LIST)
+                        },
+                    )
                 },
                 onClick = {
-                    cameraManager.viewMode = ViewMode.LIST
-                    loadView()
+                    setViewMode(ViewMode.LIST)
                 },
             )
             DropdownMenuItem(
                 text = { Text(getString(R.string.map)) },
                 leadingIcon = {
-                    RadioButton(selected = viewMode == ViewMode.MAP, onClick = { /*TODO*/ })
+                    RadioButton(
+                        selected = cameraManager.viewMode == ViewMode.MAP,
+                        onClick = {
+                            setViewMode(ViewMode.MAP)
+                        },
+                    )
                 },
                 onClick = {
-                    cameraManager.viewMode = ViewMode.MAP
-                    loadView()
+                    setViewMode(ViewMode.MAP)
                 },
             )
             DropdownMenuItem(
                 text = { Text(getString(R.string.gallery)) },
                 leadingIcon = {
-                    RadioButton(selected = viewMode == ViewMode.GALLERY, onClick = { /*TODO*/ })
+                    RadioButton(
+                        selected = cameraManager.viewMode == ViewMode.GALLERY,
+                        onClick = {
+                            setViewMode(ViewMode.GALLERY)
+                        },
+                    )
                 },
                 onClick = {
-                    cameraManager.viewMode = ViewMode.GALLERY
-                    loadView()
+                    setViewMode(ViewMode.GALLERY)
                 },
             )
         }
@@ -396,7 +498,95 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
         getResult.launch(intent)
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun MainAppBar() {
+        TopAppBar(
+            title = {
+                when (cameraManager.searchMode) {
+                    SearchMode.NONE -> {
+                        Text(resources.getString(R.string.app_name))
+                    }
+
+                    SearchMode.NAME -> {
+                        SearchBar(
+                            resources.getQuantityString(
+                                R.plurals.search_hint,
+                                cameras.size,
+                                cameras.size
+                            )
+                        ) {
+                            cameras = cameraManager.searchDisplayedCameras(SearchMode.NAME, it)
+                            loadView()
+                        }
+                    }
+
+                    SearchMode.NEIGHBOURHOOD -> {
+                        NeighbourhoodSearchBar(
+                            resources.getQuantityString(
+                                R.plurals.search_hint_neighbourhood,
+                                neighbourhoods.size,
+                                neighbourhoods.size
+                            )
+                        ) {
+                            cameras = cameraManager.searchDisplayedCameras(SearchMode.NEIGHBOURHOOD, it)
+                            loadView()
+                        }
+                    }
+                }
+            },
+            actions = {
+                ToolbarActions()
+            }
+        )
+    }
+
+    @Composable
+    fun MainContent(padding: PaddingValues) {
+        Column(modifier = Modifier.padding(padding)) {
+            val displayedCameras = when (cameraManager.filterMode) {
+                FilterMode.HIDDEN -> {
+                    cameras.filter {
+                        !it.isVisible
+                    }
+                }
+
+                FilterMode.FAVOURITE -> {
+                    cameras.filter {
+                        it.isFavourite
+                    }
+                }
+
+                FilterMode.VISIBLE -> {
+                    cameras.filter {
+                        it.isVisible
+                    }
+                }
+            }
+            when (cameraManager.viewMode) {
+                ViewMode.LIST -> {
+                    Row {
+                        Visibility(visible = cameraManager.sortMode == SortMode.NAME && cameraManager.searchMode == SearchMode.NONE) {
+                            SectionIndex(displayedCameras)
+                        }
+                        CameraListView(
+                            displayedCameras,
+                            onItemClick = { showCamera(it) },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+
+                ViewMode.MAP -> {
+                    StreetCamsMap(displayedCameras) { showCamera(it) }
+                }
+
+                ViewMode.GALLERY -> {
+                    CameraGalleryView(displayedCameras) { showCamera(it) }
+                }
+            }
+        }
+    }
+
     private fun loadView() {
         when (cameraManager.sortMode) {
             SortMode.NAME -> {
@@ -415,54 +605,10 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
             AppTheme {
                 Scaffold(
                     topBar = {
-                        TopAppBar(
-                            title = {
-                                Text(resources.getString(R.string.app_name))
-                            },
-                            actions = {
-                                ToolbarActions()
-                            }
-                        )
+                        MainAppBar()
                     },
-                    content = { padding ->
-                        Column(modifier = Modifier.padding(padding)) {
-                            val displayedCameras = when (cameraManager.filterMode) {
-                                FilterMode.HIDDEN -> {
-                                    cameras.filter {
-                                        !it.isVisible
-                                    }
-                                }
-
-                                FilterMode.FAVOURITE -> {
-                                    cameras.filter {
-                                        it.isFavourite
-                                    }
-                                }
-
-                                FilterMode.VISIBLE -> {
-                                    cameras.filter {
-                                        it.isVisible
-                                    }
-                                }
-                            }
-                            when (cameraManager.viewMode) {
-
-                                ViewMode.LIST -> {
-                                    Row {
-                                        //SectionIndex(displayedCameras)
-                                        CameraListView(displayedCameras) { showCamera(it) }
-                                    }
-                                }
-
-                                ViewMode.MAP -> {
-                                    StreetCamsMap(displayedCameras) { showCamera(it.tag as Camera) }
-                                }
-
-                                ViewMode.GALLERY -> {
-                                    CameraGalleryView(displayedCameras) { showCamera(it) }
-                                }
-                            }
-                        }
+                    content = {
+                        MainContent(it)
                     },
                 )
             }
@@ -483,7 +629,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
             .setMessage(
                 resources.getString(
                     R.string.version,
-                    com.textfield.json.ottawastreetcameras.BuildConfig.VERSION_NAME
+                    BuildConfig.VERSION_NAME
                 )
             )
             .setNegativeButton(R.string.rate) { _, _ -> rateApp() }
@@ -508,10 +654,10 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
                 CircularProgressIndicator(color = Color(0xFF11AAFF))
             }
         }*/
-        cameraManager = CameraManager.getInstance(this@MainActivity)
-        cameraManager.downloadAll {
+        cameraManager = CameraManager.getInstance()
+        cameraManager.downloadAll(this) {
             cameras = cameraManager.allCameras
-            //loadList()
+            neighbourhoods = cameraManager.neighbourhoods
             loadView()
         }
         loadView()
@@ -747,7 +893,6 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
         //map?.getFilter(cameras, mapIsLoaded)?.filter("")
     }
 
-
     private fun requestPermissions(requestCode: Int) {
         val permissionArray = arrayOf(
             permission.ACCESS_FINE_LOCATION,
@@ -766,7 +911,7 @@ class MainActivity : GenericActivity(), OnMapReadyCallback {
                     val lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
                     if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) && lastLocation != null) {
                         cameras.sortWith(SortByDistance(lastLocation))
-                        binding.sectionIndexListview.sectionIndex.visibility = View.INVISIBLE
+                        //binding.sectionIndexListview.sectionIndex.visibility = View.INVISIBLE
                     } else {
                         Snackbar.make(listView, getString(R.string.location_unavailable), Snackbar.LENGTH_LONG).show()
                     }

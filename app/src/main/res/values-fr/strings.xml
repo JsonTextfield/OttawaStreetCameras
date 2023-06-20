@@ -55,4 +55,9 @@
         <item quantity="many">Recherche de %d quartiers</item>
         <item quantity="other">Recherche de %d quartiers</item>
     </plurals>
+    <plurals name="camera_count">
+        <item quantity="one">%d caméra</item>
+        <item quantity="many">%d caméras</item>
+        <item quantity="other">%d caméras</item>
+    </plurals>
 </resources>
