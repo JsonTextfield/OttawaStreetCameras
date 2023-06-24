@@ -1,8 +1,10 @@
 package com.textfield.json.ottawastreetcameras.ui
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
@@ -12,37 +14,44 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.textfield.json.ottawastreetcameras.CameraManager
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @Composable
-fun StreetCamsMap(cameras: List<Camera>, onItemClick: (Camera) -> Unit) {
+fun StreetCamsMap(cameras: List<Camera>, isMyLocationEnabled: Boolean, onItemClick: (Camera) -> Unit) {
+    val context = LocalContext.current
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(
-            LatLng(
-                45.4, -75.7
-            ), 9f
-        )
+        position = CameraPosition.builder().target(LatLng(45.45, -75.69)).build()
     }
     var bounds: LatLngBounds? = null
-    val builder = LatLngBounds.builder()
-    for (camera in cameras) {
-        builder.include(LatLng(camera.lat, camera.lon))
-    }
     if (cameras.isNotEmpty()) {
+        val builder = LatLngBounds.builder()
+        for (camera in cameras) {
+            builder.include(LatLng(camera.lat, camera.lon))
+        }
         bounds = builder.build()
     }
-    val context = LocalContext.current
     GoogleMap(
         cameraPositionState = cameraPositionState,
         properties = MapProperties(
             latLngBoundsForCameraTarget = bounds,
-            mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, R.raw.dark_mode)
+            mapStyleOptions = if (isSystemInDarkTheme()) {
+                MapStyleOptions.loadRawResourceStyle(context, R.raw.dark_mode)
+            } else {
+                null
+            },
+            isMyLocationEnabled = isMyLocationEnabled,
         ),
         onMapLoaded = {
             if (bounds != null) {
-                cameraPositionState.move(CameraUpdateFactory.newLatLngBounds(bounds, 50))
+                CoroutineScope(Dispatchers.Main).launch {
+                    cameraPositionState.animate(CameraUpdateFactory.newLatLngBounds(bounds, 50))
+                }
             }
         },
     ) {
@@ -50,7 +59,21 @@ fun StreetCamsMap(cameras: List<Camera>, onItemClick: (Camera) -> Unit) {
             Marker(
                 state = MarkerState(position = LatLng(camera.lat, camera.lon)),
                 title = camera.getName(),
-                onInfoWindowClick = { onItemClick(camera) },
+                onInfoWindowClick = {
+                    if (CameraManager.getInstance().getSelectedCameras().isNotEmpty()) {
+                        CameraManager.getInstance().selectCamera(camera)
+                    } else {
+                        onItemClick(camera)
+                    }
+                },
+                onInfoWindowLongClick = {
+                    CameraManager.getInstance().selectCamera(camera)
+                },
+                icon = if (camera.isFavourite) {
+                    BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)
+                } else {
+                    BitmapDescriptorFactory.defaultMarker()
+                }
             )
         }
     }

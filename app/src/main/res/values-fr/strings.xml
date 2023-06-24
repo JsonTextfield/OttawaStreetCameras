@@ -6,6 +6,8 @@
     <string name="favourites">Favoris</string>
     <string name="hidden_cameras">Caméras cachées</string>
     <string name="hide">Cacher</string>
+    <string name="more">Plus</string>
+    <string name="clear">Effacer</string>
     <string name="image_saved">L\'image a été enregistrée</string>
     <string name="image_saved_at">L\'image a été enregistrée dans %s</string>
     <string name="licences">Licences</string>

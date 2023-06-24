@@ -15,9 +15,9 @@ class Neighbourhood(values: JSONObject) : BilingualObject() {
 
     init {
         val properties = values.getJSONObject("properties")
-        nameEn = if (properties.isNull("Name")) "" else properties.getString("Name")
-        nameFr = if (properties.isNull("Name_FR")) nameEn else properties.getString("Name_FR")
-        id = if (properties.isNull("ONS_ID")) 0 else properties.getInt("ONS_ID")
+        nameEn = properties.optString("Name") ?: ""
+        nameFr = properties.optString("Name_FR") ?: nameEn
+        id = properties.optInt("ONS_ID")
 
         try {
             val geometry = values.getJSONObject("geometry")

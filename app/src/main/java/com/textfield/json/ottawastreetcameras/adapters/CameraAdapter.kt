@@ -73,7 +73,7 @@ abstract class CameraAdapter(private val _context: Context, private val list: Li
             viewHolder.star?.setColorFilter(Color.BLACK, android.graphics.PorterDuff.Mode.SRC_IN)
         }
         viewHolder.star?.setOnClickListener {
-            (context as MainActivity).modifyPrefs(listOf(camera))
+            //(context as MainActivity).modifyPrefs(listOf(camera))
             camera.setFavourite(!camera.isFavourite)
             notifyDataSetChanged()
         }

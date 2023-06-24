@@ -3,6 +3,7 @@ package com.textfield.json.ottawastreetcameras
 import android.content.Context
 import android.location.Location
 import android.util.Log
+import androidx.core.content.edit
 import androidx.lifecycle.ViewModel
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
@@ -16,16 +17,29 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
-class CameraManager private constructor() : ViewModel() {
-    val tag = "CameraManager"
+class CameraManager {
+    private val tag = "CameraManager"
     var allCameras = ArrayList<Camera>()
         private set
     private val selectedCameras = ArrayList<Camera>()
     var neighbourhoods = ArrayList<Neighbourhood>()
+        private set
+
     var filterMode = FilterMode.VISIBLE
     var searchMode = SearchMode.NONE
     var sortMode = SortMode.NAME
     var viewMode = ViewMode.LIST
+
+    val showSectionIndex: Boolean
+        get() {
+            return sortMode == SortMode.NAME
+                    && searchMode == SearchMode.NONE
+                    && filterMode == FilterMode.VISIBLE
+        }
+
+    fun isCameraSelected(camera: Camera): Boolean {
+        return selectedCameras.contains(camera)
+    }
 
     private fun loadSharedPrefs(context: Context) {
         val sharedPrefs = context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)
@@ -45,18 +59,31 @@ class CameraManager private constructor() : ViewModel() {
         for (cam in allCameras) {
             if (cam == camera) {
                 cam.setFavourite(camera.isFavourite)
+                break
             }
         }
     }
 
-    private fun downloadCameras(context: Context, onComplete: () -> Unit) {
+    fun hideCamera(context: Context, camera: Camera) {
+        val sharedPrefs = context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)
+        sharedPrefs.edit().putBoolean("${camera.num}.isVisible", camera.isVisible).apply()
+        for (cam in allCameras) {
+            if (cam == camera) {
+                cam.setVisible(camera.isVisible)
+                break
+            }
+        }
+    }
+
+    private fun downloadCameras(context: Context, onComplete: (cameras: ArrayList<Camera>) -> Unit) {
         Log.e(tag, "downloading cameras")
-        val jsonRequest = JsonArrayRequest("https://traffic.ottawa.ca/beta/camera_list", { response ->
+        val url = "https://traffic.ottawa.ca/beta/camera_list"
+        val jsonRequest = JsonArrayRequest(url, { response ->
             allCameras = (0 until response.length()).map {
                 Camera(response.getJSONObject(it))
             } as ArrayList<Camera>
 
-            onComplete()
+            onComplete(allCameras)
         }, {
             throw it
         })
@@ -65,10 +92,14 @@ class CameraManager private constructor() : ViewModel() {
         }
     }
 
-    private fun downloadNeighbourhoods(context: Context, onComplete: () -> Unit) {
+    private fun downloadNeighbourhoods(
+        context: Context,
+        onComplete: (neighbourhoods: ArrayList<Neighbourhood>) -> Unit
+    ) {
         Log.e("STREETCAMS", "downloading neighbourhoods")
-        val jsonObjectRequest = JsonObjectRequest(
-            "https://services.arcgis.com/G6F8XLCl5KtAlZ2G/arcgis/rest/services/Gen_2_ONS_Boundaries/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+        val url =
+            "https://services.arcgis.com/G6F8XLCl5KtAlZ2G/arcgis/rest/services/Gen_2_ONS_Boundaries/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson"
+        val jsonObjectRequest = JsonObjectRequest(url,
             { response ->
                 val jsonArray = response.getJSONArray("features")
                 neighbourhoods = (0 until jsonArray.length()).map {
@@ -81,7 +112,7 @@ class CameraManager private constructor() : ViewModel() {
                     neighbourhood
                 } as ArrayList<Neighbourhood>
 
-                onComplete()
+                onComplete(neighbourhoods)
             }, {
                 it.printStackTrace()
             })
@@ -90,12 +121,19 @@ class CameraManager private constructor() : ViewModel() {
         }
     }
 
-    fun downloadAll(context: Context, onComplete: () -> Unit) {
+    fun downloadAll(
+        context: Context,
+        onComplete: (cameras: ArrayList<Camera>, neighbourhoods: ArrayList<Neighbourhood>) -> Unit
+    ) {
         Log.e("STREETCAMS", "downloading all")
-        downloadCameras(context) {
+        downloadCameras(context) { cameras ->
             loadSharedPrefs(context)
-            downloadNeighbourhoods(context, onComplete)
+            downloadNeighbourhoods(context) { onComplete(cameras, it) }
         }
+    }
+
+    fun clearSelectedCameras() {
+        selectedCameras.clear()
     }
 
     fun sortDisplayedCameras(sortMode: SortMode, location: Location? = null): ArrayList<Camera> {

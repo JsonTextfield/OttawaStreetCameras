@@ -6,6 +6,8 @@
     <string name="favourites">Favourites</string>
     <string name="hidden_cameras">Hidden</string>
     <string name="hide">Hide</string>
+    <string name="more">More</string>
+    <string name="clear">Clear</string>
     <string name="image_saved">Image saved</string>
     <string name="image_saved_at">Image saved at %s</string>
     <string name="licences">Licences</string>

@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#2749B3</color>
-    <color name="colorAccent">#139bcc</color>
+    <color name="colorAccent">#139BCC</color>
+    <color name="backButtonBackground">#66FFFFFF</color>
+    <color name="cameraNameBackground">#66000000</color>
+    <color name="galleryTileSelectedColour">#4F00BCD4</color>
+    <color name="cameraViewSelectedColour">#4F00BCD4</color>
 </resources>

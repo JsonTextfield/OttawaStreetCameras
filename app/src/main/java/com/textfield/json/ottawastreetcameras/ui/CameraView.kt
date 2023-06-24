@@ -1,13 +1,17 @@
 package com.textfield.json.ottawastreetcameras.ui
 
-import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SnapshotMutationPolicy
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -15,17 +19,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import kotlinx.coroutines.delay
 
@@ -44,9 +49,8 @@ fun CameraView(camera: Camera, shuffle: Boolean = false) {
         if (!shuffle) {
             LaunchedEffect(Unit) {
                 while (true) {
-                    Log.e("UPDATE", model)
-                    model = camera.url
                     delay(3000L)
+                    model = camera.url
                 }
             }
         }
@@ -63,8 +67,7 @@ fun CameraView(camera: Camera, shuffle: Boolean = false) {
         AsyncImage(
             model = imageRequest,
             contentDescription = camera.getName(),
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             contentScale = ContentScale.Fit,
         )
         Box(
@@ -72,7 +75,7 @@ fun CameraView(camera: Camera, shuffle: Boolean = false) {
                 .align(Alignment.BottomCenter)
                 .padding(horizontal = 5.dp, vertical = 2.dp)
                 .background(
-                    color = CameraNameBackground,
+                    color = colorResource(id = R.color.cameraNameBackground),
                     shape = RoundedCornerShape(10.dp)
                 )
                 .padding(
@@ -80,7 +83,6 @@ fun CameraView(camera: Camera, shuffle: Boolean = false) {
                     horizontal = 10.dp,
                 ),
         ) {
-
             Text(
                 camera.getName(),
                 color = Color.White,

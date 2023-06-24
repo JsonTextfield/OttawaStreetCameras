@@ -4,144 +4,83 @@ import android.Manifest
 import android.content.ContentValues
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
-import android.view.ActionMode
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.LaunchedEffect
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.PlainTooltipBox
+import androidx.compose.material3.Text
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.android.volley.toolbox.ImageRequest
-import com.google.android.material.snackbar.Snackbar
 import com.textfield.json.ottawastreetcameras.R
-import com.textfield.json.ottawastreetcameras.StreetCamsRequestQueue
-import com.textfield.json.ottawastreetcameras.adapters.ImageAdapter
-import com.textfield.json.ottawastreetcameras.databinding.ActivityCameraBinding
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.ui.AppTheme
 import com.textfield.json.ottawastreetcameras.ui.CameraActivityContent
-import jp.wasabeef.blurry.Blurry
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Runnable
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.Date
 
-class CameraActivity : GenericActivity() {
+class CameraActivity : AppCompatActivity() {
+    private var cameras = ArrayList<Camera>()
+    private var selectedCameras = ArrayList<Camera>()
     private val requestForSave = 0
     private val timers = ArrayList<CameraRunnable>()
     private val handler = Handler(Looper.getMainLooper())
     private val tag = "camera"
-    private lateinit var binding: ActivityCameraBinding
-    private var shuffle = false
 
     private inner class CameraRunnable(val index: Int) : Runnable {
         override fun run() {
-            download(index)
+            //download(index)
             handler.postDelayed(this, 6000L)
         }
     }
 
-
-    private fun loadView() {
-        setContent {
-            AppTheme() {
-                CameraActivityContent(cameras, shuffle)
-            }
-        }
-    }
-
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        /*
-        binding = ActivityCameraBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        listView = binding.imageListView*/
-        shuffle = intent.getBooleanExtra("shuffle", false)
+
+        val shuffle = intent.getBooleanExtra("shuffle", false)
 
         cameras = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableArrayListExtra("cameras", Camera::class.java) ?: cameras
         } else {
-            intent.getParcelableArrayListExtra("cameras") ?: ArrayList()
+            intent.getParcelableArrayListExtra("cameras") ?: cameras
         }
-        // if shuffle is on, show only one camera image at a time
-        adapter = ImageAdapter(this, if (shuffle) cameras.subList(0, 1) else cameras)
-        /*listView.adapter = adapter
-        listView.setMultiChoiceModeListener(this)
 
-        loadPreviouslySelectedCameras(savedInstanceState)
-        binding.backButton.setOnClickListener { onBackPressedDispatcher.onBackPressed() }*/
-        loadView()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        /*(0 until adapter.count).forEach {
-            CameraRunnable(it).apply {
-                timers.add(this)
-                handler.post(this)
+        setContent {
+            AppTheme() {
+                CameraActivityContent(cameras, shuffle)
+                PlainTooltipBox(tooltip = { Text("Back") }) {
+                    IconButton(modifier = Modifier
+                        .tooltipAnchor()
+                        .padding(5.dp)
+                        .background(
+                            color = colorResource(R.color.backButtonBackground),
+                            shape = RoundedCornerShape(10.dp)
+                        ), onClick = {
+                        this@CameraActivity.onBackPressedDispatcher.onBackPressed()
+                    }) {
+                        Icon(Icons.Rounded.ArrowBack, "Back")
+                    }
+                }
             }
-        }*/
-    }
-
-    override fun onPause() {
-        /*StreetCamsRequestQueue.getInstance(this).cancelAll(tag)
-        timers.forEach(handler::removeCallbacks)*/
-        super.onPause()
-    }
-
-    override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-        if (!shuffle) {
-            super.onCreateActionMode(mode, menu)
-            showCameras.isVisible = false
-            return true
         }
-        return false
-    }
-
-    override fun onDestroyActionMode(mode: ActionMode?) {
-        (0 until listView.adapter.count).forEach {
-            listView.getViewByPosition(it).findViewById<ImageView>(R.id.source)
-                .setColorFilter(android.graphics.Color.TRANSPARENT)
-            listView.getViewByPosition(it).findViewById<ImageView>(R.id.background)
-                .setColorFilter(android.graphics.Color.TRANSPARENT)
-        }
-        super.onDestroyActionMode(mode)
-    }
-
-    override fun onItemCheckedStateChanged(mode: ActionMode?, position: Int, id: Long, checked: Boolean) {
-        super.onItemCheckedStateChanged(mode, position, id, checked)
-        val source = listView.getViewByPosition(position).findViewById<ImageView>(R.id.source)
-        val overlay = listView.getViewByPosition(position).findViewById<ImageView>(R.id.background)
-
-        if (checked) {
-            source.setColorFilter(android.graphics.Color.parseColor("#4F00BCD4"))
-            overlay.setColorFilter(android.graphics.Color.parseColor("#4F00BCD4"))
-        } else {
-            source.setColorFilter(android.graphics.Color.TRANSPARENT)
-            overlay.setColorFilter(android.graphics.Color.TRANSPARENT)
-        }
-        hideMenuOptions()
-    }
-
-    private fun hideMenuOptions() {
-        unhide.isVisible = false
-        hide.isVisible = false
-        addFav.isVisible = false
-        removeFav.isVisible = false
     }
 
     private fun requestStoragePermission(): Boolean {
@@ -158,55 +97,13 @@ class CameraActivity : GenericActivity() {
         return true
     }
 
-    override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-        if (!super.onActionItemClicked(mode, item)) {
-            return when (item.itemId) {
-                R.id.save -> {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q || requestStoragePermission()) {
-                        saveSelectedImages()
-                    }
-                    true
-                }
-
-                else -> false
-            }
-        }
-        return true
-    }
-
-    fun download(index: Int) {
-        val selectedCamera = if (shuffle) cameras.random() else adapter.getItem(index)!!
-        val bmImage = listView.getViewByPosition(index).findViewById<ImageView>(R.id.source)
-        val background = listView.getViewByPosition(index).findViewById<ImageView>(R.id.background)
-        val textView = listView.getViewByPosition(index).findViewById<TextView>(R.id.label)
-        val request = ImageRequest(selectedCamera.url, { response ->
-            if (response != null) {
-                listView.getViewByPosition(index).findViewById<TextView>(R.id.could_not_load_textview).visibility =
-                    View.INVISIBLE
-                bmImage.setImageBitmap(response)
-                Blurry.with(this).from(response).into(background)
-                textView.text = selectedCamera.getName()
-                textView.visibility = View.VISIBLE
-            }
-        }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.RGB_565, {
-            it.printStackTrace()
-            listView.getViewByPosition(index).findViewById<TextView>(R.id.could_not_load_textview).visibility =
-                View.VISIBLE
-        })
-        binding.cameraProgressBar.visibility = View.INVISIBLE
-        request.tag = tag
-        CoroutineScope(Dispatchers.IO).launch {
-            StreetCamsRequestQueue.getInstance(this@CameraActivity).add(request)
-        }
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (PackageManager.PERMISSION_GRANTED in grantResults && requestCode == requestForSave) {
-            saveSelectedImages()
+            //saveSelectedImages()
         }
     }
-
+/*
     private fun saveSelectedImages() {
         var imagesSaved = 0
         cameras.indices.forEach {
@@ -229,7 +126,7 @@ class CameraActivity : GenericActivity() {
             Snackbar.LENGTH_LONG
         ).show()
     }
-
+*/
     private fun saveImage(bitmapImage: Bitmap, fileName: String): Boolean {
         // Add a media item that other apps shouldn't see until the item is fully written to the media store.
         val resolver = applicationContext.contentResolver

@@ -21,6 +21,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.SectionIndexListView
 import com.textfield.json.ottawastreetcameras.adapters.CameraAdapter
+import com.textfield.json.ottawastreetcameras.adapters.GalleryAdapter
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.entities.Neighbourhood
 
@@ -31,7 +32,7 @@ abstract class GenericActivity : AppCompatActivity(), AbsListView.MultiChoiceMod
     protected lateinit var listView: ListView
     protected lateinit var galleryView: GridView
     protected lateinit var adapter: ArrayAdapter<Camera>
-    //protected lateinit var galleryAdapter: GalleryAdapter
+    protected lateinit var galleryAdapter: GalleryAdapter
     protected var cameras = ArrayList<Camera>()
     protected val selectedCameras = ArrayList<Camera>()
     protected var previouslySelectedCameras = ArrayList<Camera>()
