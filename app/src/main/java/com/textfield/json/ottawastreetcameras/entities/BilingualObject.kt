@@ -1,6 +1,6 @@
 package com.textfield.json.ottawastreetcameras.entities
 
-import java.util.*
+import java.util.Locale
 
 abstract class BilingualObject {
     protected var nameEn = ""
