@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras.ui
+package com.textfield.json.ottawastreetcameras.ui.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CameraAlt
@@ -10,6 +10,7 @@ import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import com.textfield.json.ottawastreetcameras.CameraManager
 import com.textfield.json.ottawastreetcameras.R
 
@@ -20,22 +21,22 @@ fun ActionModeMenu(onItemSelected: (id: Int) -> Unit) {
     val cameraManager = CameraManager.getInstance()
     val selectedCameras = cameraManager.getSelectedCameras()
     val maxCameras = 8
-    MenuItem(icon = Icons.Rounded.Clear, tooltip = context.getString(R.string.clear), visible = true) {
+    MenuItem(icon = Icons.Rounded.Clear, tooltip = stringResource(R.string.clear), visible = true) {
         cameraManager.clearSelectedCameras()
         onItemSelected(R.string.clear)
     }
 
     MenuItem(
         icon = Icons.Rounded.SelectAll,
-        tooltip = context.getString(R.string.select_all),
-        visible = selectedCameras.size < cameraManager.allCameras.size
+        tooltip = stringResource(R.string.select_all),
+        visible = selectedCameras.size < cameraManager.displayedCameras.size
     ) {
         //cameraManager.selectAllCameras()
         onItemSelected(R.string.select_all)
     }
     MenuItem(
         icon = Icons.Rounded.CameraAlt,
-        tooltip = context.getString(R.string.show),
+        tooltip = stringResource(R.string.show),
         visible = selectedCameras.size <= maxCameras
     ) {
         //showSelectedCameras()
@@ -43,41 +44,41 @@ fun ActionModeMenu(onItemSelected: (id: Int) -> Unit) {
     }
     MenuItem(
         icon = Icons.Rounded.VisibilityOff,
-        tooltip = context.getString(R.string.hide),
+        tooltip = stringResource(R.string.hide),
         visible = selectedCameras.any { it.isVisible }) {
         selectedCameras.forEach {
-            it.setVisible(false)
+            it.isVisible = false
             cameraManager.hideCamera(context, it)
         }
         onItemSelected(R.string.hide)
     }
     MenuItem(
         icon = Icons.Rounded.Visibility,
-        tooltip = context.getString(R.string.unhide),
+        tooltip = stringResource(R.string.unhide),
         visible = selectedCameras.all { !it.isVisible }) {
         selectedCameras.forEach {
-            it.setVisible(true)
+            it.isVisible = true
             cameraManager.hideCamera(context, it)
         }
         onItemSelected(R.string.unhide)
     }
     MenuItem(
         icon = Icons.Rounded.Star,
-        tooltip = context.getString(R.string.add_to_favourites),
+        tooltip = stringResource(R.string.add_to_favourites),
         visible = selectedCameras.any { !it.isFavourite }) {
         selectedCameras.forEach {
-            it.setFavourite(true)
+            it.isFavourite = true
             cameraManager.favouriteCamera(context, it)
         }
         onItemSelected(R.string.add_to_favourites)
     }
     MenuItem(
         icon = Icons.Rounded.StarBorder,
-        tooltip = context.getString(R.string.remove_from_favourites),
+        tooltip = stringResource(R.string.remove_from_favourites),
         visible = selectedCameras.all { it.isFavourite }
     ) {
         selectedCameras.forEach {
-            it.setFavourite(false)
+            it.isFavourite = false
             cameraManager.favouriteCamera(context, it)
         }
         onItemSelected(R.string.remove_from_favourites)

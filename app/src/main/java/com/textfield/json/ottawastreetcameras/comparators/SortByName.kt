@@ -7,6 +7,6 @@ import com.textfield.json.ottawastreetcameras.entities.Camera
  */
 class SortByName : Comparator<Camera> {
     override fun compare(cam1: Camera, cam2: Camera): Int {
-        return cam1.getSortableName().compareTo(cam2.getSortableName())
+        return cam1.sortableName.compareTo(cam2.sortableName)
     }
 }

@@ -1,6 +1,5 @@
-package com.textfield.json.ottawastreetcameras.ui
+package com.textfield.json.ottawastreetcameras.ui.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,8 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.textfield.json.ottawastreetcameras.R
@@ -34,7 +32,6 @@ fun CameraGalleryView(cameras: List<Camera>, onItemClick: (Camera) -> Unit) {
         }
 
         item {
-            val context = LocalContext.current
             Box(
                 modifier = Modifier
                     .clip(
@@ -43,7 +40,7 @@ fun CameraGalleryView(cameras: List<Camera>, onItemClick: (Camera) -> Unit) {
                     .aspectRatio(1f)
             ) {
                 Text(
-                    context.resources.getQuantityString(R.plurals.camera_count, cameras.size, cameras.size).replace(" ", "\n"),
+                    pluralStringResource(R.plurals.camera_count, cameras.size, cameras.size).replace(" ", "\n"),
                     textAlign = TextAlign.Center,
                     modifier = Modifier.align(Alignment.Center)
                 )

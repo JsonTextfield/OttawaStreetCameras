@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras.ui
+package com.textfield.json.ottawastreetcameras.ui.components
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
@@ -58,7 +58,7 @@ fun StreetCamsMap(cameras: List<Camera>, isMyLocationEnabled: Boolean, onItemCli
         cameras.map { camera ->
             Marker(
                 state = MarkerState(position = LatLng(camera.lat, camera.lon)),
-                title = camera.getName(),
+                title = camera.name,
                 onInfoWindowClick = {
                     if (CameraManager.getInstance().getSelectedCameras().isNotEmpty()) {
                         CameraManager.getInstance().selectCamera(camera)

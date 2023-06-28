@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.textfield.json.ottawastreetcameras.activities
+package com.textfield.json.ottawastreetcameras.ui.activities
 
 import android.Manifest.permission
 import android.app.AlertDialog
@@ -12,7 +12,6 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,12 +28,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.multidex.BuildConfig
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.play.core.review.ReviewManagerFactory
@@ -43,114 +42,87 @@ import com.textfield.json.ottawastreetcameras.FilterMode
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.SearchMode
 import com.textfield.json.ottawastreetcameras.SortMode
+import com.textfield.json.ottawastreetcameras.UIStates
 import com.textfield.json.ottawastreetcameras.ViewMode
 import com.textfield.json.ottawastreetcameras.comparators.SortByDistance
 import com.textfield.json.ottawastreetcameras.comparators.SortByName
 import com.textfield.json.ottawastreetcameras.comparators.SortByNeighbourhood
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import com.textfield.json.ottawastreetcameras.entities.Neighbourhood
-import com.textfield.json.ottawastreetcameras.ui.ActionBar
-import com.textfield.json.ottawastreetcameras.ui.ActionModeMenu
-import com.textfield.json.ottawastreetcameras.ui.AppTheme
-import com.textfield.json.ottawastreetcameras.ui.CameraGalleryView
-import com.textfield.json.ottawastreetcameras.ui.CameraListView
-import com.textfield.json.ottawastreetcameras.ui.NeighbourhoodSearchBar
-import com.textfield.json.ottawastreetcameras.ui.SearchBar
-import com.textfield.json.ottawastreetcameras.ui.SectionIndex
-import com.textfield.json.ottawastreetcameras.ui.StreetCamsMap
-import com.textfield.json.ottawastreetcameras.ui.Visibility
-
-class UIStateViewModel : ViewModel() {
-    enum class UIStates { LOADING, LOADED, ERROR }
-
-    private var _state: MutableLiveData<UIStates> = MutableLiveData<UIStates>(UIStates.LOADING)
-    val state: LiveData<UIStates>
-        get() = _state
-
-    fun onStateChanged(state: UIStates) {
-        _state.value = state
-    }
-}
+import com.textfield.json.ottawastreetcameras.ui.components.ActionBar
+import com.textfield.json.ottawastreetcameras.ui.components.ActionModeMenu
+import com.textfield.json.ottawastreetcameras.ui.components.AppTheme
+import com.textfield.json.ottawastreetcameras.ui.components.CameraGalleryView
+import com.textfield.json.ottawastreetcameras.ui.components.CameraListView
+import com.textfield.json.ottawastreetcameras.ui.components.NeighbourhoodSearchBar
+import com.textfield.json.ottawastreetcameras.ui.components.SearchBar
+import com.textfield.json.ottawastreetcameras.ui.components.SectionIndex
+import com.textfield.json.ottawastreetcameras.ui.components.StreetCamsMap
+import com.textfield.json.ottawastreetcameras.ui.components.Visibility
 
 class MainActivity : AppCompatActivity() {
-    private var cameras = ArrayList<Camera>()
-    private var neighbourhoods = ArrayList<Neighbourhood>()
     private val requestForList = 0
     private val requestForMap = 1
     private val cameraManager = CameraManager.getInstance()
-    private val uiStateViewModel = UIStateViewModel()
-
-
-    private val getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        /*
-        if (actionMode == null) {
-            selectedCameras.clear()
-        }
-        */
-    }
 
     private fun shuffleCameras() {
         val intent = Intent(this, CameraActivity::class.java)
-        intent.putParcelableArrayListExtra("cameras", cameras)
+        intent.putParcelableArrayListExtra("cameras", cameraManager.visibleCameras as ArrayList<Camera>)
         intent.putExtra("shuffle", true)
-        getResult.launch(intent)
+        startActivity(intent)
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun MainAppBar() {
-        TopAppBar(
-            title = {
-                when (cameraManager.searchMode) {
-                    SearchMode.NONE -> {
-                        Text(resources.getString(R.string.app_name))
-                    }
+        val cameras = cameraManager.displayedCameras
+        val searchMode = cameraManager.searchMode.observeAsState()
+        TopAppBar(title = {
+            when (searchMode.value) {
+                SearchMode.NONE -> {
+                    Text(stringResource(R.string.app_name))
+                }
 
-                    SearchMode.NAME -> {
-                        SearchBar(
-                            resources.getQuantityString(
-                                R.plurals.search_hint,
-                                cameras.size,
-                                cameras.size
-                            )
-                        ) {
-                            cameras = cameraManager.searchDisplayedCameras(SearchMode.NAME, it)
-                            loadView()
-                        }
-                    }
-
-                    SearchMode.NEIGHBOURHOOD -> {
-                        NeighbourhoodSearchBar(
-                            resources.getQuantityString(
-                                R.plurals.search_hint_neighbourhood,
-                                neighbourhoods.size,
-                                neighbourhoods.size
-                            )
-                        ) {
-                            cameras = cameraManager.searchDisplayedCameras(SearchMode.NEIGHBOURHOOD, it)
-                            loadView()
-                        }
+                SearchMode.NAME -> {
+                    SearchBar(
+                        pluralStringResource(
+                            R.plurals.search_hint, cameras.size, cameras.size
+                        )
+                    ) {
+                        cameraManager.searchDisplayedCameras(SearchMode.NAME, it)
                     }
                 }
-            },
-            actions = {
-                if (cameraManager.getSelectedCameras().isNotEmpty()) {
-                    ActionModeMenu() {
-                        menuItemClicked(it)
+
+                SearchMode.NEIGHBOURHOOD -> {
+                    NeighbourhoodSearchBar(
+                        pluralStringResource(
+                            R.plurals.search_hint_neighbourhood,
+                            cameraManager.neighbourhoods.size,
+                            cameraManager.neighbourhoods.size
+                        )
+                    ) {
+                        cameraManager.searchDisplayedCameras(SearchMode.NEIGHBOURHOOD, it)
                     }
-                } else {
-                    ActionBar() {
-                        menuItemClicked(it)
-                    }
+                }
+
+                else -> {}
+            }
+        }, actions = {
+            if (cameraManager.getSelectedCameras().isNotEmpty()) {
+                ActionModeMenu {
+                    menuItemClicked(it)
+                }
+            } else {
+                ActionBar {
+                    menuItemClicked(it)
                 }
             }
-        )
+        })
     }
 
     private fun menuItemClicked(id: Int) {
         when (id) {
             R.string.random_camera -> {
-                showCamera(cameras.random())
+                showCamera(cameraManager.visibleCameras.random())
             }
 
             R.string.shuffle -> {
@@ -164,7 +136,6 @@ class MainActivity : AppCompatActivity() {
             R.string.more -> {}
 
             else -> {
-                loadView()
             }
         }
     }
@@ -172,38 +143,43 @@ class MainActivity : AppCompatActivity() {
     @Composable
     fun MainContent(padding: PaddingValues) {
         Column(modifier = Modifier.padding(padding)) {
-            val displayedCameras = cameras.filter {
-                when (cameraManager.filterMode) {
-                    FilterMode.FAVOURITE -> it.isFavourite
-                    FilterMode.HIDDEN -> !it.isVisible
+            var displayedCameras = cameraManager.displayedCameras
+
+            val filterMode = cameraManager.filterMode.observeAsState()
+            displayedCameras = displayedCameras.filter {
+                when (filterMode.value) {
                     FilterMode.VISIBLE -> it.isVisible
+                    FilterMode.HIDDEN -> !it.isVisible
+                    FilterMode.FAVOURITE -> it.isFavourite
+                    else -> true
                 }
             } as ArrayList<Camera>
-            when (cameraManager.sortMode) {
+
+            val sortMode = cameraManager.sortMode.observeAsState()
+            when (sortMode.value) {
                 SortMode.NAME -> {
                     displayedCameras.sortWith(SortByName())
                 }
-
+                SortMode.DISTANCE -> {
+                    requestLocationPermissions(requestForList) {
+                        displayedCameras.sortWith(SortByDistance(it))
+                    }
+                }
                 SortMode.NEIGHBOURHOOD -> {
                     displayedCameras.sortWith(SortByNeighbourhood())
                 }
-
-                SortMode.DISTANCE -> {
-                    requestLocationPermissions(requestForList) { lastLocation ->
-                        displayedCameras.sortWith(SortByDistance(lastLocation))
-                    }
-                }
+                else -> {}
             }
-            when (cameraManager.viewMode) {
+
+            val viewMode = cameraManager.viewMode.observeAsState()
+            when (viewMode.value) {
                 ViewMode.LIST -> {
                     Row {
                         Visibility(visible = cameraManager.showSectionIndex) {
                             SectionIndex(displayedCameras)
                         }
                         CameraListView(
-                            displayedCameras,
-                            onItemClick = { showCamera(it) },
-                            modifier = Modifier.weight(1f)
+                            displayedCameras, onItemClick = { showCamera(it) }, modifier = Modifier.weight(1f)
                         )
                     }
                 }
@@ -218,6 +194,8 @@ class MainActivity : AppCompatActivity() {
                 ViewMode.GALLERY -> {
                     CameraGalleryView(displayedCameras) { showCamera(it) }
                 }
+
+                else -> {}
             }
         }
     }
@@ -225,15 +203,15 @@ class MainActivity : AppCompatActivity() {
     private fun loadView() {
         setContent {
             AppTheme {
-                val uiState = uiStateViewModel.state.observeAsState()
+                val uiState = cameraManager.state.observeAsState()
                 when (uiState.value) {
-                    UIStateViewModel.UIStates.LOADING -> {
+                    UIStates.LOADING -> {
                         Box(modifier = Modifier.fillMaxSize()) {
                             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                         }
                     }
 
-                    UIStateViewModel.UIStates.LOADED -> {
+                    UIStates.LOADED -> {
                         Scaffold(
                             topBar = {
                                 MainAppBar()
@@ -244,7 +222,7 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
 
-                    else -> {
+                    UIStates.ERROR -> {
                         Box(
                             modifier = Modifier.fillMaxSize()
                         ) {
@@ -252,9 +230,12 @@ class MainActivity : AppCompatActivity() {
                                 modifier = Modifier.align(Alignment.Center),
                                 textAlign = TextAlign.Center,
                                 text = "Error loading data",
+                                color = Color.White
                             )
                         }
                     }
+
+                    else -> {}
                 }
             }
         }
@@ -263,39 +244,24 @@ class MainActivity : AppCompatActivity() {
     private fun showCamera(camera: Camera) {
         val intent = Intent(this@MainActivity, CameraActivity::class.java)
         intent.putParcelableArrayListExtra("cameras", arrayListOf(camera))
-        getResult.launch(intent)
+        startActivity(intent)
     }
 
     private fun showAboutDialog() {
-        AlertDialog.Builder(this)
-            .setTitle(resources.getString(R.string.app_name_long))
-            .setMessage(
-                resources.getString(
-                    R.string.version,
-                    BuildConfig.VERSION_NAME
-                )
+        AlertDialog.Builder(this).setTitle(resources.getString(R.string.app_name_long)).setMessage(
+            resources.getString(
+                R.string.version, BuildConfig.VERSION_NAME
             )
-            .setNegativeButton("Close") { _, _ -> }
-            .setPositiveButton(R.string.rate) { _, _ -> rateApp() }
+        ).setNegativeButton("Close") { _, _ -> }.setPositiveButton(R.string.rate) { _, _ -> rateApp() }
             .setNeutralButton(R.string.licences) { _, _ ->
-                startActivity(
-                    Intent(
-                        this,
-                        OssLicensesMenuActivity::class.java
-                    )
-                )
-            }
-            .show()
+                startActivity(Intent(this, OssLicensesMenuActivity::class.java))
+            }.show()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         loadView()
-        cameraManager.downloadAll(this) { cameras, neighbourhoods ->
-            this.cameras = cameras
-            this.neighbourhoods = neighbourhoods
-            uiStateViewModel.onStateChanged(UIStateViewModel.UIStates.LOADED)
-        }
+        cameraManager.downloadAll(this)
     }
 
     private fun rateApp() {
@@ -312,12 +278,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestLocationPermissions(
-        requestCode: Int,
-        onPermissionGranted: ((location: Location) -> Unit)? = null
+        requestCode: Int, onPermissionGranted: ((location: Location) -> Unit)? = null
     ): Boolean {
         val permissionArray = arrayOf(
-            permission.ACCESS_FINE_LOCATION,
-            permission.ACCESS_COARSE_LOCATION
+            permission.ACCESS_FINE_LOCATION, permission.ACCESS_COARSE_LOCATION
         )
         val noPermissionsGranted = permissionArray.all {
             ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED

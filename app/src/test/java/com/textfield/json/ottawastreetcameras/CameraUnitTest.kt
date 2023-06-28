@@ -29,10 +29,10 @@ class CameraUnitTest {
         val camera = Camera(json)
 
         Locale.setDefault(Locale("en"))
-        assertEquals(json["description"], camera.getName())
+        assertEquals(json["description"], camera.name)
 
         Locale.setDefault(Locale("fr"))
-        assertEquals(json["descriptionFr"], camera.getName())
+        assertEquals(json["descriptionFr"], camera.name)
 
         assertEquals(json["number"], camera.num)
         assertEquals(json["type"], camera.owner)

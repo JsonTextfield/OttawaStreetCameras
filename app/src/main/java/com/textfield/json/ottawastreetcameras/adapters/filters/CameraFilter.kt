@@ -18,16 +18,16 @@ abstract class CameraFilter(private val allCameras: List<Camera>) : Filter() {
         val results = FilterResults()
         results.values = when {
             constraint.startsWith(favouritePrefix, true) -> allCameras.filter {
-                it.getName().contains(constraint.removePrefix(favouritePrefix).trim(), true) && it.isFavourite
+                it.name.contains(constraint.removePrefix(favouritePrefix).trim(), true) && it.isFavourite
             }
             constraint.startsWith(hiddenPrefix, true) -> allCameras.filter {
-                it.getName().contains(constraint.removePrefix(hiddenPrefix).trim(), true) && !it.isVisible
+                it.name.contains(constraint.removePrefix(hiddenPrefix).trim(), true) && !it.isVisible
             }
             constraint.startsWith(neighbourhoodPrefix, true) -> allCameras.filter {
                 it.neighbourhood.contains(constraint.removePrefix(neighbourhoodPrefix).trim(), true)
             }
             else -> allCameras.filter {
-                it.getName().contains(constraint, true) && it.isVisible
+                it.name.contains(constraint, true) && it.isVisible
             }
         }
         return results

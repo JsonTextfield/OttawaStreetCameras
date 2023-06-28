@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras.ui
+package com.textfield.json.ottawastreetcameras.ui.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -14,7 +14,6 @@ import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.StarBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.textfield.json.ottawastreetcameras.CameraManager
@@ -76,7 +76,7 @@ fun CameraListTile(camera: Camera, onClick: () -> Unit) {
                     .align(Alignment.CenterVertically)
             ) {
                 Text(
-                    camera.getName(),
+                    camera.name,
                 )
                 if (camera.neighbourhood.isNotBlank()) {
                     Text(
@@ -89,15 +89,22 @@ fun CameraListTile(camera: Camera, onClick: () -> Unit) {
             }
             val context = LocalContext.current
             IconButton(modifier = Modifier.align(Alignment.CenterVertically), onClick = {
-                camera.setFavourite(!camera.isFavourite)
+                camera.isFavourite = !camera.isFavourite
                 cameraManager.favouriteCamera(context, camera)
-            }, content = {
-                Icon(
-                    imageVector = if (camera.isFavourite) Icons.Rounded.Star else Icons.Rounded.StarBorder,
-                    contentDescription = context.getString(if (camera.isFavourite) R.string.remove_from_favourites else R.string.remove_from_favourites),
-                    tint = if (camera.isFavourite) Color.Yellow else LocalContentColor.current
-                )
-            })
+            }) {
+                if (camera.isFavourite) {
+                    Icon(
+                        Icons.Rounded.Star,
+                        contentDescription = stringResource(R.string.remove_from_favourites),
+                        tint = Color.Yellow
+                    )
+                } else {
+                    Icon(
+                        Icons.Rounded.StarBorder,
+                        contentDescription = stringResource(R.string.add_to_favourites),
+                    )
+                }
+            }
         }
     }
 }

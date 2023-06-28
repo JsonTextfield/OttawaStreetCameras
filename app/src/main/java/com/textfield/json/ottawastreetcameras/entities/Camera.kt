@@ -2,8 +2,6 @@ package com.textfield.json.ottawastreetcameras.entities
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.Marker
 import org.json.JSONObject
 
 /**
@@ -18,16 +16,15 @@ class Camera : BilingualObject, Parcelable {
         private set
     var num = 0
         private set
-    var isFavourite = false
-        private set
-    var isVisible = true
-        private set
 
+    var isFavourite = false
+    var isVisible = true
     var neighbourhood = ""
-    var marker: Marker? = null
 
     val url: String
         get() = "https://traffic.ottawa.ca/beta/camera?id=$num&timems=${System.currentTimeMillis()}"
+
+    constructor()
 
     constructor(jsonObject: JSONObject) {
         nameEn = jsonObject.optString("description") ?: ""
@@ -49,19 +46,6 @@ class Camera : BilingualObject, Parcelable {
         num = parcel.readInt()
     }
 
-    fun setVisible(b: Boolean) {
-        marker?.isVisible = b
-        isVisible = b
-    }
-
-    fun setFavourite(b: Boolean) {
-        isFavourite = b
-        if (b)
-            marker?.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
-        else
-            marker?.setIcon(BitmapDescriptorFactory.defaultMarker())
-    }
-
     override fun describeContents(): Int {
         return 0
     }
@@ -77,17 +61,7 @@ class Camera : BilingualObject, Parcelable {
     }
 
     override fun toString(): String {
-        return getSortableName()
-    }
-
-    companion object CREATOR : Parcelable.Creator<Camera> {
-        override fun createFromParcel(`in`: Parcel): Camera {
-            return Camera(`in`)
-        }
-
-        override fun newArray(size: Int): Array<Camera?> {
-            return arrayOfNulls(size)
-        }
+        return sortableName
     }
 
     override fun equals(other: Any?): Boolean {
@@ -99,5 +73,15 @@ class Camera : BilingualObject, Parcelable {
         var result = id.hashCode()
         result = 31 * result + num
         return result
+    }
+
+    companion object CREATOR : Parcelable.Creator<Camera> {
+        override fun createFromParcel(`in`: Parcel): Camera {
+            return Camera(`in`)
+        }
+
+        override fun newArray(size: Int): Array<Camera?> {
+            return arrayOfNulls(size)
+        }
     }
 }

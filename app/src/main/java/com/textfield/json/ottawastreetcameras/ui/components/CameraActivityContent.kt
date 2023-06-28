@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras.ui
+package com.textfield.json.ottawastreetcameras.ui.components
 
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable

@@ -6,14 +6,21 @@ import android.graphics.Bitmap
 import android.os.Build
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.*
-import android.widget.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowInsets
+import android.widget.ArrayAdapter
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.cardview.widget.CardView
 import com.android.volley.toolbox.ImageRequest
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.StreetCamsRequestQueue
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 open class GalleryAdapter(private val _context: Context, private val list: List<Camera>) :
@@ -26,9 +33,9 @@ open class GalleryAdapter(private val _context: Context, private val list: List<
         for (camera in list) {
             val request = ImageRequest(camera.url, { response ->
                 if (response != null) {
-                    images[camera.getName()] = response
+                    images[camera.name] = response
                 }
-                Log.w("GALLERY", "Loaded ${camera.getName()}")
+                Log.w("GALLERY", "Loaded ${camera.name}")
             }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.RGB_565, {
                 it.printStackTrace()
             })
@@ -82,10 +89,10 @@ open class GalleryAdapter(private val _context: Context, private val list: List<
             displayMetrics.widthPixels
         }
 
-        viewHolder.title?.text = camera.getName()
+        viewHolder.title?.text = camera.name
         viewHolder.star?.visibility = if (camera.isFavourite) View.VISIBLE else View.INVISIBLE
 
-        viewHolder.image?.setImageBitmap(images[camera.getName()])
+        viewHolder.image?.setImageBitmap(images[camera.name])
 
         // Return the completed view to render on screen
         return convertView!!

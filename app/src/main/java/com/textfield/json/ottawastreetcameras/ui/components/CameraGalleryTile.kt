@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras.ui
+package com.textfield.json.ottawastreetcameras.ui.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -58,7 +58,7 @@ private fun CameraGalleryTileContent(camera: Camera, onClick: (Camera) -> Unit) 
         ) {
             AsyncImage(
                 model = camera.url,
-                contentDescription = camera.getName(),
+                contentDescription = camera.name,
                 modifier = Modifier
                     .fillMaxSize()
                     .align(Alignment.Center)
@@ -87,7 +87,7 @@ private fun CameraGalleryTileContent(camera: Camera, onClick: (Camera) -> Unit) 
             ) {
 
                 Text(
-                    camera.getName(),
+                    camera.name,
                     modifier = Modifier.align(Alignment.BottomCenter),
                     color = Color.White,
                     textAlign = TextAlign.Center,

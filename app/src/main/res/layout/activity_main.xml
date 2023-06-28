@@ -5,7 +5,7 @@
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.textfield.json.ottawastreetcameras.activities.MainActivity">
+    tools:context="com.textfield.json.ottawastreetcameras.ui.activities.MainActivity">
 
     <ViewFlipper
         android:id="@+id/view_switcher"

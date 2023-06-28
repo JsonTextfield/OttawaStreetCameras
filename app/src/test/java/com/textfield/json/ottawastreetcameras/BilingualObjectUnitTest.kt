@@ -3,7 +3,7 @@ package com.textfield.json.ottawastreetcameras
 import com.textfield.json.ottawastreetcameras.entities.BilingualObject
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import java.util.*
+import java.util.Locale
 
 class BilingualObjectUnitTest {
     private class MyBilingualObject(name: String, nameFr: String) : BilingualObject() {
@@ -14,16 +14,16 @@ class BilingualObjectUnitTest {
     }
 
     @Test
-    fun testSortableName() {
+    fun testsortableName() {
         val name = "name"
         val nameFr = "nameFr"
         val myBilingualObject = MyBilingualObject(name, nameFr)
 
         Locale.setDefault(Locale("en"))
-        assertEquals(myBilingualObject.getSortableName(), name.uppercase(Locale.getDefault()))
+        assertEquals(myBilingualObject.sortableName, name.uppercase(Locale.getDefault()))
 
         Locale.setDefault(Locale("fr"))
-        assertEquals(myBilingualObject.getSortableName(), nameFr.uppercase(Locale.getDefault()))
+        assertEquals(myBilingualObject.sortableName, nameFr.uppercase(Locale.getDefault()))
     }
 
     @Test
@@ -33,10 +33,10 @@ class BilingualObjectUnitTest {
         val myBilingualObject = MyBilingualObject(name, nameFr)
 
         Locale.setDefault(Locale("en"))
-        assertEquals(myBilingualObject.getSortableName(), "NAME")
+        assertEquals(myBilingualObject.sortableName, "NAME")
 
         Locale.setDefault(Locale("fr"))
-        assertEquals(myBilingualObject.getSortableName(), "NAMEFR")
+        assertEquals(myBilingualObject.sortableName, "NAMEFR")
     }
 
     @Test
@@ -46,13 +46,13 @@ class BilingualObjectUnitTest {
         val myBilingualObject = MyBilingualObject(name, nameFr)
 
         Locale.setDefault(Locale("en"))
-        assertEquals(myBilingualObject.getName(), "name")
+        assertEquals(myBilingualObject.name, "name")
 
         Locale.setDefault(Locale("fr"))
-        assertEquals(myBilingualObject.getName(), "nameFr")
+        assertEquals(myBilingualObject.name, "nameFr")
 
         Locale.setDefault(Locale("es"))
-        assertEquals(myBilingualObject.getName(), "name")
+        assertEquals(myBilingualObject.name, "name")
     }
 
 

@@ -45,7 +45,7 @@ class ImageAdapter(private val _context: Context, list: List<Camera>) :
         }
 
         val camera = getItem(position)
-        viewHolder.title?.text = camera?.getName()
+        viewHolder.title?.text = camera?.name
 
         val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
         val result = if (resourceId > 0) {

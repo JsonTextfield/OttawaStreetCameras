@@ -1,11 +1,11 @@
-package com.textfield.json.ottawastreetcameras.ui
+package com.textfield.json.ottawastreetcameras.ui.components
 
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import com.textfield.json.ottawastreetcameras.CameraManager
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.SortMode
@@ -13,19 +13,18 @@ import com.textfield.json.ottawastreetcameras.SortMode
 
 @Composable
 fun SortModeMenu(expanded: Boolean, onItemSelected: () -> Unit) {
-    val context = LocalContext.current
     val cameraManager = CameraManager.getInstance()
     DropdownMenu(expanded = expanded, onDismissRequest = { onItemSelected() }) {
         fun setSortMode(sortMode: SortMode) {
-            cameraManager.sortMode = sortMode
+            cameraManager.onSortModeChanged(sortMode)
             onItemSelected()
         }
 
         DropdownMenuItem(
-            text = { Text(context.getString(R.string.sort_by_name)) },
+            text = { Text(stringResource(R.string.sort_by_name)) },
             leadingIcon = {
                 RadioButton(
-                    selected = cameraManager.sortMode == SortMode.NAME,
+                    selected = cameraManager.sortMode.value == SortMode.NAME,
                     onClick = {
                         setSortMode(SortMode.NAME)
                     },
@@ -36,10 +35,10 @@ fun SortModeMenu(expanded: Boolean, onItemSelected: () -> Unit) {
             },
         )
         DropdownMenuItem(
-            text = { Text(context.getString(R.string.sort_by_distance)) },
+            text = { Text(stringResource(R.string.sort_by_distance)) },
             leadingIcon = {
                 RadioButton(
-                    selected = cameraManager.sortMode == SortMode.DISTANCE,
+                    selected = cameraManager.sortMode.value == SortMode.DISTANCE,
                     onClick = { setSortMode(SortMode.DISTANCE) },
                 )
             },
@@ -48,10 +47,10 @@ fun SortModeMenu(expanded: Boolean, onItemSelected: () -> Unit) {
             },
         )
         DropdownMenuItem(
-            text = { Text(context.getString(R.string.sort_by_neighbourhood)) },
+            text = { Text(stringResource(R.string.sort_by_neighbourhood)) },
             leadingIcon = {
                 RadioButton(
-                    selected = cameraManager.sortMode == SortMode.NEIGHBOURHOOD,
+                    selected = cameraManager.sortMode.value == SortMode.NEIGHBOURHOOD,
                     onClick = { setSortMode(SortMode.NEIGHBOURHOOD) },
                 )
             },

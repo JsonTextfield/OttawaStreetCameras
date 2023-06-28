@@ -1,6 +1,8 @@
-package com.textfield.json.ottawastreetcameras.ui
+package com.textfield.json.ottawastreetcameras.ui.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -13,7 +15,7 @@ import com.textfield.json.ottawastreetcameras.entities.Camera
 @Composable
 fun SectionIndex(cameras: List<Camera>) {
     val dataString = cameras.map {
-        it.getSortableName().first()
+        it.sortableName.first()
     }.sorted().joinToString()
 
     val letters = Regex("[A-ZÀ-Ö]")

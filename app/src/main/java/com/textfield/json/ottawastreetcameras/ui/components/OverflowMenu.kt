@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras.ui
+package com.textfield.json.ottawastreetcameras.ui.components
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
@@ -21,7 +21,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import com.textfield.json.ottawastreetcameras.CameraManager
 import com.textfield.json.ottawastreetcameras.FilterMode
 import com.textfield.json.ottawastreetcameras.R
@@ -30,23 +30,22 @@ import com.textfield.json.ottawastreetcameras.ViewMode
 
 @Composable
 fun OverflowMenu(expanded: Boolean, onItemSelected: (id: Int) -> Unit) {
-    val context = LocalContext.current
     val width = LocalConfiguration.current.screenWidthDp
     var remainingActions = width / 48 / 2 - 1
-    var cameraManager = CameraManager.getInstance()
+    val cameraManager = CameraManager.getInstance()
 
     Log.e("WIDTH", width.toString())
     Log.e("REMAINING_ACTIONS", remainingActions.toString())
 
     DropdownMenu(expanded = expanded, onDismissRequest = { onItemSelected(-1) }) {
 
-        Box() {
+        Box {
             var showViewModeMenu by remember { mutableStateOf(false) }
             ViewModeMenu(showViewModeMenu) {
                 showViewModeMenu = false
             }
             OverflowMenuItem(
-                icon = when (cameraManager.viewMode) {
+                icon = when (cameraManager.viewMode.value) {
                     ViewMode.LIST -> {
                         Icons.Rounded.List
                     }
@@ -55,19 +54,19 @@ fun OverflowMenu(expanded: Boolean, onItemSelected: (id: Int) -> Unit) {
                         Icons.Filled.Place
                     }
 
-                    ViewMode.GALLERY -> {
+                    else -> {
                         Icons.Rounded.GridView
                     }
                 },
-                tooltip = context.getString(R.string.list),
-                visible = cameraManager.viewMode != ViewMode.LIST && remainingActions-- < 1
+                tooltip = stringResource(R.string.list),
+                visible = cameraManager.viewMode.value != ViewMode.LIST && remainingActions-- < 1
             ) {
                 showViewModeMenu = !showViewModeMenu
                 onItemSelected(R.string.list)
             }
         }
 
-        Box() {
+        Box {
 
             var showSortMenu by remember { mutableStateOf(false) }
             SortModeMenu(showSortMenu) {
@@ -76,8 +75,8 @@ fun OverflowMenu(expanded: Boolean, onItemSelected: (id: Int) -> Unit) {
 
             OverflowMenuItem(
                 icon = Icons.Rounded.Sort,
-                tooltip = context.getString(R.string.sort),
-                visible = cameraManager.viewMode != ViewMode.MAP && remainingActions-- < 1
+                tooltip = stringResource(R.string.sort),
+                visible = cameraManager.viewMode.value != ViewMode.MAP && remainingActions-- < 1
             ) {
                 showSortMenu = !showSortMenu
                 onItemSelected(R.string.sort)
@@ -85,57 +84,53 @@ fun OverflowMenu(expanded: Boolean, onItemSelected: (id: Int) -> Unit) {
         }
         OverflowMenuItem(
             icon = Icons.Rounded.Search,
-            tooltip = context.getString(R.string.search),
+            tooltip = stringResource(R.string.search),
             visible = remainingActions-- < 1
         ) {
-            cameraManager.searchMode =
-                if (cameraManager.searchMode != SearchMode.NAME) SearchMode.NAME else SearchMode.NONE
+            cameraManager.onSearchModeChanged(SearchMode.NAME)
             onItemSelected(R.string.search)
         }
         OverflowMenuItem(
             icon = Icons.Rounded.TravelExplore,
-            tooltip = context.getString(R.string.search_neighbourhood),
+            tooltip = stringResource(R.string.search_neighbourhood),
             visible = remainingActions-- < 1
         ) {
-            cameraManager.searchMode =
-                if (cameraManager.searchMode != SearchMode.NEIGHBOURHOOD) SearchMode.NEIGHBOURHOOD else SearchMode.NONE
+            cameraManager.onSearchModeChanged(SearchMode.NEIGHBOURHOOD)
             onItemSelected(R.string.search_neighbourhood)
         }
         OverflowMenuItem(
             icon = Icons.Rounded.Star,
-            tooltip = context.getString(R.string.favourites),
+            tooltip = stringResource(R.string.favourites),
             visible = remainingActions-- < 1
         ) {
-            cameraManager.filterMode =
-                if (cameraManager.filterMode == FilterMode.FAVOURITE) FilterMode.VISIBLE else FilterMode.FAVOURITE
+            cameraManager.onFilterModeChanged(FilterMode.FAVOURITE)
             onItemSelected(R.string.favourites)
         }
         OverflowMenuItem(
             icon = Icons.Rounded.VisibilityOff,
-            tooltip = context.getString(R.string.hidden_cameras),
+            tooltip = stringResource(R.string.hidden_cameras),
             visible = remainingActions-- < 1
         ) {
-            cameraManager.filterMode =
-                if (cameraManager.filterMode == FilterMode.HIDDEN) FilterMode.VISIBLE else FilterMode.HIDDEN
+            cameraManager.onFilterModeChanged(FilterMode.HIDDEN)
             onItemSelected(R.string.hidden_cameras)
         }
         OverflowMenuItem(
             icon = Icons.Rounded.Casino,
-            tooltip = context.getString(R.string.random_camera),
+            tooltip = stringResource(R.string.random_camera),
             visible = remainingActions-- < 1
         ) {
             onItemSelected(R.string.random_camera)
         }
         OverflowMenuItem(
             icon = Icons.Rounded.Shuffle,
-            tooltip = context.getString(R.string.shuffle),
+            tooltip = stringResource(R.string.shuffle),
             visible = remainingActions-- < 1
         ) {
             onItemSelected(R.string.shuffle)
         }
         OverflowMenuItem(
             icon = Icons.Rounded.Info,
-            tooltip = context.getString(R.string.about),
+            tooltip = stringResource(R.string.about),
             visible = remainingActions-- < 1
         ) {
             onItemSelected(R.string.about)

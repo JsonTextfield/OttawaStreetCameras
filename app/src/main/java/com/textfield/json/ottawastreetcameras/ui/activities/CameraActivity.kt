@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras.activities
+package com.textfield.json.ottawastreetcameras.ui.activities
 
 import android.Manifest
 import android.content.ContentValues
@@ -10,6 +10,7 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.ImageView
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
@@ -27,10 +28,12 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.android.volley.toolbox.ImageRequest
 import com.textfield.json.ottawastreetcameras.R
+import com.textfield.json.ottawastreetcameras.StreetCamsRequestQueue
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import com.textfield.json.ottawastreetcameras.ui.AppTheme
-import com.textfield.json.ottawastreetcameras.ui.CameraActivityContent
+import com.textfield.json.ottawastreetcameras.ui.components.AppTheme
+import com.textfield.json.ottawastreetcameras.ui.components.CameraActivityContent
 import kotlinx.coroutines.Runnable
 import java.io.FileOutputStream
 import java.io.IOException
@@ -100,38 +103,36 @@ class CameraActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (PackageManager.PERMISSION_GRANTED in grantResults && requestCode == requestForSave) {
-            //saveSelectedImages()
+            saveSelectedImages()
         }
     }
-/*
+
     private fun saveSelectedImages() {
         var imagesSaved = 0
-        cameras.indices.forEach {
-            if (cameras[it] in selectedCameras) {
-                val imageDrawable = listView.getViewByPosition(it).findViewById<ImageView>(R.id.source).drawable
-                val title = listView.getViewByPosition(it).findViewById<TextView>(R.id.label)
-                if (imageDrawable != null) {
-                    if (saveImage((imageDrawable as BitmapDrawable).bitmap, title.text.toString())) {
-                        imagesSaved++
-                    }
-                } else {
-                    Log.w("CameraActivity", "$title is null")
+        for (camera in selectedCameras) {
+            val request = ImageRequest(camera.url, { response ->
+                if (response != null) {
+                    saveImage(response, camera.name)
+                    imagesSaved++
                 }
-            }
+            }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.RGB_565, {
+                Log.w("STREETCAMS", it)
+            })
+            StreetCamsRequestQueue.getInstance(this).add(request)
         }
 
-        Snackbar.make(
+        /*Snackbar.make(
             listView,
             resources.getQuantityString(R.plurals.images_saved, imagesSaved, imagesSaved),
             Snackbar.LENGTH_LONG
-        ).show()
+        ).show()*/
     }
-*/
+
     private fun saveImage(bitmapImage: Bitmap, fileName: String): Boolean {
         // Add a media item that other apps shouldn't see until the item is fully written to the media store.
         val resolver = applicationContext.contentResolver
 
-        // Find all audio files on the primary external storage device.
+        // Find all image files on the primary external storage device.
         val imageCollection =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
@@ -149,7 +150,7 @@ class CameraActivity : AppCompatActivity() {
         val songContentUri = resolver.insert(imageCollection, imageDetails)
 
         resolver.openFileDescriptor(songContentUri!!, "w", null).use { pfd ->
-            // Write data into the pending audio file.
+            // Write data into the pending file.
 
             try {
                 val out = FileOutputStream(pfd?.fileDescriptor)
@@ -162,7 +163,7 @@ class CameraActivity : AppCompatActivity() {
             }
         }
 
-        // Now that we're finished, release the "pending" status, and allow other apps to play the audio track.
+        // Now that we're finished, release the "pending" status
         imageDetails.clear()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             imageDetails.put(MediaStore.Images.Media.IS_PENDING, 0)

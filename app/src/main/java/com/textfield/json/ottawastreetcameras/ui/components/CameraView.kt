@@ -1,6 +1,5 @@
-package com.textfield.json.ottawastreetcameras.ui
+package com.textfield.json.ottawastreetcameras.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,7 +27,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
@@ -58,7 +56,7 @@ fun CameraView(camera: Camera, shuffle: Boolean = false) {
         val imageRequest = ImageRequest.Builder(context).data(model).build()
         AsyncImage(
             model = imageRequest,
-            contentDescription = camera.getName(),
+            contentDescription = camera.name,
             modifier = Modifier
                 .fillMaxWidth()
                 .blur(radius = 10.dp),
@@ -66,7 +64,7 @@ fun CameraView(camera: Camera, shuffle: Boolean = false) {
         )
         AsyncImage(
             model = imageRequest,
-            contentDescription = camera.getName(),
+            contentDescription = camera.name,
             modifier = Modifier.fillMaxWidth(),
             contentScale = ContentScale.Fit,
         )
@@ -84,7 +82,7 @@ fun CameraView(camera: Camera, shuffle: Boolean = false) {
                 ),
         ) {
             Text(
-                camera.getName(),
+                camera.name,
                 color = Color.White,
                 textAlign = TextAlign.Center,
                 fontSize = 12.sp,
