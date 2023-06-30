@@ -6,12 +6,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun MenuItem(icon: ImageVector, tooltip: String, visible: Boolean, onClick: () -> Unit) {
+fun MenuItem(icon: ImageVector, tooltip: String, visible: Boolean = true, onClick: () -> Unit) {
     Visibility(
         visible = visible,
         child = {
@@ -24,6 +25,7 @@ fun MenuItem(icon: ImageVector, tooltip: String, visible: Boolean, onClick: () -
                         Icon(icon, tooltip)
                     },
                     onClick = onClick,
+                    colors = IconButtonDefaults.iconButtonColors(contentColor = Color.White)
                 )
             }
         }

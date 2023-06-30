@@ -15,17 +15,23 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.textfield.json.ottawastreetcameras.CameraManager
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
@@ -39,6 +45,7 @@ fun CameraGalleryTile(camera: Camera, onClick: (Camera) -> Unit) {
 @Composable
 private fun CameraGalleryTileContent(camera: Camera, onClick: (Camera) -> Unit) {
     val cameraManager = CameraManager.getInstance()
+    var isSelected by remember { mutableStateOf(cameraManager.isCameraSelected(camera)) }
     Box(
         modifier = Modifier
             .clip(shape = RoundedCornerShape(10.dp))
@@ -48,16 +55,22 @@ private fun CameraGalleryTileContent(camera: Camera, onClick: (Camera) -> Unit) 
             modifier = Modifier.combinedClickable(
                 onClick = {
                     if (cameraManager.getSelectedCameras().isNotEmpty()) {
+                        isSelected = !isSelected
                         cameraManager.selectCamera(camera)
                     } else {
                         onClick(camera)
                     }
                 },
-                onLongClick = { cameraManager.selectCamera(camera) },
+                onLongClick = {
+                    isSelected = !isSelected
+                    cameraManager.selectCamera(camera)
+                },
             )
         ) {
+            val context = LocalContext.current
+            val model by remember { mutableStateOf(ImageRequest.Builder(context).data(camera.url).build()) }
             AsyncImage(
-                model = camera.url,
+                model = model,
                 contentDescription = camera.name,
                 modifier = Modifier
                     .fillMaxSize()
@@ -70,8 +83,7 @@ private fun CameraGalleryTileContent(camera: Camera, onClick: (Camera) -> Unit) 
                     .fillMaxSize()
                     .background(
                         color =
-                        if (cameraManager.isCameraSelected(camera)
-                        ) {
+                        if (isSelected) {
                             colorResource(id = R.color.galleryTileSelectedColour)
                         } else {
                             Color.Transparent
@@ -102,7 +114,7 @@ private fun CameraGalleryTileContent(camera: Camera, onClick: (Camera) -> Unit) 
                     Icons.Rounded.Star,
                     contentDescription = "",
                     modifier = Modifier.align(Alignment.TopEnd),
-                    tint = Color.Yellow,
+                    tint = colorResource(id = R.color.favouriteColour),
                 )
             }
         }

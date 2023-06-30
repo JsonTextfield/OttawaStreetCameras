@@ -1,5 +1,6 @@
 package com.textfield.json.ottawastreetcameras.ui.components
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -26,9 +27,14 @@ fun SearchBar(hintText: String, onValueChange: (String) -> Unit) {
 @Composable
 private fun SearchBarContent(hintText: String, value: String, onValueChange: (String) -> Unit) {
     TextField(
-        value, singleLine = true, placeholder = {
+        value, singleLine = true,
+        placeholder = {
             Text(hintText, fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-        }, onValueChange = onValueChange, modifier = Modifier.heightIn(0.dp, 50.dp),
+        },
+        onValueChange = onValueChange,
+        modifier = Modifier
+            .heightIn(0.dp, 50.dp)
+            .fillMaxWidth(),
         textStyle = TextStyle(
             fontSize = 12.sp,
         )

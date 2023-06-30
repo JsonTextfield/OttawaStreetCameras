@@ -27,6 +27,7 @@
     <string name="search">Chercher</string>
     <string name="search_neighbourhood">Chercher par quartier</string>
     <string name="select_all">Tout sélectionner</string>
+    <string name="deselect_all">Tout déselectionner</string>
     <string name="show">Montre</string>
     <string name="shuffle">Mélanger</string>
     <string name="sort_by_distance">Triez par distance</string>

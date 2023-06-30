@@ -2,7 +2,7 @@ package com.textfield.json.ottawastreetcameras.ui.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CameraAlt
-import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material.icons.rounded.Deselect
 import androidx.compose.material.icons.rounded.SelectAll
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.StarBorder
@@ -21,9 +21,9 @@ fun ActionModeMenu(onItemSelected: (id: Int) -> Unit) {
     val cameraManager = CameraManager.getInstance()
     val selectedCameras = cameraManager.getSelectedCameras()
     val maxCameras = 8
-    MenuItem(icon = Icons.Rounded.Clear, tooltip = stringResource(R.string.clear), visible = true) {
+    MenuItem(icon = Icons.Rounded.Deselect, tooltip = stringResource(R.string.deselect_all), visible = true) {
         cameraManager.clearSelectedCameras()
-        onItemSelected(R.string.clear)
+        onItemSelected(R.string.deselect_all)
     }
 
     MenuItem(

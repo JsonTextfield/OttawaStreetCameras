@@ -6,4 +6,5 @@
     <color name="cameraNameBackground">#66000000</color>
     <color name="galleryTileSelectedColour">#4F00BCD4</color>
     <color name="cameraViewSelectedColour">#4F00BCD4</color>
+    <color name="favouriteColour">#FFED00</color>
 </resources>

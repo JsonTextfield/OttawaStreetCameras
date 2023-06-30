@@ -32,10 +32,22 @@ import com.textfield.json.ottawastreetcameras.ViewMode
 fun ActionBar(onItemSelected: (id: Int) -> Unit) {
     val cameraManager = CameraManager.getInstance()
     val width = LocalConfiguration.current.screenWidthDp
-    var remainingActions = width / 48 / 2
+    val maxActions = width / 48 / 3
+    var remainingActions = maxActions
     Log.e("WIDTH", width.toString())
     Log.e("MAX_ACTIONS", remainingActions.toString())
 
+    val showMenuOptions = hashMapOf(
+        R.string.gallery to (remainingActions-- > 0),
+        R.string.sort to (cameraManager.viewMode.value != ViewMode.MAP && remainingActions-- > 0),
+        R.string.search to (remainingActions-- > 0),
+        R.string.search_neighbourhood to (remainingActions-- > 0),
+        R.string.favourites to (remainingActions-- > 0),
+        R.string.hidden_cameras to (remainingActions-- > 0),
+        R.string.random_camera to (remainingActions-- > 0),
+        R.string.shuffle to (remainingActions-- > 0),
+        R.string.about to (remainingActions-- > 0),
+    )
     Box {
         var showViewModeMenu by remember { mutableStateOf(false) }
         ViewModeMenu(showViewModeMenu) {
@@ -69,13 +81,12 @@ fun ActionBar(onItemSelected: (id: Int) -> Unit) {
                     stringResource(R.string.gallery)
                 }
             },
-            visible = remainingActions-- > 0
+            visible = showMenuOptions[R.string.gallery] ?: false
         ) {
             showViewModeMenu = !showViewModeMenu
             onItemSelected(R.string.gallery)
         }
     }
-
     Box {
         var showSortMenu by remember { mutableStateOf(false) }
         SortModeMenu(showSortMenu) {
@@ -86,7 +97,7 @@ fun ActionBar(onItemSelected: (id: Int) -> Unit) {
         MenuItem(
             icon = Icons.Rounded.Sort,
             tooltip = stringResource(R.string.sort),
-            visible = cameraManager.viewMode.value != ViewMode.MAP && remainingActions-- > 0
+            visible = showMenuOptions[R.string.sort] ?: false
         ) {
             showSortMenu = !showSortMenu
             onItemSelected(R.string.sort)
@@ -95,7 +106,7 @@ fun ActionBar(onItemSelected: (id: Int) -> Unit) {
     MenuItem(
         icon = Icons.Rounded.Search,
         tooltip = stringResource(R.string.search),
-        visible = remainingActions-- > 0
+        visible = showMenuOptions[R.string.search] ?: false
     ) {
         cameraManager.onSearchModeChanged(SearchMode.NAME)
         onItemSelected(R.string.search)
@@ -103,7 +114,7 @@ fun ActionBar(onItemSelected: (id: Int) -> Unit) {
     MenuItem(
         icon = Icons.Rounded.TravelExplore,
         tooltip = stringResource(R.string.search_neighbourhood),
-        visible = remainingActions-- > 0
+        visible = showMenuOptions[R.string.neighbourhoods] ?: false
     ) {
         cameraManager.onSearchModeChanged(SearchMode.NEIGHBOURHOOD)
         onItemSelected(R.string.search_neighbourhood)
@@ -111,15 +122,15 @@ fun ActionBar(onItemSelected: (id: Int) -> Unit) {
     MenuItem(
         icon = Icons.Rounded.Star,
         tooltip = stringResource(R.string.favourites),
-        visible = remainingActions-- > 0
+        visible = showMenuOptions[R.string.favourites] ?: false
     ) {
         cameraManager.onFilterModeChanged(FilterMode.FAVOURITE)
         onItemSelected(R.string.favourites)
     }
     MenuItem(
         icon = Icons.Rounded.VisibilityOff,
-        tooltip = stringResource(R.string.hide),
-        visible = remainingActions-- > 0
+        tooltip = stringResource(R.string.hidden_cameras),
+        visible = showMenuOptions[R.string.hidden_cameras] ?: false
     ) {
         cameraManager.onFilterModeChanged(FilterMode.HIDDEN)
         onItemSelected(R.string.hide)
@@ -127,31 +138,38 @@ fun ActionBar(onItemSelected: (id: Int) -> Unit) {
     MenuItem(
         icon = Icons.Rounded.Casino,
         tooltip = stringResource(R.string.random_camera),
-        visible = remainingActions-- > 0
+        visible = showMenuOptions[R.string.random_camera] ?: false
     ) {
         onItemSelected(R.string.random_camera)
     }
     MenuItem(
         icon = Icons.Rounded.Shuffle,
         tooltip = stringResource(R.string.shuffle),
-        visible = remainingActions-- > 0
+        visible = showMenuOptions[R.string.shuffle] ?: false
     ) {
-        //shuffleCameras()
         onItemSelected(R.string.shuffle)
     }
-    MenuItem(icon = Icons.Rounded.Info, tooltip = stringResource(R.string.about), visible = remainingActions-- > 0) {
-        //showAboutDialog()
+    MenuItem(
+        icon = Icons.Rounded.Info,
+        tooltip = stringResource(R.string.about),
+        visible = showMenuOptions[R.string.about] ?: false
+    ) {
         onItemSelected(R.string.about)
     }
     if (remainingActions < 0) {
+
         Box {
             var showOverflowMenu by remember { mutableStateOf(false) }
-            OverflowMenu(showOverflowMenu) {
+            OverflowMenu(showOverflowMenu, showMenuOptions) {
                 showOverflowMenu = false
+                onItemSelected(it)
             }
-            MenuItem(icon = Icons.Rounded.MoreVert, tooltip = stringResource(R.string.more), visible = true) {
+            MenuItem(
+                icon = Icons.Rounded.MoreVert,
+                tooltip = stringResource(R.string.more),
+                visible = true
+            ) {
                 showOverflowMenu = true
-                onItemSelected(R.string.more)
             }
         }
     }

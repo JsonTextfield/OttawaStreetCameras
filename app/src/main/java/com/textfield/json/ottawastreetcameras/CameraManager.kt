@@ -22,12 +22,12 @@ import org.json.JSONObject
 
 class CameraManager : ViewModel() {
 
-    private var _state: MutableLiveData<UIStates> = MutableLiveData<UIStates>(UIStates.LOADING)
-    val state: LiveData<UIStates>
-        get() = _state
+    private var _uiState: MutableLiveData<UIStates> = MutableLiveData<UIStates>(UIStates.LOADING)
+    val uiState: LiveData<UIStates>
+        get() = _uiState
 
     fun onUIStateChanged(state: UIStates) {
-        _state.value = state
+        _uiState.value = state
     }
 
     private val _drawerShouldBeOpened = MutableStateFlow(false)

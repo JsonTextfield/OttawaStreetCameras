@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,11 +25,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -53,7 +56,6 @@ import com.textfield.json.ottawastreetcameras.ui.components.ActionModeMenu
 import com.textfield.json.ottawastreetcameras.ui.components.AppTheme
 import com.textfield.json.ottawastreetcameras.ui.components.CameraGalleryView
 import com.textfield.json.ottawastreetcameras.ui.components.CameraListView
-import com.textfield.json.ottawastreetcameras.ui.components.NeighbourhoodSearchBar
 import com.textfield.json.ottawastreetcameras.ui.components.SearchBar
 import com.textfield.json.ottawastreetcameras.ui.components.SectionIndex
 import com.textfield.json.ottawastreetcameras.ui.components.StreetCamsMap
@@ -73,13 +75,13 @@ class MainActivity : AppCompatActivity() {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun MainAppBar() {
+    fun MainAppBar(useDarkTheme: Boolean = isSystemInDarkTheme()) {
         val cameras = cameraManager.displayedCameras
         val searchMode = cameraManager.searchMode.observeAsState()
         TopAppBar(title = {
             when (searchMode.value) {
                 SearchMode.NONE -> {
-                    Text(stringResource(R.string.app_name))
+                    Text(stringResource(R.string.app_name), color = Color.White)
                 }
 
                 SearchMode.NAME -> {
@@ -93,7 +95,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 SearchMode.NEIGHBOURHOOD -> {
-                    NeighbourhoodSearchBar(
+                    SearchBar(
                         pluralStringResource(
                             R.plurals.search_hint_neighbourhood,
                             cameraManager.neighbourhoods.size,
@@ -116,7 +118,15 @@ class MainActivity : AppCompatActivity() {
                     menuItemClicked(it)
                 }
             }
-        })
+        },
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = if (!useDarkTheme || cameraManager.getSelectedCameras().isNotEmpty()) {
+                    colorResource(id = R.color.colorAccent)
+                } else {
+                    Color.Black
+                }
+            )
+        )
     }
 
     private fun menuItemClicked(id: Int) {
@@ -143,16 +153,12 @@ class MainActivity : AppCompatActivity() {
     @Composable
     fun MainContent(padding: PaddingValues) {
         Column(modifier = Modifier.padding(padding)) {
-            var displayedCameras = cameraManager.displayedCameras
-
             val filterMode = cameraManager.filterMode.observeAsState()
-            displayedCameras = displayedCameras.filter {
-                when (filterMode.value) {
-                    FilterMode.VISIBLE -> it.isVisible
-                    FilterMode.HIDDEN -> !it.isVisible
-                    FilterMode.FAVOURITE -> it.isFavourite
-                    else -> true
-                }
+            val displayedCameras = when (filterMode.value) {
+                FilterMode.VISIBLE -> cameraManager.visibleCameras
+                FilterMode.HIDDEN -> cameraManager.hiddenCameras
+                FilterMode.FAVOURITE -> cameraManager.favouriteCameras
+                else -> cameraManager.visibleCameras
             } as ArrayList<Camera>
 
             val sortMode = cameraManager.sortMode.observeAsState()
@@ -160,14 +166,17 @@ class MainActivity : AppCompatActivity() {
                 SortMode.NAME -> {
                     displayedCameras.sortWith(SortByName())
                 }
+
                 SortMode.DISTANCE -> {
                     requestLocationPermissions(requestForList) {
                         displayedCameras.sortWith(SortByDistance(it))
                     }
                 }
+
                 SortMode.NEIGHBOURHOOD -> {
                     displayedCameras.sortWith(SortByNeighbourhood())
                 }
+
                 else -> {}
             }
 
@@ -203,11 +212,13 @@ class MainActivity : AppCompatActivity() {
     private fun loadView() {
         setContent {
             AppTheme {
-                val uiState = cameraManager.state.observeAsState()
+                val uiState = cameraManager.uiState.observeAsState()
                 when (uiState.value) {
                     UIStates.LOADING -> {
                         Box(modifier = Modifier.fillMaxSize()) {
-                            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                            CircularProgressIndicator(
+                                modifier = Modifier.align(Alignment.Center),
+                            )
                         }
                     }
 
