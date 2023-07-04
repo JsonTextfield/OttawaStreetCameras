@@ -36,10 +36,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun CameraView(camera: Camera, shuffle: Boolean = false) {
     Box(
-        modifier = Modifier
-            .heightIn(0.dp, LocalConfiguration.current.screenHeightDp.dp)
-            //.wrapContentHeight()
-            .fillMaxWidth()
+        modifier = Modifier.heightIn(0.dp, LocalConfiguration.current.screenHeightDp.dp)
     ) {
         val context = LocalContext.current
         var drawable by remember { mutableStateOf<Drawable?>(null) }

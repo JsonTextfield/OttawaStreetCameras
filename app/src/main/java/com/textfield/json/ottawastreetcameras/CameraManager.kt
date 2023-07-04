@@ -1,22 +1,18 @@
 package com.textfield.json.ottawastreetcameras
 
 import android.content.Context
-import android.location.Location
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
-import com.textfield.json.ottawastreetcameras.comparators.SortByDistance
 import com.textfield.json.ottawastreetcameras.comparators.SortByName
 import com.textfield.json.ottawastreetcameras.comparators.SortByNeighbourhood
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.entities.Neighbourhood
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
@@ -30,15 +26,12 @@ class CameraManager : ViewModel() {
         _uiState.value = state
     }
 
-    private val _drawerShouldBeOpened = MutableStateFlow(false)
-    val drawerShouldBeOpened = _drawerShouldBeOpened.asStateFlow()
+    private var _isActionMode: MutableLiveData<Boolean> = MutableLiveData<Boolean>(false)
+    val isActionMode: LiveData<Boolean>
+        get() = _isActionMode
 
-    fun openDrawer() {
-        _drawerShouldBeOpened.value = true
-    }
-
-    fun resetOpenDrawerAction() {
-        _drawerShouldBeOpened.value = false
+    fun toggleActionMode() {
+        _isActionMode.value = !(_isActionMode.value ?: true)
     }
 
     private val tag = "CameraManager"
@@ -96,7 +89,8 @@ class CameraManager : ViewModel() {
     fun onFilterModeChanged(filterMode: FilterMode) {
         if (filterMode == _filterMode.value) {
             _filterMode.value = FilterMode.VISIBLE
-        } else {
+        }
+        else {
             _filterMode.value = filterMode
         }
     }
@@ -108,7 +102,8 @@ class CameraManager : ViewModel() {
     fun onSearchModeChanged(searchMode: SearchMode) {
         if (searchMode == _searchMode.value) {
             _searchMode.value = SearchMode.NONE
-        } else {
+        }
+        else {
             _searchMode.value = searchMode
         }
     }
@@ -184,7 +179,7 @@ class CameraManager : ViewModel() {
     }
 
     private fun downloadNeighbourhoods(
-        context: Context, onComplete: (neighbourhoods: ArrayList<Neighbourhood>) -> Unit
+        context: Context, onComplete: (neighbourhoods: ArrayList<Neighbourhood>) -> Unit,
     ) {
         Log.e("STREETCAMS", "downloading neighbourhoods")
         val url =
@@ -220,7 +215,8 @@ class CameraManager : ViewModel() {
             downloadNeighbourhoods(context) {
                 if (cameras.isEmpty()) {
                     onUIStateChanged(UIStates.ERROR)
-                } else {
+                }
+                else {
                     onUIStateChanged(UIStates.LOADED)
                 }
             }
@@ -231,18 +227,8 @@ class CameraManager : ViewModel() {
         selectedCameras.clear()
     }
 
-    fun sortDisplayedCameras(sortMode: SortMode, location: Location? = null): ArrayList<Camera> {
-        return when (sortMode) {
-            SortMode.NAME -> ArrayList(allCameras.sortedWith(SortByName()))
-            SortMode.DISTANCE -> {
-                if (location != null) {
-                    ArrayList(allCameras.sortedWith(SortByDistance(location)))
-                }
-                ArrayList(allCameras.sortedWith(SortByName()))
-            }
-
-            SortMode.NEIGHBOURHOOD -> ArrayList(allCameras.sortedWith(SortByNeighbourhood()))
-        }
+    fun sortCameras(comparator: Comparator<Camera>): ArrayList<Camera> {
+        return ArrayList<Camera>(displayedCameras.sortedWith(comparator))
     }
 
     fun searchDisplayedCameras(searchMode: SearchMode, query: String = ""): ArrayList<Camera> {
@@ -263,9 +249,11 @@ class CameraManager : ViewModel() {
     fun selectCamera(camera: Camera) {
         if (selectedCameras.contains(camera)) {
             selectedCameras.remove(camera)
-        } else {
+        }
+        else {
             selectedCameras.add(camera)
         }
+        _isActionMode.value = selectedCameras.isNotEmpty()
     }
 
     fun getSelectedCameras(): ArrayList<Camera> {
