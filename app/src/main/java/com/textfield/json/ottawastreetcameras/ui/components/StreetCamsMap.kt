@@ -2,6 +2,7 @@ package com.textfield.json.ottawastreetcameras.ui.components
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -55,12 +56,13 @@ fun StreetCamsMap(cameras: List<Camera>, isMyLocationEnabled: Boolean, onItemCli
             }
         },
     ) {
+        val cameraState = CameraManager.getInstance().cameraState.observeAsState()
         cameras.map { camera ->
             Marker(
                 state = MarkerState(position = LatLng(camera.lat, camera.lon)),
                 title = camera.name,
                 onInfoWindowClick = {
-                    if (CameraManager.getInstance().getSelectedCameras().isNotEmpty()) {
+                    if (cameraState.value?.selectedCameras?.isNotEmpty() == true) {
                         CameraManager.getInstance().selectCamera(camera)
                     } else {
                         onItemClick(camera)

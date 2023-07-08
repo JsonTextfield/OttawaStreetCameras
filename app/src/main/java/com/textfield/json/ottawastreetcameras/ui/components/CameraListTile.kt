@@ -17,10 +17,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,27 +30,22 @@ import com.textfield.json.ottawastreetcameras.CameraManager
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
 
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CameraListTile(camera: Camera, onClick: () -> Unit) {
     val cameraManager = CameraManager.getInstance()
-    var isSelected by remember { mutableStateOf(cameraManager.isCameraSelected(camera)) }
+    val cameraState = cameraManager.cameraState.observeAsState()
     Surface(
         color = Color.Transparent, modifier = Modifier
             .defaultMinSize(minHeight = 50.dp)
             .combinedClickable(onClick = {
-                if (cameraManager
-                        .getSelectedCameras()
-                        .isNotEmpty()
-                ) {
-                    isSelected = !isSelected
+                if (cameraState.value?.selectedCameras?.isNotEmpty() == true) {
                     cameraManager.selectCamera(camera)
-                } else {
+                }
+                else {
                     onClick()
                 }
             }, onLongClick = {
-                isSelected = !isSelected
                 cameraManager.selectCamera(camera)
             })
     ) {
@@ -61,11 +53,13 @@ fun CameraListTile(camera: Camera, onClick: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    color = if (isSelected) {
+                    color = if (cameraState.value?.selectedCameras?.contains(camera) == true) {
                         colorResource(R.color.colorAccent)
-                    } else if (isSystemInDarkTheme()) {
+                    }
+                    else if (isSystemInDarkTheme()) {
                         Color.Black
-                    } else {
+                    }
+                    else {
                         Color.White
                     }
                 )
@@ -83,26 +77,25 @@ fun CameraListTile(camera: Camera, onClick: () -> Unit) {
                 if (camera.neighbourhood.isNotBlank()) {
                     Text(
                         camera.neighbourhood,
-                        color = if (isSystemInDarkTheme() || cameraManager.isCameraSelected(camera)) Color.LightGray else Color.DarkGray,
+                        color = if (isSystemInDarkTheme() || cameraState.value?.selectedCameras?.contains(camera) == true) Color.LightGray else Color.DarkGray,
                         fontSize = 12.sp,
                         lineHeight = 14.sp,
                     )
                 }
             }
             val context = LocalContext.current
-            var isFavourite by remember { mutableStateOf(camera.isFavourite) }
             IconButton(modifier = Modifier.align(Alignment.CenterVertically), onClick = {
-                isFavourite = !isFavourite
-                camera.isFavourite = isFavourite
+                camera.isFavourite = !camera.isFavourite
                 cameraManager.favouriteCamera(context, camera)
             }) {
-                if (isFavourite) {
+                if (cameraState.value?.favouriteCameras?.contains(camera) == true) {
                     Icon(
                         Icons.Rounded.Star,
                         contentDescription = stringResource(R.string.remove_from_favourites),
                         tint = colorResource(id = R.color.favouriteColour)
                     )
-                } else {
+                }
+                else {
                     Icon(
                         Icons.Rounded.StarBorder,
                         contentDescription = stringResource(R.string.add_to_favourites),

@@ -15,14 +15,14 @@ fun ViewModeMenu(expanded: Boolean, onItemSelected: () -> Unit) {
     val cameraManager = CameraManager.getInstance()
     DropdownMenu(expanded = expanded, onDismissRequest = { onItemSelected() }) {
         fun setViewMode(viewMode: ViewMode) {
-            cameraManager.onViewModeChanged(viewMode)
+            cameraManager.changeViewMode(viewMode)
             onItemSelected()
         }
         DropdownMenuItem(
             text = { Text(stringResource(R.string.list)) },
             leadingIcon = {
                 RadioButton(
-                    selected = cameraManager.viewMode.value == ViewMode.LIST,
+                    selected = cameraManager.cameraState.value?.viewMode == ViewMode.LIST,
                     onClick = {
                         setViewMode(ViewMode.LIST)
                     },
@@ -36,7 +36,7 @@ fun ViewModeMenu(expanded: Boolean, onItemSelected: () -> Unit) {
             text = { Text(stringResource(R.string.map)) },
             leadingIcon = {
                 RadioButton(
-                    selected = cameraManager.viewMode.value == ViewMode.MAP,
+                    selected = cameraManager.cameraState.value?.viewMode == ViewMode.MAP,
                     onClick = {
                         setViewMode(ViewMode.MAP)
                     },
@@ -50,7 +50,7 @@ fun ViewModeMenu(expanded: Boolean, onItemSelected: () -> Unit) {
             text = { Text(stringResource(R.string.gallery)) },
             leadingIcon = {
                 RadioButton(
-                    selected = cameraManager.viewMode.value == ViewMode.GALLERY,
+                    selected = cameraManager.cameraState.value?.viewMode == ViewMode.GALLERY,
                     onClick = {
                         setViewMode(ViewMode.GALLERY)
                     },

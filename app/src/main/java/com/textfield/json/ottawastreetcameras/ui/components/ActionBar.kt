@@ -36,12 +36,12 @@ fun ActionBar(actions: List<Action>, onItemSelected: () -> Unit) {
             onItemSelected()
         }
         MenuItem(
-            icon = when (cameraManager.viewMode.value) {
+            icon = when (cameraManager.cameraState.value?.viewMode) {
                 ViewMode.LIST -> Icons.Rounded.List
                 ViewMode.MAP -> Icons.Filled.Place
                 else -> Icons.Rounded.GridView
             },
-            tooltip = when (cameraManager.viewMode.value) {
+            tooltip = when (cameraManager.cameraState.value?.viewMode) {
                 ViewMode.LIST -> stringResource(R.string.list)
                 ViewMode.MAP -> stringResource(R.string.map)
                 else -> stringResource(R.string.gallery)
@@ -61,7 +61,7 @@ fun ActionBar(actions: List<Action>, onItemSelected: () -> Unit) {
         MenuItem(
             icon = Icons.Rounded.Sort,
             tooltip = stringResource(R.string.sort),
-            visible = cameraManager.viewMode.value != ViewMode.MAP && remainingActions-- > 0
+            visible = cameraManager.cameraState.value?.viewMode != ViewMode.MAP && remainingActions-- > 0
         ) {
             showSortMenu = !showSortMenu
             onItemSelected()
@@ -77,7 +77,7 @@ fun ActionBar(actions: List<Action>, onItemSelected: () -> Unit) {
                     tooltip = action.toolTip,
                     visible = true
                 ) {
-                    cameraManager.onSearchModeChanged(SearchMode.NAME)
+                    cameraManager.changeSearchMode(SearchMode.NAME)
                     onItemSelected()
                     action.onClick?.invoke()
                 }

@@ -39,12 +39,12 @@ fun OverflowMenu(
                     onItemSelected()
                 }
                 OverflowMenuItem(
-                    icon = when (cameraManager.viewMode.value) {
+                    icon = when (cameraManager.cameraState.value?.viewMode) {
                         ViewMode.LIST -> Icons.Rounded.List
                         ViewMode.MAP -> Icons.Filled.Place
                         else -> Icons.Rounded.GridView
                     },
-                    tooltip = when (cameraManager.viewMode.value) {
+                    tooltip = when (cameraManager.cameraState.value?.viewMode) {
                         ViewMode.LIST -> stringResource(R.string.list)
                         ViewMode.MAP -> stringResource(R.string.map)
                         else -> stringResource(R.string.gallery)
@@ -66,7 +66,7 @@ fun OverflowMenu(
                 OverflowMenuItem(
                     icon = Icons.Rounded.Sort,
                     tooltip = stringResource(R.string.sort),
-                    visible = cameraManager.viewMode.value != ViewMode.MAP
+                    visible = cameraManager.cameraState.value?.viewMode != ViewMode.MAP
                 ) {
                     showSortMenu = !showSortMenu
                 }

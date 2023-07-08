@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.icons.Icons
@@ -30,6 +31,7 @@ import androidx.compose.material.icons.rounded.Deselect
 import androidx.compose.material.icons.rounded.GridView
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.List
+import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.SelectAll
 import androidx.compose.material.icons.rounded.Shuffle
@@ -39,7 +41,11 @@ import androidx.compose.material.icons.rounded.TravelExplore
 import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -52,6 +58,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -66,12 +73,8 @@ import com.textfield.json.ottawastreetcameras.CameraManager
 import com.textfield.json.ottawastreetcameras.FilterMode
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.SearchMode
-import com.textfield.json.ottawastreetcameras.SortMode
-import com.textfield.json.ottawastreetcameras.UIStates
+import com.textfield.json.ottawastreetcameras.UIState
 import com.textfield.json.ottawastreetcameras.ViewMode
-import com.textfield.json.ottawastreetcameras.comparators.SortByDistance
-import com.textfield.json.ottawastreetcameras.comparators.SortByName
-import com.textfield.json.ottawastreetcameras.comparators.SortByNeighbourhood
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.ui.components.AboutDialog
 import com.textfield.json.ottawastreetcameras.ui.components.Action
@@ -95,7 +98,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun shuffleCameras() {
         val intent = Intent(this, CameraActivity::class.java)
-        intent.putParcelableArrayListExtra("cameras", cameraManager.visibleCameras as ArrayList<Camera>)
+        intent.putParcelableArrayListExtra(
+            "cameras",
+            cameraManager.cameraState.value?.visibleCameras as ArrayList<Camera>
+        )
         intent.putExtra("shuffle", true)
         startActivity(intent)
     }
@@ -103,16 +109,14 @@ class MainActivity : AppCompatActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun MainAppBar(listState: LazyListState, useDarkTheme: Boolean = isSystemInDarkTheme()) {
-        val cameras = cameraManager.displayedCameras
-        val searchMode = cameraManager.searchMode.observeAsState()
-        val actionMode = cameraManager.isActionMode.observeAsState()
+        val cameraState = cameraManager.cameraState.observeAsState()
         TopAppBar(title = {
-            if (actionMode.value == true) {
+            if (cameraState.value?.selectedCameras?.isNotEmpty() == true) {
                 Text(
                     pluralStringResource(
                         R.plurals.selectedCameras,
-                        cameraManager.getSelectedCameras().size,
-                        cameraManager.getSelectedCameras().size
+                        cameraState.value?.selectedCameras?.size ?: 0,
+                        cameraState.value?.selectedCameras?.size ?: 0
                     ), color = Color.White, modifier = Modifier
                         .padding(10.dp)
                         .clickable {
@@ -122,7 +126,7 @@ class MainActivity : AppCompatActivity() {
                         })
             }
             else {
-                when (searchMode.value) {
+                when (cameraState.value?.searchMode) {
                     SearchMode.NONE -> {
                         Text(stringResource(R.string.app_name), color = Color.White, modifier = Modifier
                             .padding(10.dp)
@@ -136,10 +140,12 @@ class MainActivity : AppCompatActivity() {
                     SearchMode.NAME -> {
                         SearchBar(
                             pluralStringResource(
-                                R.plurals.search_hint, cameras.size, cameras.size
+                                R.plurals.search_hint,
+                                cameraState.value?.displayedCameras?.size ?: 0,
+                                cameraState.value?.displayedCameras?.size ?: 0
                             )
                         ) {
-                            cameraManager.searchDisplayedCameras(SearchMode.NAME, it)
+                            cameraManager.searchCameras(it)
                         }
                     }
 
@@ -147,11 +153,11 @@ class MainActivity : AppCompatActivity() {
                         SearchBar(
                             pluralStringResource(
                                 R.plurals.search_hint_neighbourhood,
-                                cameraManager.neighbourhoods.size,
-                                cameraManager.neighbourhoods.size
+                                cameraState.value?.neighbourhoods?.size ?: 0,
+                                cameraState.value?.neighbourhoods?.size ?: 0,
                             )
                         ) {
-                            cameraManager.searchDisplayedCameras(SearchMode.NEIGHBOURHOOD, it)
+                            cameraManager.searchCameras(it)
                         }
                     }
 
@@ -159,24 +165,48 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }, actions = {
-            if (actionMode.value == true) {
+            val context = LocalContext.current
+            if (cameraState.value?.selectedCameras?.isNotEmpty() == true) {
                 val clearSelection =
-                    Action(icon = Icons.Rounded.Deselect, toolTip = stringResource(R.string.clear), true)
+                    Action(
+                        icon = Icons.Rounded.Deselect,
+                        toolTip = stringResource(R.string.clear),
+                        true,
+                        onClick = {
+                            cameraManager.clearSelectedCameras()
+                        }
+                    )
                 val view = Action(
                     icon = Icons.Rounded.CameraAlt,
                     toolTip = stringResource(id = R.string.show),
-                    cameraManager.getSelectedCameras().size <= 8
+                    (cameraState.value?.selectedCameras?.size ?: 0) <= 8,
+                    onClick = {
+                        showSelectedCameras()
+                    }
                 )
                 val favourite = Action(
                     icon = Icons.Rounded.Star,
                     toolTip = stringResource(id = R.string.add_to_favourites),
-                    true
+                    true,
+                    onClick = {
+                        cameraManager.favouriteSelectedCameras(context)
+                    }
                 )
-                val hide = Action(icon = Icons.Rounded.VisibilityOff, toolTip = stringResource(R.string.hide), true)
+                val hide = Action(icon = Icons.Rounded.VisibilityOff,
+                    toolTip = stringResource(R.string.hide),
+                    true,
+                    onClick = {
+                        cameraManager.hideSelectedCameras(context)
+                    }
+                )
                 val selectAll = Action(
                     icon = Icons.Rounded.SelectAll,
                     toolTip = stringResource(R.string.select_all),
-                    cameraManager.getSelectedCameras().size < cameraManager.displayedCameras.size
+                    condition = (cameraState.value?.selectedCameras?.size
+                                 ?: 0) < (cameraState.value?.displayedCameras?.size ?: 0),
+                    onClick = {
+                        cameraManager.selectAllCameras()
+                    }
                 )
                 val actionModeActions = listOf<Action>(
                     clearSelection,
@@ -190,7 +220,7 @@ class MainActivity : AppCompatActivity() {
             }
             else {
                 val switchView = Action(
-                    icon = when (cameraManager.viewMode.value) {
+                    icon = when (cameraState.value?.viewMode) {
                         ViewMode.LIST -> Icons.Rounded.List
                         ViewMode.MAP -> Icons.Filled.Place
                         else -> Icons.Rounded.GridView
@@ -201,7 +231,7 @@ class MainActivity : AppCompatActivity() {
                 )
                 val sort = Action(
                     icon = Icons.Rounded.Sort,
-                    condition = cameraManager.viewMode.value != ViewMode.MAP,
+                    condition = cameraState.value?.viewMode != ViewMode.MAP,
                     isMenu = true,
                     toolTip = stringResource(id = R.string.sort),
                 )
@@ -209,38 +239,36 @@ class MainActivity : AppCompatActivity() {
                     icon = Icons.Rounded.Search,
                     condition = true,
                     toolTip = stringResource(id = R.string.search),
+                    checked = cameraState.value?.searchMode == SearchMode.NAME,
                     onClick = {
-                        cameraManager.onSearchModeChanged(SearchMode.NAME)
+                        cameraManager.changeSearchMode(SearchMode.NAME)
                     }
                 )
                 val searchNeighbourhood = Action(
                     icon = Icons.Rounded.TravelExplore,
                     condition = true,
                     toolTip = stringResource(id = R.string.search_neighbourhood),
+                    checked = cameraState.value?.searchMode == SearchMode.NEIGHBOURHOOD,
                     onClick = {
-                        cameraManager.onSearchModeChanged(SearchMode.NEIGHBOURHOOD)
+                        cameraManager.changeSearchMode(SearchMode.NEIGHBOURHOOD)
                     }
                 )
-                var favouriteChecked by remember { mutableStateOf(cameraManager.filterMode.value == FilterMode.FAVOURITE) }
                 val favourites = Action(
                     icon = Icons.Rounded.Star,
                     condition = true,
                     toolTip = stringResource(id = R.string.favourites),
-                    checked = favouriteChecked,
+                    checked = cameraState.value?.filterMode == FilterMode.FAVOURITE,
                     onClick = {
-                        favouriteChecked = !favouriteChecked
-                        cameraManager.onFilterModeChanged(FilterMode.FAVOURITE)
+                        cameraManager.changeFilterMode(FilterMode.FAVOURITE)
                     }
                 )
-                var hiddenChecked by remember { mutableStateOf(cameraManager.filterMode.value == FilterMode.HIDDEN) }
                 val hidden = Action(
                     icon = Icons.Rounded.VisibilityOff,
                     condition = true,
                     toolTip = stringResource(id = R.string.hidden_cameras),
-                    checked = hiddenChecked,
+                    checked = cameraState.value?.filterMode == FilterMode.HIDDEN,
                     onClick = {
-                        hiddenChecked = !hiddenChecked
-                        cameraManager.onFilterModeChanged(FilterMode.HIDDEN)
+                        cameraManager.changeFilterMode(FilterMode.HIDDEN)
                     }
                 )
                 findViewById<View>(R.id.background)
@@ -249,7 +277,9 @@ class MainActivity : AppCompatActivity() {
                     condition = true,
                     toolTip = stringResource(id = R.string.random_camera),
                     onClick = {
-                        showCamera(cameras.random())
+                        if (cameraState.value?.displayedCameras != null) {
+                            showCamera(cameraState.value?.displayedCameras!!.random())
+                        }
                     }
                 )
                 val shuffle = Action(
@@ -297,7 +327,7 @@ class MainActivity : AppCompatActivity() {
             }
         },
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = if (!useDarkTheme || actionMode.value == true) {
+                containerColor = if (!useDarkTheme || cameraState.value?.selectedCameras?.isNotEmpty() == true) {
                     colorResource(id = R.color.colorAccent)
                 }
                 else {
@@ -309,61 +339,40 @@ class MainActivity : AppCompatActivity() {
 
     @Composable
     fun MainContent(padding: PaddingValues, listState: LazyListState) {
-        Column(modifier = Modifier.padding(padding)) {
-            val filterMode = cameraManager.filterMode.observeAsState()
-            val displayedCameras = when (filterMode.value) {
-                FilterMode.VISIBLE -> cameraManager.visibleCameras
-                FilterMode.HIDDEN -> cameraManager.hiddenCameras
-                FilterMode.FAVOURITE -> cameraManager.favouriteCameras
-                else -> cameraManager.visibleCameras
-            } as ArrayList<Camera>
-
-            val sortMode = cameraManager.sortMode.observeAsState()
-            when (sortMode.value) {
-                SortMode.NAME -> {
-                    displayedCameras.sortWith(SortByName())
-                }
-
-                SortMode.DISTANCE -> {
-                    requestLocationPermissions(requestForList) {
-                        displayedCameras.sortWith(SortByDistance(it))
-                    }
-                }
-
-                SortMode.NEIGHBOURHOOD -> {
-                    displayedCameras.sortWith(SortByNeighbourhood())
-                }
-
-                else -> {}
-            }
-
-            val viewMode = cameraManager.viewMode.observeAsState()
-            when (viewMode.value) {
-                ViewMode.LIST -> {
-                    Row {
-                        Visibility(visible = cameraManager.showSectionIndex) {
-                            SectionIndex(displayedCameras)
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            Column(modifier = Modifier.padding(padding)) {
+                val cameraState = cameraManager.cameraState.observeAsState()
+                val displayedCameras = cameraState.value?.displayedCameras
+                when (cameraState.value?.viewMode) {
+                    ViewMode.LIST -> {
+                        Row {
+                            Visibility(visible = cameraState.value?.showSectionIndex == true) {
+                                SectionIndex(displayedCameras ?: ArrayList<Camera>())
+                            }
+                            CameraListView(
+                                displayedCameras ?: ArrayList<Camera>(),
+                                modifier = Modifier.weight(1f),
+                                listState = listState,
+                            ) { showCamera(it) }
                         }
-                        CameraListView(
-                            displayedCameras,
-                            modifier = Modifier.weight(1f),
-                            listState = listState,
+                    }
+
+                    ViewMode.MAP -> {
+                        StreetCamsMap(
+                            displayedCameras ?: ArrayList<Camera>(),
+                            isMyLocationEnabled = requestLocationPermissions(requestForMap),
                         ) { showCamera(it) }
                     }
-                }
 
-                ViewMode.MAP -> {
-                    StreetCamsMap(
-                        displayedCameras,
-                        isMyLocationEnabled = requestLocationPermissions(requestForMap),
-                    ) { showCamera(it) }
-                }
+                    ViewMode.GALLERY -> {
+                        CameraGalleryView(displayedCameras ?: ArrayList<Camera>()) { showCamera(it) }
+                    }
 
-                ViewMode.GALLERY -> {
-                    CameraGalleryView(displayedCameras) { showCamera(it) }
+                    else -> {}
                 }
-
-                else -> {}
             }
         }
     }
@@ -371,9 +380,9 @@ class MainActivity : AppCompatActivity() {
     private fun loadView() {
         setContent {
             AppTheme {
-                val uiState = cameraManager.uiState.observeAsState()
-                when (uiState.value) {
-                    UIStates.LOADING -> {
+                val cameraState = cameraManager.cameraState.observeAsState()
+                when (cameraState.value?.uiState) {
+                    UIState.LOADING -> {
                         Box(modifier = Modifier.fillMaxSize()) {
                             CircularProgressIndicator(
                                 modifier = Modifier.align(Alignment.Center),
@@ -381,7 +390,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
 
-                    UIStates.LOADED -> {
+                    UIState.LOADED -> {
                         val listState = remember { LazyListState() }
                         Scaffold(
                             modifier = Modifier.padding(0.dp),
@@ -394,16 +403,19 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
 
-                    UIStates.ERROR -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize()
-                        ) {
+                    UIState.ERROR -> {
+                        Column(modifier = Modifier.fillMaxSize()) {
                             Text(
-                                modifier = Modifier.align(Alignment.Center),
+                                modifier = Modifier.fillMaxWidth(),
                                 textAlign = TextAlign.Center,
                                 text = "Error loading data",
                                 color = Color.White
                             )
+                            IconButton(modifier = Modifier.align(Alignment.CenterHorizontally), onClick = {
+                                cameraManager.downloadAll(this@MainActivity)
+                            }) {
+                                Icon(Icons.Rounded.Refresh, "Refresh", tint = Color.White)
+                            }
                         }
                     }
 
@@ -416,6 +428,15 @@ class MainActivity : AppCompatActivity() {
     private fun showCamera(camera: Camera) {
         val intent = Intent(this@MainActivity, CameraActivity::class.java)
         intent.putParcelableArrayListExtra("cameras", arrayListOf(camera))
+        startActivity(intent)
+    }
+
+    private fun showSelectedCameras() {
+        val intent = Intent(this@MainActivity, CameraActivity::class.java)
+        intent.putParcelableArrayListExtra(
+            "cameras",
+            cameraManager.cameraState.value?.selectedCameras as ArrayList<Camera>
+        )
         startActivity(intent)
     }
 

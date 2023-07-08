@@ -16,9 +16,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,7 +45,8 @@ fun CameraGalleryTile(camera: Camera, onClick: (Camera) -> Unit) {
 @Composable
 private fun CameraGalleryTileContent(camera: Camera, onClick: (Camera) -> Unit) {
     val cameraManager = CameraManager.getInstance()
-    var isSelected by remember { mutableStateOf(cameraManager.isCameraSelected(camera)) }
+    val cameraState = cameraManager.cameraState.observeAsState()
+
     Box(
         modifier = Modifier
             .clip(shape = RoundedCornerShape(10.dp))
@@ -54,15 +55,14 @@ private fun CameraGalleryTileContent(camera: Camera, onClick: (Camera) -> Unit) 
         Surface(
             modifier = Modifier.combinedClickable(
                 onClick = {
-                    if (cameraManager.getSelectedCameras().isNotEmpty()) {
-                        isSelected = !isSelected
+                    if (cameraState.value?.selectedCameras?.isNotEmpty() == true) {
                         cameraManager.selectCamera(camera)
-                    } else {
+                    }
+                    else {
                         onClick(camera)
                     }
                 },
                 onLongClick = {
-                    isSelected = !isSelected
                     cameraManager.selectCamera(camera)
                 },
             )
@@ -83,9 +83,10 @@ private fun CameraGalleryTileContent(camera: Camera, onClick: (Camera) -> Unit) 
                     .fillMaxSize()
                     .background(
                         color =
-                        if (isSelected) {
+                        if (cameraState.value?.selectedCameras?.contains(camera) == true) {
                             colorResource(id = R.color.galleryTileSelectedColour)
-                        } else {
+                        }
+                        else {
                             Color.Transparent
                         }
                     )
