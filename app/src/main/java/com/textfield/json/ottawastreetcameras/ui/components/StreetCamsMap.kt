@@ -22,9 +22,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-
 @Composable
 fun StreetCamsMap(cameras: List<Camera>, isMyLocationEnabled: Boolean, onItemClick: (Camera) -> Unit) {
+    val cameraManager = CameraManager.getInstance()
+    val cameraState = cameraManager.cameraState.observeAsState()
     val context = LocalContext.current
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.builder().target(LatLng(45.45, -75.69)).build()
@@ -43,7 +44,8 @@ fun StreetCamsMap(cameras: List<Camera>, isMyLocationEnabled: Boolean, onItemCli
             latLngBoundsForCameraTarget = bounds,
             mapStyleOptions = if (isSystemInDarkTheme()) {
                 MapStyleOptions.loadRawResourceStyle(context, R.raw.dark_mode)
-            } else {
+            }
+            else {
                 null
             },
             isMyLocationEnabled = isMyLocationEnabled,
@@ -56,24 +58,28 @@ fun StreetCamsMap(cameras: List<Camera>, isMyLocationEnabled: Boolean, onItemCli
             }
         },
     ) {
-        val cameraState = CameraManager.getInstance().cameraState.observeAsState()
         cameras.map { camera ->
             Marker(
                 state = MarkerState(position = LatLng(camera.lat, camera.lon)),
                 title = camera.name,
                 onInfoWindowClick = {
                     if (cameraState.value?.selectedCameras?.isNotEmpty() == true) {
-                        CameraManager.getInstance().selectCamera(camera)
-                    } else {
+                        cameraManager.selectCamera(camera)
+                    }
+                    else {
                         onItemClick(camera)
                     }
                 },
                 onInfoWindowLongClick = {
-                    CameraManager.getInstance().selectCamera(camera)
+                    cameraManager.selectCamera(camera)
                 },
-                icon = if (camera.isFavourite) {
+                icon = if (cameraState.value?.selectedCameras?.contains(camera) == true) {
+                    BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
+                }
+                else if (camera.isFavourite) {
                     BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)
-                } else {
+                }
+                else {
                     BitmapDescriptorFactory.defaultMarker()
                 }
             )

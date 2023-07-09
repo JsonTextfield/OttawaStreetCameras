@@ -10,7 +10,6 @@ import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.clickable
@@ -106,64 +105,77 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun MainAppBar(listState: LazyListState, useDarkTheme: Boolean = isSystemInDarkTheme()) {
+    fun AppBarTitle(listState: LazyListState) {
         val cameraState = cameraManager.cameraState.observeAsState()
-        TopAppBar(title = {
-            if (cameraState.value?.selectedCameras?.isNotEmpty() == true) {
-                Text(
-                    pluralStringResource(
-                        R.plurals.selectedCameras,
-                        cameraState.value?.selectedCameras?.size ?: 0,
-                        cameraState.value?.selectedCameras?.size ?: 0
-                    ), color = Color.White, modifier = Modifier
+        if (cameraState.value?.selectedCameras?.isNotEmpty() == true) {
+            Text(
+                pluralStringResource(
+                    R.plurals.selectedCameras,
+                    cameraState.value?.selectedCameras?.size ?: 0,
+                    cameraState.value?.selectedCameras?.size ?: 0
+                ), color = Color.White, modifier = Modifier
+                    .padding(10.dp)
+                    .clickable {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            listState.scrollToItem(0, 0)
+                        }
+                    })
+        }
+        else {
+            when (cameraState.value?.searchMode) {
+                SearchMode.NONE -> {
+                    val title = when (cameraState.value?.filterMode) {
+                        FilterMode.FAVOURITE -> stringResource(id = R.string.favourites)
+                        FilterMode.HIDDEN -> stringResource(id = R.string.hidden_cameras)
+                        FilterMode.VISIBLE -> stringResource(id = R.string.app_name)
+                        else -> stringResource(R.string.app_name)
+                    }
+                    Text(title, color = Color.White, modifier = Modifier
                         .padding(10.dp)
                         .clickable {
                             CoroutineScope(Dispatchers.Main).launch {
                                 listState.scrollToItem(0, 0)
                             }
-                        })
-            }
-            else {
-                when (cameraState.value?.searchMode) {
-                    SearchMode.NONE -> {
-                        Text(stringResource(R.string.app_name), color = Color.White, modifier = Modifier
-                            .padding(10.dp)
-                            .clickable {
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    listState.scrollToItem(0, 0)
-                                }
-                            })
-                    }
-
-                    SearchMode.NAME -> {
-                        SearchBar(
-                            pluralStringResource(
-                                R.plurals.search_hint,
-                                cameraState.value?.displayedCameras?.size ?: 0,
-                                cameraState.value?.displayedCameras?.size ?: 0
-                            )
-                        ) {
-                            cameraManager.searchCameras(it)
                         }
-                    }
-
-                    SearchMode.NEIGHBOURHOOD -> {
-                        SearchBar(
-                            pluralStringResource(
-                                R.plurals.search_hint_neighbourhood,
-                                cameraState.value?.neighbourhoods?.size ?: 0,
-                                cameraState.value?.neighbourhoods?.size ?: 0,
-                            )
-                        ) {
-                            cameraManager.searchCameras(it)
-                        }
-                    }
-
-                    else -> {}
+                    )
                 }
+
+                SearchMode.NAME -> {
+                    SearchBar(
+                        pluralStringResource(
+                            R.plurals.search_hint,
+                            cameraState.value?.displayedCameras?.size ?: 0,
+                            cameraState.value?.displayedCameras?.size ?: 0
+                        )
+                    ) {
+                        cameraManager.searchCameras(it)
+                    }
+                }
+
+                SearchMode.NEIGHBOURHOOD -> {
+                    SearchBar(
+                        pluralStringResource(
+                            R.plurals.search_hint_neighbourhood,
+                            cameraState.value?.neighbourhoods?.size ?: 0,
+                            cameraState.value?.neighbourhoods?.size ?: 0,
+                        )
+                    ) {
+                        cameraManager.searchCameras(it)
+                    }
+                }
+
+                else -> {}
             }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun MainAppBar(listState: LazyListState, useDarkTheme: Boolean = isSystemInDarkTheme()) {
+        val cameraState = cameraManager.cameraState.observeAsState()
+        TopAppBar(title = {
+            AppBarTitle(listState)
         }, actions = {
             val context = LocalContext.current
             if (cameraState.value?.selectedCameras?.isNotEmpty() == true) {
@@ -271,7 +283,6 @@ class MainActivity : AppCompatActivity() {
                         cameraManager.changeFilterMode(FilterMode.HIDDEN)
                     }
                 )
-                findViewById<View>(R.id.background)
                 val random = Action(
                     icon = Icons.Rounded.Casino,
                     condition = true,
@@ -381,46 +392,55 @@ class MainActivity : AppCompatActivity() {
         setContent {
             AppTheme {
                 val cameraState = cameraManager.cameraState.observeAsState()
-                when (cameraState.value?.uiState) {
-                    UIState.LOADING -> {
-                        Box(modifier = Modifier.fillMaxSize()) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.align(Alignment.Center),
-                            )
-                        }
+                val listState = remember { LazyListState() }
+                val context = LocalContext.current
+                Scaffold(topBar = {
+                    if (cameraState.value?.uiState == UIState.LOADED) {
+                        MainAppBar(listState)
                     }
-
-                    UIState.LOADED -> {
-                        val listState = remember { LazyListState() }
-                        Scaffold(
-                            modifier = Modifier.padding(0.dp),
-                            topBar = {
-                                MainAppBar(listState)
-                            },
-                            content = {
-                                MainContent(it, listState)
-                            },
-                        )
-                    }
-
-                    UIState.ERROR -> {
-                        Column(modifier = Modifier.fillMaxSize()) {
-                            Text(
-                                modifier = Modifier.fillMaxWidth(),
-                                textAlign = TextAlign.Center,
-                                text = "Error loading data",
-                                color = Color.White
-                            )
-                            IconButton(modifier = Modifier.align(Alignment.CenterHorizontally), onClick = {
-                                cameraManager.downloadAll(this@MainActivity)
-                            }) {
-                                Icon(Icons.Rounded.Refresh, "Refresh", tint = Color.White)
+                }) {
+                    when (cameraState.value?.uiState) {
+                        UIState.LOADING -> {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(it)
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.align(Alignment.Center),
+                                )
                             }
                         }
-                    }
 
-                    else -> {}
+                        UIState.LOADED -> {
+                            MainContent(it, listState)
+                        }
+
+                        UIState.ERROR -> {
+                            Box(modifier = Modifier
+                                .fillMaxSize()
+                                .padding(it)) {
+                                Column(
+                                    modifier = Modifier.align(Alignment.Center)
+                                ) {
+                                    Text(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        textAlign = TextAlign.Center,
+                                        text = "Error loading data",
+                                    )
+                                    IconButton(modifier = Modifier.align(Alignment.CenterHorizontally), onClick = {
+                                        cameraManager.downloadAll(context)
+                                    }) {
+                                        Icon(Icons.Rounded.Refresh, "Try again")
+                                    }
+                                }
+                            }
+                        }
+
+                        else -> {}
+                    }
                 }
+
             }
         }
     }

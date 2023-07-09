@@ -17,7 +17,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import com.textfield.json.ottawastreetcameras.CameraManager
 import com.textfield.json.ottawastreetcameras.R
-import com.textfield.json.ottawastreetcameras.SearchMode
 import com.textfield.json.ottawastreetcameras.ViewMode
 
 @Composable
@@ -77,9 +76,8 @@ fun ActionBar(actions: List<Action>, onItemSelected: () -> Unit) {
                     tooltip = action.toolTip,
                     visible = true
                 ) {
-                    cameraManager.changeSearchMode(SearchMode.NAME)
-                    onItemSelected()
                     action.onClick?.invoke()
+                    onItemSelected()
                 }
             }
             else {

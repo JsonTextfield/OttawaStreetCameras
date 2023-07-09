@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import com.textfield.json.ottawastreetcameras.comparators.SortByName
+import com.textfield.json.ottawastreetcameras.comparators.SortByNeighbourhood
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.entities.Neighbourhood
 import kotlinx.coroutines.CoroutineScope
@@ -40,7 +41,16 @@ class CameraManager : ViewModel() {
     }
 
     fun changeSortMode(sortMode: SortMode) {
-        _cameraState.value = _cameraState.value?.copy(sortMode = sortMode)
+        val displayedCameras = ArrayList<Camera>(_cameraState.value?.displayedCameras ?: ArrayList())
+        when (sortMode) {
+            SortMode.NAME -> displayedCameras.sortWith(SortByName())
+            SortMode.DISTANCE -> displayedCameras.sortWith(SortByName())
+            SortMode.NEIGHBOURHOOD -> displayedCameras.sortWith(SortByNeighbourhood())
+        }
+        _cameraState.value = _cameraState.value?.copy(
+            sortMode = sortMode,
+            displayedCameras = displayedCameras,
+        )
     }
 
     fun changeSearchMode(searchMode: SearchMode) {
@@ -50,25 +60,16 @@ class CameraManager : ViewModel() {
 
     fun changeFilterMode(filterMode: FilterMode) {
         val fm = if (filterMode == _cameraState.value?.filterMode) FilterMode.VISIBLE else filterMode
-
-        _cameraState.value = when (fm) {
-            FilterMode.VISIBLE -> {
-                _cameraState.value?.allCameras?.filter { it.isVisible }
-            }
-
-            FilterMode.HIDDEN -> {
-                _cameraState.value?.allCameras?.filter { !it.isVisible }
-            }
-
-            FilterMode.FAVOURITE -> {
-                _cameraState.value?.allCameras?.filter { it.isFavourite }
-            }
-
-        }?.let {
-            _cameraState.value?.copy(
-                filterMode = fm, displayedCameras = it
-            )
-        }
+        val displayedCameras =
+            when (fm) {
+                FilterMode.VISIBLE -> _cameraState.value?.visibleCameras
+                FilterMode.HIDDEN -> _cameraState.value?.hiddenCameras
+                FilterMode.FAVOURITE -> _cameraState.value?.favouriteCameras
+            } ?: ArrayList()
+        _cameraState.value = _cameraState.value?.copy(
+            displayedCameras = displayedCameras,
+            filterMode = fm,
+        )
     }
 
     private fun loadSharedPrefs(context: Context) {
@@ -136,6 +137,54 @@ class CameraManager : ViewModel() {
             for (camera in it) {
                 hideCamera(context, camera)
             }
+        }
+    }
+
+    fun selectCamera(camera: Camera) {
+        val selectedCameras = ArrayList<Camera>(_cameraState.value?.selectedCameras ?: ArrayList())
+        if (selectedCameras.contains(camera)) {
+            selectedCameras.remove(camera)
+        }
+        else {
+            selectedCameras.add(camera)
+        }
+        _cameraState.value = _cameraState.value?.copy(selectedCameras = selectedCameras)
+    }
+
+    fun selectAllCameras() {
+        _cameraState.value =
+            _cameraState.value?.copy(selectedCameras = _cameraState.value?.displayedCameras ?: ArrayList())
+    }
+
+    fun clearSelectedCameras() {
+        _cameraState.value = _cameraState.value?.copy(selectedCameras = ArrayList())
+    }
+
+    fun searchCameras(query: String = "") {
+        _cameraState.value = when (_cameraState.value?.searchMode) {
+            SearchMode.NONE -> {
+                _cameraState.value?.allCameras?.filter { it.isVisible }
+            }
+
+            SearchMode.NAME -> {
+                _cameraState.value?.allCameras?.filter {
+                    it.isVisible && it.name.contains(query, true)
+                }
+            }
+
+            SearchMode.NEIGHBOURHOOD -> {
+                _cameraState.value?.allCameras?.filter {
+                    it.isVisible && it.neighbourhood.contains(query, true)
+                }
+            }
+
+            else -> {
+                _cameraState.value?.displayedCameras ?: ArrayList<Camera>()
+            }
+        }?.let {
+            _cameraState.value?.copy(
+                displayedCameras = it
+            )
         }
     }
 
@@ -212,56 +261,8 @@ class CameraManager : ViewModel() {
         }
     }
 
-    fun selectAllCameras() {
-        _cameraState.value =
-            _cameraState.value?.copy(selectedCameras = _cameraState.value?.displayedCameras ?: ArrayList())
-    }
-
-    fun clearSelectedCameras() {
-        _cameraState.value = _cameraState.value?.copy(selectedCameras = ArrayList())
-    }
-
-    fun searchCameras(query: String = "") {
-        _cameraState.value = when (_cameraState.value?.searchMode) {
-            SearchMode.NONE -> {
-                _cameraState.value?.allCameras?.filter { it.isVisible }
-            }
-
-            SearchMode.NAME -> {
-                _cameraState.value?.allCameras?.filter {
-                    it.isVisible && it.name.contains(query, true)
-                }
-            }
-
-            SearchMode.NEIGHBOURHOOD -> {
-                _cameraState.value?.allCameras?.filter {
-                    it.isVisible && it.neighbourhood.contains(query, true)
-                }
-            }
-
-            else -> {
-                _cameraState.value?.displayedCameras ?: ArrayList<Camera>()
-            }
-        }?.let {
-            _cameraState.value?.copy(
-                displayedCameras = it
-            )
-        }
-    }
-
-    fun selectCamera(camera: Camera) {
-        val selectedCameras = ArrayList<Camera>(_cameraState.value?.selectedCameras ?: ArrayList())
-        if (selectedCameras.contains(camera)) {
-            selectedCameras.remove(camera)
-        }
-        else {
-            selectedCameras.add(camera)
-        }
-        _cameraState.value = _cameraState.value?.copy(selectedCameras = selectedCameras)
-    }
-
     companion object {
-        private var INSTANCE: CameraManager? = null
+        @Volatile private var INSTANCE: CameraManager? = null
         fun getInstance(): CameraManager = INSTANCE ?: synchronized(this) {
             INSTANCE ?: CameraManager().also {
                 INSTANCE = it

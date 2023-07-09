@@ -14,6 +14,7 @@ import android.widget.ImageView
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -22,6 +23,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.PlainTooltipBox
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -29,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.android.volley.toolbox.ImageRequest
+import com.google.android.material.snackbar.Snackbar
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.StreetCamsRequestQueue
 import com.textfield.json.ottawastreetcameras.entities.Camera
@@ -62,24 +65,29 @@ class CameraActivity : AppCompatActivity() {
 
         cameras = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableArrayListExtra("cameras", Camera::class.java) ?: cameras
-        } else {
+        }
+        else {
             intent.getParcelableArrayListExtra("cameras") ?: cameras
         }
 
         setContent {
             AppTheme() {
-                CameraActivityContent(cameras, shuffle)
-                PlainTooltipBox(tooltip = { Text("Back") }) {
-                    IconButton(modifier = Modifier
-                        .tooltipAnchor()
-                        .padding(5.dp)
-                        .background(
-                            color = colorResource(R.color.backButtonBackground),
-                            shape = RoundedCornerShape(10.dp)
-                        ), onClick = {
-                        this@CameraActivity.onBackPressedDispatcher.onBackPressed()
-                    }) {
-                        Icon(Icons.Rounded.ArrowBack, "Back")
+                Scaffold() {
+                    Box(modifier = Modifier.padding(it)) {
+                        CameraActivityContent(cameras, shuffle)
+                        PlainTooltipBox(tooltip = { Text("Back") }) {
+                            IconButton(modifier = Modifier
+                                .tooltipAnchor()
+                                .padding(5.dp)
+                                .background(
+                                    color = colorResource(R.color.backButtonBackground),
+                                    shape = RoundedCornerShape(10.dp)
+                                ), onClick = {
+                                this@CameraActivity.onBackPressedDispatcher.onBackPressed()
+                            }) {
+                                Icon(Icons.Rounded.ArrowBack, "Back")
+                            }
+                        }
                     }
                 }
             }
@@ -121,11 +129,11 @@ class CameraActivity : AppCompatActivity() {
             StreetCamsRequestQueue.getInstance(this).add(request)
         }
 
-        /*Snackbar.make(
-            listView,
+        Snackbar.make(
+            window.decorView.rootView,
             resources.getQuantityString(R.plurals.images_saved, imagesSaved, imagesSaved),
             Snackbar.LENGTH_LONG
-        ).show()*/
+        ).show()
     }
 
     private fun saveImage(bitmapImage: Bitmap, fileName: String): Boolean {
@@ -136,7 +144,8 @@ class CameraActivity : AppCompatActivity() {
         val imageCollection =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
-            } else {
+            }
+            else {
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI
             }
 

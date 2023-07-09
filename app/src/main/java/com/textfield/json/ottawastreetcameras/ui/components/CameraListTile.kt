@@ -17,7 +17,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -71,24 +75,53 @@ fun CameraListTile(camera: Camera, onClick: () -> Unit) {
                     .weight(1f)
                     .align(Alignment.CenterVertically)
             ) {
-                Text(
-                    camera.name,
-                )
+                val colour = if (cameraState.value?.selectedCameras?.contains(camera) == true) {
+                    Color.White
+                }
+                else {
+                    Color.Unspecified
+                }
+                Text(camera.name, color = colour)
                 if (camera.neighbourhood.isNotBlank()) {
+                    val textColour = if (cameraState.value?.selectedCameras?.contains(camera) == true) {
+                        Color.White
+                    }
+                    else if (isSystemInDarkTheme()) {
+                        Color.LightGray
+                    }
+                    else {
+                        Color.DarkGray
+                    }
                     Text(
                         camera.neighbourhood,
-                        color = if (isSystemInDarkTheme() || cameraState.value?.selectedCameras?.contains(camera) == true) Color.LightGray else Color.DarkGray,
+                        color = textColour,
                         fontSize = 12.sp,
                         lineHeight = 14.sp,
                     )
                 }
             }
             val context = LocalContext.current
-            IconButton(modifier = Modifier.align(Alignment.CenterVertically), onClick = {
-                camera.isFavourite = !camera.isFavourite
-                cameraManager.favouriteCamera(context, camera)
-            }) {
-                if (cameraState.value?.favouriteCameras?.contains(camera) == true) {
+            var isFavourite by remember {
+                mutableStateOf(cameraState.value?.favouriteCameras?.contains(camera) == true)
+            }
+            IconButton(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                onClick = {
+                    isFavourite = !isFavourite
+                    camera.isFavourite = !camera.isFavourite
+                    cameraManager.favouriteCamera(context, camera)
+                }
+            ) {
+                val colour = if (cameraState.value?.selectedCameras?.contains(camera) == true) {
+                    Color.White
+                }
+                else if (isSystemInDarkTheme()) {
+                    Color.White
+                }
+                else {
+                    Color.Unspecified
+                }
+                if (isFavourite) {
                     Icon(
                         Icons.Rounded.Star,
                         contentDescription = stringResource(R.string.remove_from_favourites),
@@ -99,6 +132,7 @@ fun CameraListTile(camera: Camera, onClick: () -> Unit) {
                     Icon(
                         Icons.Rounded.StarBorder,
                         contentDescription = stringResource(R.string.add_to_favourites),
+                        tint = colour,
                     )
                 }
             }
