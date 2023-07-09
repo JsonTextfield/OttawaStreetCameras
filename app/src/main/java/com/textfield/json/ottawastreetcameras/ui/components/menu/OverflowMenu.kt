@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras.ui.components
+package com.textfield.json.ottawastreetcameras.ui.components.menu
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons

@@ -1,8 +1,13 @@
 package com.textfield.json.ottawastreetcameras.ui.components
 
-import android.graphics.drawable.Drawable
+import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.util.Log
+import android.widget.ImageView
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -10,14 +15,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -25,89 +29,102 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.textfield.json.ottawastreetcameras.R
+import com.textfield.json.ottawastreetcameras.StreetCamsRequestQueue
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun CameraView(camera: Camera, shuffle: Boolean = false) {
-    Box(
-        modifier = Modifier.heightIn(0.dp, LocalConfiguration.current.screenHeightDp.dp)
-    ) {
+    ConstraintLayout(modifier = Modifier.heightIn(0.dp, LocalConfiguration.current.screenHeightDp.dp)) {
+        val (background, foreground, label) = createRefs()
         val context = LocalContext.current
-        var drawable by remember { mutableStateOf<Drawable?>(null) }
-        var oldDrawable by remember { mutableStateOf<Drawable?>(drawable) }
-        val painter = rememberAsyncImagePainter(oldDrawable, contentScale = ContentScale.Fit)
-        val backgroundPainter = rememberAsyncImagePainter(oldDrawable, contentScale = ContentScale.FillWidth)
-        var imageRequest by remember {
-            mutableStateOf(
-                ImageRequest
-                    .Builder(context)
-                    .data(camera.url)
-                    .listener { request, result ->
-                        drawable = result.drawable
-                    }
-                    .build()
-            )
-        }
+        val bitmap = remember { mutableStateOf<Bitmap?>(null) }
+        val showLabel = remember { mutableStateOf(false) }
+        val configuration = LocalConfiguration.current
+        val bitmapRequest = com.android.volley.toolbox.ImageRequest(camera.url, { response ->
+            if (response != null) {
+                bitmap.value = response
+                showLabel.value = true
+            }
+        }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.RGB_565, {
+            Log.w("STREETCAMS", it)
+        })
 
-        if (!shuffle) {
-            LaunchedEffect(Unit) {
+        LaunchedEffect(Unit) {
+            CoroutineScope(Dispatchers.IO).launch {
+                StreetCamsRequestQueue(context).add(bitmapRequest)
+            }
+            if (!shuffle) {
                 while (true) {
-                    imageRequest = imageRequest
-                        .newBuilder(context)
-                        .data(camera.url)
-                        .listener { request, result ->
-                            drawable = result.drawable
-                        }
-                        .build()
+                    CoroutineScope(Dispatchers.IO).launch {
+                        StreetCamsRequestQueue(context).add(bitmapRequest)
+                    }
                     delay(3000)
                 }
             }
         }
-        AsyncImage(
-            model = imageRequest,
-            contentDescription = camera.name,
-            modifier = Modifier
-                .fillMaxWidth()
-                .blur(radius = 10.dp),
-            contentScale = ContentScale.FillWidth,
-            placeholder = backgroundPainter,
-        )
-        AsyncImage(
-            model = imageRequest,
-            contentDescription = camera.name,
-            modifier = Modifier.fillMaxWidth(),
-            contentScale = ContentScale.Fit,
-            placeholder = painter,
-            onLoading = {
-                oldDrawable = drawable
-            }
-        )
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(horizontal = 5.dp, vertical = 2.dp)
-                .background(
-                    color = colorResource(id = R.color.cameraNameBackground),
-                    shape = RoundedCornerShape(10.dp)
-                )
-                .padding(
-                    vertical = 5.dp,
-                    horizontal = 10.dp,
-                ),
-        ) {
-            Text(
-                camera.name,
-                color = Color.White,
-                textAlign = TextAlign.Center,
-                fontSize = 12.sp,
-                modifier = Modifier.align(Alignment.Center),
+        bitmap.value?.let {
+            Image(
+                bitmap = it.asImageBitmap(),
+                contentDescription = camera.name,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .blur(radius = 10.dp)
+                    .constrainAs(background) {
+                    },
+                contentScale = ContentScale.FillWidth,
+            )
+
+            Image(
+                bitmap = it.asImageBitmap(),
+                contentDescription = camera.name,
+                contentScale = if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) ContentScale.FillHeight else ContentScale.FillWidth,
+                modifier = (if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) Modifier.fillMaxHeight() else Modifier.fillMaxWidth()).constrainAs(
+                    foreground
+                ) {
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                },
             )
         }
+        if (showLabel.value) {
+            CameraLabel(
+                camera = camera,
+                modifier = Modifier.constrainAs(label) {
+                    bottom.linkTo(background.bottom)
+                    centerHorizontallyTo(parent)
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun CameraLabel(camera: Camera, modifier: Modifier) {
+    Box(
+        modifier = modifier
+            .padding(horizontal = 5.dp, vertical = 2.dp)
+            .background(
+                color = colorResource(id = R.color.cameraNameBackground),
+                shape = RoundedCornerShape(10.dp)
+            )
+            .padding(
+                vertical = 5.dp,
+                horizontal = 10.dp,
+            ),
+    ) {
+        Text(
+            camera.name,
+            color = Color.White,
+            textAlign = TextAlign.Center,
+            fontSize = 12.sp,
+            modifier = Modifier.align(Alignment.Center),
+        )
     }
 }

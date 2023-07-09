@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras.ui.components
+package com.textfield.json.ottawastreetcameras.ui.components.menu
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
@@ -7,6 +7,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.textfield.json.ottawastreetcameras.ui.components.Visibility
 
 
 @Composable
