@@ -15,8 +15,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -44,19 +46,19 @@ fun CameraView(camera: Camera, shuffle: Boolean = false) {
     ConstraintLayout(modifier = Modifier.heightIn(0.dp, LocalConfiguration.current.screenHeightDp.dp)) {
         val (background, foreground, label) = createRefs()
         val context = LocalContext.current
-        val bitmap = remember { mutableStateOf<Bitmap?>(null) }
-        val showLabel = remember { mutableStateOf(false) }
+        var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+        var showLabel by remember { mutableStateOf(false) }
         val configuration = LocalConfiguration.current
         val bitmapRequest = com.android.volley.toolbox.ImageRequest(camera.url, { response ->
             if (response != null) {
-                bitmap.value = response
-                showLabel.value = true
+                bitmap = response
+                showLabel = true
             }
         }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.RGB_565, {
             Log.w("STREETCAMS", it)
         })
 
-        LaunchedEffect(Unit) {
+        LaunchedEffect("refresh") {
             CoroutineScope(Dispatchers.IO).launch {
                 StreetCamsRequestQueue(context).add(bitmapRequest)
             }
@@ -69,7 +71,7 @@ fun CameraView(camera: Camera, shuffle: Boolean = false) {
                 }
             }
         }
-        bitmap.value?.let {
+        bitmap?.let {
             Image(
                 bitmap = it.asImageBitmap(),
                 contentDescription = camera.name,
@@ -93,7 +95,7 @@ fun CameraView(camera: Camera, shuffle: Boolean = false) {
                 },
             )
         }
-        if (showLabel.value) {
+        if (showLabel) {
             CameraLabel(
                 camera = camera,
                 modifier = Modifier.constrainAs(label) {

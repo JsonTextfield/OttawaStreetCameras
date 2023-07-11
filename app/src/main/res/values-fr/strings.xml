@@ -37,6 +37,7 @@
     <string name="unhide">Révéler</string>
     <string name="version">Version %s</string>
     <string name="sort">Trier</string>
+    <string name="back">Retourner</string>
 
     <plurals name="images_saved">
         <item quantity="one">%d image a été enregistrée</item>

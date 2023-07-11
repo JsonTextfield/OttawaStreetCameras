@@ -2,6 +2,7 @@
 
 package com.textfield.json.ottawastreetcameras.ui.components.menu
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -9,14 +10,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import com.textfield.json.ottawastreetcameras.ui.components.Visibility
 
 
 @Composable
 fun MenuItem(icon: ImageVector, tooltip: String, visible: Boolean = true, onClick: () -> Unit) {
-    Visibility(
+    AnimatedVisibility(
         visible = visible,
-        child = {
+        content = {
             PlainTooltipBox(
                 tooltip = { Text(text = tooltip, modifier = Modifier.padding(10.dp)) },
             ) {

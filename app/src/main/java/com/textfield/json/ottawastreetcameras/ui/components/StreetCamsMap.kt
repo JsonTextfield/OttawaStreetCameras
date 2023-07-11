@@ -28,7 +28,7 @@ fun StreetCamsMap(cameras: List<Camera>, isMyLocationEnabled: Boolean, onItemCli
     val cameraState = cameraManager.cameraState.observeAsState()
     val context = LocalContext.current
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.builder().target(LatLng(45.45, -75.69)).build()
+        position = CameraPosition.builder().target(LatLng(45.45, -75.69)).zoom(9f).build()
     }
     var bounds: LatLngBounds? = null
     if (cameras.isNotEmpty()) {

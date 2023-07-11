@@ -28,26 +28,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.textfield.json.ottawastreetcameras.CameraManager
 import com.textfield.json.ottawastreetcameras.R
+import com.textfield.json.ottawastreetcameras.SortMode
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CameraListTile(camera: Camera, onClick: () -> Unit) {
+fun CameraListTile(camera: Camera, onClick: (Camera) -> Unit) {
     val cameraManager = CameraManager.getInstance()
     val cameraState = cameraManager.cameraState.observeAsState()
     Surface(
-        color = Color.Transparent, modifier = Modifier
+        modifier = Modifier
             .defaultMinSize(minHeight = 50.dp)
             .combinedClickable(onClick = {
                 if (cameraState.value?.selectedCameras?.isNotEmpty() == true) {
                     cameraManager.selectCamera(camera)
                 }
                 else {
-                    onClick()
+                    onClick(camera)
                 }
             }, onLongClick = {
                 cameraManager.selectCamera(camera)
@@ -64,11 +67,36 @@ fun CameraListTile(camera: Camera, onClick: () -> Unit) {
                         Color.Black
                     }
                     else {
-                        Color.White
+                        Color.Unspecified
                     }
                 )
         ) {
-
+            if (cameraState.value?.sortMode == SortMode.DISTANCE && camera.distance > -1) {
+                var distance = camera.distance.toDouble()
+                val distanceString =
+                    if (distance > 9000e3) {
+                        ">9000\nkm"
+                    }
+                    else if (distance >= 100e3) {
+                        "${(distance / 1000).roundToInt()}\nkm"
+                    }
+                    else if (distance >= 500) {
+                        distance = (distance / 100.0).roundToInt().toDouble() / 10
+                        "$distance\nkm"
+                    }
+                    else {
+                        "${distance.roundToInt()}\nm"
+                    }
+                Text(
+                    distanceString,
+                    textAlign = TextAlign.Center,
+                    fontSize = 12.sp,
+                    lineHeight = 14.sp,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(5.dp)
+                )
+            }
             Column(
                 modifier = Modifier
                     .padding(all = 10.dp)
@@ -112,15 +140,6 @@ fun CameraListTile(camera: Camera, onClick: () -> Unit) {
                     cameraManager.favouriteCamera(context, camera)
                 }
             ) {
-                val colour = if (cameraState.value?.selectedCameras?.contains(camera) == true) {
-                    Color.White
-                }
-                else if (isSystemInDarkTheme()) {
-                    Color.White
-                }
-                else {
-                    Color.Unspecified
-                }
                 if (isFavourite) {
                     Icon(
                         Icons.Rounded.Star,
@@ -129,6 +148,15 @@ fun CameraListTile(camera: Camera, onClick: () -> Unit) {
                     )
                 }
                 else {
+                    val colour = if (cameraState.value?.selectedCameras?.contains(camera) == true) {
+                        Color.White
+                    }
+                    else if (isSystemInDarkTheme()) {
+                        Color.White
+                    }
+                    else {
+                        Color.DarkGray
+                    }
                     Icon(
                         Icons.Rounded.StarBorder,
                         contentDescription = stringResource(R.string.add_to_favourites),

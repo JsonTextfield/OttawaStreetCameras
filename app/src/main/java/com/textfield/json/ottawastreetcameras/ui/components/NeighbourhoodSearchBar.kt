@@ -1,20 +1,27 @@
 package com.textfield.json.ottawastreetcameras.ui.components
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
+import com.textfield.json.ottawastreetcameras.R
 
 @Composable
 fun NeighbourhoodSearchBar(hintText: String, onValueChange: (String) -> Unit) {
@@ -27,18 +34,51 @@ fun NeighbourhoodSearchBar(hintText: String, onValueChange: (String) -> Unit) {
 
 @Composable
 private fun NeighbourhoodSearchBarContent(hintText: String, value: String, onValueChange: (String) -> Unit) {
-    TextField(
-        value,
-        singleLine = true,
-        placeholder = {
-            Text(hintText, fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-        },
+    BasicTextField(
+        value = value,
+        modifier = Modifier.fillMaxWidth(),
         onValueChange = onValueChange,
-        modifier = Modifier
-            .heightIn(0.dp, 50.dp)
-            .fillMaxWidth(),
-        textStyle = TextStyle(
-            fontSize = 12.sp,
-        )
+        singleLine = true,
+        textStyle = TextStyle(color = Color.White, fontSize = 14.sp),
+        cursorBrush = SolidColor(Color.White),
+        decorationBox = { innerTextField ->
+            Row(modifier = Modifier.fillMaxWidth()) {
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(.8f)
+                        .align(Alignment.CenterVertically)
+                ) {
+                    innerTextField()
+                }
+
+                if (value.isNotEmpty()) {
+                    IconButton(
+                        onClick = { onValueChange("") },
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .weight(.2f)
+                    ) {
+                        Icon(Icons.Rounded.Clear, stringResource(id = R.string.clear), tint = Color.White)
+                    }
+                }
+            }
+            if (value.isEmpty()) {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        hintText,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.CenterVertically),
+                        maxLines = 1,
+                        fontSize = 14.sp,
+                        overflow = TextOverflow.Ellipsis,
+                        softWrap = false,
+                        color = Color.White,
+                    )
+                }
+            }
+        }
     )
 }

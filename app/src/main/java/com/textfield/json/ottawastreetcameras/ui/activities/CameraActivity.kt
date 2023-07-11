@@ -6,29 +6,15 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.ImageView
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.android.volley.toolbox.ImageRequest
@@ -37,8 +23,8 @@ import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.StreetCamsRequestQueue
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.ui.components.AppTheme
+import com.textfield.json.ottawastreetcameras.ui.components.BackButton
 import com.textfield.json.ottawastreetcameras.ui.components.CameraActivityContent
-import kotlinx.coroutines.Runnable
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.Date
@@ -47,18 +33,7 @@ class CameraActivity : AppCompatActivity() {
     private var cameras = ArrayList<Camera>()
     private var selectedCameras = ArrayList<Camera>()
     private val requestForSave = 0
-    private val timers = ArrayList<CameraRunnable>()
-    private val handler = Handler(Looper.getMainLooper())
-    private val tag = "camera"
 
-    private inner class CameraRunnable(val index: Int) : Runnable {
-        override fun run() {
-            //download(index)
-            handler.postDelayed(this, 6000L)
-        }
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -76,19 +51,7 @@ class CameraActivity : AppCompatActivity() {
                 Scaffold() {
                     Box(modifier = Modifier.padding(it)) {
                         CameraActivityContent(cameras, shuffle)
-                        PlainTooltipBox(tooltip = { Text("Back") }) {
-                            IconButton(modifier = Modifier
-                                .tooltipAnchor()
-                                .padding(5.dp)
-                                .background(
-                                    color = colorResource(R.color.backButtonBackground),
-                                    shape = RoundedCornerShape(10.dp)
-                                ), onClick = {
-                                this@CameraActivity.onBackPressedDispatcher.onBackPressed()
-                            }) {
-                                Icon(Icons.Rounded.ArrowBack, "Back", tint = Color.Black)
-                            }
-                        }
+                        BackButton()
                     }
                 }
             }

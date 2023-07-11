@@ -7,10 +7,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
+import com.textfield.json.ottawastreetcameras.comparators.SortByDistance
 import com.textfield.json.ottawastreetcameras.comparators.SortByName
 import com.textfield.json.ottawastreetcameras.comparators.SortByNeighbourhood
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.entities.Neighbourhood
+import com.textfield.json.ottawastreetcameras.ui.activities.MainActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,15 +38,28 @@ class CameraManager : ViewModel() {
     val cameraState: LiveData<CameraState>
         get() = _cameraState
 
-    fun changeViewMode(viewMode: ViewMode) {
+    fun changeViewMode(context: Context, viewMode: ViewMode) {
+        val sharedPrefs = context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)
+        sharedPrefs.edit().putString("viewMode", viewMode.name).apply()
         _cameraState.value = _cameraState.value?.copy(viewMode = viewMode)
     }
 
-    fun changeSortMode(sortMode: SortMode) {
+    fun changeSortMode(context: Context, sortMode: SortMode) {
         val displayedCameras = ArrayList<Camera>(_cameraState.value?.displayedCameras ?: ArrayList())
         when (sortMode) {
             SortMode.NAME -> displayedCameras.sortWith(SortByName())
-            SortMode.DISTANCE -> displayedCameras.sortWith(SortByName())
+            SortMode.DISTANCE -> {
+                if (context is MainActivity) {
+                    context.requestLocationPermissions(0) {
+                        displayedCameras.sortWith(SortByDistance(it))
+                        _cameraState.value = _cameraState.value?.copy(
+                            sortMode = sortMode,
+                            displayedCameras = displayedCameras,
+                        )
+                    }
+                }
+            }
+
             SortMode.NEIGHBOURHOOD -> displayedCameras.sortWith(SortByNeighbourhood())
         }
         _cameraState.value = _cameraState.value?.copy(
@@ -74,12 +89,13 @@ class CameraManager : ViewModel() {
 
     private fun loadSharedPrefs(context: Context) {
         val sharedPrefs = context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)
+        val viewMode = ViewMode.valueOf(sharedPrefs.getString("viewMode", ViewMode.LIST.name) ?: ViewMode.LIST.name)
         val allCameras = ArrayList<Camera>(_cameraState.value?.allCameras ?: ArrayList())
         for (camera in allCameras) {
             camera.isFavourite = sharedPrefs.getBoolean("${camera.num}.isFavourite", false)
             camera.isVisible = sharedPrefs.getBoolean("${camera.num}.isVisible", true)
         }
-        _cameraState.value = _cameraState.value?.copy(allCameras = allCameras)
+        _cameraState.value = _cameraState.value?.copy(allCameras = allCameras, viewMode = viewMode)
     }
 
     fun favouriteCamera(context: Context, camera: Camera) {
@@ -122,6 +138,7 @@ class CameraManager : ViewModel() {
         }
         _cameraState.value =
             _cameraState.value?.copy(allCameras = updatedCameras, displayedCameras = updatedDisplayedCameras)
+        _cameraState.value?.let { changeFilterMode(it.filterMode) }
     }
 
     fun favouriteSelectedCameras(context: Context) {
@@ -168,13 +185,13 @@ class CameraManager : ViewModel() {
 
             SearchMode.NAME -> {
                 _cameraState.value?.allCameras?.filter {
-                    it.isVisible && it.name.contains(query, true)
+                    it.isVisible && it.name.contains(query.trim(), true)
                 }
             }
 
             SearchMode.NEIGHBOURHOOD -> {
                 _cameraState.value?.allCameras?.filter {
-                    it.isVisible && it.neighbourhood.contains(query, true)
+                    it.isVisible && it.neighbourhood.contains(query.trim(), true)
                 }
             }
 
@@ -262,7 +279,8 @@ class CameraManager : ViewModel() {
     }
 
     companion object {
-        @Volatile private var INSTANCE: CameraManager? = null
+        @Volatile
+        private var INSTANCE: CameraManager? = null
         fun getInstance(): CameraManager = INSTANCE ?: synchronized(this) {
             INSTANCE ?: CameraManager().also {
                 INSTANCE = it

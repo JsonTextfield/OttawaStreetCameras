@@ -14,7 +14,7 @@ import com.textfield.json.ottawastreetcameras.ui.components.Visibility
 fun OverflowMenuItem(icon: ImageVector, tooltip: String, visible: Boolean, checked: Boolean = false, onClick: () -> Unit) {
     Visibility(
         visible = visible,
-        child = {
+        content = {
             DropdownMenuItem(
                 text = { Text(text = tooltip) },
                 leadingIcon = { Icon(icon, tooltip) },

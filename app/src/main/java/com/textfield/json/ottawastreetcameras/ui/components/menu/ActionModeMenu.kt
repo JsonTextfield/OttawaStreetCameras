@@ -18,10 +18,10 @@ fun ActionModeMenu(actions: List<Action>, onItemSelected: () -> Unit) {
     val width = LocalConfiguration.current.screenWidthDp
     val maxActions = width / 48 / 3
     var remainingActions = maxActions
-    val overflowActions = ArrayList<Action>()
     Log.e("WIDTH", width.toString())
     Log.e("MAX_ACTIONS", remainingActions.toString())
 
+    val overflowActions = ArrayList<Action>()
     for (action in actions) {
         if (remainingActions-- > 0) {
             MenuItem(

@@ -8,6 +8,8 @@ import org.json.JSONObject
  * Created by Jason on 25/04/2016.
  */
 class Camera : BilingualObject, Parcelable {
+    var distance = -1
+
     var owner = ""
         private set
     var lat = 0.0
