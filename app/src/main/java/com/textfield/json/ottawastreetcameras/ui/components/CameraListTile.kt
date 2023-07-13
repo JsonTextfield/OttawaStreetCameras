@@ -17,11 +17,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,12 +37,12 @@ import kotlin.math.roundToInt
 @Composable
 fun CameraListTile(camera: Camera, onClick: (Camera) -> Unit) {
     val cameraManager = CameraManager.getInstance()
-    val cameraState = cameraManager.cameraState.observeAsState()
+    val cameraState = cameraManager.cameraState.collectAsState()
     Surface(
         modifier = Modifier
             .defaultMinSize(minHeight = 50.dp)
             .combinedClickable(onClick = {
-                if (cameraState.value?.selectedCameras?.isNotEmpty() == true) {
+                if (cameraState.value.selectedCameras.isNotEmpty()) {
                     cameraManager.selectCamera(camera)
                 }
                 else {
@@ -60,7 +56,7 @@ fun CameraListTile(camera: Camera, onClick: (Camera) -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    color = if (cameraState.value?.selectedCameras?.contains(camera) == true) {
+                    color = if (cameraState.value.selectedCameras.contains(camera)) {
                         colorResource(R.color.colorAccent)
                     }
                     else if (isSystemInDarkTheme()) {
@@ -71,7 +67,7 @@ fun CameraListTile(camera: Camera, onClick: (Camera) -> Unit) {
                     }
                 )
         ) {
-            if (cameraState.value?.sortMode == SortMode.DISTANCE && camera.distance > -1) {
+            if (cameraState.value.sortMode == SortMode.DISTANCE && camera.distance > -1) {
                 var distance = camera.distance.toDouble()
                 val distanceString =
                     if (distance > 9000e3) {
@@ -103,7 +99,7 @@ fun CameraListTile(camera: Camera, onClick: (Camera) -> Unit) {
                     .weight(1f)
                     .align(Alignment.CenterVertically)
             ) {
-                val colour = if (cameraState.value?.selectedCameras?.contains(camera) == true) {
+                val colour = if (cameraState.value.selectedCameras.contains(camera)) {
                     Color.White
                 }
                 else {
@@ -111,7 +107,7 @@ fun CameraListTile(camera: Camera, onClick: (Camera) -> Unit) {
                 }
                 Text(camera.name, color = colour)
                 if (camera.neighbourhood.isNotBlank()) {
-                    val textColour = if (cameraState.value?.selectedCameras?.contains(camera) == true) {
+                    val textColour = if (cameraState.value.selectedCameras.contains(camera)) {
                         Color.White
                     }
                     else if (isSystemInDarkTheme()) {
@@ -129,18 +125,14 @@ fun CameraListTile(camera: Camera, onClick: (Camera) -> Unit) {
                 }
             }
             val context = LocalContext.current
-            var isFavourite by remember {
-                mutableStateOf(cameraState.value?.favouriteCameras?.contains(camera) == true)
-            }
             IconButton(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 onClick = {
-                    isFavourite = !isFavourite
                     camera.isFavourite = !camera.isFavourite
                     cameraManager.favouriteCamera(context, camera)
                 }
             ) {
-                if (isFavourite) {
+                if (camera.isFavourite) {
                     Icon(
                         Icons.Rounded.Star,
                         contentDescription = stringResource(R.string.remove_from_favourites),
@@ -148,7 +140,7 @@ fun CameraListTile(camera: Camera, onClick: (Camera) -> Unit) {
                     )
                 }
                 else {
-                    val colour = if (cameraState.value?.selectedCameras?.contains(camera) == true) {
+                    val colour = if (cameraState.value.selectedCameras.contains(camera)) {
                         Color.White
                     }
                     else if (isSystemInDarkTheme()) {

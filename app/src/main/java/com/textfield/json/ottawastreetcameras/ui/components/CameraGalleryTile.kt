@@ -15,8 +15,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -45,7 +45,7 @@ fun CameraGalleryTile(camera: Camera, onClick: (Camera) -> Unit) {
 @Composable
 private fun CameraGalleryTileContent(camera: Camera, onClick: (Camera) -> Unit) {
     val cameraManager = CameraManager.getInstance()
-    val cameraState = cameraManager.cameraState.observeAsState()
+    val cameraState = cameraManager.cameraState.collectAsState()
 
     Box(
         modifier = Modifier
@@ -55,7 +55,7 @@ private fun CameraGalleryTileContent(camera: Camera, onClick: (Camera) -> Unit) 
         Surface(
             modifier = Modifier.combinedClickable(
                 onClick = {
-                    if (cameraState.value?.selectedCameras?.isNotEmpty() == true) {
+                    if (cameraState.value.selectedCameras.isNotEmpty()) {
                         cameraManager.selectCamera(camera)
                     }
                     else {
@@ -83,7 +83,7 @@ private fun CameraGalleryTileContent(camera: Camera, onClick: (Camera) -> Unit) 
                     .fillMaxSize()
                     .background(
                         color =
-                        if (cameraState.value?.selectedCameras?.contains(camera) == true) {
+                        if (cameraState.value.selectedCameras.contains(camera)) {
                             colorResource(id = R.color.galleryTileSelectedColour)
                         }
                         else {

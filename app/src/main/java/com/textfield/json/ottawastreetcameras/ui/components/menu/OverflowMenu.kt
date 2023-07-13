@@ -8,6 +8,7 @@ import androidx.compose.material.icons.rounded.List
 import androidx.compose.material.icons.rounded.Sort
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,7 +27,7 @@ fun OverflowMenu(
     onItemSelected: () -> Unit,
 ) {
     val cameraManager = CameraManager.getInstance()
-
+    val cameraState = cameraManager.cameraState.collectAsState()
     DropdownMenu(
         expanded = expanded,
         onDismissRequest = { onItemSelected() },
@@ -39,12 +40,12 @@ fun OverflowMenu(
                     onItemSelected()
                 }
                 OverflowMenuItem(
-                    icon = when (cameraManager.cameraState.value?.viewMode) {
+                    icon = when (cameraState.value.viewMode) {
                         ViewMode.LIST -> Icons.Rounded.List
                         ViewMode.MAP -> Icons.Filled.Place
                         else -> Icons.Rounded.GridView
                     },
-                    tooltip = when (cameraManager.cameraState.value?.viewMode) {
+                    tooltip = when (cameraState.value.viewMode) {
                         ViewMode.LIST -> stringResource(R.string.list)
                         ViewMode.MAP -> stringResource(R.string.map)
                         else -> stringResource(R.string.gallery)
@@ -66,7 +67,7 @@ fun OverflowMenu(
                 OverflowMenuItem(
                     icon = Icons.Rounded.Sort,
                     tooltip = stringResource(R.string.sort),
-                    visible = cameraManager.cameraState.value?.viewMode != ViewMode.MAP
+                    visible = cameraState.value.viewMode != ViewMode.MAP
                 ) {
                     showSortMenu = !showSortMenu
                 }

@@ -15,8 +15,8 @@ enum class ViewMode { LIST, MAP, GALLERY }
 enum class UIState { LOADING, LOADED, ERROR, INITIAL }
 
 data class CameraState(
-    var allCameras: List<Camera>,
-    var displayedCameras: List<Camera>,
+    var allCameras: ArrayList<Camera>,
+    var displayedCameras: ArrayList<Camera>,
     var selectedCameras: List<Camera>,
     var neighbourhoods: List<Neighbourhood>,
     var uiState: UIState,
@@ -24,7 +24,7 @@ data class CameraState(
     var searchMode: SearchMode,
     var filterMode: FilterMode,
     var viewMode: ViewMode,
-    var lastUpdated: Int,
+    var lastUpdated: Long,
 ) {
     val visibleCameras
         get() = allCameras.filter { it.isVisible }

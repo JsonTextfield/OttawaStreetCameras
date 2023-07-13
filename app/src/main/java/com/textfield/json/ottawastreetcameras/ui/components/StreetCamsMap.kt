@@ -2,7 +2,7 @@ package com.textfield.json.ottawastreetcameras.ui.components
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalContext
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun StreetCamsMap(cameras: List<Camera>, isMyLocationEnabled: Boolean, onItemClick: (Camera) -> Unit) {
     val cameraManager = CameraManager.getInstance()
-    val cameraState = cameraManager.cameraState.observeAsState()
+    val cameraState = cameraManager.cameraState.collectAsState()
     val context = LocalContext.current
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.builder().target(LatLng(45.45, -75.69)).zoom(9f).build()
@@ -63,7 +63,7 @@ fun StreetCamsMap(cameras: List<Camera>, isMyLocationEnabled: Boolean, onItemCli
                 state = MarkerState(position = LatLng(camera.lat, camera.lon)),
                 title = camera.name,
                 onInfoWindowClick = {
-                    if (cameraState.value?.selectedCameras?.isNotEmpty() == true) {
+                    if (cameraState.value.selectedCameras.isNotEmpty()) {
                         cameraManager.selectCamera(camera)
                     }
                     else {
@@ -73,7 +73,7 @@ fun StreetCamsMap(cameras: List<Camera>, isMyLocationEnabled: Boolean, onItemCli
                 onInfoWindowLongClick = {
                     cameraManager.selectCamera(camera)
                 },
-                icon = if (cameraState.value?.selectedCameras?.contains(camera) == true) {
+                icon = if (cameraState.value.selectedCameras.contains(camera)) {
                     BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
                 }
                 else if (camera.isFavourite) {
