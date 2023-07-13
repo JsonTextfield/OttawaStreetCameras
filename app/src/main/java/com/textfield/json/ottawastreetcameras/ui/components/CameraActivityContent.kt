@@ -19,9 +19,8 @@ fun CameraActivityContent(cameras: List<Camera>, shuffle: Boolean = false) {
                 var camera by remember { mutableStateOf(cameras.random()) }
                 LaunchedEffect("shuffle") {
                     while (true) {
-                        camera = cameras.random()
-                        camera = cameras.random()
                         delay(6000)
+                        camera = cameras.random()
                     }
                 }
                 CameraView(camera, true)

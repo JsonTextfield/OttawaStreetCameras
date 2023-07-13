@@ -17,7 +17,12 @@ import com.textfield.json.ottawastreetcameras.entities.Camera
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CameraListView(cameras: List<Camera>, modifier: Modifier, listState: LazyListState, onItemClick: (Camera) -> Unit) {
+fun CameraListView(
+    cameras: List<Camera>,
+    modifier: Modifier,
+    listState: LazyListState,
+    onItemClick: (Camera) -> Unit,
+) {
     LazyColumn(modifier = modifier, state = listState) {
         items(cameras, { camera -> camera.num }) { camera ->
             /*val cameraManager = CameraManager.getInstance()

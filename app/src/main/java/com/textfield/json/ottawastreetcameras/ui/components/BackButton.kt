@@ -24,7 +24,9 @@ import com.textfield.json.ottawastreetcameras.R
 @Composable
 fun BackButton() {
     val context = LocalContext.current
-    PlainTooltipBox(tooltip = { Text(stringResource(R.string.back)) }) {
+    PlainTooltipBox(
+        tooltip = { Text(stringResource(R.string.back), modifier = Modifier.padding(10.dp)) }
+    ) {
         IconButton(modifier = Modifier
             .tooltipAnchor()
             .padding(5.dp)

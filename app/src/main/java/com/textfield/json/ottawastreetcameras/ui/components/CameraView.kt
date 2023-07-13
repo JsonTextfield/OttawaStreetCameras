@@ -55,10 +55,11 @@ fun CameraView(camera: Camera, shuffle: Boolean = false) {
                 showLabel = true
             }
         }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.RGB_565, {
-            Log.w("STREETCAMS", it)
+            Log.w("StreetCams", it)
         })
 
-        LaunchedEffect("refresh") {
+        LaunchedEffect(camera.name) {
+            Log.d("StreetCams", camera.url)
             CoroutineScope(Dispatchers.IO).launch {
                 StreetCamsRequestQueue(context).add(bitmapRequest)
             }
@@ -67,7 +68,7 @@ fun CameraView(camera: Camera, shuffle: Boolean = false) {
                     CoroutineScope(Dispatchers.IO).launch {
                         StreetCamsRequestQueue(context).add(bitmapRequest)
                     }
-                    delay(3000)
+                    delay(6000)
                 }
             }
         }

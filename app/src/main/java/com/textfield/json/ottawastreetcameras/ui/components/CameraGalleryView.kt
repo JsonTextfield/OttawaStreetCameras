@@ -20,7 +20,10 @@ import com.textfield.json.ottawastreetcameras.entities.Camera
 
 
 @Composable
-fun CameraGalleryView(cameras: List<Camera>, onItemClick: (Camera) -> Unit) {
+fun CameraGalleryView(
+    cameras: List<Camera>,
+    onItemClick: (Camera) -> Unit,
+) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(100.dp),
         contentPadding = PaddingValues(10.dp),

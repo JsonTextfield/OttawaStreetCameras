@@ -46,6 +46,10 @@ class CameraActivity : AppCompatActivity() {
             intent.getParcelableArrayListExtra("cameras") ?: cameras
         }
 
+        loadView(shuffle)
+    }
+
+    private fun loadView(shuffle: Boolean) {
         setContent {
             AppTheme() {
                 Scaffold() {
