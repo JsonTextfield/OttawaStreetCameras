@@ -146,16 +146,16 @@ class CameraManager : ViewModel() {
         }
     }
 
-    fun favouriteSelectedCameras(context: Context) {
+    fun favouriteSelectedCameras(context: Context, isFavourite: Boolean) {
         for (camera in _cameraState.value.selectedCameras) {
-            camera.isFavourite = !camera.isFavourite
+            camera.isFavourite = isFavourite
             favouriteCamera(context, camera)
         }
     }
 
-    fun hideSelectedCameras(context: Context) {
+    fun hideSelectedCameras(context: Context, isVisible: Boolean) {
         for (camera in _cameraState.value.selectedCameras) {
-            camera.isVisible = !camera.isVisible
+            camera.isVisible = isVisible
             hideCamera(context, camera)
         }
         clearSelectedCameras()
@@ -181,20 +181,26 @@ class CameraManager : ViewModel() {
     }
 
     fun searchCameras(query: String = "") {
+        val displayedCameras =
+            when (_cameraState.value.filterMode) {
+                FilterMode.VISIBLE -> _cameraState.value.visibleCameras
+                FilterMode.HIDDEN -> _cameraState.value.hiddenCameras
+                FilterMode.FAVOURITE -> _cameraState.value.favouriteCameras
+            }
         val updatedCameras = when (_cameraState.value.searchMode) {
             SearchMode.NONE -> {
-                _cameraState.value.allCameras.filter { it.isVisible }
+                displayedCameras
             }
 
             SearchMode.NAME -> {
-                _cameraState.value.allCameras.filter {
-                    it.isVisible && it.name.contains(query.trim(), true)
+                displayedCameras.filter {
+                    it.name.contains(query.trim(), true)
                 }
             }
 
             SearchMode.NEIGHBOURHOOD -> {
-                _cameraState.value.allCameras.filter {
-                    it.isVisible && it.neighbourhood.contains(query.trim(), true)
+                displayedCameras.filter {
+                    it.neighbourhood.contains(query.trim(), true)
                 }
             }
         } as ArrayList<Camera>

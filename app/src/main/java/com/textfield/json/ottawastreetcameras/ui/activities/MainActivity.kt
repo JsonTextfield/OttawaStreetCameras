@@ -99,12 +99,21 @@ class MainActivity : AppCompatActivity() {
     fun MainAppBar(listState: LazyListState, useDarkTheme: Boolean = isSystemInDarkTheme()) {
         val cameraState = cameraManager.cameraState.collectAsState()
         TopAppBar(navigationIcon = {
-            if (cameraState.value.searchMode != SearchMode.NONE && cameraState.value.selectedCameras.isEmpty()) {
-                IconButton(onClick = {
-                    cameraManager.searchCameras("")
-                    cameraManager.changeSearchMode(SearchMode.NONE)
-                }) {
-                    Icon(Icons.Rounded.ArrowBack, stringResource(id = R.string.back), tint = Color.White)
+            if (cameraState.value.selectedCameras.isEmpty()) {
+                if (cameraState.value.searchMode != SearchMode.NONE) {
+                    IconButton(onClick = {
+                        cameraManager.changeSearchMode(SearchMode.NONE)
+                        cameraManager.searchCameras("")
+                    }) {
+                        Icon(Icons.Rounded.ArrowBack, stringResource(id = R.string.back), tint = Color.White)
+                    }
+                }
+                else if (cameraState.value.filterMode != FilterMode.VISIBLE) {
+                    IconButton(onClick = {
+                        cameraManager.changeFilterMode(FilterMode.VISIBLE)
+                    }) {
+                        Icon(Icons.Rounded.ArrowBack, stringResource(id = R.string.back), tint = Color.White)
+                    }
                 }
             }
         }, title = {
@@ -130,8 +139,9 @@ class MainActivity : AppCompatActivity() {
                             showSelectedCameras()
                         }
                     )
+                    val allIsFavourite = selectedCameras.all { it.isFavourite }
                     val favouriteToolTip = stringResource(
-                        if (selectedCameras.all { it.isFavourite }) {
+                        if (allIsFavourite) {
                             R.string.remove_from_favourites
                         }
                         else {
@@ -139,7 +149,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     )
                     val favouriteIcon =
-                        if (selectedCameras.all { it.isFavourite }) {
+                        if (allIsFavourite) {
                             Icons.Rounded.StarBorder
                         }
                         else {
@@ -150,11 +160,12 @@ class MainActivity : AppCompatActivity() {
                         toolTip = favouriteToolTip,
                         true,
                         onClick = {
-                            cameraManager.favouriteSelectedCameras(this@MainActivity)
+                            cameraManager.favouriteSelectedCameras(context, !allIsFavourite)
                         }
                     )
+                    val allIsHidden = selectedCameras.all { !it.isVisible }
                     val hiddenToolTip = stringResource(
-                        if (selectedCameras.all { !it.isVisible }) {
+                        if (allIsHidden) {
                             R.string.unhide
                         }
                         else {
@@ -162,7 +173,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     )
                     val hiddenIcon =
-                        if (selectedCameras.all { !it.isVisible }) {
+                        if (allIsHidden) {
                             Icons.Rounded.Visibility
                         }
                         else {
@@ -172,7 +183,7 @@ class MainActivity : AppCompatActivity() {
                         toolTip = hiddenToolTip,
                         true,
                         onClick = {
-                            cameraManager.hideSelectedCameras(context)
+                            cameraManager.hideSelectedCameras(context, allIsHidden)
                         }
                     )
                     val selectAll = Action(
@@ -264,7 +275,7 @@ class MainActivity : AppCompatActivity() {
                     condition = true,
                     toolTip = stringResource(id = R.string.random_camera),
                     onClick = {
-                        showCamera(cameraState.value.displayedCameras.random())
+                        showCamera(cameraState.value.visibleCameras.random())
                     }
                 )
                 val shuffle = Action(
