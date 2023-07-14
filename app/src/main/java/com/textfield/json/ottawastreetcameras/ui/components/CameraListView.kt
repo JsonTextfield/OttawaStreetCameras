@@ -38,7 +38,7 @@ fun CameraListView(
     onItemClick: (Camera) -> Unit,
 ) {
     LazyColumn(modifier = modifier, state = listState) {
-        items(cameras, { camera -> camera.num }) { camera ->
+        items(cameras, { camera -> camera.hashCode() }) { camera ->
             val cameraManager = CameraManager.getInstance()
             val dismissState = remember { DismissState(DismissValue.Default) }
             val context = LocalContext.current
