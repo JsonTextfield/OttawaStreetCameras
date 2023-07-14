@@ -69,7 +69,9 @@ private fun getSelectedIndex(
     sectionIndexHeight: Float,
     positions: ArrayList<Pair<String, Int>>,
 ): Int {
-    val result = ((yPosition / sectionIndexHeight) * positions.size).toInt().coerceIn(0, positions.size - 1)
+    val result = ((yPosition / sectionIndexHeight) * positions.size)
+        .toInt()
+        .coerceIn(0, positions.size - 1)
     val tag = "SectionIndex"
     Log.e(tag, result.toString())
     return result
@@ -123,6 +125,7 @@ fun SectionIndex(cameras: List<Camera>, listState: LazyListState) {
                         offsetY = motionEvent.y
                         selectIndex()
                     }
+
                     MotionEvent.ACTION_UP -> {
                         offsetY = motionEvent.y
                         selectIndex()
