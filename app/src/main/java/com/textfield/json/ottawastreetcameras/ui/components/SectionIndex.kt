@@ -137,7 +137,7 @@ fun SectionIndex(cameras: List<Camera>, listState: LazyListState) {
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .padding(10.dp)
+                    .padding(horizontal = 10.dp)
             ) {
                 Text(
                     text = it.first,
