@@ -4,12 +4,12 @@ apply plugin: "com.google.android.gms.oss-licenses-plugin"
 
 android {
     namespace 'com.textfield.json.ottawastreetcameras'
-    compileSdk 33
     defaultConfig {
         applicationId "com.textfield.json.ottawastreetcameras"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         minSdk 28
         targetSdk 33
+        compileSdk 33
         versionCode 23
         versionName "1.8.2"
         vectorDrawables.useSupportLibrary = true
@@ -25,6 +25,16 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.6"
     }
+
+    signingConfigs {
+        release {
+            storeFile file('U:\\Jason\\.android\\release.keystore')
+            storePassword releaseStorePassword
+            keyAlias releaseKeyAlias
+            keyPassword releaseKeyPassword
+        }
+    }
+
     buildTypes {
         debug {
             multiDexEnabled true
@@ -34,6 +44,7 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 }

@@ -15,7 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.textfield.json.ottawastreetcameras.CameraManager
 import com.textfield.json.ottawastreetcameras.FilterMode
 import com.textfield.json.ottawastreetcameras.R
@@ -35,13 +37,18 @@ fun AppBarTitle(listState: LazyListState) {
                 R.plurals.selectedCameras,
                 cameraState.value.selectedCameras.size,
                 cameraState.value.selectedCameras.size
-            ), color = Color.White, modifier = Modifier
+            ),
+            color = Color.White,
+            modifier = Modifier
                 .padding(10.dp)
                 .clickable {
                     CoroutineScope(Dispatchers.Main).launch {
                         listState.scrollToItem(0)
                     }
-                })
+                },
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
     }
     else {
         when (cameraState.value.searchMode) {
@@ -51,13 +58,18 @@ fun AppBarTitle(listState: LazyListState) {
                     FilterMode.HIDDEN -> stringResource(id = R.string.hidden_cameras)
                     FilterMode.VISIBLE -> stringResource(id = R.string.app_name)
                 }
-                Text(title, color = Color.White, modifier = Modifier
-                    .clickable {
-                        CoroutineScope(Dispatchers.Main).launch {
-                            listState.scrollToItem(0, 0)
+                Text(
+                    title, color = Color.White,
+                    modifier = Modifier
+                        .clickable {
+                            CoroutineScope(Dispatchers.Main).launch {
+                                listState.scrollToItem(0, 0)
+                            }
                         }
-                    }
-                    .padding(10.dp)
+                        .padding(10.dp),
+                    fontSize = 20.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
 

@@ -119,207 +119,7 @@ class MainActivity : AppCompatActivity() {
         }, title = {
             AppBarTitle(listState)
         }, actions = {
-            val context = LocalContext.current
-            if (cameraState.value.selectedCameras.isNotEmpty()) {
-                cameraState.value.selectedCameras.let { selectedCameras ->
-                    val clearSelection =
-                        Action(
-                            icon = Icons.Rounded.Clear,
-                            toolTip = stringResource(R.string.clear),
-                            true,
-                            onClick = {
-                                cameraManager.clearSelectedCameras()
-                            }
-                        )
-                    val view = Action(
-                        icon = Icons.Rounded.CameraAlt,
-                        toolTip = stringResource(id = R.string.show),
-                        selectedCameras.size <= 8,
-                        onClick = {
-                            showSelectedCameras()
-                        }
-                    )
-                    val allIsFavourite = selectedCameras.all { it.isFavourite }
-                    val favouriteToolTip = stringResource(
-                        if (allIsFavourite) {
-                            R.string.remove_from_favourites
-                        }
-                        else {
-                            R.string.add_to_favourites
-                        }
-                    )
-                    val favouriteIcon =
-                        if (allIsFavourite) {
-                            Icons.Rounded.StarBorder
-                        }
-                        else {
-                            Icons.Rounded.Star
-                        }
-                    val favourite = Action(
-                        icon = favouriteIcon,
-                        toolTip = favouriteToolTip,
-                        true,
-                        onClick = {
-                            cameraManager.favouriteSelectedCameras(context, !allIsFavourite)
-                        }
-                    )
-                    val allIsHidden = selectedCameras.all { !it.isVisible }
-                    val hiddenToolTip = stringResource(
-                        if (allIsHidden) {
-                            R.string.unhide
-                        }
-                        else {
-                            R.string.hide
-                        }
-                    )
-                    val hiddenIcon =
-                        if (allIsHidden) {
-                            Icons.Rounded.Visibility
-                        }
-                        else {
-                            Icons.Rounded.VisibilityOff
-                        }
-                    val hide = Action(icon = hiddenIcon,
-                        toolTip = hiddenToolTip,
-                        true,
-                        onClick = {
-                            cameraManager.hideSelectedCameras(context, allIsHidden)
-                        }
-                    )
-                    val selectAll = Action(
-                        icon = Icons.Rounded.SelectAll,
-                        toolTip = stringResource(R.string.select_all),
-                        condition = selectedCameras.size < cameraState.value.displayedCameras.size,
-                        onClick = {
-                            cameraManager.selectAllCameras()
-                        }
-                    )
-                    val actionModeActions = listOf<Action>(
-                        clearSelection,
-                        view,
-                        favourite,
-                        hide,
-                        selectAll,
-                    )
-                    ActionBar(actionModeActions) {
-                    }
-                }
-            }
-            else {
-                val switchView = Action(
-                    icon = when (cameraState.value.viewMode) {
-                        ViewMode.LIST -> Icons.Rounded.List
-                        ViewMode.MAP -> Icons.Filled.Place
-                        else -> Icons.Rounded.GridView
-                    },
-                    condition = true,
-                    isMenu = true,
-                    toolTip = stringResource(id = R.string.switch_view),
-                    menuContent = {
-                        var expanded by remember { mutableStateOf(it) }
-                        ViewModeMenu(expanded xor it) {
-                            expanded = !expanded
-                        }
-                    }
-                )
-                val sort = Action(
-                    icon = Icons.Rounded.Sort,
-                    condition = cameraState.value.viewMode != ViewMode.MAP,
-                    isMenu = true,
-                    toolTip = stringResource(id = R.string.sort),
-                    menuContent = {
-                        var expanded by remember { mutableStateOf(it) }
-                        SortModeMenu(expanded xor it) {
-                            expanded = !expanded
-                        }
-                    }
-                )
-                val search = Action(
-                    icon = Icons.Rounded.Search,
-                    condition = cameraState.value.searchMode != SearchMode.NAME,
-                    toolTip = stringResource(id = R.string.search),
-                    checked = cameraState.value.searchMode == SearchMode.NAME,
-                    onClick = {
-                        cameraManager.changeSearchMode(SearchMode.NAME)
-                    }
-                )
-                val searchNeighbourhood = Action(
-                    icon = Icons.Rounded.TravelExplore,
-                    condition = cameraState.value.searchMode != SearchMode.NEIGHBOURHOOD,
-                    toolTip = stringResource(id = R.string.search_neighbourhood),
-                    checked = cameraState.value.searchMode == SearchMode.NEIGHBOURHOOD,
-                    onClick = {
-                        cameraManager.changeSearchMode(SearchMode.NEIGHBOURHOOD)
-                    }
-                )
-                val favourites = Action(
-                    icon = Icons.Rounded.Star,
-                    condition = true,
-                    toolTip = stringResource(id = R.string.favourites),
-                    checked = cameraState.value.filterMode == FilterMode.FAVOURITE,
-                    onClick = {
-                        cameraManager.changeFilterMode(FilterMode.FAVOURITE)
-                    }
-                )
-                val hidden = Action(
-                    icon = Icons.Rounded.VisibilityOff,
-                    condition = true,
-                    toolTip = stringResource(id = R.string.hidden_cameras),
-                    checked = cameraState.value.filterMode == FilterMode.HIDDEN,
-                    onClick = {
-                        cameraManager.changeFilterMode(FilterMode.HIDDEN)
-                    }
-                )
-                val random = Action(
-                    icon = Icons.Rounded.Casino,
-                    condition = true,
-                    toolTip = stringResource(id = R.string.random_camera),
-                    onClick = {
-                        showCamera(cameraState.value.visibleCameras.random())
-                    }
-                )
-                val shuffle = Action(
-                    icon = Icons.Rounded.Shuffle,
-                    condition = true,
-                    toolTip = stringResource(id = R.string.shuffle),
-                    onClick = {
-                        shuffleCameras()
-                    }
-                )
-
-                var showDialog by remember { mutableStateOf(false) }
-
-                if (showDialog) {
-                    AboutDialog(onRate = {
-                        rateApp()
-                    }, onLicences = {
-                        showLicences()
-                    }) {
-                        showDialog = !showDialog
-                    }
-                }
-
-                val about = Action(
-                    icon = Icons.Rounded.Info,
-                    condition = true,
-                    toolTip = stringResource(id = R.string.about),
-                    onClick = {
-                        showDialog = !showDialog
-                    }
-                )
-                val actions = listOf<Action>(
-                    switchView,
-                    sort,
-                    search,
-                    searchNeighbourhood,
-                    favourites,
-                    hidden,
-                    random,
-                    shuffle,
-                    about,
-                )
-                ActionBar(actions) {
-                }
+            ActionBar(getActions()) {
             }
         },
             colors = TopAppBarDefaults.topAppBarColors(
@@ -480,6 +280,206 @@ class MainActivity : AppCompatActivity() {
                 Log.w("rateApp", task.exception)
             }
         }
+    }
+
+    @Composable
+    private fun getActions(): List<Action> {
+        val cameraState = cameraManager.cameraState.collectAsState()
+        val selectedCameras = cameraState.value.selectedCameras
+        val context = LocalContext.current
+        val clearSelection = Action(
+            icon = Icons.Rounded.Clear,
+            toolTip = stringResource(R.string.clear),
+            true,
+            onClick = {
+                cameraManager.clearSelectedCameras()
+            }
+        )
+        val view = Action(
+            icon = Icons.Rounded.CameraAlt,
+            toolTip = stringResource(id = R.string.show),
+            selectedCameras.size <= 8,
+            onClick = {
+                showSelectedCameras()
+            }
+        )
+        val allIsFavourite = selectedCameras.all { it.isFavourite }
+        val favouriteToolTip = stringResource(
+            if (allIsFavourite) {
+                R.string.remove_from_favourites
+            }
+            else {
+                R.string.add_to_favourites
+            }
+        )
+        val favouriteIcon =
+            if (allIsFavourite) {
+                Icons.Rounded.StarBorder
+            }
+            else {
+                Icons.Rounded.Star
+            }
+        val favourite = Action(
+            icon = favouriteIcon,
+            toolTip = favouriteToolTip,
+            true,
+            onClick = {
+                cameraManager.favouriteSelectedCameras(this, !allIsFavourite)
+            }
+        )
+        val allIsHidden = selectedCameras.all { !it.isVisible }
+        val hiddenToolTip = stringResource(
+            if (allIsHidden) {
+                R.string.unhide
+            }
+            else {
+                R.string.hide
+            }
+        )
+        val hiddenIcon =
+            if (allIsHidden) {
+                Icons.Rounded.Visibility
+            }
+            else {
+                Icons.Rounded.VisibilityOff
+            }
+        val hide = Action(icon = hiddenIcon,
+            toolTip = hiddenToolTip,
+            true,
+            onClick = {
+                cameraManager.hideSelectedCameras(context, allIsHidden)
+            }
+        )
+        val selectAll = Action(
+            icon = Icons.Rounded.SelectAll,
+            toolTip = stringResource(R.string.select_all),
+            condition = selectedCameras.size < cameraState.value.displayedCameras.size,
+            onClick = {
+                cameraManager.selectAllCameras()
+            }
+        )
+        val switchView = Action(
+            icon = when (cameraState.value.viewMode) {
+                ViewMode.LIST -> Icons.Rounded.List
+                ViewMode.MAP -> Icons.Filled.Place
+                else -> Icons.Rounded.GridView
+            },
+            condition = true,
+            isMenu = true,
+            toolTip = stringResource(id = R.string.switch_view),
+            menuContent = {
+                var expanded by remember { mutableStateOf(it) }
+                ViewModeMenu(expanded xor it) {
+                    expanded = !expanded
+                }
+            }
+        )
+        val sort = Action(
+            icon = Icons.Rounded.Sort,
+            condition = cameraState.value.viewMode != ViewMode.MAP,
+            isMenu = true,
+            toolTip = stringResource(id = R.string.sort),
+            menuContent = {
+                var expanded by remember { mutableStateOf(it) }
+                SortModeMenu(expanded xor it) {
+                    expanded = !expanded
+                }
+            }
+        )
+        val search = Action(
+            icon = Icons.Rounded.Search,
+            condition = cameraState.value.searchMode != SearchMode.NAME,
+            toolTip = stringResource(id = R.string.search),
+            checked = cameraState.value.searchMode == SearchMode.NAME,
+            onClick = {
+                cameraManager.changeSearchMode(SearchMode.NAME)
+            }
+        )
+        val searchNeighbourhood = Action(
+            icon = Icons.Rounded.TravelExplore,
+            condition = cameraState.value.searchMode != SearchMode.NEIGHBOURHOOD,
+            toolTip = stringResource(id = R.string.search_neighbourhood),
+            checked = cameraState.value.searchMode == SearchMode.NEIGHBOURHOOD,
+            onClick = {
+                cameraManager.changeSearchMode(SearchMode.NEIGHBOURHOOD)
+            }
+        )
+        val favourites = Action(
+            icon = Icons.Rounded.Star,
+            condition = true,
+            toolTip = stringResource(id = R.string.favourites),
+            checked = cameraState.value.filterMode == FilterMode.FAVOURITE,
+            onClick = {
+                cameraManager.changeFilterMode(FilterMode.FAVOURITE)
+            }
+        )
+        val hidden = Action(
+            icon = Icons.Rounded.VisibilityOff,
+            condition = true,
+            toolTip = stringResource(id = R.string.hidden_cameras),
+            checked = cameraState.value.filterMode == FilterMode.HIDDEN,
+            onClick = {
+                cameraManager.changeFilterMode(FilterMode.HIDDEN)
+            }
+        )
+        val random = Action(
+            icon = Icons.Rounded.Casino,
+            condition = true,
+            toolTip = stringResource(id = R.string.random_camera),
+            onClick = {
+                showCamera(cameraState.value.visibleCameras.random())
+            }
+        )
+        val shuffle = Action(
+            icon = Icons.Rounded.Shuffle,
+            condition = true,
+            toolTip = stringResource(id = R.string.shuffle),
+            onClick = {
+                shuffleCameras()
+            }
+        )
+
+        var showDialog by remember { mutableStateOf(false) }
+
+        if (showDialog) {
+            AboutDialog(onRate = {
+                rateApp()
+            }, onLicences = {
+                showLicences()
+            }) {
+                showDialog = !showDialog
+            }
+        }
+
+        val about = Action(
+            icon = Icons.Rounded.Info,
+            condition = true,
+            toolTip = stringResource(id = R.string.about),
+            onClick = {
+                showDialog = !showDialog
+            }
+        )
+
+        if (selectedCameras.isEmpty()) {
+            return listOf<Action>(
+                switchView,
+                sort,
+                search,
+                searchNeighbourhood,
+                favourites,
+                hidden,
+                random,
+                shuffle,
+                about,
+            )
+        }
+        return listOf<Action>(
+            clearSelection,
+            view,
+            favourite,
+            hide,
+            selectAll,
+        )
     }
 
     fun requestLocationPermissions(

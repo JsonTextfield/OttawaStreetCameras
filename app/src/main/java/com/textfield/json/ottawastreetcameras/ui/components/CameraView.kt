@@ -1,13 +1,11 @@
 package com.textfield.json.ottawastreetcameras.ui.components
 
-import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.util.Log
 import android.widget.ImageView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -31,7 +29,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.StreetCamsRequestQueue
 import com.textfield.json.ottawastreetcameras.entities.Camera
@@ -43,12 +40,14 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun CameraView(camera: Camera, shuffle: Boolean = false) {
-    ConstraintLayout(modifier = Modifier.heightIn(0.dp, LocalConfiguration.current.screenHeightDp.dp)) {
-        val (background, foreground, label) = createRefs()
+    Box(
+        modifier = Modifier
+            .heightIn(0.dp, LocalConfiguration.current.screenHeightDp.dp)
+            .fillMaxWidth()
+    ) {
         val context = LocalContext.current
         var bitmap by remember { mutableStateOf<Bitmap?>(null) }
         var showLabel by remember { mutableStateOf(false) }
-        val configuration = LocalConfiguration.current
         val bitmapRequest = com.android.volley.toolbox.ImageRequest(camera.url, { response ->
             if (response != null) {
                 bitmap = response
@@ -78,31 +77,21 @@ fun CameraView(camera: Camera, shuffle: Boolean = false) {
                 contentDescription = camera.name,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .blur(radius = 10.dp)
-                    .constrainAs(background) {
-                    },
+                    .blur(radius = 10.dp),
                 contentScale = ContentScale.FillWidth,
             )
 
             Image(
                 bitmap = it.asImageBitmap(),
                 contentDescription = camera.name,
-                contentScale = if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) ContentScale.FillHeight else ContentScale.FillWidth,
-                modifier = (if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) Modifier.fillMaxHeight() else Modifier.fillMaxWidth()).constrainAs(
-                    foreground
-                ) {
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
+                contentScale = ContentScale.Fit,
+                modifier = Modifier.matchParentSize()
             )
         }
         if (showLabel) {
             CameraLabel(
                 camera = camera,
-                modifier = Modifier.constrainAs(label) {
-                    bottom.linkTo(background.bottom)
-                    centerHorizontallyTo(parent)
-                }
+                modifier = Modifier.align(Alignment.BottomCenter),
             )
         }
     }
