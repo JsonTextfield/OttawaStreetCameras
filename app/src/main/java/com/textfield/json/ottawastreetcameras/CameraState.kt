@@ -24,7 +24,6 @@ data class CameraState(
     var searchMode: SearchMode,
     var filterMode: FilterMode,
     var viewMode: ViewMode,
-    var lastUpdated: Long,
 ) {
     val visibleCameras
         get() = allCameras.filter { it.isVisible }
@@ -42,4 +41,11 @@ data class CameraState(
             searchMode == SearchMode.NONE &&
             viewMode == ViewMode.LIST
 
+    fun filterCameras() : List<Camera>{
+        return when (filterMode) {
+            FilterMode.VISIBLE -> visibleCameras
+            FilterMode.HIDDEN -> hiddenCameras
+            FilterMode.FAVOURITE -> favouriteCameras
+        }
+    }
 }

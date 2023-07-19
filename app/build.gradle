@@ -11,7 +11,7 @@ android {
         targetSdk 33
         compileSdk 33
         versionCode 23
-        versionName "1.8.2"
+        versionName "2.0.0"
         vectorDrawables.useSupportLibrary = true
     }
     kotlinOptions {

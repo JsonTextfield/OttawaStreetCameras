@@ -25,7 +25,6 @@ class CameraManager : ViewModel() {
             searchMode = SearchMode.NONE,
             filterMode = FilterMode.VISIBLE,
             viewMode = ViewMode.LIST,
-            lastUpdated = 0
         )
     )
 
@@ -44,6 +43,7 @@ class CameraManager : ViewModel() {
         val displayedCameras = ArrayList<Camera>(_cameraState.value.displayedCameras)
         when (sortMode) {
             SortMode.NAME -> displayedCameras.sortWith(SortByName())
+            SortMode.NEIGHBOURHOOD -> displayedCameras.sortWith(SortByNeighbourhood())
             SortMode.DISTANCE -> {
                 if (context is MainActivity) {
                     context.requestLocationPermissions(0) { location ->
@@ -59,8 +59,6 @@ class CameraManager : ViewModel() {
                     }
                 }
             }
-
-            SortMode.NEIGHBOURHOOD -> displayedCameras.sortWith(SortByNeighbourhood())
         }
         _cameraState.update {
             it.copy(
@@ -70,24 +68,22 @@ class CameraManager : ViewModel() {
         }
     }
 
-    fun changeSearchMode(searchMode: SearchMode) {
-        _cameraState.update {
-            it.copy(searchMode = if (searchMode == _cameraState.value.searchMode) SearchMode.NONE else searchMode)
-        }
-    }
-
     fun changeFilterMode(filterMode: FilterMode) {
-        val fm = if (filterMode == _cameraState.value.filterMode) FilterMode.VISIBLE else filterMode
-        val displayedCameras =
-            when (fm) {
-                FilterMode.VISIBLE -> _cameraState.value.visibleCameras
-                FilterMode.HIDDEN -> _cameraState.value.hiddenCameras
-                FilterMode.FAVOURITE -> _cameraState.value.favouriteCameras
-            }
+        val mode = if (filterMode == _cameraState.value.filterMode) {
+            FilterMode.VISIBLE
+        }
+        else {
+            filterMode
+        }
+        val displayedCameras = when (mode) {
+            FilterMode.VISIBLE -> _cameraState.value.visibleCameras
+            FilterMode.HIDDEN -> _cameraState.value.hiddenCameras
+            FilterMode.FAVOURITE -> _cameraState.value.favouriteCameras
+        } as ArrayList<Camera>
         _cameraState.update {
             it.copy(
-                displayedCameras = displayedCameras as ArrayList<Camera>,
-                filterMode = fm,
+                displayedCameras = displayedCameras,
+                filterMode = mode,
             )
         }
     }
@@ -101,7 +97,7 @@ class CameraManager : ViewModel() {
             it.allCameras.clear()
             for (cam in updatedCameras) {
                 if (cam == camera) {
-                    cam.isFavourite = !cam.isFavourite
+                    cam.isFavourite = camera.isFavourite
                     break
                 }
             }
@@ -110,7 +106,7 @@ class CameraManager : ViewModel() {
             it.displayedCameras.clear()
             for (cam in updatedDisplayedCameras) {
                 if (cam == camera) {
-                    cam.isFavourite = !cam.isFavourite
+                    cam.isFavourite = camera.isFavourite
                     break
                 }
             }
@@ -180,28 +176,25 @@ class CameraManager : ViewModel() {
         _cameraState.update { it.copy(selectedCameras = ArrayList()) }
     }
 
-    fun searchCameras(query: String = "") {
-        val displayedCameras =
-            when (_cameraState.value.filterMode) {
-                FilterMode.VISIBLE -> _cameraState.value.visibleCameras
-                FilterMode.HIDDEN -> _cameraState.value.hiddenCameras
-                FilterMode.FAVOURITE -> _cameraState.value.favouriteCameras
-            }
-        val updatedCameras = when (_cameraState.value.searchMode) {
-            SearchMode.NONE -> {
-                displayedCameras
-            }
-
-            SearchMode.NAME -> {
-                displayedCameras.filter {
-                    it.name.contains(query.trim(), true)
+    fun changeSearchMode(searchMode: SearchMode) {
+        _cameraState.update {
+            it.copy(
+                searchMode = if (searchMode == _cameraState.value.searchMode) {
+                    SearchMode.NONE
                 }
-            }
-
-            SearchMode.NEIGHBOURHOOD -> {
-                displayedCameras.filter {
-                    it.neighbourhood.contains(query.trim(), true)
+                else {
+                    searchMode
                 }
+            )
+        }
+    }
+
+    fun searchCameras(str: String = "") {
+        val updatedCameras = _cameraState.value.filterCameras().filter {
+            when (_cameraState.value.searchMode) {
+                SearchMode.NAME -> it.name.contains(str.trim(), true)
+                SearchMode.NEIGHBOURHOOD -> it.neighbourhood.contains(str.trim(), true)
+                SearchMode.NONE -> true
             }
         } as ArrayList<Camera>
         _cameraState.update { it.copy(displayedCameras = updatedCameras) }
@@ -219,8 +212,9 @@ class CameraManager : ViewModel() {
                 }
                 else {
                     val sharedPrefs = context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)
-                    val viewMode =
-                        ViewMode.valueOf(sharedPrefs.getString("viewMode", ViewMode.LIST.name) ?: ViewMode.LIST.name)
+                    val viewMode = ViewMode.valueOf(
+                        sharedPrefs.getString("viewMode", ViewMode.LIST.name) ?: ViewMode.LIST.name
+                    )
 
                     for (camera in cameras) {
                         camera.isFavourite = sharedPrefs.getBoolean("${camera.num}.isFavourite", false)
@@ -231,13 +225,7 @@ class CameraManager : ViewModel() {
                             }
                         }
                     }
-                    val displayedCameras = cameras.filter {
-                        when (_cameraState.value.filterMode) {
-                            FilterMode.VISIBLE -> it.isVisible
-                            FilterMode.HIDDEN -> !it.isVisible
-                            FilterMode.FAVOURITE -> it.isFavourite
-                        }
-                    }
+                    val displayedCameras = cameras.filter { it.isVisible }
                     // show the newly loaded station
                     _cameraState.update {
                         it.copy(
