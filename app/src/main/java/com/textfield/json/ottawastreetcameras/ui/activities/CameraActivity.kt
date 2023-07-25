@@ -57,8 +57,8 @@ class CameraActivity : AppCompatActivity() {
 
     private fun loadView(shuffle: Boolean) {
         setContent {
-            AppTheme() {
-                Scaffold() {
+            AppTheme {
+                Scaffold {
                     Box(modifier = Modifier.padding(it)) {
                         var update by remember { mutableStateOf(false) }
                         LaunchedEffect(update) {
