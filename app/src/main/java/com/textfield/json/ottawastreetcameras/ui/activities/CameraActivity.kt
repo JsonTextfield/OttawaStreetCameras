@@ -14,17 +14,23 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.android.volley.toolbox.ImageRequest
+import com.android.volley.toolbox.Volley
 import com.google.android.material.snackbar.Snackbar
 import com.textfield.json.ottawastreetcameras.R
-import com.textfield.json.ottawastreetcameras.StreetCamsRequestQueue
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.ui.components.AppTheme
 import com.textfield.json.ottawastreetcameras.ui.components.BackButton
 import com.textfield.json.ottawastreetcameras.ui.components.CameraActivityContent
+import kotlinx.coroutines.delay
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.Date
@@ -54,7 +60,16 @@ class CameraActivity : AppCompatActivity() {
             AppTheme() {
                 Scaffold() {
                     Box(modifier = Modifier.padding(it)) {
-                        CameraActivityContent(cameras, shuffle)
+                        var update by remember { mutableStateOf(false) }
+                        LaunchedEffect(update) {
+                            if (!shuffle) {
+                                delay(6000)
+                                update = !update
+                            }
+                        }
+                        CameraActivityContent(cameras, shuffle, update) { camera ->
+                            downloadImage(camera)
+                        }
                         BackButton()
                     }
                 }
@@ -83,6 +98,23 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
+    private fun downloadImage(camera: Camera) {
+        val request = ImageRequest(camera.url, { response ->
+            if (response != null) {
+                if (saveImage(response, camera.name)) {
+                    Snackbar.make(
+                        window.decorView.rootView,
+                        resources.getString(R.string.image_saved),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.RGB_565, {
+            Log.w("STREETCAMS", it)
+        })
+        Volley.newRequestQueue(this).add(request)
+    }
+
     private fun saveSelectedImages() {
         var imagesSaved = 0
         for (camera in selectedCameras) {
@@ -94,7 +126,7 @@ class CameraActivity : AppCompatActivity() {
             }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.RGB_565, {
                 Log.w("STREETCAMS", it)
             })
-            StreetCamsRequestQueue.getInstance(this).add(request)
+            Volley.newRequestQueue(this).add(request)
         }
 
         Snackbar.make(

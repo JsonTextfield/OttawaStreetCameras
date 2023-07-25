@@ -3,8 +3,10 @@ package com.textfield.json.ottawastreetcameras.ui.components
 import android.graphics.Bitmap
 import android.util.Log
 import android.widget.ImageView
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -29,48 +31,41 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.android.volley.toolbox.ImageRequest
+import com.android.volley.toolbox.Volley
 import com.textfield.json.ottawastreetcameras.R
-import com.textfield.json.ottawastreetcameras.StreetCamsRequestQueue
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
-
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CameraView(camera: Camera, shuffle: Boolean = false) {
+fun CameraView(
+    camera: Camera,
+    shuffle: Boolean = false,
+    update: Boolean = false,
+    onLongClick: (Camera) -> Unit,
+) {
+    val context = LocalContext.current
+    var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+    val bitmapRequest = ImageRequest(camera.url, { response ->
+        Log.d("StreetCams", camera.url)
+        if (response != null) {
+            bitmap = response
+        }
+    }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.RGB_565, {
+        Log.w("StreetCams", it)
+    })
+    LaunchedEffect(if (shuffle) camera.name else update) {
+        Volley.newRequestQueue(context).add(bitmapRequest)
+    }
     Box(
         modifier = Modifier
             .heightIn(0.dp, LocalConfiguration.current.screenHeightDp.dp)
             .fillMaxWidth()
+            .combinedClickable(
+                onClick = {},
+                onLongClick = { onLongClick(camera) }
+            )
     ) {
-        val context = LocalContext.current
-        var bitmap by remember { mutableStateOf<Bitmap?>(null) }
-        var showLabel by remember { mutableStateOf(false) }
-        val bitmapRequest = com.android.volley.toolbox.ImageRequest(camera.url, { response ->
-            if (response != null) {
-                bitmap = response
-                showLabel = true
-            }
-        }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.RGB_565, {
-            Log.w("StreetCams", it)
-        })
-
-        LaunchedEffect(camera.name) {
-            Log.d("StreetCams", camera.url)
-            CoroutineScope(Dispatchers.IO).launch {
-                StreetCamsRequestQueue(context).add(bitmapRequest)
-            }
-            if (!shuffle) {
-                while (true) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        StreetCamsRequestQueue(context).add(bitmapRequest)
-                    }
-                    delay(6000)
-                }
-            }
-        }
         bitmap?.let {
             Image(
                 bitmap = it.asImageBitmap(),
@@ -80,15 +75,12 @@ fun CameraView(camera: Camera, shuffle: Boolean = false) {
                     .blur(radius = 10.dp),
                 contentScale = ContentScale.FillWidth,
             )
-
             Image(
                 bitmap = it.asImageBitmap(),
                 contentDescription = camera.name,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier.matchParentSize()
             )
-        }
-        if (showLabel) {
             CameraLabel(
                 camera = camera,
                 modifier = Modifier.align(Alignment.BottomCenter),
