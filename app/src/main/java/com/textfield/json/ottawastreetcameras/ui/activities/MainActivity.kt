@@ -142,6 +142,15 @@ class MainActivity : AppCompatActivity() {
             Column(modifier = Modifier.padding(padding)) {
                 val cameraState = cameraManager.cameraState.collectAsState()
                 val displayedCameras = cameraState.value.displayedCameras
+                val onItemClick = { camera: Camera ->
+                    if (cameraState.value.selectedCameras.isNotEmpty()) {
+                        cameraManager.selectCamera(camera)
+                    }
+                    else {
+                        showCamera(camera)
+                    }
+                }
+                val onItemLongClick = { camera: Camera -> cameraManager.selectCamera(camera) }
                 when (cameraState.value.viewMode) {
                     ViewMode.LIST -> {
                         Row {
@@ -152,7 +161,9 @@ class MainActivity : AppCompatActivity() {
                                 displayedCameras,
                                 modifier = Modifier.weight(1f),
                                 listState = listState,
-                            ) { showCamera(it) }
+                                onItemClick = onItemClick,
+                                onItemLongClick = onItemLongClick
+                            )
                         }
                     }
 
@@ -164,7 +175,11 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     ViewMode.GALLERY -> {
-                        CameraGalleryView(displayedCameras) { showCamera(it) }
+                        CameraGalleryView(
+                            displayedCameras,
+                            onItemClick = onItemClick,
+                            onItemLongClick = onItemLongClick
+                        )
                     }
                 }
             }

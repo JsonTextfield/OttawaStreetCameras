@@ -38,14 +38,9 @@ import com.textfield.json.ottawastreetcameras.CameraManager
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
 
-@Composable
-fun CameraGalleryTile(camera: Camera, onClick: (Camera) -> Unit) {
-    CameraGalleryTileContent(camera = camera, onClick = onClick)
-}
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun CameraGalleryTileContent(camera: Camera, onClick: (Camera) -> Unit) {
+fun CameraGalleryTile(camera: Camera, onClick: (Camera) -> Unit, onLongClick: (Camera) -> Unit) {
     val cameraManager = CameraManager.getInstance()
     val cameraState = cameraManager.cameraState.collectAsState()
 
@@ -56,17 +51,8 @@ private fun CameraGalleryTileContent(camera: Camera, onClick: (Camera) -> Unit) 
     ) {
         Surface(
             modifier = Modifier.combinedClickable(
-                onClick = {
-                    if (cameraState.value.selectedCameras.isNotEmpty()) {
-                        cameraManager.selectCamera(camera)
-                    }
-                    else {
-                        onClick(camera)
-                    }
-                },
-                onLongClick = {
-                    cameraManager.selectCamera(camera)
-                },
+                onClick = { onClick(camera) },
+                onLongClick = { onLongClick(camera) },
             )
         ) {
             val context = LocalContext.current
@@ -87,8 +73,7 @@ private fun CameraGalleryTileContent(camera: Camera, onClick: (Camera) -> Unit) 
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
-                        color =
-                        if (cameraState.value.selectedCameras.contains(camera)) {
+                        color = if (cameraState.value.selectedCameras.contains(camera)) {
                             colorResource(id = R.color.galleryTileSelectedColour)
                         }
                         else {

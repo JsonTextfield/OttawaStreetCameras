@@ -35,28 +35,23 @@ import kotlin.math.roundToInt
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CameraListTile(camera: Camera, onClick: (Camera) -> Unit) {
+fun CameraListTile(camera: Camera, onClick: (Camera) -> Unit, onLongClick: (Camera) -> Unit) {
     val cameraManager = CameraManager.getInstance()
     val cameraState = cameraManager.cameraState.collectAsState()
+    val isSelected = cameraState.value.selectedCameras.contains(camera)
     Surface(
         modifier = Modifier
             .defaultMinSize(minHeight = 50.dp)
-            .combinedClickable(onClick = {
-                if (cameraState.value.selectedCameras.isNotEmpty()) {
-                    cameraManager.selectCamera(camera)
-                }
-                else {
-                    onClick(camera)
-                }
-            }, onLongClick = {
-                cameraManager.selectCamera(camera)
-            })
+            .combinedClickable(
+                onClick = { onClick(camera) },
+                onLongClick = { onLongClick(camera) }
+            )
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    color = if (cameraState.value.selectedCameras.contains(camera)) {
+                    color = if (isSelected) {
                         colorResource(R.color.colorAccent)
                     }
                     else if (isSystemInDarkTheme()) {
@@ -99,26 +94,22 @@ fun CameraListTile(camera: Camera, onClick: (Camera) -> Unit) {
                     .weight(1f)
                     .align(Alignment.CenterVertically)
             ) {
-                val colour = if (cameraState.value.selectedCameras.contains(camera)) {
-                    Color.White
-                }
-                else {
-                    Color.Unspecified
-                }
-                Text(camera.name, color = colour)
+                Text(
+                    camera.name,
+                    color = if (isSelected) Color.White else Color.Unspecified
+                )
                 if (camera.neighbourhood.isNotBlank()) {
-                    val textColour = if (cameraState.value.selectedCameras.contains(camera)) {
-                        Color.White
-                    }
-                    else if (isSystemInDarkTheme()) {
-                        Color.LightGray
-                    }
-                    else {
-                        Color.DarkGray
-                    }
                     Text(
                         camera.neighbourhood,
-                        color = textColour,
+                        color = if (isSelected) {
+                            Color.White
+                        }
+                        else if (isSystemInDarkTheme()) {
+                            Color.LightGray
+                        }
+                        else {
+                            Color.DarkGray
+                        },
                         fontSize = 12.sp,
                         lineHeight = 14.sp,
                     )
@@ -140,19 +131,18 @@ fun CameraListTile(camera: Camera, onClick: (Camera) -> Unit) {
                     )
                 }
                 else {
-                    val colour = if (cameraState.value.selectedCameras.contains(camera)) {
-                        Color.White
-                    }
-                    else if (isSystemInDarkTheme()) {
-                        Color.White
-                    }
-                    else {
-                        Color.DarkGray
-                    }
                     Icon(
                         Icons.Rounded.StarBorder,
                         contentDescription = stringResource(R.string.add_to_favourites),
-                        tint = colour,
+                        tint = if (isSelected) {
+                            Color.White
+                        }
+                        else if (isSystemInDarkTheme()) {
+                            Color.White
+                        }
+                        else {
+                            Color.DarkGray
+                        },
                     )
                 }
             }

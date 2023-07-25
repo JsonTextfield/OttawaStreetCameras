@@ -36,6 +36,7 @@ fun CameraListView(
     modifier: Modifier,
     listState: LazyListState,
     onItemClick: (Camera) -> Unit,
+    onItemLongClick: (Camera) -> Unit,
 ) {
     LazyColumn(modifier = modifier, state = listState) {
         items(cameras, { camera -> camera.hashCode() }) { camera ->
@@ -71,7 +72,7 @@ fun CameraListView(
                     )
                 },
                 dismissContent = {
-                    CameraListTile(camera, onItemClick)
+                    CameraListTile(camera, onItemClick, onItemLongClick)
                 })
         }
         item {

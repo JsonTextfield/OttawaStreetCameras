@@ -23,6 +23,7 @@ import com.textfield.json.ottawastreetcameras.entities.Camera
 fun CameraGalleryView(
     cameras: List<Camera>,
     onItemClick: (Camera) -> Unit,
+    onItemLongClick: (Camera) -> Unit,
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(100.dp),
@@ -31,15 +32,13 @@ fun CameraGalleryView(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         items(cameras.size) {
-            CameraGalleryTile(cameras[it], onItemClick)
+            CameraGalleryTile(cameras[it], onItemClick, onItemLongClick)
         }
 
         item {
             Box(
                 modifier = Modifier
-                    .clip(
-                        shape = RoundedCornerShape(10.dp)
-                    )
+                    .clip(shape = RoundedCornerShape(10.dp))
                     .aspectRatio(1f)
             ) {
                 Text(
