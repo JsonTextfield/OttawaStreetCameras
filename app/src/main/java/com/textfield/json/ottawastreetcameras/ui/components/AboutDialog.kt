@@ -35,7 +35,7 @@ fun AboutDialog(onRate: () -> Unit, onLicences: () -> Unit, onDismiss: () -> Uni
                     Text(stringResource(R.string.licences))
                 }
                 TextButton(onClick = onDismiss) {
-                    Text(text = "Close")
+                    Text(text = stringResource(R.string.close))
                 }
             }
         }

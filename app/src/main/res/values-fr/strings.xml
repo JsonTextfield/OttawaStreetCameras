@@ -8,8 +8,8 @@
     <string name="hide">Cacher</string>
     <string name="more">Plus</string>
     <string name="clear">Effacer</string>
-    <string name="image_saved">L\'image a été enregistrée</string>
-    <string name="image_saved_at">L\'image a été enregistrée dans %s</string>
+    <string name="image_saved">L\'image a été téléchargée</string>
+    <string name="image_saved_at">L\'image a été téléchargée dans %s</string>
     <string name="licences">Licences</string>
     <string name="location_unavailable">L\'emplacement n\'est pas disponible</string>
     <string name="list">List</string>
@@ -39,6 +39,7 @@
     <string name="version">Version %s</string>
     <string name="sort">Trier</string>
     <string name="back">Retourner</string>
+    <string name="close">Fermer</string>
 
     <plurals name="images_saved">
         <item quantity="one">%d image a été enregistrée</item>

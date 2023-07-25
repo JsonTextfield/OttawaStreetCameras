@@ -39,6 +39,7 @@
     <string name="version">Version %s</string>
     <string name="sort">Sort</string>
     <string name="back">Back</string>
+    <string name="close">Close</string>
 
     <plurals name="images_saved">
         <item quantity="one">%d image saved</item>
