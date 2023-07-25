@@ -23,7 +23,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun StreetCamsMap(cameras: List<Camera>, isMyLocationEnabled: Boolean, onItemClick: (Camera) -> Unit) {
+fun StreetCamsMap(
+    cameras: List<Camera>,
+    isMyLocationEnabled: Boolean,
+    onItemClick: (Camera) -> Unit,
+    onItemLongClick: (Camera) -> Unit,
+) {
     val cameraManager = CameraManager.getInstance()
     val cameraState = cameraManager.cameraState.collectAsState()
     val context = LocalContext.current
@@ -62,17 +67,8 @@ fun StreetCamsMap(cameras: List<Camera>, isMyLocationEnabled: Boolean, onItemCli
             Marker(
                 state = MarkerState(position = LatLng(camera.lat, camera.lon)),
                 title = camera.name,
-                onInfoWindowClick = {
-                    if (cameraState.value.selectedCameras.isNotEmpty()) {
-                        cameraManager.selectCamera(camera)
-                    }
-                    else {
-                        onItemClick(camera)
-                    }
-                },
-                onInfoWindowLongClick = {
-                    cameraManager.selectCamera(camera)
-                },
+                onInfoWindowClick = { onItemClick(camera) },
+                onInfoWindowLongClick = { onItemLongClick(camera) },
                 icon = if (cameraState.value.selectedCameras.contains(camera)) {
                     BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
                 }

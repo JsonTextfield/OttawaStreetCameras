@@ -171,7 +171,9 @@ class MainActivity : AppCompatActivity() {
                         StreetCamsMap(
                             displayedCameras,
                             isMyLocationEnabled = requestLocationPermissions(requestForMap),
-                        ) { showCamera(it) }
+                            onItemClick = onItemClick,
+                            onItemLongClick = onItemLongClick
+                        )
                     }
 
                     ViewMode.GALLERY -> {
@@ -224,7 +226,7 @@ class MainActivity : AppCompatActivity() {
                                     Text(
                                         modifier = Modifier.fillMaxWidth(),
                                         textAlign = TextAlign.Center,
-                                        text = "Error loading data",
+                                        text = stringResource(R.string.could_not_load_long),
                                     )
                                     IconButton(
                                         modifier = Modifier
@@ -234,7 +236,7 @@ class MainActivity : AppCompatActivity() {
                                             cameraManager.downloadAll(context)
                                         }
                                     ) {
-                                        Icon(Icons.Rounded.Refresh, "Try again")
+                                        Icon(Icons.Rounded.Refresh, stringResource(R.string.retry))
                                     }
                                 }
                             }
