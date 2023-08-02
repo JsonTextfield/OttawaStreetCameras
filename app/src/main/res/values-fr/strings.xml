@@ -12,7 +12,7 @@
     <string name="image_saved_at">L\'image a été téléchargée dans %s</string>
     <string name="licences">Licences</string>
     <string name="location_unavailable">L\'emplacement n\'est pas disponible</string>
-    <string name="list">List</string>
+    <string name="list">Liste</string>
     <string name="map">Carte</string>
     <string name="gallery">Galerie</string>
     <string name="neighbourhoods">Quartiers</string>
@@ -24,12 +24,12 @@
     <string name="random_camera">Caméra aléatoire</string>
     <string name="rate">Évaluer</string>
     <string name="remove_from_favourites">Supprimer des favoris</string>
-    <string name="save_image">Télécharger</string>
+    <string name="download">Télécharger</string>
     <string name="search">Chercher</string>
     <string name="search_neighbourhood">Chercher par quartier</string>
     <string name="select_all">Tout sélectionner</string>
     <string name="deselect_all">Tout déselectionner</string>
-    <string name="show">Montre</string>
+    <string name="view">Voir</string>
     <string name="shuffle">Mélanger</string>
     <string name="sort_by_distance">Triez par distance</string>
     <string name="sort_by_name">Triez par nom</string>

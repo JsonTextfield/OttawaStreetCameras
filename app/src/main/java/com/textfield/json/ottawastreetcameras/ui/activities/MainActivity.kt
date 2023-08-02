@@ -314,7 +314,7 @@ class MainActivity : AppCompatActivity() {
         )
         val view = Action(
             icon = Icons.Rounded.CameraAlt,
-            toolTip = stringResource(id = R.string.show),
+            toolTip = stringResource(id = R.string.view),
             selectedCameras.size <= 8,
             onClick = {
                 showSelectedCameras()

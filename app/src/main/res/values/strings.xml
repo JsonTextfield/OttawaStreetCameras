@@ -24,12 +24,12 @@
     <string name="random_camera">Random</string>
     <string name="rate">Rate</string>
     <string name="remove_from_favourites">Unfavourite</string>
-    <string name="save_image">Download</string>
+    <string name="download">Download</string>
     <string name="search">Search</string>
     <string name="search_neighbourhood">Search by\nneighbourhood</string>
     <string name="select_all">Select all</string>
     <string name="deselect_all">Deselect all</string>
-    <string name="show">Show</string>
+    <string name="view">View</string>
     <string name="shuffle">Shuffle</string>
     <string name="sort_by_distance">Sort by distance</string>
     <string name="sort_by_name">Sort by name</string>

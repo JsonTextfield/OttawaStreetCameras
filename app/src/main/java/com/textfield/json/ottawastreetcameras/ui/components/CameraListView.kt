@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.pluralStringResource
@@ -52,23 +53,30 @@ fun CameraListView(
                 modifier = Modifier.background(colorResource(id = R.color.colorAccent)),
                 background = {
                     Icon(
-                        Icons.Rounded.VisibilityOff, "", modifier = Modifier
+                        Icons.Rounded.VisibilityOff,
+                        "",
+                        modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .weight(0.1f)
-                            .padding(10.dp)
+                            .padding(10.dp),
+                        tint = Color.White,
                     )
                     Text(
                         stringResource(if (camera.isVisible) R.string.hide else R.string.unhide),
                         textAlign = TextAlign.Center,
+                        color = Color.White,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .weight(0.5f)
                     )
                     Icon(
-                        Icons.Rounded.VisibilityOff, "", modifier = Modifier
+                        Icons.Rounded.VisibilityOff,
+                        "",
+                        modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .weight(0.1f)
-                            .padding(10.dp)
+                            .padding(10.dp),
+                        tint = Color.White,
                     )
                 },
                 dismissContent = {
