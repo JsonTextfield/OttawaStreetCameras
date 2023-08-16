@@ -29,7 +29,7 @@ fun ActionModeMenu(actions: List<Action>, onItemSelected: () -> Unit) {
                 tooltip = action.toolTip,
                 visible = action.condition
             ) {
-                action.onClick?.invoke()
+                action.onClick()
                 onItemSelected()
             }
         }

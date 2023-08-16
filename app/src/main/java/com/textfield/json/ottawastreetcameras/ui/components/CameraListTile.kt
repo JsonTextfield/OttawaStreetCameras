@@ -18,6 +18,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,8 +38,8 @@ import kotlin.math.roundToInt
 @Composable
 fun CameraListTile(camera: Camera, onClick: (Camera) -> Unit, onLongClick: (Camera) -> Unit) {
     val cameraManager = CameraManager.getInstance()
-    val cameraState = cameraManager.cameraState.collectAsState()
-    val isSelected = cameraState.value.selectedCameras.contains(camera)
+    val cameraState by cameraManager.cameraState.collectAsState()
+    val isSelected = cameraState.selectedCameras.contains(camera)
     Surface(
         modifier = Modifier
             .defaultMinSize(minHeight = 50.dp)
@@ -62,7 +63,7 @@ fun CameraListTile(camera: Camera, onClick: (Camera) -> Unit, onLongClick: (Came
                     }
                 )
         ) {
-            if (cameraState.value.sortMode == SortMode.DISTANCE && camera.distance > -1) {
+            if (cameraState.sortMode == SortMode.DISTANCE && camera.distance > -1) {
                 var distance = camera.distance.toDouble()
                 val distanceString =
                     if (distance > 9000e3) {

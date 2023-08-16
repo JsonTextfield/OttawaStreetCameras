@@ -97,39 +97,42 @@ class MainActivity : AppCompatActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun MainAppBar(listState: LazyListState, useDarkTheme: Boolean = isSystemInDarkTheme()) {
-        val cameraState = cameraManager.cameraState.collectAsState()
-        TopAppBar(navigationIcon = {
-            if (cameraState.value.selectedCameras.isEmpty()) {
-                if (cameraState.value.searchMode != SearchMode.NONE) {
-                    IconButton(onClick = {
-                        cameraManager.changeSearchMode(SearchMode.NONE)
-                        cameraManager.searchCameras("")
-                    }) {
-                        Icon(Icons.Rounded.ArrowBack, stringResource(id = R.string.back), tint = Color.White)
+        val cameraState by cameraManager.cameraState.collectAsState()
+        TopAppBar(
+            navigationIcon = {
+                if (cameraState.selectedCameras.isEmpty()) {
+                    if (cameraState.searchMode != SearchMode.NONE) {
+                        IconButton(onClick = {
+                            cameraManager.changeSearchMode(SearchMode.NONE)
+                            cameraManager.searchCameras("")
+                        }) {
+                            Icon(Icons.Rounded.ArrowBack, stringResource(id = R.string.back), tint = Color.White)
+                        }
+                    }
+                    else if (cameraState.filterMode != FilterMode.VISIBLE) {
+                        IconButton(onClick = {
+                            cameraManager.changeFilterMode(FilterMode.VISIBLE)
+                        }) {
+                            Icon(Icons.Rounded.ArrowBack, stringResource(id = R.string.back), tint = Color.White)
+                        }
                     }
                 }
-                else if (cameraState.value.filterMode != FilterMode.VISIBLE) {
-                    IconButton(onClick = {
-                        cameraManager.changeFilterMode(FilterMode.VISIBLE)
-                    }) {
-                        Icon(Icons.Rounded.ArrowBack, stringResource(id = R.string.back), tint = Color.White)
-                    }
+            },
+            title = {
+                AppBarTitle(listState)
+            },
+            actions = {
+                ActionBar(getActions()) {
                 }
-            }
-        }, title = {
-            AppBarTitle(listState)
-        }, actions = {
-            ActionBar(getActions()) {
-            }
-        },
+            },
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = if (!useDarkTheme || cameraState.value.selectedCameras.isNotEmpty()) {
+                containerColor = if (!useDarkTheme || cameraState.selectedCameras.isNotEmpty()) {
                     colorResource(id = R.color.colorAccent)
                 }
                 else {
                     Color.Black
                 }
-            )
+            ),
         )
     }
 
@@ -140,10 +143,10 @@ class MainActivity : AppCompatActivity() {
             color = MaterialTheme.colorScheme.background
         ) {
             Column(modifier = Modifier.padding(padding)) {
-                val cameraState = cameraManager.cameraState.collectAsState()
-                val displayedCameras = cameraState.value.displayedCameras
+                val cameraState by cameraManager.cameraState.collectAsState()
+                val displayedCameras = cameraState.displayedCameras
                 val onItemClick = { camera: Camera ->
-                    if (cameraState.value.selectedCameras.isNotEmpty()) {
+                    if (cameraState.selectedCameras.isNotEmpty()) {
                         cameraManager.selectCamera(camera)
                     }
                     else {
@@ -151,10 +154,10 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 val onItemLongClick = { camera: Camera -> cameraManager.selectCamera(camera) }
-                when (cameraState.value.viewMode) {
+                when (cameraState.viewMode) {
                     ViewMode.LIST -> {
                         Row {
-                            AnimatedVisibility(visible = cameraState.value.showSectionIndex) {
+                            AnimatedVisibility(visible = cameraState.showSectionIndex) {
                                 SectionIndex(displayedCameras, listState)
                             }
                             CameraListView(
@@ -191,15 +194,15 @@ class MainActivity : AppCompatActivity() {
     private fun loadView() {
         setContent {
             AppTheme {
-                val cameraState = cameraManager.cameraState.collectAsState()
+                val cameraState by cameraManager.cameraState.collectAsState()
                 val listState = remember { LazyListState() }
                 val context = LocalContext.current
                 Scaffold(topBar = {
-                    if (cameraState.value.uiState == UIState.LOADED) {
+                    if (cameraState.uiState == UIState.LOADED) {
                         MainAppBar(listState)
                     }
                 }) {
-                    when (cameraState.value.uiState) {
+                    when (cameraState.uiState) {
                         UIState.LOADING -> {
                             Box(
                                 modifier = Modifier
@@ -301,8 +304,8 @@ class MainActivity : AppCompatActivity() {
 
     @Composable
     private fun getActions(): List<Action> {
-        val cameraState = cameraManager.cameraState.collectAsState()
-        val selectedCameras = cameraState.value.selectedCameras
+        val cameraState by cameraManager.cameraState.collectAsState()
+        val selectedCameras = cameraState.selectedCameras
         val context = LocalContext.current
         val clearSelection = Action(
             icon = Icons.Rounded.Clear,
@@ -370,13 +373,13 @@ class MainActivity : AppCompatActivity() {
         val selectAll = Action(
             icon = Icons.Rounded.SelectAll,
             toolTip = stringResource(R.string.select_all),
-            condition = selectedCameras.size < cameraState.value.displayedCameras.size,
+            condition = selectedCameras.size < cameraState.displayedCameras.size,
             onClick = {
                 cameraManager.selectAllCameras()
             }
         )
         val switchView = Action(
-            icon = when (cameraState.value.viewMode) {
+            icon = when (cameraState.viewMode) {
                 ViewMode.LIST -> Icons.Rounded.List
                 ViewMode.MAP -> Icons.Filled.Place
                 else -> Icons.Rounded.GridView
@@ -393,7 +396,7 @@ class MainActivity : AppCompatActivity() {
         )
         val sort = Action(
             icon = Icons.Rounded.Sort,
-            condition = cameraState.value.viewMode != ViewMode.MAP,
+            condition = cameraState.viewMode != ViewMode.MAP,
             isMenu = true,
             toolTip = stringResource(id = R.string.sort),
             menuContent = {
@@ -405,18 +408,18 @@ class MainActivity : AppCompatActivity() {
         )
         val search = Action(
             icon = Icons.Rounded.Search,
-            condition = cameraState.value.searchMode != SearchMode.NAME,
+            condition = cameraState.searchMode != SearchMode.NAME,
             toolTip = stringResource(id = R.string.search),
-            checked = cameraState.value.searchMode == SearchMode.NAME,
+            checked = cameraState.searchMode == SearchMode.NAME,
             onClick = {
                 cameraManager.changeSearchMode(SearchMode.NAME)
             }
         )
         val searchNeighbourhood = Action(
             icon = Icons.Rounded.TravelExplore,
-            condition = cameraState.value.searchMode != SearchMode.NEIGHBOURHOOD,
+            condition = cameraState.searchMode != SearchMode.NEIGHBOURHOOD,
             toolTip = stringResource(id = R.string.search_neighbourhood),
-            checked = cameraState.value.searchMode == SearchMode.NEIGHBOURHOOD,
+            checked = cameraState.searchMode == SearchMode.NEIGHBOURHOOD,
             onClick = {
                 cameraManager.changeSearchMode(SearchMode.NEIGHBOURHOOD)
             }
@@ -425,7 +428,7 @@ class MainActivity : AppCompatActivity() {
             icon = Icons.Rounded.Star,
             condition = true,
             toolTip = stringResource(id = R.string.favourites),
-            checked = cameraState.value.filterMode == FilterMode.FAVOURITE,
+            checked = cameraState.filterMode == FilterMode.FAVOURITE,
             onClick = {
                 cameraManager.changeFilterMode(FilterMode.FAVOURITE)
             }
@@ -434,7 +437,7 @@ class MainActivity : AppCompatActivity() {
             icon = Icons.Rounded.VisibilityOff,
             condition = true,
             toolTip = stringResource(id = R.string.hidden_cameras),
-            checked = cameraState.value.filterMode == FilterMode.HIDDEN,
+            checked = cameraState.filterMode == FilterMode.HIDDEN,
             onClick = {
                 cameraManager.changeFilterMode(FilterMode.HIDDEN)
             }
@@ -444,7 +447,7 @@ class MainActivity : AppCompatActivity() {
             condition = true,
             toolTip = stringResource(id = R.string.random_camera),
             onClick = {
-                showCamera(cameraState.value.visibleCameras.random())
+                showCamera(cameraState.visibleCameras.random())
             }
         )
         val shuffle = Action(
@@ -500,7 +503,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun requestLocationPermissions(
-        requestCode: Int, onPermissionGranted: ((location: Location) -> Unit)? = null,
+        requestCode: Int, onPermissionGranted: ((location: Location) -> Unit) = {},
     ): Boolean {
         val permissionArray = arrayOf(
             permission.ACCESS_FINE_LOCATION, permission.ACCESS_COARSE_LOCATION
@@ -519,7 +522,7 @@ class MainActivity : AppCompatActivity() {
                     val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
                     val lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
                     return if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) && lastLocation != null) {
-                        onPermissionGranted?.invoke(lastLocation)
+                        onPermissionGranted.invoke(lastLocation)
                         true
                     }
                     else {

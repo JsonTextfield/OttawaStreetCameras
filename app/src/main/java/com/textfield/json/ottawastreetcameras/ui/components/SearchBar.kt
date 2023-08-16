@@ -1,5 +1,7 @@
 package com.textfield.json.ottawastreetcameras.ui.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.BasicTextField
@@ -40,6 +42,7 @@ fun SearchBar(hintText: String, onValueChange: (String) -> Unit) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchBarContent(hintText: String, value: String, onValueChange: (String) -> Unit) {
     val textFieldValue = TextFieldValue(value, TextRange(value.length))
@@ -83,7 +86,8 @@ fun SearchBarContent(hintText: String, value: String, onValueChange: (String) ->
                         hintText,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .align(Alignment.CenterVertically),
+                            .align(Alignment.CenterVertically)
+                            .basicMarquee(),
                         maxLines = 1,
                         fontSize = 14.sp,
                         overflow = TextOverflow.Ellipsis,

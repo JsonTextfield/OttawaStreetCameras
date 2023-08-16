@@ -3,6 +3,7 @@ package com.textfield.json.ottawastreetcameras.ui.components
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -30,7 +31,7 @@ fun StreetCamsMap(
     onItemLongClick: (Camera) -> Unit,
 ) {
     val cameraManager = CameraManager.getInstance()
-    val cameraState = cameraManager.cameraState.collectAsState()
+    val cameraState by cameraManager.cameraState.collectAsState()
     val context = LocalContext.current
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.builder().target(LatLng(45.45, -75.69)).zoom(9f).build()
@@ -69,7 +70,7 @@ fun StreetCamsMap(
                 title = camera.name,
                 onInfoWindowClick = { onItemClick(camera) },
                 onInfoWindowLongClick = { onItemLongClick(camera) },
-                icon = if (cameraState.value.selectedCameras.contains(camera)) {
+                icon = if (cameraState.selectedCameras.contains(camera)) {
                     BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
                 }
                 else if (camera.isFavourite) {

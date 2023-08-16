@@ -38,7 +38,7 @@ fun ActionBar(actions: List<Action>, onItemSelected: () -> Unit) {
                         tooltip = action.toolTip,
                         visible = true
                     ) {
-                        action.onClick?.invoke()
+                        action.onClick()
                         onItemSelected()
                     }
                 }

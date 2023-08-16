@@ -30,13 +30,13 @@ import kotlinx.coroutines.launch
 @Composable
 fun AppBarTitle(listState: LazyListState) {
     val cameraManager = CameraManager.getInstance()
-    val cameraState = cameraManager.cameraState.collectAsState()
-    if (cameraState.value.selectedCameras.isNotEmpty()) {
+    val cameraState by cameraManager.cameraState.collectAsState()
+    if (cameraState.selectedCameras.isNotEmpty()) {
         Text(
             pluralStringResource(
                 R.plurals.selectedCameras,
-                cameraState.value.selectedCameras.size,
-                cameraState.value.selectedCameras.size
+                cameraState.selectedCameras.size,
+                cameraState.selectedCameras.size
             ),
             color = Color.White,
             modifier = Modifier
@@ -51,9 +51,9 @@ fun AppBarTitle(listState: LazyListState) {
         )
     }
     else {
-        when (cameraState.value.searchMode) {
+        when (cameraState.searchMode) {
             SearchMode.NONE -> {
-                val title = when (cameraState.value.filterMode) {
+                val title = when (cameraState.filterMode) {
                     FilterMode.FAVOURITE -> stringResource(id = R.string.favourites)
                     FilterMode.HIDDEN -> stringResource(id = R.string.hidden_cameras)
                     FilterMode.VISIBLE -> stringResource(id = R.string.app_name)
@@ -77,8 +77,8 @@ fun AppBarTitle(listState: LazyListState) {
                 SearchBar(
                     pluralStringResource(
                         R.plurals.search_hint,
-                        cameraState.value.displayedCameras.size,
-                        cameraState.value.displayedCameras.size
+                        cameraState.displayedCameras.size,
+                        cameraState.displayedCameras.size
                     )
                 ) {
                     cameraManager.searchCameras(it)
@@ -88,12 +88,12 @@ fun AppBarTitle(listState: LazyListState) {
             SearchMode.NEIGHBOURHOOD -> {
                 Box {
                     var value by rememberSaveable { mutableStateOf("") }
-                    val suggestionList = cameraState.value.neighbourhoods.filter {
+                    val suggestionList = cameraState.neighbourhoods.filter {
                         it.name.contains(value, true)
                     }.map {
                         it.name
                     }
-                    val expanded = (cameraState.value.searchMode == SearchMode.NEIGHBOURHOOD
+                    val expanded = (cameraState.searchMode == SearchMode.NEIGHBOURHOOD
                                     && value.isNotEmpty()) && suggestionList.isNotEmpty() && suggestionList.all {
                         !it.equals(
                             value,
@@ -108,8 +108,8 @@ fun AppBarTitle(listState: LazyListState) {
                     SearchBarContent(
                         pluralStringResource(
                             R.plurals.search_hint_neighbourhood,
-                            cameraState.value.neighbourhoods.size,
-                            cameraState.value.neighbourhoods.size,
+                            cameraState.neighbourhoods.size,
+                            cameraState.neighbourhoods.size,
                         ), value
                     ) {
                         value = it

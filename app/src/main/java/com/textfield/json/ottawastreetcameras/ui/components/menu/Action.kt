@@ -9,6 +9,6 @@ data class Action(
     val condition: Boolean = true,
     var checked: Boolean = false,
     val isMenu: Boolean = false,
-    val onClick: (() -> Unit)? = null,
-    val menuContent: (@Composable (expanded: Boolean) -> Unit)? = null,
+    val onClick: (() -> Unit) = {},
+    val menuContent: (@Composable (expanded: Boolean) -> Unit) = {},
 )

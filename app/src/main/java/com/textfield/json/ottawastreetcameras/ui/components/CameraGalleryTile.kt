@@ -42,7 +42,7 @@ import com.textfield.json.ottawastreetcameras.entities.Camera
 @Composable
 fun CameraGalleryTile(camera: Camera, onClick: (Camera) -> Unit, onLongClick: (Camera) -> Unit) {
     val cameraManager = CameraManager.getInstance()
-    val cameraState = cameraManager.cameraState.collectAsState()
+    val cameraState by cameraManager.cameraState.collectAsState()
 
     Box(
         modifier = Modifier
@@ -73,7 +73,7 @@ fun CameraGalleryTile(camera: Camera, onClick: (Camera) -> Unit, onLongClick: (C
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
-                        color = if (cameraState.value.selectedCameras.contains(camera)) {
+                        color = if (cameraState.selectedCameras.contains(camera)) {
                             colorResource(id = R.color.galleryTileSelectedColour)
                         }
                         else {

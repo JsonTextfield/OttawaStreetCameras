@@ -27,7 +27,7 @@ fun OverflowMenu(
     onItemSelected: () -> Unit,
 ) {
     val cameraManager = CameraManager.getInstance()
-    val cameraState = cameraManager.cameraState.collectAsState()
+    val cameraState by cameraManager.cameraState.collectAsState()
     DropdownMenu(
         expanded = expanded,
         onDismissRequest = { onItemSelected() },
@@ -40,12 +40,12 @@ fun OverflowMenu(
                     onItemSelected()
                 }
                 OverflowMenuItem(
-                    icon = when (cameraState.value.viewMode) {
+                    icon = when (cameraState.viewMode) {
                         ViewMode.LIST -> Icons.Rounded.List
                         ViewMode.MAP -> Icons.Filled.Place
                         else -> Icons.Rounded.GridView
                     },
-                    tooltip = when (cameraState.value.viewMode) {
+                    tooltip = when (cameraState.viewMode) {
                         ViewMode.LIST -> stringResource(R.string.list)
                         ViewMode.MAP -> stringResource(R.string.map)
                         else -> stringResource(R.string.gallery)
@@ -67,7 +67,7 @@ fun OverflowMenu(
                 OverflowMenuItem(
                     icon = Icons.Rounded.Sort,
                     tooltip = stringResource(R.string.sort),
-                    visible = cameraState.value.viewMode != ViewMode.MAP
+                    visible = cameraState.viewMode != ViewMode.MAP
                 ) {
                     showSortMenu = !showSortMenu
                 }
@@ -80,7 +80,7 @@ fun OverflowMenu(
                 visible = action.condition,
                 checked = action.checked,
             ) {
-                action.onClick?.invoke()
+                action.onClick()
                 onItemSelected()
             }
         }

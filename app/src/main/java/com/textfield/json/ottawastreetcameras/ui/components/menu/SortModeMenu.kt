@@ -3,6 +3,7 @@ package com.textfield.json.ottawastreetcameras.ui.components.menu
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.textfield.json.ottawastreetcameras.CameraManager
@@ -12,7 +13,7 @@ import com.textfield.json.ottawastreetcameras.SortMode
 @Composable
 fun SortModeMenu(expanded: Boolean, onItemSelected: () -> Unit) {
     val cameraManager = CameraManager.getInstance()
-    val cameraState = cameraManager.cameraState.collectAsState()
+    val cameraState by cameraManager.cameraState.collectAsState()
     val context = LocalContext.current
     DropdownMenu(expanded = expanded, onDismissRequest = { onItemSelected() }) {
         fun setSortMode(sortMode: SortMode) {
@@ -21,17 +22,17 @@ fun SortModeMenu(expanded: Boolean, onItemSelected: () -> Unit) {
         }
         RadioMenuItem(
             title = stringResource(R.string.sort_by_name),
-            selected = cameraState.value.sortMode == SortMode.NAME,
+            selected = cameraState.sortMode == SortMode.NAME,
             onClick = { setSortMode(SortMode.NAME) },
         )
         RadioMenuItem(
             title = stringResource(R.string.sort_by_distance),
-            selected = cameraState.value.sortMode == SortMode.DISTANCE,
+            selected = cameraState.sortMode == SortMode.DISTANCE,
             onClick = { setSortMode(SortMode.DISTANCE) },
         )
         RadioMenuItem(
             title = stringResource(R.string.sort_by_neighbourhood),
-            selected = cameraState.value.sortMode == SortMode.NEIGHBOURHOOD,
+            selected = cameraState.sortMode == SortMode.NEIGHBOURHOOD,
             onClick = { setSortMode(SortMode.NEIGHBOURHOOD) },
         )
     }
