@@ -11,16 +11,13 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -33,7 +30,6 @@ import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.GridView
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.List
-import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.SelectAll
 import androidx.compose.material.icons.rounded.Shuffle
@@ -43,14 +39,12 @@ import androidx.compose.material.icons.rounded.StarBorder
 import androidx.compose.material.icons.rounded.TravelExplore
 import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material.icons.rounded.VisibilityOff
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -60,20 +54,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.review.ReviewManagerFactory
-import com.textfield.json.ottawastreetcameras.CameraManagerViewModelFactory
 import com.textfield.json.ottawastreetcameras.CameraViewModel
 import com.textfield.json.ottawastreetcameras.FilterMode
 import com.textfield.json.ottawastreetcameras.R
@@ -86,8 +77,10 @@ import com.textfield.json.ottawastreetcameras.ui.components.AppBarTitle
 import com.textfield.json.ottawastreetcameras.ui.components.AppTheme
 import com.textfield.json.ottawastreetcameras.ui.components.CameraGalleryView
 import com.textfield.json.ottawastreetcameras.ui.components.CameraListView
+import com.textfield.json.ottawastreetcameras.ui.components.CameraMapView
+import com.textfield.json.ottawastreetcameras.ui.components.ErrorScreen
+import com.textfield.json.ottawastreetcameras.ui.components.LoadingScreen
 import com.textfield.json.ottawastreetcameras.ui.components.SectionIndex
-import com.textfield.json.ottawastreetcameras.ui.components.StreetCamsMap
 import com.textfield.json.ottawastreetcameras.ui.components.menu.Action
 import com.textfield.json.ottawastreetcameras.ui.components.menu.ActionBar
 import com.textfield.json.ottawastreetcameras.ui.components.menu.SortModeMenu
@@ -99,11 +92,7 @@ class MainActivity : AppCompatActivity() {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun MainAppBar(
-        cameraViewModel: CameraViewModel,
-        listState: LazyListState,
-        useDarkTheme: Boolean = isSystemInDarkTheme(),
-    ) {
+    fun MainAppBar(cameraViewModel: CameraViewModel, listState: LazyListState) {
         val cameraState by cameraViewModel.cameraState.collectAsState()
         TopAppBar(
             navigationIcon = {
@@ -117,9 +106,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                     else if (cameraState.filterMode != FilterMode.VISIBLE) {
-                        IconButton(onClick = {
-                            cameraViewModel.changeFilterMode(FilterMode.VISIBLE)
-                        }) {
+                        IconButton(onClick = { cameraViewModel.changeFilterMode(FilterMode.VISIBLE) }) {
                             Icon(Icons.Rounded.ArrowBack, stringResource(id = R.string.back), tint = Color.White)
                         }
                     }
@@ -129,11 +116,10 @@ class MainActivity : AppCompatActivity() {
                 AppBarTitle(cameraViewModel, listState)
             },
             actions = {
-                ActionBar(cameraViewModel, getActions(cameraViewModel)) {
-                }
+                ActionBar(getActions(cameraViewModel))
             },
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = if (!useDarkTheme || cameraState.selectedCameras.isNotEmpty()) {
+                containerColor = if (!isSystemInDarkTheme() || cameraState.selectedCameras.isNotEmpty()) {
                     colorResource(id = R.color.colorAccent)
                 }
                 else {
@@ -144,12 +130,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Composable
-    fun MainContent(cameraViewModel: CameraViewModel, padding: PaddingValues, listState: LazyListState) {
+    fun MainContent(cameraViewModel: CameraViewModel, listState: LazyListState) {
         Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
         ) {
-            Column(modifier = Modifier.padding(padding)) {
+            Column {
                 val cameraState by cameraViewModel.cameraState.collectAsState()
                 val displayedCameras = cameraState.displayedCameras
                 val onItemClick = { camera: Camera ->
@@ -179,7 +164,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     ViewMode.MAP -> {
-                        StreetCamsMap(
+                        CameraMapView(
                             cameraViewModel,
                             displayedCameras,
                             isMyLocationEnabled = requestLocationPermissions(requestForMap),
@@ -204,7 +189,7 @@ class MainActivity : AppCompatActivity() {
     private fun loadView() {
         setContent {
             AppTheme {
-                val cameraViewModel: CameraViewModel by viewModels(null) { CameraManagerViewModelFactory() }
+                val cameraViewModel: CameraViewModel = viewModel()
                 val cameraState by cameraViewModel.cameraState.collectAsState()
                 val uiState = cameraState.uiState
                 val listState = rememberLazyListState()
@@ -216,53 +201,12 @@ class MainActivity : AppCompatActivity() {
                         }
                     },
                 ) {
-                    when (uiState) {
-                        UIState.LOADING -> {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(it)
-                            ) {
-                                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                            }
-                        }
-
-                        UIState.LOADED -> {
-                            MainContent(cameraViewModel, it, listState)
-                        }
-
-                        UIState.ERROR -> {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(it)
-                            ) {
-                                Column(
-                                    modifier = Modifier.align(Alignment.Center)
-                                ) {
-                                    Text(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        textAlign = TextAlign.Center,
-                                        text = stringResource(R.string.could_not_load_long),
-                                    )
-                                    IconButton(
-                                        modifier = Modifier
-                                            .align(Alignment.CenterHorizontally)
-                                            .padding(10.dp),
-                                        onClick = {
-                                            cameraViewModel.downloadAll(context)
-                                        }
-                                    ) {
-                                        Icon(Icons.Rounded.Refresh, stringResource(R.string.retry))
-                                    }
-                                }
-                            }
-                        }
-
-                        UIState.INITIAL -> {
-                            LaunchedEffect(true) {
-                                cameraViewModel.downloadAll(context)
-                            }
+                    Box(modifier = Modifier.padding(it)) {
+                        when (uiState) {
+                            UIState.INITIAL -> LaunchedEffect(true) { cameraViewModel.downloadAll(context) }
+                            UIState.LOADING -> LoadingScreen()
+                            UIState.LOADED -> MainContent(cameraViewModel, listState)
+                            UIState.ERROR -> ErrorScreen { cameraViewModel.downloadAll(context) }
                         }
                     }
                 }
@@ -306,22 +250,16 @@ class MainActivity : AppCompatActivity() {
         val cameraState by cameraViewModel.cameraState.collectAsState()
         val selectedCameras = cameraState.selectedCameras
         val context = LocalContext.current
-        val clearSelection = Action(
-            icon = Icons.Rounded.Clear,
-            toolTip = stringResource(R.string.clear),
-            true,
-            onClick = {
+        val clearSelection =
+            Action(icon = Icons.Rounded.Clear, toolTip = stringResource(R.string.clear), true, onClick = {
                 cameraViewModel.clearSelectedCameras()
-            }
-        )
-        val view = Action(
-            icon = Icons.Rounded.CameraAlt,
+            })
+        val view = Action(icon = Icons.Rounded.CameraAlt,
             toolTip = stringResource(id = R.string.view),
             selectedCameras.size <= 8,
             onClick = {
                 showCameras(cameraViewModel.cameraState.value.selectedCameras as ArrayList<Camera>)
-            }
-        )
+            })
         val allIsFavourite = selectedCameras.all { it.isFavourite }
         val favouriteToolTip = stringResource(
             if (allIsFavourite) {
@@ -331,21 +269,15 @@ class MainActivity : AppCompatActivity() {
                 R.string.add_to_favourites
             }
         )
-        val favouriteIcon =
-            if (allIsFavourite) {
-                Icons.Rounded.StarBorder
-            }
-            else {
-                Icons.Rounded.Star
-            }
-        val favourite = Action(
-            icon = favouriteIcon,
-            toolTip = favouriteToolTip,
-            true,
-            onClick = {
-                cameraViewModel.favouriteSelectedCameras(this, !allIsFavourite)
-            }
-        )
+        val favouriteIcon = if (allIsFavourite) {
+            Icons.Rounded.StarBorder
+        }
+        else {
+            Icons.Rounded.Star
+        }
+        val favourite = Action(icon = favouriteIcon, toolTip = favouriteToolTip, true, onClick = {
+            cameraViewModel.favouriteSelectedCameras(this, !allIsFavourite)
+        })
         val allIsHidden = selectedCameras.all { !it.isVisible }
         val hiddenToolTip = stringResource(
             if (allIsHidden) {
@@ -355,108 +287,84 @@ class MainActivity : AppCompatActivity() {
                 R.string.hide
             }
         )
-        val hiddenIcon =
-            if (allIsHidden) {
-                Icons.Rounded.Visibility
-            }
-            else {
-                Icons.Rounded.VisibilityOff
-            }
-        val hide = Action(icon = hiddenIcon,
-            toolTip = hiddenToolTip,
-            true,
-            onClick = {
-                cameraViewModel.hideSelectedCameras(context, allIsHidden)
-            }
-        )
-        val selectAll = Action(
-            icon = Icons.Rounded.SelectAll,
+        val hiddenIcon = if (allIsHidden) {
+            Icons.Rounded.Visibility
+        }
+        else {
+            Icons.Rounded.VisibilityOff
+        }
+        val hide = Action(icon = hiddenIcon, toolTip = hiddenToolTip, true, onClick = {
+            cameraViewModel.hideSelectedCameras(context, allIsHidden)
+        })
+        val selectAll = Action(icon = Icons.Rounded.SelectAll,
             toolTip = stringResource(R.string.select_all),
             condition = selectedCameras.size < cameraState.displayedCameras.size,
             onClick = {
                 cameraViewModel.selectAllCameras()
+            })
+        val switchView = Action(icon = when (cameraState.viewMode) {
+            ViewMode.LIST -> Icons.Rounded.List
+            ViewMode.MAP -> Icons.Filled.Place
+            else -> Icons.Rounded.GridView
+        }, condition = true, isMenu = true, toolTip = stringResource(id = R.string.switch_view), menuContent = {
+            var expanded by remember { mutableStateOf(it) }
+            ViewModeMenu(expanded = expanded xor it, currentViewMode = cameraState.viewMode) { viewMode ->
+                expanded = !expanded
+                cameraViewModel.changeViewMode(context, viewMode)
             }
-        )
-        val switchView = Action(
-            icon = when (cameraState.viewMode) {
-                ViewMode.LIST -> Icons.Rounded.List
-                ViewMode.MAP -> Icons.Filled.Place
-                else -> Icons.Rounded.GridView
-            },
-            condition = true,
-            isMenu = true,
-            toolTip = stringResource(id = R.string.switch_view),
-            menuContent = {
-                var expanded by remember { mutableStateOf(it) }
-                ViewModeMenu(cameraViewModel, expanded xor it) {
-                    expanded = !expanded
-                }
-            }
-        )
-        val sort = Action(
-            icon = Icons.Rounded.Sort,
+        })
+        val sort = Action(icon = Icons.Rounded.Sort,
             condition = cameraState.viewMode != ViewMode.MAP,
             isMenu = true,
             toolTip = stringResource(id = R.string.sort),
             menuContent = {
                 var expanded by remember { mutableStateOf(it) }
-                SortModeMenu(cameraViewModel, expanded xor it) {
+                SortModeMenu(expanded = expanded xor it, currentSortMode = cameraState.sortMode) { sortMode ->
                     expanded = !expanded
+                    cameraViewModel.changeSortMode(context, sortMode)
                 }
-            }
-        )
-        val search = Action(
-            icon = Icons.Rounded.Search,
+            })
+        val search = Action(icon = Icons.Rounded.Search,
             condition = cameraState.searchMode != SearchMode.NAME,
             toolTip = stringResource(id = R.string.search),
             checked = cameraState.searchMode == SearchMode.NAME,
             onClick = {
                 cameraViewModel.changeSearchMode(SearchMode.NAME)
-            }
-        )
-        val searchNeighbourhood = Action(
-            icon = Icons.Rounded.TravelExplore,
+            })
+        val searchNeighbourhood = Action(icon = Icons.Rounded.TravelExplore,
             condition = cameraState.searchMode != SearchMode.NEIGHBOURHOOD,
             toolTip = stringResource(id = R.string.search_neighbourhood),
             checked = cameraState.searchMode == SearchMode.NEIGHBOURHOOD,
             onClick = {
                 cameraViewModel.changeSearchMode(SearchMode.NEIGHBOURHOOD)
-            }
-        )
-        val favourites = Action(
-            icon = Icons.Rounded.Star,
+            })
+        val favourites = Action(icon = Icons.Rounded.Star,
             condition = true,
             toolTip = stringResource(id = R.string.favourites),
             checked = cameraState.filterMode == FilterMode.FAVOURITE,
             onClick = {
                 cameraViewModel.changeFilterMode(FilterMode.FAVOURITE)
-            }
-        )
-        val hidden = Action(
-            icon = Icons.Rounded.VisibilityOff,
+            })
+        val hidden = Action(icon = Icons.Rounded.VisibilityOff,
             condition = true,
             toolTip = stringResource(id = R.string.hidden_cameras),
             checked = cameraState.filterMode == FilterMode.HIDDEN,
             onClick = {
                 cameraViewModel.changeFilterMode(FilterMode.HIDDEN)
-            }
-        )
-        val random = Action(
-            icon = Icons.Rounded.Casino,
+            })
+        val random = Action(icon = Icons.Rounded.Casino,
             condition = true,
             toolTip = stringResource(id = R.string.random_camera),
             onClick = {
                 showCameras(arrayListOf(cameraState.visibleCameras.random()))
-            }
-        )
+            })
         val shuffle = Action(
             icon = Icons.Rounded.Shuffle,
             condition = true,
             toolTip = stringResource(id = R.string.shuffle),
             onClick = {
                 showCameras(cameraViewModel.cameraState.value.visibleCameras as ArrayList<Camera>, true)
-            }
-        )
+            })
 
         var showDialog by remember { mutableStateOf(false) }
 
@@ -476,11 +384,10 @@ class MainActivity : AppCompatActivity() {
             toolTip = stringResource(id = R.string.about),
             onClick = {
                 showDialog = !showDialog
-            }
-        )
+            })
 
         if (selectedCameras.isEmpty()) {
-            return listOf<Action>(
+            return listOf(
                 switchView,
                 sort,
                 search,
@@ -492,7 +399,7 @@ class MainActivity : AppCompatActivity() {
                 about,
             )
         }
-        return listOf<Action>(
+        return listOf(
             clearSelection,
             view,
             favourite,
@@ -521,14 +428,12 @@ class MainActivity : AppCompatActivity() {
                     val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
                     val lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
                     return if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) && lastLocation != null) {
-                        onPermissionGranted.invoke(lastLocation)
+                        onPermissionGranted(lastLocation)
                         true
                     }
                     else {
                         Snackbar.make(
-                            window.decorView.rootView,
-                            getString(R.string.location_unavailable),
-                            Snackbar.LENGTH_LONG
+                            window.decorView.rootView, getString(R.string.location_unavailable), Snackbar.LENGTH_LONG
                         ).show()
                         false
                     }

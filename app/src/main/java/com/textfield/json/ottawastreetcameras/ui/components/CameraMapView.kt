@@ -24,7 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun StreetCamsMap(
+fun CameraMapView(
     cameraViewModel: CameraViewModel,
     cameras: List<Camera>,
     isMyLocationEnabled: Boolean,

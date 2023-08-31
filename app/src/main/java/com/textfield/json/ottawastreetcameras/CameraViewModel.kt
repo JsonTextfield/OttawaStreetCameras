@@ -2,7 +2,6 @@ package com.textfield.json.ottawastreetcameras
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.textfield.json.ottawastreetcameras.comparators.SortByDistance
 import com.textfield.json.ottawastreetcameras.comparators.SortByName
@@ -15,19 +14,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class CameraViewModel(
-    private var _cameraState: MutableStateFlow<CameraState> = MutableStateFlow(
-        CameraState(
-            allCameras = ArrayList(),
-            displayedCameras = ArrayList(),
-            selectedCameras = ArrayList(),
-            neighbourhoods = ArrayList(),
-            uiState = UIState.INITIAL,
-            sortMode = SortMode.NAME,
-            searchMode = SearchMode.NONE,
-            filterMode = FilterMode.VISIBLE,
-            viewMode = ViewMode.LIST,
-        )
-    ), private val downloadService: DownloadService = CameraDownloadService
+    private var _cameraState: MutableStateFlow<CameraState> = MutableStateFlow(CameraState()),
+    private val downloadService: DownloadService = CameraDownloadService,
 ) : ViewModel() {
 
     val cameraState: StateFlow<CameraState>
@@ -245,11 +233,5 @@ class CameraViewModel(
             // don't reload if the camera list is not empty
             _cameraState.update { it.copy(uiState = UIState.LOADED) }
         }
-    }
-}
-
-class CameraManagerViewModelFactory : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return CameraViewModel() as T
     }
 }
