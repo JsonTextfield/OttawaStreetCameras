@@ -10,7 +10,14 @@ import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.entities.Neighbourhood
 import org.json.JSONObject
 
-object DownloadService {
+interface DownloadService {
+    fun downloadAll(
+        context: Context,
+        onComplete: (cameras: List<Camera>, neighbourhoods: List<Neighbourhood>) -> Unit,
+    )
+}
+
+object CameraDownloadService : DownloadService {
     private const val tag = "DownloadService"
 
     private fun downloadCameras(context: Context, onComplete: (cameras: List<Camera>) -> Unit) {
@@ -45,7 +52,7 @@ object DownloadService {
         Volley.newRequestQueue(context).add(neighbourhoodRequest)
     }
 
-    fun downloadAll(
+    override fun downloadAll(
         context: Context,
         onComplete: (cameras: List<Camera>, neighbourhoods: List<Neighbourhood>) -> Unit,
     ) {

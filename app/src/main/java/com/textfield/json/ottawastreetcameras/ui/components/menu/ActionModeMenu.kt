@@ -11,10 +11,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import com.textfield.json.ottawastreetcameras.CameraViewModel
 import com.textfield.json.ottawastreetcameras.R
 
 @Composable
-fun ActionModeMenu(actions: List<Action>, onItemSelected: () -> Unit) {
+fun ActionModeMenu(cameraViewModel: CameraViewModel, actions: List<Action>, onItemSelected: () -> Unit) {
     val width = LocalConfiguration.current.screenWidthDp
     val maxActions = width / 48 / 3
     var remainingActions = maxActions
@@ -40,7 +41,7 @@ fun ActionModeMenu(actions: List<Action>, onItemSelected: () -> Unit) {
     if (remainingActions < 0) {
         Box {
             var showOverflowMenu by remember { mutableStateOf(false) }
-            OverflowMenu(showOverflowMenu, overflowActions) {
+            OverflowMenu(cameraViewModel, showOverflowMenu, overflowActions) {
                 showOverflowMenu = false
                 onItemSelected()
             }

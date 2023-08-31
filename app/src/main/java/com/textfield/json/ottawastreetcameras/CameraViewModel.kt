@@ -2,6 +2,7 @@ package com.textfield.json.ottawastreetcameras
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.textfield.json.ottawastreetcameras.comparators.SortByDistance
 import com.textfield.json.ottawastreetcameras.comparators.SortByName
@@ -13,8 +14,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class CameraManager : ViewModel() {
-    private var _cameraState = MutableStateFlow(
+class CameraViewModel(
+    private var _cameraState: MutableStateFlow<CameraState> = MutableStateFlow(
         CameraState(
             allCameras = ArrayList(),
             displayedCameras = ArrayList(),
@@ -26,7 +27,8 @@ class CameraManager : ViewModel() {
             filterMode = FilterMode.VISIBLE,
             viewMode = ViewMode.LIST,
         )
-    )
+    ), private val downloadService: DownloadService = CameraDownloadService
+) : ViewModel() {
 
     val cameraState: StateFlow<CameraState>
         get() = _cameraState
@@ -205,7 +207,7 @@ class CameraManager : ViewModel() {
         _cameraState.update { it.copy(uiState = UIState.LOADING) }
 
         if (_cameraState.value.allCameras.isEmpty() || _cameraState.value.neighbourhoods.isEmpty()) {
-            DownloadService.downloadAll(context) { cameras, neighbourhoods ->
+            downloadService.downloadAll(context) { cameras, neighbourhoods ->
                 if (cameras.isEmpty()) {
                     // show an error if the retrieved camera list is empty
                     _cameraState.update { it.copy(uiState = UIState.ERROR) }
@@ -244,14 +246,10 @@ class CameraManager : ViewModel() {
             _cameraState.update { it.copy(uiState = UIState.LOADED) }
         }
     }
+}
 
-    companion object {
-        @Volatile
-        private var INSTANCE: CameraManager? = null
-        fun getInstance(): CameraManager = INSTANCE ?: synchronized(this) {
-            INSTANCE ?: CameraManager().also {
-                INSTANCE = it
-            }
-        }
+class CameraManagerViewModelFactory : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return CameraViewModel() as T
     }
 }

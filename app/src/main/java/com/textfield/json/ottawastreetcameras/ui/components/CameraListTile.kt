@@ -28,7 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.textfield.json.ottawastreetcameras.CameraManager
+import com.textfield.json.ottawastreetcameras.CameraViewModel
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.SortMode
 import com.textfield.json.ottawastreetcameras.entities.Camera
@@ -36,9 +36,13 @@ import kotlin.math.roundToInt
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CameraListTile(camera: Camera, onClick: (Camera) -> Unit, onLongClick: (Camera) -> Unit) {
-    val cameraManager = CameraManager.getInstance()
-    val cameraState by cameraManager.cameraState.collectAsState()
+fun CameraListTile(
+    cameraViewModel: CameraViewModel,
+    camera: Camera,
+    onClick: (Camera) -> Unit,
+    onLongClick: (Camera) -> Unit,
+) {
+    val cameraState by cameraViewModel.cameraState.collectAsState()
     val isSelected = cameraState.selectedCameras.contains(camera)
     Surface(
         modifier = Modifier
@@ -121,7 +125,7 @@ fun CameraListTile(camera: Camera, onClick: (Camera) -> Unit, onLongClick: (Came
                 modifier = Modifier.align(Alignment.CenterVertically),
                 onClick = {
                     camera.isFavourite = !camera.isFavourite
-                    cameraManager.favouriteCamera(context, camera)
+                    cameraViewModel.favouriteCamera(context, camera)
                 }
             ) {
                 if (camera.isFavourite) {

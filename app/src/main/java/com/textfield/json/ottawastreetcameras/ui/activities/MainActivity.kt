@@ -11,6 +11,7 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -22,6 +23,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.rounded.ArrowBack
@@ -52,6 +54,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -70,7 +73,8 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.review.ReviewManagerFactory
-import com.textfield.json.ottawastreetcameras.CameraManager
+import com.textfield.json.ottawastreetcameras.CameraManagerViewModelFactory
+import com.textfield.json.ottawastreetcameras.CameraViewModel
 import com.textfield.json.ottawastreetcameras.FilterMode
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.SearchMode
@@ -92,26 +96,29 @@ import com.textfield.json.ottawastreetcameras.ui.components.menu.ViewModeMenu
 class MainActivity : AppCompatActivity() {
     private val requestForList = 0
     private val requestForMap = 1
-    private val cameraManager = CameraManager.getInstance()
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun MainAppBar(listState: LazyListState, useDarkTheme: Boolean = isSystemInDarkTheme()) {
-        val cameraState by cameraManager.cameraState.collectAsState()
+    fun MainAppBar(
+        cameraViewModel: CameraViewModel,
+        listState: LazyListState,
+        useDarkTheme: Boolean = isSystemInDarkTheme(),
+    ) {
+        val cameraState by cameraViewModel.cameraState.collectAsState()
         TopAppBar(
             navigationIcon = {
                 if (cameraState.selectedCameras.isEmpty()) {
                     if (cameraState.searchMode != SearchMode.NONE) {
                         IconButton(onClick = {
-                            cameraManager.changeSearchMode(SearchMode.NONE)
-                            cameraManager.searchCameras("")
+                            cameraViewModel.changeSearchMode(SearchMode.NONE)
+                            cameraViewModel.searchCameras("")
                         }) {
                             Icon(Icons.Rounded.ArrowBack, stringResource(id = R.string.back), tint = Color.White)
                         }
                     }
                     else if (cameraState.filterMode != FilterMode.VISIBLE) {
                         IconButton(onClick = {
-                            cameraManager.changeFilterMode(FilterMode.VISIBLE)
+                            cameraViewModel.changeFilterMode(FilterMode.VISIBLE)
                         }) {
                             Icon(Icons.Rounded.ArrowBack, stringResource(id = R.string.back), tint = Color.White)
                         }
@@ -119,10 +126,10 @@ class MainActivity : AppCompatActivity() {
                 }
             },
             title = {
-                AppBarTitle(listState)
+                AppBarTitle(cameraViewModel, listState)
             },
             actions = {
-                ActionBar(getActions()) {
+                ActionBar(cameraViewModel, getActions(cameraViewModel)) {
                 }
             },
             colors = TopAppBarDefaults.topAppBarColors(
@@ -137,30 +144,31 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Composable
-    fun MainContent(padding: PaddingValues, listState: LazyListState) {
+    fun MainContent(cameraViewModel: CameraViewModel, padding: PaddingValues, listState: LazyListState) {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
             Column(modifier = Modifier.padding(padding)) {
-                val cameraState by cameraManager.cameraState.collectAsState()
+                val cameraState by cameraViewModel.cameraState.collectAsState()
                 val displayedCameras = cameraState.displayedCameras
                 val onItemClick = { camera: Camera ->
                     if (cameraState.selectedCameras.isNotEmpty()) {
-                        cameraManager.selectCamera(camera)
+                        cameraViewModel.selectCamera(camera)
                     }
                     else {
-                        showCamera(camera)
+                        showCameras(arrayListOf(camera))
                     }
                 }
-                val onItemLongClick = { camera: Camera -> cameraManager.selectCamera(camera) }
+                val onItemLongClick = { camera: Camera -> cameraViewModel.selectCamera(camera) }
                 when (cameraState.viewMode) {
                     ViewMode.LIST -> {
                         Row {
                             AnimatedVisibility(visible = cameraState.showSectionIndex) {
-                                SectionIndex(displayedCameras, listState)
+                                SectionIndex(displayedCameras.map { it.sortableName }, listState)
                             }
                             CameraListView(
+                                cameraViewModel,
                                 displayedCameras,
                                 modifier = Modifier.weight(1f),
                                 listState = listState,
@@ -172,6 +180,7 @@ class MainActivity : AppCompatActivity() {
 
                     ViewMode.MAP -> {
                         StreetCamsMap(
+                            cameraViewModel,
                             displayedCameras,
                             isMyLocationEnabled = requestLocationPermissions(requestForMap),
                             onItemClick = onItemClick,
@@ -181,6 +190,7 @@ class MainActivity : AppCompatActivity() {
 
                     ViewMode.GALLERY -> {
                         CameraGalleryView(
+                            cameraViewModel,
                             displayedCameras,
                             onItemClick = onItemClick,
                             onItemLongClick = onItemLongClick
@@ -194,15 +204,19 @@ class MainActivity : AppCompatActivity() {
     private fun loadView() {
         setContent {
             AppTheme {
-                val cameraState by cameraManager.cameraState.collectAsState()
-                val listState = remember { LazyListState() }
+                val cameraViewModel: CameraViewModel by viewModels(null) { CameraManagerViewModelFactory() }
+                val cameraState by cameraViewModel.cameraState.collectAsState()
+                val uiState = cameraState.uiState
+                val listState = rememberLazyListState()
                 val context = LocalContext.current
-                Scaffold(topBar = {
-                    if (cameraState.uiState == UIState.LOADED) {
-                        MainAppBar(listState)
-                    }
-                }) {
-                    when (cameraState.uiState) {
+                Scaffold(
+                    topBar = {
+                        if (uiState == UIState.LOADED) {
+                            MainAppBar(cameraViewModel, listState)
+                        }
+                    },
+                ) {
+                    when (uiState) {
                         UIState.LOADING -> {
                             Box(
                                 modifier = Modifier
@@ -214,7 +228,7 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         UIState.LOADED -> {
-                            MainContent(it, listState)
+                            MainContent(cameraViewModel, it, listState)
                         }
 
                         UIState.ERROR -> {
@@ -236,7 +250,7 @@ class MainActivity : AppCompatActivity() {
                                             .align(Alignment.CenterHorizontally)
                                             .padding(10.dp),
                                         onClick = {
-                                            cameraManager.downloadAll(context)
+                                            cameraViewModel.downloadAll(context)
                                         }
                                     ) {
                                         Icon(Icons.Rounded.Refresh, stringResource(R.string.retry))
@@ -245,7 +259,11 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
 
-                        UIState.INITIAL -> {}
+                        UIState.INITIAL -> {
+                            LaunchedEffect(true) {
+                                cameraViewModel.downloadAll(context)
+                            }
+                        }
                     }
                 }
 
@@ -253,35 +271,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun shuffleCameras() {
-        val intent = Intent(this@MainActivity, CameraActivity::class.java)
-        intent.putParcelableArrayListExtra(
-            "cameras",
-            cameraManager.cameraState.value.visibleCameras as ArrayList<Camera>
-        )
-        intent.putExtra("shuffle", true)
-        startActivity(intent)
-    }
-
-    private fun showCamera(camera: Camera) {
-        val intent = Intent(this@MainActivity, CameraActivity::class.java)
-        intent.putParcelableArrayListExtra("cameras", arrayListOf(camera))
-        startActivity(intent)
-    }
-
-    private fun showSelectedCameras() {
-        val intent = Intent(this@MainActivity, CameraActivity::class.java)
-        intent.putParcelableArrayListExtra(
-            "cameras",
-            cameraManager.cameraState.value.selectedCameras as ArrayList<Camera>
-        )
-        startActivity(intent)
+    private fun showCameras(cameras: ArrayList<Camera>, shuffle: Boolean = false) {
+        startActivity(Intent(this@MainActivity, CameraActivity::class.java).apply {
+            putParcelableArrayListExtra("cameras", cameras)
+            putExtra("shuffle", shuffle)
+        })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         loadView()
-        cameraManager.downloadAll(this)
     }
 
     private fun showLicences() {
@@ -303,8 +302,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Composable
-    private fun getActions(): List<Action> {
-        val cameraState by cameraManager.cameraState.collectAsState()
+    private fun getActions(cameraViewModel: CameraViewModel): List<Action> {
+        val cameraState by cameraViewModel.cameraState.collectAsState()
         val selectedCameras = cameraState.selectedCameras
         val context = LocalContext.current
         val clearSelection = Action(
@@ -312,7 +311,7 @@ class MainActivity : AppCompatActivity() {
             toolTip = stringResource(R.string.clear),
             true,
             onClick = {
-                cameraManager.clearSelectedCameras()
+                cameraViewModel.clearSelectedCameras()
             }
         )
         val view = Action(
@@ -320,7 +319,7 @@ class MainActivity : AppCompatActivity() {
             toolTip = stringResource(id = R.string.view),
             selectedCameras.size <= 8,
             onClick = {
-                showSelectedCameras()
+                showCameras(cameraViewModel.cameraState.value.selectedCameras as ArrayList<Camera>)
             }
         )
         val allIsFavourite = selectedCameras.all { it.isFavourite }
@@ -344,7 +343,7 @@ class MainActivity : AppCompatActivity() {
             toolTip = favouriteToolTip,
             true,
             onClick = {
-                cameraManager.favouriteSelectedCameras(this, !allIsFavourite)
+                cameraViewModel.favouriteSelectedCameras(this, !allIsFavourite)
             }
         )
         val allIsHidden = selectedCameras.all { !it.isVisible }
@@ -367,7 +366,7 @@ class MainActivity : AppCompatActivity() {
             toolTip = hiddenToolTip,
             true,
             onClick = {
-                cameraManager.hideSelectedCameras(context, allIsHidden)
+                cameraViewModel.hideSelectedCameras(context, allIsHidden)
             }
         )
         val selectAll = Action(
@@ -375,7 +374,7 @@ class MainActivity : AppCompatActivity() {
             toolTip = stringResource(R.string.select_all),
             condition = selectedCameras.size < cameraState.displayedCameras.size,
             onClick = {
-                cameraManager.selectAllCameras()
+                cameraViewModel.selectAllCameras()
             }
         )
         val switchView = Action(
@@ -389,7 +388,7 @@ class MainActivity : AppCompatActivity() {
             toolTip = stringResource(id = R.string.switch_view),
             menuContent = {
                 var expanded by remember { mutableStateOf(it) }
-                ViewModeMenu(expanded xor it) {
+                ViewModeMenu(cameraViewModel, expanded xor it) {
                     expanded = !expanded
                 }
             }
@@ -401,7 +400,7 @@ class MainActivity : AppCompatActivity() {
             toolTip = stringResource(id = R.string.sort),
             menuContent = {
                 var expanded by remember { mutableStateOf(it) }
-                SortModeMenu(expanded xor it) {
+                SortModeMenu(cameraViewModel, expanded xor it) {
                     expanded = !expanded
                 }
             }
@@ -412,7 +411,7 @@ class MainActivity : AppCompatActivity() {
             toolTip = stringResource(id = R.string.search),
             checked = cameraState.searchMode == SearchMode.NAME,
             onClick = {
-                cameraManager.changeSearchMode(SearchMode.NAME)
+                cameraViewModel.changeSearchMode(SearchMode.NAME)
             }
         )
         val searchNeighbourhood = Action(
@@ -421,7 +420,7 @@ class MainActivity : AppCompatActivity() {
             toolTip = stringResource(id = R.string.search_neighbourhood),
             checked = cameraState.searchMode == SearchMode.NEIGHBOURHOOD,
             onClick = {
-                cameraManager.changeSearchMode(SearchMode.NEIGHBOURHOOD)
+                cameraViewModel.changeSearchMode(SearchMode.NEIGHBOURHOOD)
             }
         )
         val favourites = Action(
@@ -430,7 +429,7 @@ class MainActivity : AppCompatActivity() {
             toolTip = stringResource(id = R.string.favourites),
             checked = cameraState.filterMode == FilterMode.FAVOURITE,
             onClick = {
-                cameraManager.changeFilterMode(FilterMode.FAVOURITE)
+                cameraViewModel.changeFilterMode(FilterMode.FAVOURITE)
             }
         )
         val hidden = Action(
@@ -439,7 +438,7 @@ class MainActivity : AppCompatActivity() {
             toolTip = stringResource(id = R.string.hidden_cameras),
             checked = cameraState.filterMode == FilterMode.HIDDEN,
             onClick = {
-                cameraManager.changeFilterMode(FilterMode.HIDDEN)
+                cameraViewModel.changeFilterMode(FilterMode.HIDDEN)
             }
         )
         val random = Action(
@@ -447,7 +446,7 @@ class MainActivity : AppCompatActivity() {
             condition = true,
             toolTip = stringResource(id = R.string.random_camera),
             onClick = {
-                showCamera(cameraState.visibleCameras.random())
+                showCameras(arrayListOf(cameraState.visibleCameras.random()))
             }
         )
         val shuffle = Action(
@@ -455,7 +454,7 @@ class MainActivity : AppCompatActivity() {
             condition = true,
             toolTip = stringResource(id = R.string.shuffle),
             onClick = {
-                shuffleCameras()
+                showCameras(cameraViewModel.cameraState.value.visibleCameras as ArrayList<Camera>, true)
             }
         )
 

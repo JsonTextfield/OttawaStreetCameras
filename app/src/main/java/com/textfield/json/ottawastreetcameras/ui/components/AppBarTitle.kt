@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.textfield.json.ottawastreetcameras.CameraManager
+import com.textfield.json.ottawastreetcameras.CameraViewModel
 import com.textfield.json.ottawastreetcameras.FilterMode
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.SearchMode
@@ -28,9 +28,8 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun AppBarTitle(listState: LazyListState) {
-    val cameraManager = CameraManager.getInstance()
-    val cameraState by cameraManager.cameraState.collectAsState()
+fun AppBarTitle(cameraViewModel: CameraViewModel, listState: LazyListState) {
+    val cameraState by cameraViewModel.cameraState.collectAsState()
     if (cameraState.selectedCameras.isNotEmpty()) {
         Text(
             pluralStringResource(
@@ -81,7 +80,7 @@ fun AppBarTitle(listState: LazyListState) {
                         cameraState.displayedCameras.size
                     )
                 ) {
-                    cameraManager.searchCameras(it)
+                    cameraViewModel.searchCameras(it)
                 }
             }
 
@@ -103,7 +102,7 @@ fun AppBarTitle(listState: LazyListState) {
 
                     SuggestionDropdown(expanded, suggestionList, value) {
                         value = it
-                        cameraManager.searchCameras(value)
+                        cameraViewModel.searchCameras(value)
                     }
                     SearchBarContent(
                         pluralStringResource(
@@ -113,7 +112,7 @@ fun AppBarTitle(listState: LazyListState) {
                         ), value
                     ) {
                         value = it
-                        cameraManager.searchCameras(value)
+                        cameraViewModel.searchCameras(value)
                     }
                 }
             }

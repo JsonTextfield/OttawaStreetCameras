@@ -15,15 +15,15 @@ enum class ViewMode { LIST, MAP, GALLERY }
 enum class UIState { LOADING, LOADED, ERROR, INITIAL }
 
 data class CameraState(
-    var allCameras: ArrayList<Camera>,
-    var displayedCameras: ArrayList<Camera>,
-    var selectedCameras: List<Camera>,
-    var neighbourhoods: List<Neighbourhood>,
-    var uiState: UIState,
-    var sortMode: SortMode,
-    var searchMode: SearchMode,
-    var filterMode: FilterMode,
-    var viewMode: ViewMode,
+    var allCameras: ArrayList<Camera> = ArrayList(),
+    var displayedCameras: ArrayList<Camera> = ArrayList(),
+    var selectedCameras: List<Camera> = ArrayList(),
+    var neighbourhoods: List<Neighbourhood> = ArrayList(),
+    var uiState: UIState = UIState.INITIAL,
+    var sortMode: SortMode = SortMode.NAME,
+    var searchMode: SearchMode = SearchMode.NONE,
+    var filterMode: FilterMode = FilterMode.VISIBLE,
+    var viewMode: ViewMode = ViewMode.LIST,
 ) {
     val visibleCameras
         get() = allCameras.filter { it.isVisible }

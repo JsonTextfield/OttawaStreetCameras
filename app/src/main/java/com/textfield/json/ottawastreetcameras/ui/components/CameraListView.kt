@@ -26,13 +26,14 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.textfield.json.ottawastreetcameras.CameraManager
+import com.textfield.json.ottawastreetcameras.CameraViewModel
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CameraListView(
+    cameraViewModel: CameraViewModel,
     cameras: List<Camera>,
     modifier: Modifier,
     listState: LazyListState,
@@ -41,12 +42,11 @@ fun CameraListView(
 ) {
     LazyColumn(modifier = modifier, state = listState) {
         items(cameras, { camera -> camera.hashCode() }) { camera ->
-            val cameraManager = CameraManager.getInstance()
             val dismissState = remember { DismissState(DismissValue.Default) }
             val context = LocalContext.current
             if (dismissState.isDismissed(DismissDirection.EndToStart) || dismissState.isDismissed(DismissDirection.StartToEnd)) {
                 camera.isVisible = !camera.isVisible
-                cameraManager.hideCamera(context, camera)
+                cameraViewModel.hideCamera(context, camera)
             }
             SwipeToDismiss(
                 state = dismissState,
@@ -80,7 +80,7 @@ fun CameraListView(
                     )
                 },
                 dismissContent = {
-                    CameraListTile(camera, onItemClick, onItemLongClick)
+                    CameraListTile(cameraViewModel, camera, onItemClick, onItemLongClick)
                 })
         }
         item {

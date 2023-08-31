@@ -15,12 +15,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.textfield.json.ottawastreetcameras.CameraViewModel
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
 
 
 @Composable
 fun CameraGalleryView(
+    cameraViewModel: CameraViewModel,
     cameras: List<Camera>,
     onItemClick: (Camera) -> Unit,
     onItemLongClick: (Camera) -> Unit,
@@ -32,7 +34,7 @@ fun CameraGalleryView(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         items(cameras.size) {
-            CameraGalleryTile(cameras[it], onItemClick, onItemLongClick)
+            CameraGalleryTile(cameraViewModel, cameras[it], onItemClick, onItemLongClick)
         }
 
         item {

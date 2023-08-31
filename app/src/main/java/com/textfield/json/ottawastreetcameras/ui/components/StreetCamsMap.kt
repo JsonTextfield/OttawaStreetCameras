@@ -16,7 +16,7 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.textfield.json.ottawastreetcameras.CameraManager
+import com.textfield.json.ottawastreetcameras.CameraViewModel
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import kotlinx.coroutines.CoroutineScope
@@ -25,13 +25,13 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun StreetCamsMap(
+    cameraViewModel: CameraViewModel,
     cameras: List<Camera>,
     isMyLocationEnabled: Boolean,
     onItemClick: (Camera) -> Unit,
     onItemLongClick: (Camera) -> Unit,
 ) {
-    val cameraManager = CameraManager.getInstance()
-    val cameraState by cameraManager.cameraState.collectAsState()
+    val cameraState by cameraViewModel.cameraState.collectAsState()
     val context = LocalContext.current
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.builder().target(LatLng(45.45, -75.69)).zoom(9f).build()

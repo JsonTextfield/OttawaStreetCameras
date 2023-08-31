@@ -14,20 +14,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
-import com.textfield.json.ottawastreetcameras.CameraManager
+import com.textfield.json.ottawastreetcameras.CameraViewModel
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.ViewMode
 
 @Composable
 fun OverflowMenu(
+    cameraViewModel: CameraViewModel,
     expanded: Boolean,
     actions: List<Action>,
     showViewMode: Boolean = false,
     showSortModeMenu: Boolean = false,
     onItemSelected: () -> Unit,
 ) {
-    val cameraManager = CameraManager.getInstance()
-    val cameraState by cameraManager.cameraState.collectAsState()
+    val cameraState by cameraViewModel.cameraState.collectAsState()
     DropdownMenu(
         expanded = expanded,
         onDismissRequest = { onItemSelected() },
@@ -35,7 +35,7 @@ fun OverflowMenu(
         if (showViewMode) {
             Box {
                 var showViewModeMenu by remember { mutableStateOf(false) }
-                ViewModeMenu(showViewModeMenu) {
+                ViewModeMenu(cameraViewModel, showViewModeMenu) {
                     showViewModeMenu = false
                     onItemSelected()
                 }
@@ -59,7 +59,7 @@ fun OverflowMenu(
         if (showSortModeMenu) {
             Box {
                 var showSortMenu by remember { mutableStateOf(false) }
-                SortModeMenu(showSortMenu) {
+                SortModeMenu(cameraViewModel, showSortMenu) {
                     showSortMenu = false
                     onItemSelected()
                 }

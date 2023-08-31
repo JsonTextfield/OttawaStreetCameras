@@ -6,18 +6,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import com.textfield.json.ottawastreetcameras.CameraManager
+import com.textfield.json.ottawastreetcameras.CameraViewModel
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.ViewMode
 
 @Composable
-fun ViewModeMenu(expanded: Boolean, onItemSelected: () -> Unit) {
-    val cameraManager = CameraManager.getInstance()
-    val cameraState by cameraManager.cameraState.collectAsState()
+fun ViewModeMenu(cameraViewModel: CameraViewModel, expanded: Boolean, onItemSelected: () -> Unit) {
+    val cameraState by cameraViewModel.cameraState.collectAsState()
     val context = LocalContext.current
     DropdownMenu(expanded = expanded, onDismissRequest = { onItemSelected() }) {
         fun setViewMode(viewMode: ViewMode) {
-            cameraManager.changeViewMode(context, viewMode)
+            cameraViewModel.changeViewMode(context, viewMode)
             onItemSelected()
         }
         RadioMenuItem(
