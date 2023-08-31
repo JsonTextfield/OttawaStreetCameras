@@ -19,6 +19,38 @@
         <item name="actionModeStyle">@style/MyActionModeStyle</item>
     </style>
 
+    <style name="LicencesMenuTheme" parent="Theme.AppCompat">
+        <item name="android:textColorSecondary">@android:color/white</item>
+        <item name="colorPrimary">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeStyle">@style/MyActionModeStyle</item>
+    </style>
+
+    <style name="LicencesMenuTheme.Light" parent="Theme.AppCompat.Light">
+        <item name="android:textColorSecondary">@android:color/black</item>
+        <item name="colorPrimary">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeStyle">@style/MyActionModeStyle</item>
+    </style>
+
+    <style name="LicencesTheme" parent="Theme.AppCompat">
+        <item name="android:textColorSecondary">@android:color/white</item>
+        <item name="colorPrimary">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeStyle">@style/MyActionModeStyle</item>
+    </style>
+
+    <style name="LicencesTheme.Light" parent="Theme.AppCompat.Light">
+        <item name="android:textColorSecondary">@android:color/black</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeStyle">@style/MyActionModeStyle</item>
+    </style>
+
     <style name="MyActionModeStyle" parent="Base.Widget.AppCompat.ActionMode">
         <item name="background">@color/colorAccent</item>
     </style>

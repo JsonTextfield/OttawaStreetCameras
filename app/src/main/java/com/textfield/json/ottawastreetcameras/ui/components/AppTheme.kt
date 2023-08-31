@@ -46,7 +46,7 @@ fun AppTheme(
         SideEffect {
             val window = (context as Activity).window
             window.statusBarColor = context.getColor(R.color.colorAccent)
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = useDarkTheme
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
         }
     }
 
