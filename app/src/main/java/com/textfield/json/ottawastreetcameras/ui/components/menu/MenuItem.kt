@@ -13,7 +13,12 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun MenuItem(icon: ImageVector, tooltip: String, visible: Boolean = true, onClick: () -> Unit) {
+fun MenuItem(
+    icon: ImageVector,
+    tooltip: String = "",
+    visible: Boolean = true,
+    onClick: () -> Unit = {},
+) {
     AnimatedVisibility(
         visible = visible,
         content = {

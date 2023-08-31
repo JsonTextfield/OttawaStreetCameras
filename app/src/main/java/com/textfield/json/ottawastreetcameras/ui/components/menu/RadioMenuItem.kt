@@ -13,7 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun RadioMenuItem(title: String, selected: Boolean, onClick: () -> Unit) {
+fun RadioMenuItem(
+    title: String = "",
+    selected: Boolean = false,
+    onClick: () -> Unit = {},
+) {
     DropdownMenuItem(
         modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(0.dp),

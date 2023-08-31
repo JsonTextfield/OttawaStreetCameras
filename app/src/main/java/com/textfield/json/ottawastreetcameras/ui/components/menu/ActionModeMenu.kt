@@ -41,7 +41,7 @@ fun ActionModeMenu(cameraViewModel: CameraViewModel, actions: List<Action>, onIt
     if (remainingActions < 0) {
         Box {
             var showOverflowMenu by remember { mutableStateOf(false) }
-            OverflowMenu(cameraViewModel, showOverflowMenu, overflowActions) {
+            OverflowMenu(showOverflowMenu, overflowActions) {
                 showOverflowMenu = false
                 onItemSelected()
             }

@@ -11,7 +11,13 @@ import com.textfield.json.ottawastreetcameras.ui.components.Visibility
 
 
 @Composable
-fun OverflowMenuItem(icon: ImageVector, tooltip: String, visible: Boolean, checked: Boolean = false, onClick: () -> Unit) {
+fun OverflowMenuItem(
+    icon: ImageVector,
+    tooltip: String = "",
+    visible: Boolean = true,
+    checked: Boolean = false,
+    onClick: () -> Unit = {},
+) {
     Visibility(
         visible = visible,
         content = {

@@ -14,8 +14,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         minSdk = 28
         targetSdk = 33
-        versionCode = 24
-        versionName = "2.0.1"
+        versionCode = 25
+        versionName = "2.0.2"
         vectorDrawables { useSupportLibrary = true }
     }
     kotlinOptions {
@@ -53,7 +53,6 @@ android {
 }
 
 dependencies {
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     androidTestImplementation("androidx.test.ext:junit-ktx:1.1.5")
     androidTestImplementation("androidx.test:rules:1.5.0")
     androidTestImplementation("androidx.test:runner:1.5.2")
@@ -70,10 +69,8 @@ dependencies {
     implementation("com.google.android.play:review:2.0.1")
     implementation("com.google.android.play:review-ktx:2.0.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
-    //implementation fileTree (include: ["*.jar"], dir: "libs")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.json:json:20230227")
-
 
     val composeBom = platform("androidx.compose:compose-bom:2023.04.01")
     implementation(composeBom)
@@ -96,18 +93,12 @@ dependencies {
     // Optional - Add window size utils
     implementation("androidx.compose.material3:material3-window-size-class")
 
-
     // Optional - Integration with activities
     implementation("androidx.activity:activity-compose:1.7.2")
     // Optional - Integration with ViewModels
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
-    // Optional - Integration with LiveData
-    implementation("androidx.compose.runtime:runtime-livedata")
-    // Optional - Integration with RxJava
-    implementation("androidx.compose.runtime:runtime-rxjava2")
 
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
-
 
     implementation("io.coil-kt:coil-compose:2.4.0")
 
