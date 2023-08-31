@@ -27,20 +27,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.textfield.json.ottawastreetcameras.R
-import com.textfield.json.ottawastreetcameras.comparators.SortByName
-import com.textfield.json.ottawastreetcameras.entities.Camera
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-private fun getIndexData(cameras: List<Camera>): ArrayList<Pair<String, Int>> {
-    val dataString = cameras.sortedWith(SortByName()).map {
-        it.sortableName.first()
-    }.joinToString("")
+private fun getIndexData(data: List<String>): ArrayList<Pair<String, Int>> {
+    val dataString = data.map {
+        it.toUpperCase(Locale.current).first()
+    }.sorted().joinToString("")
 
     val letters = Regex("[A-ZÀ-Ö]")
     val numbers = Regex("[0-9]")
@@ -48,10 +48,10 @@ private fun getIndexData(cameras: List<Camera>): ArrayList<Pair<String, Int>> {
 
     val result = LinkedHashSet<Pair<String, Int>>()
 
-    if (special.matches(dataString)) {
+    if (special.containsMatchIn(dataString)) {
         result.add(Pair("*", special.find(dataString)?.range?.first!!))
     }
-    if (numbers.matches(dataString)) {
+    if (numbers.containsMatchIn(dataString)) {
         result.add(Pair("#", numbers.find(dataString)?.range?.first!!))
     }
     for (character in dataString.split("")) {
@@ -79,8 +79,12 @@ private fun getSelectedIndex(
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun SectionIndex(cameras: List<Camera>, listState: LazyListState) {
-    val result = getIndexData(cameras)
+fun SectionIndex(
+    data: List<String>,
+    listState: LazyListState,
+    selectedColour: Color = colorResource(R.color.colorAccent),
+) {
+    val result = getIndexData(data)
     var selectedKey by remember { mutableStateOf("") }
     var offsetY by remember { mutableStateOf(0f) }
     var columnHeightPx by remember { mutableStateOf(0f) }
@@ -148,7 +152,7 @@ fun SectionIndex(cameras: List<Camera>, listState: LazyListState) {
                     modifier = Modifier.align(Alignment.Center),
                     textAlign = TextAlign.Center,
                     color = if (selectedKey == it.first) {
-                        colorResource(R.color.colorAccent)
+                        selectedColour
                     }
                     else if (isSystemInDarkTheme()) {
                         Color.White
