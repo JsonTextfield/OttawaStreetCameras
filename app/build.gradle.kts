@@ -70,7 +70,10 @@ dependencies {
     implementation("com.google.android.play:review-ktx:2.0.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockito:mockito-core:5.5.0")
     testImplementation("org.json:json:20230227")
+    testImplementation("io.mockk:mockk:1.13.7")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
 
     val composeBom = platform("androidx.compose:compose-bom:2023.04.01")
     implementation(composeBom)

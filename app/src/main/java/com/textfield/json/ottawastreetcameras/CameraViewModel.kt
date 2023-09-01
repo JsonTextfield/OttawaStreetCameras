@@ -1,6 +1,7 @@
 package com.textfield.json.ottawastreetcameras
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.textfield.json.ottawastreetcameras.comparators.SortByDistance
@@ -22,8 +23,8 @@ class CameraViewModel(
         get() = _cameraState
 
     fun changeViewMode(context: Context, viewMode: ViewMode) {
-        val sharedPrefs = context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)
-        sharedPrefs.edit().putString("viewMode", viewMode.name).apply()
+        val sharedPrefs: SharedPreferences? = context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)
+        sharedPrefs?.edit()?.putString("viewMode", viewMode.name)?.apply()
         _cameraState.update {
             it.copy(viewMode = viewMode)
         }
@@ -79,8 +80,8 @@ class CameraViewModel(
     }
 
     fun favouriteCamera(context: Context, camera: Camera) {
-        val sharedPrefs = context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)
-        sharedPrefs.edit().putBoolean("${camera.num}.isFavourite", camera.isFavourite).apply()
+        val sharedPrefs: SharedPreferences? = context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)
+        sharedPrefs?.edit()?.putBoolean("${camera.num}.isFavourite", camera.isFavourite)?.apply()
 
         _cameraState.update {
             val updatedCameras = ArrayList<Camera>(it.allCameras)
@@ -109,8 +110,8 @@ class CameraViewModel(
     }
 
     fun hideCamera(context: Context, camera: Camera) {
-        val sharedPrefs = context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)
-        sharedPrefs.edit().putBoolean("${camera.num}.isVisible", camera.isVisible).apply()
+        val sharedPrefs: SharedPreferences? = context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)
+        sharedPrefs?.edit()?.putBoolean("${camera.num}.isVisible", camera.isVisible)?.apply()
 
         _cameraState.update {
             val updatedCameras = ArrayList<Camera>(it.allCameras)
