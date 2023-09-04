@@ -23,7 +23,7 @@ class Neighbourhood(values: JSONObject) : BilingualObject() {
             val geometry = values.getJSONObject("geometry")
             var neighbourhoodZones = JSONArray()
 
-            if (geometry.getString("type") == "Polygon") {
+            if (geometry.getString("type").equals("Polygon", true)) {
                 neighbourhoodZones.put(geometry.getJSONArray("coordinates"))
             } else {
                 neighbourhoodZones = geometry.getJSONArray("coordinates")
