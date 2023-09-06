@@ -14,8 +14,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         minSdk = 28
         targetSdk = 33
-        versionCode = 25
-        versionName = "2.0.2"
+        versionCode = 26
+        versionName = "2.0.3"
         vectorDrawables { useSupportLibrary = true }
     }
     kotlinOptions {
