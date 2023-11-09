@@ -6,12 +6,16 @@ import androidx.compose.ui.res.stringResource
 import com.textfield.json.ottawastreetcameras.SortMode
 
 @Composable
-fun SortModeMenu(expanded: Boolean, currentSortMode: SortMode, onItemSelected: (sortMode: SortMode) -> Unit) {
-    DropdownMenu(expanded = expanded, onDismissRequest = { onItemSelected(currentSortMode) }) {
+fun SortModeMenu(
+    expanded: Boolean,
+    currentValue: SortMode,
+    onItemSelected: (value: SortMode) -> Unit,
+) {
+    DropdownMenu(expanded = expanded, onDismissRequest = { onItemSelected(currentValue) }) {
         SortMode.values().forEach {
             RadioMenuItem(
                 title = stringResource(it.key),
-                selected = currentSortMode == it,
+                selected = currentValue == it,
                 onClick = { onItemSelected(it) },
             )
         }
