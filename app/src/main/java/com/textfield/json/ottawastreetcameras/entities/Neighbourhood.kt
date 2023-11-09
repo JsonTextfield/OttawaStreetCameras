@@ -8,7 +8,6 @@ import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.min
 
-
 class Neighbourhood(values: JSONObject) : BilingualObject() {
 
     private var boundaries = ArrayList<List<LatLng>>()
@@ -25,7 +24,8 @@ class Neighbourhood(values: JSONObject) : BilingualObject() {
 
             if (geometry.getString("type").equals("Polygon", true)) {
                 neighbourhoodZones.put(geometry.getJSONArray("coordinates"))
-            } else {
+            }
+            else {
                 neighbourhoodZones = geometry.getJSONArray("coordinates")
             }
             for (item in 0 until neighbourhoodZones.length()) {
@@ -74,13 +74,11 @@ class Neighbourhood(values: JSONObject) : BilingualObject() {
         val run2 = b.longitude - location.longitude
         val slope2 = rise2 / run2
 
-        return location.longitude <= max(a.longitude, b.longitude) && location.longitude >= min(
-            a.longitude,
-            b.longitude
-        ) && location.latitude <= max(a.latitude, b.latitude) && location.latitude >= min(
-            a.latitude,
-            b.latitude
-        ) && slope2.absoluteValue == slope.absoluteValue
+        return location.longitude <= max(a.longitude, b.longitude)
+               && location.longitude >= min(a.longitude, b.longitude)
+               && location.latitude <= max(a.latitude, b.latitude)
+               && location.latitude >= min(a.latitude, b.latitude)
+               && slope2.absoluteValue == slope.absoluteValue
     }
 
     private fun rayCastIntersect(location: LatLng, a: LatLng, b: LatLng): Boolean {

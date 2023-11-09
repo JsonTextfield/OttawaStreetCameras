@@ -59,8 +59,6 @@ private fun getIndexData(data: List<String>): ArrayList<Pair<String, Int>> {
             result.add(Pair(character, dataString.indexOf(character)))
         }
     }
-    Log.d("SectionIndex", dataString)
-    Log.d("SectionIndex", result.toString())
     return ArrayList<Pair<String, Int>>(result)
 }
 

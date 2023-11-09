@@ -2,17 +2,15 @@ package com.textfield.json.ottawastreetcameras
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.location.Location
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.textfield.json.ottawastreetcameras.comparators.SortByDistance
 import com.textfield.json.ottawastreetcameras.comparators.SortByName
 import com.textfield.json.ottawastreetcameras.comparators.SortByNeighbourhood
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import com.textfield.json.ottawastreetcameras.ui.activities.MainActivity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 class CameraViewModel(
     private var _cameraState: MutableStateFlow<CameraState> = MutableStateFlow(CameraState()),
@@ -30,26 +28,12 @@ class CameraViewModel(
         }
     }
 
-    fun changeSortMode(context: Context, sortMode: SortMode) {
+    fun changeSortMode(sortMode: SortMode, location: Location? = null) {
         val displayedCameras = ArrayList<Camera>(_cameraState.value.displayedCameras)
         when (sortMode) {
             SortMode.NAME -> displayedCameras.sortWith(SortByName())
             SortMode.NEIGHBOURHOOD -> displayedCameras.sortWith(SortByNeighbourhood())
-            SortMode.DISTANCE -> {
-                if (context is MainActivity) {
-                    context.requestLocationPermissions(0) { location ->
-                        viewModelScope.launch {
-                            displayedCameras.sortWith(SortByDistance(location))
-                            _cameraState.update {
-                                it.copy(
-                                    sortMode = sortMode,
-                                    displayedCameras = displayedCameras,
-                                )
-                            }
-                        }
-                    }
-                }
-            }
+            SortMode.DISTANCE -> displayedCameras.sortWith(SortByDistance(location!!))
         }
         _cameraState.update {
             it.copy(
@@ -218,11 +202,11 @@ class CameraViewModel(
                     }
                     val displayedCameras = cameras.filter { it.isVisible }
                     // show the newly loaded station
-                    _cameraState.update {
-                        it.copy(
+                    _cameraState.update {cameraState ->
+                        cameraState.copy(
                             allCameras = ArrayList(cameras),
                             displayedCameras = ArrayList(displayedCameras),
-                            neighbourhoods = neighbourhoods,
+                            neighbourhoods = cameras.map { it.neighbourhood }.distinct(),
                             uiState = UIState.LOADED,
                             viewMode = viewMode,
                         )

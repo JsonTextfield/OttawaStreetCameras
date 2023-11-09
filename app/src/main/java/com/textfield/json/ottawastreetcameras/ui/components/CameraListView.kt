@@ -42,7 +42,9 @@ fun CameraListView(
 ) {
     LazyColumn(modifier = modifier, state = listState) {
         items(cameras, { camera -> camera.hashCode() }) { camera ->
-            val dismissState = remember { DismissState(DismissValue.Default) }
+            val dismissState = remember {
+                DismissState(DismissValue.Default, positionalThreshold = { this.density * 100f })
+            }
             val context = LocalContext.current
             if (dismissState.isDismissed(DismissDirection.EndToStart) || dismissState.isDismissed(DismissDirection.StartToEnd)) {
                 camera.isVisible = !camera.isVisible

@@ -88,17 +88,17 @@ fun AppBarTitle(cameraViewModel: CameraViewModel, listState: LazyListState) {
                 Box {
                     var value by rememberSaveable { mutableStateOf("") }
                     val suggestionList = cameraState.neighbourhoods.filter {
-                        it.name.contains(value, true)
+                        it.contains(value, true)
                     }.map {
-                        it.name
+                        it
                     }
-                    val expanded = (cameraState.searchMode == SearchMode.NEIGHBOURHOOD
-                                    && value.isNotEmpty()) && suggestionList.isNotEmpty() && suggestionList.all {
-                        !it.equals(
-                            value,
-                            true
-                        )
-                    }
+                    val expanded =
+                        cameraState.searchMode == SearchMode.NEIGHBOURHOOD
+                        && value.isNotEmpty()
+                        && suggestionList.isNotEmpty()
+                        && suggestionList.all {
+                            !it.equals(value, true)
+                        }
 
                     SuggestionDropdown(expanded, suggestionList, value) {
                         value = it

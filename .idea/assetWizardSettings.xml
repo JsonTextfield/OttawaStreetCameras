@@ -73,7 +73,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="imagePath" value="C:\Users\Jason\Desktop\RFJhZPK.png" />
+                                                <entry key="imagePath" value="C:\Users\Jason\Desktop" />
                                                 <entry key="scalingPercent" value="70" />
                                               </map>
                                             </option>
@@ -86,7 +86,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="ffffff" />
-                                                <entry key="imagePath" value="C:\Users\Jason\AppData\Local\Temp\baseline_videocam_24.xml" />
+                                                <entry key="imagePath" value="C:\Users\jason\AppData\Local\Temp\baseline_videocam_24.xml" />
                                                 <entry key="scalingPercent" value="20" />
                                                 <entry key="trimmed" value="true" />
                                               </map>
@@ -111,7 +111,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="C:\Users\jason\Desktop\logo2.png" />
+                                                <entry key="imagePath" value="C:\Users\jason\Pictures\logo2.png" />
                                                 <entry key="scalingPercent" value="86" />
                                                 <entry key="trimmed" value="true" />
                                               </map>
@@ -146,7 +146,9 @@
                                   <option name="values">
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
-                                      <entry key="backgroundColor" value="05a6c6" />
+                                      <entry key="backgroundColor" value="139bcc" />
+                                      <entry key="generateWebpIcons" value="false" />
+                                      <entry key="legacyIconShape" value="CIRCLE" />
                                       <entry key="previewDensity" value="XXXHIGH" />
                                     </map>
                                   </option>
