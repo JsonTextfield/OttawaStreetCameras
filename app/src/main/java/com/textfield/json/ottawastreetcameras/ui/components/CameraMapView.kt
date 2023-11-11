@@ -27,9 +27,9 @@ import kotlinx.coroutines.launch
 fun CameraMapView(
     cameraViewModel: CameraViewModel,
     cameras: List<Camera>,
-    isMyLocationEnabled: Boolean,
-    onItemClick: (Camera) -> Unit,
-    onItemLongClick: (Camera) -> Unit,
+    isMyLocationEnabled: Boolean = false,
+    onItemClick: (Camera) -> Unit = {},
+    onItemLongClick: (Camera) -> Unit = {},
 ) {
     val cameraState by cameraViewModel.cameraState.collectAsState()
     val context = LocalContext.current

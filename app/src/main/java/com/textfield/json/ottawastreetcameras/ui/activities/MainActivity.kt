@@ -10,7 +10,9 @@ import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -69,6 +71,7 @@ import com.textfield.json.ottawastreetcameras.CameraViewModel
 import com.textfield.json.ottawastreetcameras.FilterMode
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.SearchMode
+import com.textfield.json.ottawastreetcameras.SortMode
 import com.textfield.json.ottawastreetcameras.UIState
 import com.textfield.json.ottawastreetcameras.ViewMode
 import com.textfield.json.ottawastreetcameras.entities.Camera
@@ -308,7 +311,7 @@ class MainActivity : AppCompatActivity() {
             else -> Icons.Rounded.GridView
         }, condition = true, isMenu = true, toolTip = stringResource(id = R.string.switch_view), menuContent = {
             var expanded by remember { mutableStateOf(it) }
-            ViewModeMenu(expanded = expanded xor it, currentViewMode = cameraState.viewMode) { viewMode ->
+            ViewModeMenu(expanded = expanded xor it, currentValue = cameraState.viewMode) { viewMode ->
                 expanded = !expanded
                 cameraViewModel.changeViewMode(context, viewMode)
             }
@@ -318,10 +321,42 @@ class MainActivity : AppCompatActivity() {
             isMenu = true,
             toolTip = stringResource(id = R.string.sort),
             menuContent = {
+                val permissionArray = arrayOf(
+                    permission.ACCESS_FINE_LOCATION, permission.ACCESS_COARSE_LOCATION
+                )
+
+                val locationPermissionLauncher = rememberLauncherForActivityResult(
+                    contract = ActivityResultContracts.RequestMultiplePermissions(),
+                    onResult = { permissions ->
+                        val noPermissionsGranted = permissionArray.all { permission ->
+                            ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED
+                        }
+
+                        if (!noPermissionsGranted) {
+                            val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                            val lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                            if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) && lastLocation != null) {
+                                cameraViewModel.changeSortMode(SortMode.DISTANCE, lastLocation)
+                            }
+                            else {
+                                Snackbar.make(
+                                    window.decorView.rootView,
+                                    getString(R.string.location_unavailable),
+                                    Snackbar.LENGTH_LONG
+                                ).show()
+                            }
+                        }
+                    })
+
                 var expanded by remember { mutableStateOf(it) }
-                SortModeMenu(expanded = expanded xor it, currentSortMode = cameraState.sortMode) { sortMode ->
+                SortModeMenu(expanded = expanded xor it, currentValue = cameraState.sortMode) { sortMode ->
                     expanded = !expanded
-                    cameraViewModel.changeSortMode(context, sortMode)
+                    if (sortMode == SortMode.DISTANCE) {
+                        locationPermissionLauncher.launch(permissionArray)
+                    }
+                    else {
+                        cameraViewModel.changeSortMode(sortMode)
+                    }
                 }
             })
         val search = Action(icon = Icons.Rounded.Search,
@@ -408,7 +443,7 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    fun requestLocationPermissions(
+    private fun requestLocationPermissions(
         requestCode: Int, onPermissionGranted: ((location: Location) -> Unit) = {},
     ): Boolean {
         val permissionArray = arrayOf(
@@ -420,7 +455,6 @@ class MainActivity : AppCompatActivity() {
 
         if (noPermissionsGranted) {
             ActivityCompat.requestPermissions(this, permissionArray, requestCode)
-            return false
         }
         else {
             when (requestCode) {
@@ -439,9 +473,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-                requestForMap -> {
-                    return true
-                }
+                requestForMap -> return true
             }
         }
         return false
