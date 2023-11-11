@@ -6,10 +6,8 @@ import android.Manifest.permission
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -61,12 +59,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.play.core.review.ReviewManagerFactory
 import com.textfield.json.ottawastreetcameras.CameraViewModel
 import com.textfield.json.ottawastreetcameras.FilterMode
 import com.textfield.json.ottawastreetcameras.R
@@ -90,9 +86,6 @@ import com.textfield.json.ottawastreetcameras.ui.components.menu.SortModeMenu
 import com.textfield.json.ottawastreetcameras.ui.components.menu.ViewModeMenu
 
 class MainActivity : AppCompatActivity() {
-    private val requestForList = 0
-    private val requestForMap = 1
-
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun MainAppBar(cameraViewModel: CameraViewModel, listState: LazyListState) {
@@ -134,9 +127,7 @@ class MainActivity : AppCompatActivity() {
 
     @Composable
     fun MainContent(cameraViewModel: CameraViewModel, listState: LazyListState) {
-        Surface(
-            modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
-        ) {
+        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             Column {
                 val cameraState by cameraViewModel.cameraState.collectAsState()
                 val displayedCameras = cameraState.displayedCameras
@@ -170,7 +161,6 @@ class MainActivity : AppCompatActivity() {
                         CameraMapView(
                             cameraViewModel,
                             displayedCameras,
-                            isMyLocationEnabled = requestLocationPermissions(requestForMap),
                             onItemClick = onItemClick,
                             onItemLongClick = onItemLongClick
                         )
@@ -232,20 +222,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun showLicences() {
         startActivity(Intent(this, OssLicensesMenuActivity::class.java))
-    }
-
-    private fun rateApp() {
-        val manager = ReviewManagerFactory.create(this@MainActivity)
-        val request = manager.requestReviewFlow()
-        request.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val reviewInfo = task.result
-                manager.launchReviewFlow(this@MainActivity, reviewInfo)
-            }
-            else {
-                Log.w("rateApp", task.exception)
-            }
-        }
     }
 
     @Composable
@@ -404,22 +380,18 @@ class MainActivity : AppCompatActivity() {
         var showDialog by remember { mutableStateOf(false) }
 
         if (showDialog) {
-            AboutDialog(onRate = {
-                rateApp()
-            }, onLicences = {
-                showLicences()
-            }) {
-                showDialog = !showDialog
-            }
+            AboutDialog(
+                onLicences = { showLicences() },
+                onDismiss = { showDialog = !showDialog },
+            )
         }
 
         val about = Action(
             icon = Icons.Rounded.Info,
             condition = true,
             toolTip = stringResource(id = R.string.about),
-            onClick = {
-                showDialog = !showDialog
-            })
+            onClick = { showDialog = !showDialog },
+        )
 
         if (selectedCameras.isEmpty()) {
             return listOf(
@@ -441,48 +413,5 @@ class MainActivity : AppCompatActivity() {
             hide,
             selectAll,
         )
-    }
-
-    private fun requestLocationPermissions(
-        requestCode: Int, onPermissionGranted: ((location: Location) -> Unit) = {},
-    ): Boolean {
-        val permissionArray = arrayOf(
-            permission.ACCESS_FINE_LOCATION, permission.ACCESS_COARSE_LOCATION
-        )
-        val noPermissionsGranted = permissionArray.all {
-            ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
-        }
-
-        if (noPermissionsGranted) {
-            ActivityCompat.requestPermissions(this, permissionArray, requestCode)
-        }
-        else {
-            when (requestCode) {
-                requestForList -> {
-                    val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-                    val lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-                    return if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) && lastLocation != null) {
-                        onPermissionGranted(lastLocation)
-                        true
-                    }
-                    else {
-                        Snackbar.make(
-                            window.decorView.rootView, getString(R.string.location_unavailable), Snackbar.LENGTH_LONG
-                        ).show()
-                        false
-                    }
-                }
-
-                requestForMap -> return true
-            }
-        }
-        return false
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (PackageManager.PERMISSION_GRANTED in grantResults) {
-            requestLocationPermissions(requestCode)
-        }
     }
 }

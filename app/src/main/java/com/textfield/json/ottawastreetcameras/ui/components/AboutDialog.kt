@@ -11,7 +11,10 @@ import com.textfield.json.ottawastreetcameras.R
 
 
 @Composable
-fun AboutDialog(onRate: () -> Unit, onLicences: () -> Unit, onDismiss: () -> Unit) {
+fun AboutDialog(
+    onLicences: () -> Unit,
+    onDismiss: () -> Unit,
+) {
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
@@ -22,12 +25,6 @@ fun AboutDialog(onRate: () -> Unit, onLicences: () -> Unit, onDismiss: () -> Uni
         },
         confirmButton = {
             Row {
-                TextButton(onClick = {
-                    onRate()
-                    onDismiss()
-                }) {
-                    Text(stringResource(id = R.string.rate))
-                }
                 TextButton(onClick = {
                     onLicences()
                     onDismiss()
