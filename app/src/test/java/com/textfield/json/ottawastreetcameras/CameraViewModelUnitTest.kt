@@ -38,10 +38,10 @@ class CameraViewModelUnitTest {
 
     @Test
     fun testChangeSortMode() {
-        cameraViewModel.changeSortMode(mockContext, SortMode.NEIGHBOURHOOD)
+        cameraViewModel.changeSortMode(SortMode.NEIGHBOURHOOD)
         assertEquals(SortMode.NEIGHBOURHOOD, cameraViewModel.cameraState.value.sortMode)
 
-        cameraViewModel.changeSortMode(mockContext, SortMode.NAME)
+        cameraViewModel.changeSortMode(SortMode.NAME)
         assertEquals(SortMode.NAME, cameraViewModel.cameraState.value.sortMode)
     }
 
@@ -56,10 +56,10 @@ class CameraViewModelUnitTest {
 
     @Test
     fun testChangeSearchMode() {
-        cameraViewModel.changeSearchMode(SearchMode.NEIGHBOURHOOD)
+        cameraViewModel.searchCameras(SearchMode.NEIGHBOURHOOD)
         assertEquals(SearchMode.NEIGHBOURHOOD, cameraViewModel.cameraState.value.searchMode)
 
-        cameraViewModel.changeSearchMode(SearchMode.NAME)
+        cameraViewModel.searchCameras(SearchMode.NAME)
         assertEquals(SearchMode.NAME, cameraViewModel.cameraState.value.searchMode)
     }
 
@@ -77,24 +77,19 @@ class CameraViewModelUnitTest {
             })
         }))
 
-        cameraViewModel.changeSearchMode(SearchMode.NAME)
-        cameraViewModel.searchCameras("Camera 5")
+        cameraViewModel.searchCameras(SearchMode.NAME, "Camera 5")
         assertEquals(cameraViewModel.cameraState.value.displayedCameras.size, 1)
 
-        cameraViewModel.changeSearchMode(SearchMode.NONE)
-        cameraViewModel.searchCameras("any")
+        cameraViewModel.searchCameras(SearchMode.NONE, "any")
         assertEquals(cameraViewModel.cameraState.value.displayedCameras.size, 10)
 
-        cameraViewModel.changeSearchMode(SearchMode.NEIGHBOURHOOD)
-        cameraViewModel.searchCameras("")
+        cameraViewModel.searchCameras(SearchMode.NEIGHBOURHOOD, "")
         assertEquals(cameraViewModel.cameraState.value.displayedCameras.size, 10)
 
-        cameraViewModel.changeSearchMode(SearchMode.NAME)
-        cameraViewModel.searchCameras("")
+        cameraViewModel.searchCameras(SearchMode.NAME, "")
         assertEquals(cameraViewModel.cameraState.value.displayedCameras.size, 10)
 
-        cameraViewModel.changeSearchMode(SearchMode.NEIGHBOURHOOD)
-        cameraViewModel.searchCameras("neighbourhood")
+        cameraViewModel.searchCameras(SearchMode.NEIGHBOURHOOD, "neighbourhood")
         assertEquals(cameraViewModel.cameraState.value.displayedCameras.size, 1)
     }
 
@@ -134,7 +129,7 @@ class CameraViewModelUnitTest {
         cameraViewModel.selectAllCameras()
         assertNotEquals(0, cameraViewModel.cameraState.value.selectedCameras.size)
 
-        cameraViewModel.clearSelectedCameras()
+        cameraViewModel.selectAllCameras(false)
         assertEquals(0, cameraViewModel.cameraState.value.selectedCameras.size)
     }
 
@@ -170,7 +165,7 @@ class CameraViewModelUnitTest {
         cameraViewModel.selectCamera(cameraViewModel.cameraState.value.allCameras[1])
         cameraViewModel.selectCamera(cameraViewModel.cameraState.value.allCameras[4])
 
-        cameraViewModel.favouriteSelectedCameras(mockContext, true)
+        cameraViewModel.favouriteCameras(mockContext, cameraViewModel.cameraState.value.selectedCameras)
 
         assertTrue(cameraViewModel.cameraState.value.allCameras[1].isFavourite)
         assertTrue(cameraViewModel.cameraState.value.allCameras[4].isFavourite)
@@ -190,7 +185,7 @@ class CameraViewModelUnitTest {
         cameraViewModel.selectCamera(cameraViewModel.cameraState.value.allCameras[5])
         cameraViewModel.selectCamera(cameraViewModel.cameraState.value.allCameras[8])
 
-        cameraViewModel.hideSelectedCameras(mockContext, false)
+        cameraViewModel.hideCameras(mockContext, cameraViewModel.cameraState.value.selectedCameras)
 
         assertFalse(cameraViewModel.cameraState.value.allCameras[5].isVisible)
         assertFalse(cameraViewModel.cameraState.value.allCameras[8].isVisible)

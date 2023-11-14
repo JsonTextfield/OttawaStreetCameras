@@ -34,9 +34,7 @@ object CameraDownloadService : DownloadService {
         Volley.newRequestQueue(context).add(cameraRequest)
     }
 
-    private fun downloadNeighbourhoods(
-        context: Context, onComplete: (neighbourhoods: List<Neighbourhood>) -> Unit,
-    ) {
+    private fun downloadNeighbourhoods(context: Context, onComplete: (neighbourhoods: List<Neighbourhood>) -> Unit) {
         Log.d(tag, "downloading neighbourhoods")
         val url =
             "https://services.arcgis.com/G6F8XLCl5KtAlZ2G/arcgis/rest/services/Gen_2_ONS_Boundaries/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson"

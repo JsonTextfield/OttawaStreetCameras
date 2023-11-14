@@ -8,8 +8,6 @@ import org.json.JSONObject
  * Created by Jason on 25/04/2016.
  */
 class Camera : BilingualObject, Parcelable {
-    var distance = -1
-
     var owner = ""
         private set
     var lat = 0.0
@@ -21,7 +19,9 @@ class Camera : BilingualObject, Parcelable {
 
     var isFavourite = false
     var isVisible = true
+    var isSelected = false
     var neighbourhood = ""
+    var distance = -1
 
     val url: String
         get() = "https://traffic.ottawa.ca/beta/camera?id=$num&timems=${System.currentTimeMillis()}"
@@ -63,18 +63,16 @@ class Camera : BilingualObject, Parcelable {
     }
 
     override fun toString(): String {
-        return sortableName
+        return name
     }
 
     override fun equals(other: Any?): Boolean {
         if (other !is Camera) return false
-        return (id == other.id) && (num == other.num)
+        return id == other.id && num == other.num
     }
 
     override fun hashCode(): Int {
-        var result = id.hashCode()
-        result = 31 * result + num
-        return result
+        return 31 * id + num
     }
 
     companion object CREATOR : Parcelable.Creator<Camera> {

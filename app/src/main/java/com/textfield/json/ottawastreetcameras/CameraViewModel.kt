@@ -23,24 +23,16 @@ class CameraViewModel(
     fun changeViewMode(context: Context, viewMode: ViewMode) {
         val sharedPrefs: SharedPreferences? = context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)
         sharedPrefs?.edit()?.putString("viewMode", viewMode.name)?.apply()
-        _cameraState.update {
-            it.copy(viewMode = viewMode)
-        }
+        _cameraState.update { it.copy(viewMode = viewMode) }
     }
 
     fun changeSortMode(sortMode: SortMode, location: Location? = null) {
-        val displayedCameras = ArrayList<Camera>(_cameraState.value.displayedCameras)
         when (sortMode) {
-            SortMode.NAME -> displayedCameras.sortWith(SortByName())
-            SortMode.NEIGHBOURHOOD -> displayedCameras.sortWith(SortByNeighbourhood())
-            SortMode.DISTANCE -> displayedCameras.sortWith(SortByDistance(location!!))
+            SortMode.NAME -> _cameraState.value.displayedCameras.sortWith(SortByName())
+            SortMode.NEIGHBOURHOOD -> _cameraState.value.displayedCameras.sortWith(SortByNeighbourhood())
+            SortMode.DISTANCE -> _cameraState.value.displayedCameras.sortWith(SortByDistance(location!!))
         }
-        _cameraState.update {
-            it.copy(
-                sortMode = sortMode,
-                displayedCameras = displayedCameras,
-            )
-        }
+        _cameraState.update { it.copy(sortMode = sortMode) }
     }
 
     fun changeFilterMode(filterMode: FilterMode) {
@@ -50,136 +42,100 @@ class CameraViewModel(
         else {
             filterMode
         }
-        val displayedCameras = when (mode) {
-            FilterMode.VISIBLE -> _cameraState.value.visibleCameras
-            FilterMode.HIDDEN -> _cameraState.value.hiddenCameras
-            FilterMode.FAVOURITE -> _cameraState.value.favouriteCameras
-        } as ArrayList<Camera>
         _cameraState.update {
             it.copy(
-                displayedCameras = displayedCameras,
+                displayedCameras = ArrayList(it.getSearchResults(it.searchMode, mode, it.searchText)),
                 filterMode = mode,
             )
         }
     }
 
-    fun favouriteCamera(context: Context, camera: Camera) {
+    fun favouriteCameras(context: Context, cameras: List<Camera>) {
         val sharedPrefs: SharedPreferences? = context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)
-        sharedPrefs?.edit()?.putBoolean("${camera.num}.isFavourite", camera.isFavourite)?.apply()
+        val allFavourite = cameras.all { it.isFavourite }
+        for (camera in _cameraState.value.allCameras) {
+            if (camera in cameras) {
+                camera.isFavourite = !allFavourite
+                sharedPrefs?.edit()?.putBoolean("${camera.num}.isFavourite", !allFavourite)?.apply()
+            }
+        }
+        _cameraState.update { it.copy(lastUpdated = System.currentTimeMillis()) }
+    }
 
+    fun hideCameras(context: Context, cameras: List<Camera>) {
+        val sharedPrefs: SharedPreferences? = context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)
+        val anyVisible = cameras.any { it.isVisible }
+        for (camera in _cameraState.value.allCameras) {
+            if (camera in cameras) {
+                camera.isVisible = !anyVisible
+                sharedPrefs?.edit()?.putBoolean("${camera.num}.isVisible", !anyVisible)?.apply()
+            }
+        }
         _cameraState.update {
-            val updatedCameras = ArrayList<Camera>(it.allCameras)
-            it.allCameras.clear()
-            for (cam in updatedCameras) {
-                if (cam == camera) {
-                    cam.isFavourite = camera.isFavourite
-                    break
-                }
-            }
-
-            val updatedDisplayedCameras = ArrayList<Camera>(it.displayedCameras)
-            it.displayedCameras.clear()
-            for (cam in updatedDisplayedCameras) {
-                if (cam == camera) {
-                    cam.isFavourite = camera.isFavourite
-                    break
-                }
-            }
-
             it.copy(
-                allCameras = updatedCameras,
-                displayedCameras = updatedDisplayedCameras
+                lastUpdated = System.currentTimeMillis(),
+                displayedCameras = ArrayList(
+                    _cameraState.value.getSearchResults(
+                        it.searchMode,
+                        it.filterMode,
+                        it.searchText,
+                    )
+                )
             )
         }
-    }
-
-    fun hideCamera(context: Context, camera: Camera) {
-        val sharedPrefs: SharedPreferences? = context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)
-        sharedPrefs?.edit()?.putBoolean("${camera.num}.isVisible", camera.isVisible)?.apply()
-
-        _cameraState.update {
-            val updatedCameras = ArrayList<Camera>(it.allCameras)
-            it.allCameras.clear()
-            for (cam in updatedCameras) {
-                if (cam == camera) {
-                    cam.isVisible = camera.isVisible
-                    break
-                }
-            }
-
-            val updatedDisplayedCameras = ArrayList<Camera>(it.displayedCameras)
-            updatedDisplayedCameras.remove(camera)
-
-            it.copy(
-                allCameras = updatedCameras,
-                displayedCameras = updatedDisplayedCameras,
-            )
-        }
-    }
-
-    fun favouriteSelectedCameras(context: Context, isFavourite: Boolean) {
-        for (camera in _cameraState.value.selectedCameras) {
-            camera.isFavourite = isFavourite
-            favouriteCamera(context, camera)
-        }
-    }
-
-    fun hideSelectedCameras(context: Context, isVisible: Boolean) {
-        for (camera in _cameraState.value.selectedCameras) {
-            camera.isVisible = isVisible
-            hideCamera(context, camera)
-        }
-        clearSelectedCameras()
+        selectAllCameras(false)
     }
 
     fun selectCamera(camera: Camera) {
-        val selectedCameras = ArrayList<Camera>(_cameraState.value.selectedCameras)
-        if (selectedCameras.contains(camera)) {
-            selectedCameras.remove(camera)
+        for (cam in _cameraState.value.allCameras) {
+            if (cam == camera) {
+                cam.isSelected = !cam.isSelected
+                break
+            }
         }
-        else {
-            selectedCameras.add(camera)
+        _cameraState.update { it.copy(lastUpdated = System.currentTimeMillis()) }
+    }
+
+    fun selectAllCameras(select: Boolean = true) {
+        for (camera in _cameraState.value.allCameras) {
+            if (camera in _cameraState.value.displayedCameras) {
+                camera.isSelected = select
+            }
         }
-        _cameraState.update { it.copy(selectedCameras = selectedCameras) }
+        _cameraState.update { it.copy(lastUpdated = System.currentTimeMillis()) }
     }
 
-    fun selectAllCameras() {
-        _cameraState.update { it.copy(selectedCameras = it.displayedCameras) }
-    }
-
-    fun clearSelectedCameras() {
-        _cameraState.update { it.copy(selectedCameras = ArrayList()) }
-    }
-
-    fun changeSearchMode(searchMode: SearchMode) {
+    fun searchCameras(searchMode: SearchMode = SearchMode.NONE, searchText: String = "") {
         _cameraState.update {
             it.copy(
-                searchMode = if (searchMode == _cameraState.value.searchMode) {
-                    SearchMode.NONE
-                }
-                else {
-                    searchMode
-                }
+                displayedCameras = ArrayList(
+                    _cameraState.value.getSearchResults(
+                        searchMode,
+                        _cameraState.value.filterMode,
+                        searchText,
+                    )
+                ),
+                searchMode = searchMode,
+                searchText = searchText,
             )
         }
     }
 
-    fun searchCameras(str: String = "") {
-        val updatedCameras = _cameraState.value.filterCameras().filter {
-            when (_cameraState.value.searchMode) {
-                SearchMode.NAME -> it.name.contains(str.trim(), true)
-                SearchMode.NEIGHBOURHOOD -> it.neighbourhood.contains(str.trim(), true)
-                SearchMode.NONE -> true
-            }
-        } as ArrayList<Camera>
-        _cameraState.update { it.copy(displayedCameras = updatedCameras) }
+    fun resetFilters() {
+        _cameraState.update {
+            it.copy(
+                displayedCameras = ArrayList(it.visibleCameras),
+                searchMode = SearchMode.NONE,
+                filterMode = FilterMode.VISIBLE,
+            )
+        }
     }
 
     fun downloadAll(context: Context) {
         // show the loading view
         _cameraState.update { it.copy(uiState = UIState.LOADING) }
 
-        if (_cameraState.value.allCameras.isEmpty() || _cameraState.value.neighbourhoods.isEmpty()) {
+        if (_cameraState.value.allCameras.isEmpty()) {
             downloadService.downloadAll(context) { cameras, neighbourhoods ->
                 if (cameras.isEmpty()) {
                     // show an error if the retrieved camera list is empty
@@ -200,13 +156,11 @@ class CameraViewModel(
                             }
                         }
                     }
-                    val displayedCameras = cameras.filter { it.isVisible }
                     // show the newly loaded station
-                    _cameraState.update {cameraState ->
+                    _cameraState.update { cameraState ->
                         cameraState.copy(
                             allCameras = ArrayList(cameras),
-                            displayedCameras = ArrayList(displayedCameras),
-                            neighbourhoods = cameras.map { it.neighbourhood }.distinct(),
+                            displayedCameras = ArrayList(cameras.filter { it.isVisible }),
                             uiState = UIState.LOADED,
                             viewMode = viewMode,
                         )

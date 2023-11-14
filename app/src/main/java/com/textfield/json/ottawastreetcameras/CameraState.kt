@@ -23,14 +23,17 @@ enum class UIState { LOADING, LOADED, ERROR, INITIAL, }
 data class CameraState(
     var allCameras: ArrayList<Camera> = ArrayList(),
     var displayedCameras: ArrayList<Camera> = ArrayList(),
-    var selectedCameras: List<Camera> = ArrayList(),
-    var neighbourhoods: List<String> = ArrayList(),
     var uiState: UIState = UIState.INITIAL,
     var sortMode: SortMode = SortMode.NAME,
     var searchMode: SearchMode = SearchMode.NONE,
+    var searchText: String = "",
     var filterMode: FilterMode = FilterMode.VISIBLE,
     var viewMode: ViewMode = ViewMode.LIST,
+    var lastUpdated: Long = 0L,
 ) {
+    val selectedCameras
+        get() = allCameras.filter { it.isSelected }
+
     val visibleCameras
         get() = allCameras.filter { it.isVisible }
 
@@ -47,11 +50,23 @@ data class CameraState(
             && searchMode == SearchMode.NONE
             && viewMode == ViewMode.LIST
 
-    fun filterCameras(): List<Camera> {
+    private fun filterCameras(filterMode: FilterMode): List<Camera> {
         return when (filterMode) {
             FilterMode.VISIBLE -> visibleCameras
             FilterMode.HIDDEN -> hiddenCameras
             FilterMode.FAVOURITE -> favouriteCameras
         }
+    }
+
+    private fun getSearchPredicate(searchMode: SearchMode, searchText: String): (camera: Camera) -> Boolean {
+        return when (searchMode) {
+            SearchMode.NONE -> { _ -> true }
+            SearchMode.NAME -> { camera -> camera.name.contains(searchText.trim(), true) }
+            SearchMode.NEIGHBOURHOOD -> { camera -> camera.neighbourhood.contains(searchText.trim(), true) }
+        }
+    }
+
+    fun getSearchResults(searchMode: SearchMode, filterMode: FilterMode, searchText: String): List<Camera> {
+        return filterCameras(filterMode).filter(getSearchPredicate(searchMode, searchText)).toList()
     }
 }
