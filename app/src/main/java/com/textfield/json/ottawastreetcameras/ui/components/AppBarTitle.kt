@@ -80,14 +80,15 @@ fun AppBarTitle(cameraViewModel: CameraViewModel, listState: LazyListState) {
                         cameraState.displayedCameras.size
                     )
                 ) {
-                    cameraViewModel.searchCameras(it)
+                    cameraViewModel.searchCameras(cameraState.searchMode, it)
                 }
             }
 
             SearchMode.NEIGHBOURHOOD -> {
+                val neighbourhoods = cameraState.allCameras.map { it.neighbourhood }.distinct()
                 Box {
                     var value by rememberSaveable { mutableStateOf("") }
-                    val suggestionList = cameraState.neighbourhoods.filter {
+                    val suggestionList = neighbourhoods.filter {
                         it.contains(value, true)
                     }.map {
                         it
@@ -102,17 +103,17 @@ fun AppBarTitle(cameraViewModel: CameraViewModel, listState: LazyListState) {
 
                     SuggestionDropdown(expanded, suggestionList, value) {
                         value = it
-                        cameraViewModel.searchCameras(value)
+                        cameraViewModel.searchCameras(cameraState.searchMode, value)
                     }
                     SearchBarContent(
                         pluralStringResource(
                             R.plurals.search_hint_neighbourhood,
-                            cameraState.neighbourhoods.size,
-                            cameraState.neighbourhoods.size,
+                            neighbourhoods.size,
+                            neighbourhoods.size,
                         ), value
                     ) {
                         value = it
-                        cameraViewModel.searchCameras(value)
+                        cameraViewModel.searchCameras(cameraState.searchMode, value)
                     }
                 }
             }

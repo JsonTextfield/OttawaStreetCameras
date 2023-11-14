@@ -16,6 +16,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,13 +44,27 @@ fun CameraListView(
 ) {
     LazyColumn(modifier = modifier, state = listState) {
         items(cameras, { camera -> camera.hashCode() }) { camera ->
-            val dismissState = remember {
-                DismissState(DismissValue.Default, positionalThreshold = { this.density * 100f })
-            }
+            val index = cameras.indexOf(camera)
             val context = LocalContext.current
+            val cameraState by cameraViewModel.cameraState.collectAsState()
+            val dismissState = remember {
+                DismissState(DismissValue.Default, positionalThreshold = { this.density * 200f })
+            }
+            val hide = {
+                if (camera in cameraState.displayedCameras) {
+                    cameraState.displayedCameras.remove(camera)
+                }
+                else {
+                    cameraState.displayedCameras.add(index, camera)
+                }
+                cameraViewModel.hideCameras(context, listOf(camera))
+            }
+            val dismissed = {
+                hide()
+                // show undo snackbar
+            }
             if (dismissState.isDismissed(DismissDirection.EndToStart) || dismissState.isDismissed(DismissDirection.StartToEnd)) {
-                camera.isVisible = !camera.isVisible
-                cameraViewModel.hideCamera(context, camera)
+                dismissed()
             }
             SwipeToDismiss(
                 state = dismissState,

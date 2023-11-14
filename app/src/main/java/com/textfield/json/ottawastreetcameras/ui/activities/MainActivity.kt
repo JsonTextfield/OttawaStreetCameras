@@ -92,19 +92,11 @@ class MainActivity : AppCompatActivity() {
         val cameraState by cameraViewModel.cameraState.collectAsState()
         TopAppBar(
             navigationIcon = {
-                if (cameraState.selectedCameras.isEmpty()) {
-                    if (cameraState.searchMode != SearchMode.NONE) {
-                        IconButton(onClick = {
-                            cameraViewModel.changeSearchMode(SearchMode.NONE)
-                            cameraViewModel.searchCameras("")
-                        }) {
-                            Icon(Icons.Rounded.ArrowBack, stringResource(id = R.string.back), tint = Color.White)
-                        }
-                    }
-                    else if (cameraState.filterMode != FilterMode.VISIBLE) {
-                        IconButton(onClick = { cameraViewModel.changeFilterMode(FilterMode.VISIBLE) }) {
-                            Icon(Icons.Rounded.ArrowBack, stringResource(id = R.string.back), tint = Color.White)
-                        }
+                if (cameraState.selectedCameras.isEmpty() && (cameraState.searchMode != SearchMode.NONE || cameraState.filterMode != FilterMode.VISIBLE)) {
+                    IconButton(onClick = {
+                        cameraViewModel.resetFilters()
+                    }) {
+                        Icon(Icons.Rounded.ArrowBack, stringResource(id = R.string.back), tint = Color.White)
                     }
                 }
             },
@@ -130,7 +122,6 @@ class MainActivity : AppCompatActivity() {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             Column {
                 val cameraState by cameraViewModel.cameraState.collectAsState()
-                val displayedCameras = cameraState.displayedCameras
                 val onItemClick = { camera: Camera ->
                     if (cameraState.selectedCameras.isNotEmpty()) {
                         cameraViewModel.selectCamera(camera)
@@ -144,11 +135,11 @@ class MainActivity : AppCompatActivity() {
                     ViewMode.LIST -> {
                         Row {
                             AnimatedVisibility(visible = cameraState.showSectionIndex) {
-                                SectionIndex(displayedCameras.map { it.sortableName }, listState)
+                                SectionIndex(cameraState.displayedCameras.map { it.sortableName }, listState)
                             }
                             CameraListView(
                                 cameraViewModel,
-                                displayedCameras,
+                                cameraState.displayedCameras,
                                 modifier = Modifier.weight(1f),
                                 listState = listState,
                                 onItemClick = onItemClick,
@@ -160,7 +151,7 @@ class MainActivity : AppCompatActivity() {
                     ViewMode.MAP -> {
                         CameraMapView(
                             cameraViewModel,
-                            displayedCameras,
+                            cameraState.displayedCameras,
                             onItemClick = onItemClick,
                             onItemLongClick = onItemLongClick
                         )
@@ -169,7 +160,7 @@ class MainActivity : AppCompatActivity() {
                     ViewMode.GALLERY -> {
                         CameraGalleryView(
                             cameraViewModel,
-                            displayedCameras,
+                            cameraState.displayedCameras,
                             onItemClick = onItemClick,
                             onItemLongClick = onItemLongClick
                         )
@@ -231,7 +222,7 @@ class MainActivity : AppCompatActivity() {
         val context = LocalContext.current
         val clearSelection =
             Action(icon = Icons.Rounded.Clear, toolTip = stringResource(R.string.clear), true, onClick = {
-                cameraViewModel.clearSelectedCameras()
+                cameraViewModel.selectAllCameras(false)
             })
         val view = Action(icon = Icons.Rounded.CameraAlt,
             toolTip = stringResource(id = R.string.view),
@@ -255,7 +246,7 @@ class MainActivity : AppCompatActivity() {
             Icons.Rounded.Star
         }
         val favourite = Action(icon = favouriteIcon, toolTip = favouriteToolTip, true, onClick = {
-            cameraViewModel.favouriteSelectedCameras(this, !allIsFavourite)
+            cameraViewModel.favouriteCameras(this, cameraState.selectedCameras)
         })
         val allIsHidden = selectedCameras.all { !it.isVisible }
         val hiddenToolTip = stringResource(
@@ -273,7 +264,7 @@ class MainActivity : AppCompatActivity() {
             Icons.Rounded.VisibilityOff
         }
         val hide = Action(icon = hiddenIcon, toolTip = hiddenToolTip, true, onClick = {
-            cameraViewModel.hideSelectedCameras(context, allIsHidden)
+            cameraViewModel.hideCameras(context, cameraState.selectedCameras)
         })
         val selectAll = Action(icon = Icons.Rounded.SelectAll,
             toolTip = stringResource(R.string.select_all),
@@ -340,14 +331,14 @@ class MainActivity : AppCompatActivity() {
             toolTip = stringResource(id = R.string.search),
             checked = cameraState.searchMode == SearchMode.NAME,
             onClick = {
-                cameraViewModel.changeSearchMode(SearchMode.NAME)
+                cameraViewModel.searchCameras(SearchMode.NAME)
             })
         val searchNeighbourhood = Action(icon = Icons.Rounded.TravelExplore,
             condition = cameraState.searchMode != SearchMode.NEIGHBOURHOOD,
             toolTip = stringResource(id = R.string.search_neighbourhood),
             checked = cameraState.searchMode == SearchMode.NEIGHBOURHOOD,
             onClick = {
-                cameraViewModel.changeSearchMode(SearchMode.NEIGHBOURHOOD)
+                cameraViewModel.searchCameras(SearchMode.NEIGHBOURHOOD)
             })
         val favourites = Action(icon = Icons.Rounded.Star,
             condition = true,

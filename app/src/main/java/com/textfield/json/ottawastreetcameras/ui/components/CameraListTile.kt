@@ -124,8 +124,7 @@ fun CameraListTile(
             IconButton(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 onClick = {
-                    camera.isFavourite = !camera.isFavourite
-                    cameraViewModel.favouriteCamera(context, camera)
+                    cameraViewModel.favouriteCameras(context, listOf(camera))
                 }
             ) {
                 if (camera.isFavourite) {
