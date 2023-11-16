@@ -9,20 +9,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.DismissDirection
-import androidx.compose.material3.DismissState
 import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -41,30 +37,16 @@ fun CameraListView(
     listState: LazyListState,
     onItemClick: (Camera) -> Unit,
     onItemLongClick: (Camera) -> Unit,
+    onItemDismissed: (Camera) -> Unit,
 ) {
     LazyColumn(modifier = modifier, state = listState) {
         items(cameras, { camera -> camera.hashCode() }) { camera ->
-            val index = cameras.indexOf(camera)
-            val context = LocalContext.current
-            val cameraState by cameraViewModel.cameraState.collectAsState()
-            val dismissState = remember {
-                DismissState(DismissValue.Default, positionalThreshold = { this.density * 200f })
-            }
-            val hide = {
-                if (camera in cameraState.displayedCameras) {
-                    cameraState.displayedCameras.remove(camera)
-                }
-                else {
-                    cameraState.displayedCameras.add(index, camera)
-                }
-                cameraViewModel.hideCameras(context, listOf(camera))
-            }
-            val dismissed = {
-                hide()
-                // show undo snackbar
-            }
+            val dismissState = rememberDismissState(
+                DismissValue.Default,
+                positionalThreshold = { this.density * 200f },
+            )
             if (dismissState.isDismissed(DismissDirection.EndToStart) || dismissState.isDismissed(DismissDirection.StartToEnd)) {
-                dismissed()
+                onItemDismissed(camera)
             }
             SwipeToDismiss(
                 state = dismissState,
@@ -99,7 +81,8 @@ fun CameraListView(
                 },
                 dismissContent = {
                     CameraListTile(cameraViewModel, camera, onItemClick, onItemLongClick)
-                })
+                },
+            )
         }
         item {
             Text(

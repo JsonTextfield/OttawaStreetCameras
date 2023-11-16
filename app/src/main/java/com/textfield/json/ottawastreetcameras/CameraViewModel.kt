@@ -4,6 +4,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.location.Location
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.textfield.json.ottawastreetcameras.comparators.SortByDistance
 import com.textfield.json.ottawastreetcameras.comparators.SortByName
 import com.textfield.json.ottawastreetcameras.comparators.SortByNeighbourhood
@@ -15,14 +19,14 @@ import kotlinx.coroutines.flow.update
 class CameraViewModel(
     private var _cameraState: MutableStateFlow<CameraState> = MutableStateFlow(CameraState()),
     private val downloadService: DownloadService = CameraDownloadService,
+    private val prefs: SharedPreferences,
 ) : ViewModel() {
 
     val cameraState: StateFlow<CameraState>
         get() = _cameraState
 
-    fun changeViewMode(context: Context, viewMode: ViewMode) {
-        val sharedPrefs: SharedPreferences? = context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)
-        sharedPrefs?.edit()?.putString("viewMode", viewMode.name)?.apply()
+    fun changeViewMode(viewMode: ViewMode) {
+        prefs.edit().putString("viewMode", viewMode.name).apply()
         _cameraState.update { it.copy(viewMode = viewMode) }
     }
 
@@ -50,25 +54,23 @@ class CameraViewModel(
         }
     }
 
-    fun favouriteCameras(context: Context, cameras: List<Camera>) {
-        val sharedPrefs: SharedPreferences? = context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)
+    fun favouriteCameras(cameras: List<Camera>) {
         val allFavourite = cameras.all { it.isFavourite }
         for (camera in _cameraState.value.allCameras) {
             if (camera in cameras) {
                 camera.isFavourite = !allFavourite
-                sharedPrefs?.edit()?.putBoolean("${camera.num}.isFavourite", !allFavourite)?.apply()
+                prefs.edit().putBoolean("${camera.num}.isFavourite", !allFavourite).apply()
             }
         }
         _cameraState.update { it.copy(lastUpdated = System.currentTimeMillis()) }
     }
 
-    fun hideCameras(context: Context, cameras: List<Camera>) {
-        val sharedPrefs: SharedPreferences? = context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)
+    fun hideCameras(cameras: List<Camera>) {
         val anyVisible = cameras.any { it.isVisible }
         for (camera in _cameraState.value.allCameras) {
             if (camera in cameras) {
                 camera.isVisible = !anyVisible
-                sharedPrefs?.edit()?.putBoolean("${camera.num}.isVisible", !anyVisible)?.apply()
+                prefs.edit().putBoolean("${camera.num}.isVisible", !anyVisible).apply()
             }
         }
         _cameraState.update {
@@ -142,14 +144,13 @@ class CameraViewModel(
                     _cameraState.update { it.copy(uiState = UIState.ERROR) }
                 }
                 else {
-                    val sharedPrefs = context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)
                     val viewMode = ViewMode.valueOf(
-                        sharedPrefs.getString("viewMode", ViewMode.LIST.name) ?: ViewMode.LIST.name
+                        prefs.getString("viewMode", ViewMode.LIST.name) ?: ViewMode.LIST.name
                     )
 
                     for (camera in cameras) {
-                        camera.isFavourite = sharedPrefs.getBoolean("${camera.num}.isFavourite", false)
-                        camera.isVisible = sharedPrefs.getBoolean("${camera.num}.isVisible", true)
+                        camera.isFavourite = prefs.getBoolean("${camera.num}.isFavourite", false)
+                        camera.isVisible = prefs.getBoolean("${camera.num}.isVisible", true)
                         for (neighbourhood in neighbourhoods) {
                             if (neighbourhood.containsCamera(camera)) {
                                 camera.neighbourhood = neighbourhood.name
@@ -171,6 +172,17 @@ class CameraViewModel(
         else {
             // don't reload if the camera list is not empty
             _cameraState.update { it.copy(uiState = UIState.LOADED) }
+        }
+    }
+
+    companion object {
+        val CameraViewModelFactory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = checkNotNull(this[APPLICATION_KEY])
+                CameraViewModel(
+                    prefs = application.getSharedPreferences(application.packageName, Context.MODE_PRIVATE)
+                )
+            }
         }
     }
 }

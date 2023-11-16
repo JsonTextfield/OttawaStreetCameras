@@ -3,6 +3,7 @@ package com.textfield.json.ottawastreetcameras.entities
 import android.os.Parcel
 import android.os.Parcelable
 import org.json.JSONObject
+import kotlin.math.roundToInt
 
 /**
  * Created by Jason on 25/04/2016.
@@ -25,6 +26,28 @@ class Camera : BilingualObject, Parcelable {
 
     val url: String
         get() = "https://traffic.ottawa.ca/beta/camera?id=$num&timems=${System.currentTimeMillis()}"
+
+    val distanceString: String
+        get() {
+            var distance = distance.toDouble()
+
+            return if (distance < 0) {
+                ""
+            }
+            else if (distance > 9000e3) {
+                ">9000\nkm"
+            }
+            else if (distance >= 100e3) {
+                "${(distance / 1000).roundToInt()}\nkm"
+            }
+            else if (distance >= 500) {
+                distance = (distance / 100.0).roundToInt().toDouble() / 10
+                "$distance\nkm"
+            }
+            else {
+                "${distance.roundToInt()}\nm"
+            }
+        }
 
     constructor()
 

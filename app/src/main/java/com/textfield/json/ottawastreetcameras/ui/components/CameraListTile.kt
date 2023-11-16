@@ -22,7 +22,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -32,7 +31,6 @@ import com.textfield.json.ottawastreetcameras.CameraViewModel
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.SortMode
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import kotlin.math.roundToInt
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -42,8 +40,6 @@ fun CameraListTile(
     onClick: (Camera) -> Unit,
     onLongClick: (Camera) -> Unit,
 ) {
-    val cameraState by cameraViewModel.cameraState.collectAsState()
-    val isSelected = cameraState.selectedCameras.contains(camera)
     Surface(
         modifier = Modifier
             .defaultMinSize(minHeight = 50.dp)
@@ -56,7 +52,7 @@ fun CameraListTile(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    color = if (isSelected) {
+                    color = if (camera.isSelected) {
                         colorResource(R.color.colorAccent)
                     }
                     else if (isSystemInDarkTheme()) {
@@ -67,24 +63,10 @@ fun CameraListTile(
                     }
                 )
         ) {
+            val cameraState by cameraViewModel.cameraState.collectAsState()
             if (cameraState.sortMode == SortMode.DISTANCE && camera.distance > -1) {
-                var distance = camera.distance.toDouble()
-                val distanceString =
-                    if (distance > 9000e3) {
-                        ">9000\nkm"
-                    }
-                    else if (distance >= 100e3) {
-                        "${(distance / 1000).roundToInt()}\nkm"
-                    }
-                    else if (distance >= 500) {
-                        distance = (distance / 100.0).roundToInt().toDouble() / 10
-                        "$distance\nkm"
-                    }
-                    else {
-                        "${distance.roundToInt()}\nm"
-                    }
                 Text(
-                    distanceString,
+                    camera.distanceString,
                     textAlign = TextAlign.Center,
                     fontSize = 12.sp,
                     lineHeight = 14.sp,
@@ -101,12 +83,12 @@ fun CameraListTile(
             ) {
                 Text(
                     camera.name,
-                    color = if (isSelected) Color.White else Color.Unspecified
+                    color = if (camera.isSelected) Color.White else Color.Unspecified
                 )
                 if (camera.neighbourhood.isNotBlank()) {
                     Text(
                         camera.neighbourhood,
-                        color = if (isSelected) {
+                        color = if (camera.isSelected) {
                             Color.White
                         }
                         else if (isSystemInDarkTheme()) {
@@ -120,11 +102,10 @@ fun CameraListTile(
                     )
                 }
             }
-            val context = LocalContext.current
             IconButton(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 onClick = {
-                    cameraViewModel.favouriteCameras(context, listOf(camera))
+                    cameraViewModel.favouriteCameras(listOf(camera))
                 }
             ) {
                 if (camera.isFavourite) {
@@ -138,7 +119,7 @@ fun CameraListTile(
                     Icon(
                         Icons.Rounded.StarBorder,
                         contentDescription = stringResource(R.string.add_to_favourites),
-                        tint = if (isSelected) {
+                        tint = if (camera.isSelected) {
                             Color.White
                         }
                         else if (isSystemInDarkTheme()) {

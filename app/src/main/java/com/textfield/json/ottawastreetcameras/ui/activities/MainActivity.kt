@@ -11,6 +11,7 @@ import android.os.Bundle
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -60,7 +61,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.snackbar.Snackbar
 import com.textfield.json.ottawastreetcameras.CameraViewModel
@@ -131,6 +131,13 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 val onItemLongClick = { camera: Camera -> cameraViewModel.selectCamera(camera) }
+                val onItemDismissed = { camera: Camera ->
+                    cameraViewModel.hideCameras(listOf(camera))
+                    showUndoSnackbar(camera) {
+                        camera.isVisible = !camera.isVisible
+                        cameraViewModel.hideCameras(listOf(camera))
+                    }
+                }
                 when (cameraState.viewMode) {
                     ViewMode.LIST -> {
                         Row {
@@ -143,7 +150,8 @@ class MainActivity : AppCompatActivity() {
                                 modifier = Modifier.weight(1f),
                                 listState = listState,
                                 onItemClick = onItemClick,
-                                onItemLongClick = onItemLongClick
+                                onItemLongClick = onItemLongClick,
+                                onItemDismissed = onItemDismissed,
                             )
                         }
                     }
@@ -173,7 +181,7 @@ class MainActivity : AppCompatActivity() {
     private fun loadView() {
         setContent {
             AppTheme {
-                val cameraViewModel: CameraViewModel = viewModel()
+                val cameraViewModel: CameraViewModel by viewModels { CameraViewModel.CameraViewModelFactory }
                 val cameraState by cameraViewModel.cameraState.collectAsState()
                 val uiState = cameraState.uiState
                 val listState = rememberLazyListState()
@@ -199,6 +207,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun showUndoSnackbar(camera: Camera, callback: () -> Unit) {
+        val visibilityStringId = if (camera.isVisible) R.string.unhidden else R.string.hidden
+        Snackbar.make(
+            window.decorView.rootView,
+            getString(R.string.camera_visibility_changed, camera.name, getString(visibilityStringId)),
+            Snackbar.LENGTH_LONG
+        ).setAction(R.string.undo) {
+            callback()
+        }.show()
+    }
+
     private fun showCameras(cameras: ArrayList<Camera>, shuffle: Boolean = false) {
         startActivity(Intent(this@MainActivity, CameraActivity::class.java).apply {
             putParcelableArrayListExtra("cameras", cameras)
@@ -219,7 +238,6 @@ class MainActivity : AppCompatActivity() {
     private fun getActions(cameraViewModel: CameraViewModel): List<Action> {
         val cameraState by cameraViewModel.cameraState.collectAsState()
         val selectedCameras = cameraState.selectedCameras
-        val context = LocalContext.current
         val clearSelection =
             Action(icon = Icons.Rounded.Clear, toolTip = stringResource(R.string.clear), true, onClick = {
                 cameraViewModel.selectAllCameras(false)
@@ -246,7 +264,7 @@ class MainActivity : AppCompatActivity() {
             Icons.Rounded.Star
         }
         val favourite = Action(icon = favouriteIcon, toolTip = favouriteToolTip, true, onClick = {
-            cameraViewModel.favouriteCameras(this, cameraState.selectedCameras)
+            cameraViewModel.favouriteCameras(cameraState.selectedCameras)
         })
         val allIsHidden = selectedCameras.all { !it.isVisible }
         val hiddenToolTip = stringResource(
@@ -264,7 +282,7 @@ class MainActivity : AppCompatActivity() {
             Icons.Rounded.VisibilityOff
         }
         val hide = Action(icon = hiddenIcon, toolTip = hiddenToolTip, true, onClick = {
-            cameraViewModel.hideCameras(context, cameraState.selectedCameras)
+            cameraViewModel.hideCameras(cameraState.selectedCameras)
         })
         val selectAll = Action(icon = Icons.Rounded.SelectAll,
             toolTip = stringResource(R.string.select_all),
@@ -280,7 +298,7 @@ class MainActivity : AppCompatActivity() {
             var expanded by remember { mutableStateOf(it) }
             ViewModeMenu(expanded = expanded xor it, currentValue = cameraState.viewMode) { viewMode ->
                 expanded = !expanded
-                cameraViewModel.changeViewMode(context, viewMode)
+                cameraViewModel.changeViewMode(viewMode)
             }
         })
         val sort = Action(icon = Icons.Rounded.Sort,

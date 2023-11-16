@@ -1,6 +1,6 @@
 package com.textfield.json.ottawastreetcameras
 
-import android.content.Context
+import android.content.SharedPreferences
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.json.JSONObject
@@ -18,21 +18,21 @@ import org.mockito.junit.MockitoJUnitRunner
 class CameraViewModelUnitTest {
 
     @Mock
-    private lateinit var mockContext: Context
+    private lateinit var mockPrefs: SharedPreferences
 
-    private var cameraViewModel = CameraViewModel()
+    private var cameraViewModel = CameraViewModel(prefs = mockPrefs)
 
     @Before
     fun setup() {
-        cameraViewModel = CameraViewModel()
+        cameraViewModel = CameraViewModel(prefs = mockPrefs)
     }
 
     @Test
     fun testChangeViewMode() {
-        cameraViewModel.changeViewMode(mockContext, ViewMode.MAP)
+        cameraViewModel.changeViewMode(ViewMode.MAP)
         assertEquals(ViewMode.MAP, cameraViewModel.cameraState.value.viewMode)
 
-        cameraViewModel.changeViewMode(mockContext, ViewMode.GALLERY)
+        cameraViewModel.changeViewMode(ViewMode.GALLERY)
         assertEquals(ViewMode.GALLERY, cameraViewModel.cameraState.value.viewMode)
     }
 
@@ -65,17 +65,20 @@ class CameraViewModelUnitTest {
 
     @Test
     fun testSearchCameras() {
-        cameraViewModel = CameraViewModel(_cameraState = MutableStateFlow(CameraState().apply {
-            allCameras.addAll((0 until 10).map {
-                Camera(JSONObject().apply {
-                    put("description", "Camera $it")
-                }).apply {
-                    if (it == 1) {
-                        neighbourhood = "neighbourhood"
+        cameraViewModel = CameraViewModel(
+            _cameraState = MutableStateFlow(CameraState().apply {
+                allCameras.addAll((0 until 10).map {
+                    Camera(JSONObject().apply {
+                        put("description", "Camera $it")
+                    }).apply {
+                        if (it == 1) {
+                            neighbourhood = "neighbourhood"
+                        }
                     }
-                }
-            })
-        }))
+                })
+            }),
+            prefs = mockPrefs,
+        )
 
         cameraViewModel.searchCameras(SearchMode.NAME, "Camera 5")
         assertEquals(cameraViewModel.cameraState.value.displayedCameras.size, 1)
@@ -95,15 +98,18 @@ class CameraViewModelUnitTest {
 
     @Test
     fun testSelectAllCameras() {
-        cameraViewModel = CameraViewModel(_cameraState = MutableStateFlow(CameraState().apply {
-            allCameras.addAll((0 until 10).map {
-                Camera(JSONObject().apply {
-                    put("description", "Camera $it")
-                    put("number", it)
+        cameraViewModel = CameraViewModel(
+            _cameraState = MutableStateFlow(CameraState().apply {
+                allCameras.addAll((0 until 10).map {
+                    Camera(JSONObject().apply {
+                        put("description", "Camera $it")
+                        put("number", it)
+                    })
                 })
-            })
-            displayedCameras = allCameras
-        }))
+                displayedCameras = allCameras
+            }),
+            prefs = mockPrefs,
+        )
 
         cameraViewModel.selectAllCameras()
 
@@ -116,15 +122,18 @@ class CameraViewModelUnitTest {
 
     @Test
     fun testClearSelectedCameras() {
-        cameraViewModel = CameraViewModel(_cameraState = MutableStateFlow(CameraState().apply {
-            allCameras.addAll((0 until 10).map {
-                Camera(JSONObject().apply {
-                    put("description", "Camera $it")
-                    put("number", it)
+        cameraViewModel = CameraViewModel(
+            _cameraState = MutableStateFlow(CameraState().apply {
+                allCameras.addAll((0 until 10).map {
+                    Camera(JSONObject().apply {
+                        put("description", "Camera $it")
+                        put("number", it)
+                    })
                 })
-            })
-            displayedCameras = allCameras
-        }))
+                displayedCameras = allCameras
+            }),
+            prefs = mockPrefs,
+        )
 
         cameraViewModel.selectAllCameras()
         assertNotEquals(0, cameraViewModel.cameraState.value.selectedCameras.size)
@@ -135,14 +144,17 @@ class CameraViewModelUnitTest {
 
     @Test
     fun testSelectCamera() {
-        cameraViewModel = CameraViewModel(_cameraState = MutableStateFlow(CameraState().apply {
-            allCameras.addAll((0 until 10).map {
-                Camera(JSONObject().apply {
-                    put("description", "Camera $it")
-                    put("number", it)
+        cameraViewModel = CameraViewModel(
+            _cameraState = MutableStateFlow(CameraState().apply {
+                allCameras.addAll((0 until 10).map {
+                    Camera(JSONObject().apply {
+                        put("description", "Camera $it")
+                        put("number", it)
+                    })
                 })
-            })
-        }))
+            }),
+            prefs = mockPrefs,
+        )
 
         assertTrue(cameraViewModel.cameraState.value.selectedCameras.isEmpty())
 
@@ -153,19 +165,22 @@ class CameraViewModelUnitTest {
 
     @Test
     fun testFavouriteSelectedCameras() {
-        cameraViewModel = CameraViewModel(_cameraState = MutableStateFlow(CameraState().apply {
-            allCameras.addAll((0 until 10).map {
-                Camera(JSONObject().apply {
-                    put("description", "Camera $it")
-                    put("number", it)
+        cameraViewModel = CameraViewModel(
+            _cameraState = MutableStateFlow(CameraState().apply {
+                allCameras.addAll((0 until 10).map {
+                    Camera(JSONObject().apply {
+                        put("description", "Camera $it")
+                        put("number", it)
+                    })
                 })
-            })
-        }))
+            }),
+            prefs = mockPrefs,
+        )
 
         cameraViewModel.selectCamera(cameraViewModel.cameraState.value.allCameras[1])
         cameraViewModel.selectCamera(cameraViewModel.cameraState.value.allCameras[4])
 
-        cameraViewModel.favouriteCameras(mockContext, cameraViewModel.cameraState.value.selectedCameras)
+        cameraViewModel.favouriteCameras(cameraViewModel.cameraState.value.selectedCameras)
 
         assertTrue(cameraViewModel.cameraState.value.allCameras[1].isFavourite)
         assertTrue(cameraViewModel.cameraState.value.allCameras[4].isFavourite)
@@ -173,19 +188,22 @@ class CameraViewModelUnitTest {
 
     @Test
     fun testHideSelectedCameras() {
-        cameraViewModel = CameraViewModel(_cameraState = MutableStateFlow(CameraState().apply {
-            allCameras.addAll((0 until 10).map {
-                Camera(JSONObject().apply {
-                    put("description", "Camera $it")
-                    put("number", it)
+        cameraViewModel = CameraViewModel(
+            _cameraState = MutableStateFlow(CameraState().apply {
+                allCameras.addAll((0 until 10).map {
+                    Camera(JSONObject().apply {
+                        put("description", "Camera $it")
+                        put("number", it)
+                    })
                 })
-            })
-        }))
+            }),
+            prefs = mockPrefs,
+        )
 
         cameraViewModel.selectCamera(cameraViewModel.cameraState.value.allCameras[5])
         cameraViewModel.selectCamera(cameraViewModel.cameraState.value.allCameras[8])
 
-        cameraViewModel.hideCameras(mockContext, cameraViewModel.cameraState.value.selectedCameras)
+        cameraViewModel.hideCameras(cameraViewModel.cameraState.value.selectedCameras)
 
         assertFalse(cameraViewModel.cameraState.value.allCameras[5].isVisible)
         assertFalse(cameraViewModel.cameraState.value.allCameras[8].isVisible)
