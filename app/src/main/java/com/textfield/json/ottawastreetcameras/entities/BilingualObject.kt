@@ -15,7 +15,7 @@ abstract class BilingualObject {
      * Returns the translated name of the object.
      */
     val name: String
-        get() = if (Locale.getDefault().displayLanguage.contains("fr", true)) nameFr else nameEn
+        get() = if (Locale.getDefault().displayLanguage.contains("fr", true) && nameFr.isNotBlank()) nameFr else nameEn
 
 
     /**
