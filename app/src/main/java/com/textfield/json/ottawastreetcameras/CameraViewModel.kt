@@ -8,9 +8,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.textfield.json.ottawastreetcameras.comparators.SortByDistance
-import com.textfield.json.ottawastreetcameras.comparators.SortByName
-import com.textfield.json.ottawastreetcameras.comparators.SortByNeighbourhood
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,12 +28,13 @@ class CameraViewModel(
     }
 
     fun changeSortMode(sortMode: SortMode, location: Location? = null) {
-        when (sortMode) {
-            SortMode.NAME -> _cameraState.value.displayedCameras.sortWith(SortByName())
-            SortMode.NEIGHBOURHOOD -> _cameraState.value.displayedCameras.sortWith(SortByNeighbourhood())
-            SortMode.DISTANCE -> _cameraState.value.displayedCameras.sortWith(SortByDistance(location!!))
+        _cameraState.update {
+            it.copy(
+                sortMode = sortMode,
+                location = location,
+                displayedCameras = it.getDisplayedCameras(sortMode = sortMode, location = location)
+            )
         }
-        _cameraState.update { it.copy(sortMode = sortMode) }
     }
 
     fun changeFilterMode(filterMode: FilterMode) {
@@ -48,7 +46,7 @@ class CameraViewModel(
         }
         _cameraState.update {
             it.copy(
-                displayedCameras = ArrayList(it.getSearchResults(it.searchMode, mode, it.searchText)),
+                displayedCameras = it.getDisplayedCameras(filterMode = mode),
                 filterMode = mode,
             )
         }
@@ -77,13 +75,7 @@ class CameraViewModel(
         _cameraState.update {
             it.copy(
                 lastUpdated = System.currentTimeMillis(),
-                displayedCameras = ArrayList(
-                    _cameraState.value.getSearchResults(
-                        it.searchMode,
-                        it.filterMode,
-                        it.searchText,
-                    )
-                )
+                displayedCameras = it.getDisplayedCameras(),
             )
         }
     }
@@ -110,13 +102,7 @@ class CameraViewModel(
     fun searchCameras(searchMode: SearchMode = SearchMode.NONE, searchText: String = "") {
         _cameraState.update {
             it.copy(
-                displayedCameras = ArrayList(
-                    _cameraState.value.getSearchResults(
-                        searchMode,
-                        _cameraState.value.filterMode,
-                        searchText,
-                    )
-                ),
+                displayedCameras = it.getDisplayedCameras(searchMode = searchMode, searchText = searchText),
                 searchMode = searchMode,
                 searchText = searchText,
             )
@@ -126,7 +112,7 @@ class CameraViewModel(
     fun resetFilters() {
         _cameraState.update {
             it.copy(
-                displayedCameras = ArrayList(it.visibleCameras),
+                displayedCameras = it.visibleCameras,
                 searchMode = SearchMode.NONE,
                 filterMode = FilterMode.VISIBLE,
             )
@@ -160,8 +146,8 @@ class CameraViewModel(
                     // show the newly loaded station
                     _cameraState.update { cameraState ->
                         cameraState.copy(
-                            allCameras = ArrayList(cameras),
-                            displayedCameras = ArrayList(cameras.filter { it.isVisible }),
+                            allCameras = cameras,
+                            displayedCameras = cameras.filter { it.isVisible },
                             uiState = UIState.LOADED,
                             viewMode = viewMode,
                         )

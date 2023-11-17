@@ -1,6 +1,11 @@
 package com.textfield.json.ottawastreetcameras
 
+import android.location.Location
+import com.textfield.json.ottawastreetcameras.comparators.SortByDistance
+import com.textfield.json.ottawastreetcameras.comparators.SortByName
+import com.textfield.json.ottawastreetcameras.comparators.SortByNeighbourhood
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import kotlin.math.roundToInt
 
 enum class SortMode(val key: Int) {
     NAME(R.string.sort_by_name),
@@ -21,14 +26,15 @@ enum class ViewMode(val key: Int) {
 enum class UIState { LOADING, LOADED, ERROR, INITIAL, }
 
 data class CameraState(
-    var allCameras: ArrayList<Camera> = ArrayList(),
-    var displayedCameras: ArrayList<Camera> = ArrayList(),
+    var allCameras: List<Camera> = ArrayList(),
+    var displayedCameras: List<Camera> = ArrayList(),
     var uiState: UIState = UIState.INITIAL,
     var sortMode: SortMode = SortMode.NAME,
     var searchMode: SearchMode = SearchMode.NONE,
     var searchText: String = "",
     var filterMode: FilterMode = FilterMode.VISIBLE,
     var viewMode: ViewMode = ViewMode.LIST,
+    var location: Location? = null,
     var lastUpdated: Long = 0L,
 ) {
     val selectedCameras
@@ -66,7 +72,36 @@ data class CameraState(
         }
     }
 
-    fun getSearchResults(searchMode: SearchMode, filterMode: FilterMode, searchText: String): List<Camera> {
-        return filterCameras(filterMode).filter(getSearchPredicate(searchMode, searchText)).toList()
+    private fun getCameraComparator(sortMode: SortMode, location: Location? = null) : Comparator<Camera> {
+        return when (sortMode) {
+            SortMode.NAME -> SortByName()
+            SortMode.NEIGHBOURHOOD -> SortByNeighbourhood()
+            SortMode.DISTANCE -> {
+                if (location != null) {
+                    for (camera in allCameras) {
+                        val result = FloatArray(3)
+                        Location.distanceBetween(location.latitude, location.longitude, camera.lat, camera.lon, result)
+                        camera.distance = result[0].roundToInt()
+                    }
+                    SortByDistance()
+                }
+                else {
+                    SortByName()
+                }
+            }
+        }
     }
+
+    fun getDisplayedCameras(
+        searchMode: SearchMode = this.searchMode,
+        filterMode: FilterMode = this.filterMode,
+        searchText: String = this.searchText,
+        sortMode: SortMode = this.sortMode,
+        location: Location? = this.location,
+    ): List<Camera> {
+        return filterCameras(filterMode)
+            .filter(getSearchPredicate(searchMode, searchText))
+            .sortedWith(getCameraComparator(sortMode, location))
+    }
+
 }

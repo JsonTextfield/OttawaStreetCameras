@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.textfield.json.ottawastreetcameras.ui.components.menu
 
 import androidx.compose.animation.AnimatedVisibility
@@ -12,6 +10,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuItem(
     icon: ImageVector,

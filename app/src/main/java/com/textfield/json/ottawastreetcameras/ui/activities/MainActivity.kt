@@ -1,4 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.textfield.json.ottawastreetcameras.ui.activities
 
@@ -338,7 +337,7 @@ class MainActivity : AppCompatActivity() {
                         if (!noPermissionsGranted) {
                             val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
                             val lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-                            if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) && lastLocation != null) {
+                            if (lastLocation != null) {
                                 cameraViewModel.changeSortMode(SortMode.DISTANCE, lastLocation)
                             }
                             else {
