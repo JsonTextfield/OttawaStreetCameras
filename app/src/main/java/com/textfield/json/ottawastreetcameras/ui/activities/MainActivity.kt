@@ -40,6 +40,7 @@ import androidx.compose.material.icons.rounded.StarBorder
 import androidx.compose.material.icons.rounded.TravelExplore
 import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material.icons.rounded.VisibilityOff
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -82,8 +83,7 @@ import com.textfield.json.ottawastreetcameras.ui.components.LoadingScreen
 import com.textfield.json.ottawastreetcameras.ui.components.SectionIndex
 import com.textfield.json.ottawastreetcameras.ui.components.menu.Action
 import com.textfield.json.ottawastreetcameras.ui.components.menu.ActionBar
-import com.textfield.json.ottawastreetcameras.ui.components.menu.SortModeMenu
-import com.textfield.json.ottawastreetcameras.ui.components.menu.ViewModeMenu
+import com.textfield.json.ottawastreetcameras.ui.components.menu.RadioMenuItem
 
 class MainActivity : AppCompatActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -202,7 +202,6 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-
             }
         }
     }
@@ -218,9 +217,9 @@ class MainActivity : AppCompatActivity() {
         }.show()
     }
 
-    private fun showCameras(cameras: ArrayList<Camera>, shuffle: Boolean = false) {
+    private fun showCameras(cameras: List<Camera>, shuffle: Boolean = false) {
         startActivity(Intent(this@MainActivity, CameraActivity::class.java).apply {
-            putParcelableArrayListExtra("cameras", cameras)
+            putParcelableArrayListExtra("cameras", cameras as ArrayList<Camera>)
             putExtra("shuffle", shuffle)
         })
     }
@@ -238,16 +237,18 @@ class MainActivity : AppCompatActivity() {
     private fun getActions(cameraViewModel: CameraViewModel): List<Action> {
         val cameraState by cameraViewModel.cameraState.collectAsState()
         val selectedCameras = cameraState.selectedCameras
-        val clearSelection =
-            Action(icon = Icons.Rounded.Clear, toolTip = stringResource(R.string.clear), true, onClick = {
-                cameraViewModel.selectAllCameras(false)
-            })
-        val view = Action(icon = Icons.Rounded.CameraAlt,
+        val clearSelection = Action(
+            icon = Icons.Rounded.Clear, toolTip = stringResource(R.string.clear), true,
+            onClick = { cameraViewModel.selectAllCameras(false) },
+        )
+        val view = Action(
+            icon = Icons.Rounded.CameraAlt,
             toolTip = stringResource(id = R.string.view),
             selectedCameras.size <= 8,
             onClick = {
-                showCameras(cameraViewModel.cameraState.value.selectedCameras as ArrayList<Camera>)
-            })
+                showCameras(cameraViewModel.cameraState.value.selectedCameras)
+            },
+        )
         val allIsFavourite = selectedCameras.all { it.isFavourite }
         val favouriteToolTip = stringResource(
             if (allIsFavourite) {
@@ -263,9 +264,10 @@ class MainActivity : AppCompatActivity() {
         else {
             Icons.Rounded.Star
         }
-        val favourite = Action(icon = favouriteIcon, toolTip = favouriteToolTip, true, onClick = {
-            cameraViewModel.favouriteCameras(cameraState.selectedCameras)
-        })
+        val favourite = Action(
+            icon = favouriteIcon, toolTip = favouriteToolTip, true,
+            onClick = { cameraViewModel.favouriteCameras(cameraState.selectedCameras) },
+        )
         val allIsHidden = selectedCameras.all { !it.isVisible }
         val hiddenToolTip = stringResource(
             if (allIsHidden) {
@@ -281,27 +283,44 @@ class MainActivity : AppCompatActivity() {
         else {
             Icons.Rounded.VisibilityOff
         }
-        val hide = Action(icon = hiddenIcon, toolTip = hiddenToolTip, true, onClick = {
-            cameraViewModel.hideCameras(cameraState.selectedCameras)
-        })
-        val selectAll = Action(icon = Icons.Rounded.SelectAll,
+        val hide = Action(
+            icon = hiddenIcon, toolTip = hiddenToolTip, true,
+            onClick = { cameraViewModel.hideCameras(cameraState.selectedCameras) },
+        )
+        val selectAll = Action(
+            icon = Icons.Rounded.SelectAll,
             toolTip = stringResource(R.string.select_all),
             condition = selectedCameras.size < cameraState.displayedCameras.size,
-            onClick = {
-                cameraViewModel.selectAllCameras()
-            })
-        val switchView = Action(icon = when (cameraState.viewMode) {
-            ViewMode.LIST -> Icons.Rounded.List
-            ViewMode.MAP -> Icons.Filled.Place
-            else -> Icons.Rounded.GridView
-        }, condition = true, isMenu = true, toolTip = stringResource(id = R.string.switch_view), menuContent = {
-            var expanded by remember { mutableStateOf(it) }
-            ViewModeMenu(expanded = expanded xor it, currentValue = cameraState.viewMode) { viewMode ->
-                expanded = !expanded
-                cameraViewModel.changeViewMode(viewMode)
-            }
-        })
-        val sort = Action(icon = Icons.Rounded.Sort,
+            onClick = { cameraViewModel.selectAllCameras() },
+        )
+        val switchView = Action(
+            icon = when (cameraState.viewMode) {
+                ViewMode.LIST -> Icons.Rounded.List
+                ViewMode.MAP -> Icons.Filled.Place
+                else -> Icons.Rounded.GridView
+            },
+            condition = true, isMenu = true, toolTip = stringResource(id = R.string.switch_view),
+            menuContent = {
+                var expanded by remember { mutableStateOf(it) }
+                DropdownMenu(
+                    expanded = expanded xor it,
+                    onDismissRequest = { expanded = !expanded },
+                ) {
+                    ViewMode.values().forEach { viewMode ->
+                        RadioMenuItem(
+                            title = stringResource(viewMode.key),
+                            selected = cameraState.viewMode == viewMode,
+                            onClick = {
+                                expanded = !expanded
+                                cameraViewModel.changeViewMode(viewMode)
+                            },
+                        )
+                    }
+                }
+            },
+        )
+        val sort = Action(
+            icon = Icons.Rounded.Sort,
             condition = cameraState.viewMode != ViewMode.MAP,
             isMenu = true,
             toolTip = stringResource(id = R.string.sort),
@@ -331,60 +350,84 @@ class MainActivity : AppCompatActivity() {
                                 ).show()
                             }
                         }
-                    })
+                    },
+                )
 
                 var expanded by remember { mutableStateOf(it) }
-                SortModeMenu(expanded = expanded xor it, currentValue = cameraState.sortMode) { sortMode ->
-                    expanded = !expanded
-                    if (sortMode == SortMode.DISTANCE) {
-                        locationPermissionLauncher.launch(permissionArray)
-                    }
-                    else {
-                        cameraViewModel.changeSortMode(sortMode)
+                DropdownMenu(
+                    expanded = expanded xor it,
+                    onDismissRequest = { expanded = !expanded },
+                ) {
+                    SortMode.values().forEach { sortMode ->
+                        RadioMenuItem(
+                            title = stringResource(sortMode.key),
+                            selected = cameraState.sortMode == sortMode,
+                            onClick = {
+                                expanded = !expanded
+                                if (sortMode == SortMode.DISTANCE) {
+                                    locationPermissionLauncher.launch(permissionArray)
+                                }
+                                else {
+                                    cameraViewModel.changeSortMode(sortMode)
+                                }
+                            },
+                        )
                     }
                 }
-            })
-        val search = Action(icon = Icons.Rounded.Search,
+            },
+        )
+        val search = Action(
+            icon = Icons.Rounded.Search,
             condition = cameraState.searchMode != SearchMode.NAME,
             toolTip = stringResource(id = R.string.search),
             checked = cameraState.searchMode == SearchMode.NAME,
             onClick = {
                 cameraViewModel.searchCameras(SearchMode.NAME)
-            })
-        val searchNeighbourhood = Action(icon = Icons.Rounded.TravelExplore,
+            },
+        )
+        val searchNeighbourhood = Action(
+            icon = Icons.Rounded.TravelExplore,
             condition = cameraState.searchMode != SearchMode.NEIGHBOURHOOD,
             toolTip = stringResource(id = R.string.search_neighbourhood),
             checked = cameraState.searchMode == SearchMode.NEIGHBOURHOOD,
             onClick = {
                 cameraViewModel.searchCameras(SearchMode.NEIGHBOURHOOD)
-            })
-        val favourites = Action(icon = Icons.Rounded.Star,
+            },
+        )
+        val favourites = Action(
+            icon = Icons.Rounded.Star,
             condition = true,
             toolTip = stringResource(id = R.string.favourites),
             checked = cameraState.filterMode == FilterMode.FAVOURITE,
             onClick = {
                 cameraViewModel.changeFilterMode(FilterMode.FAVOURITE)
-            })
-        val hidden = Action(icon = Icons.Rounded.VisibilityOff,
+            },
+        )
+        val hidden = Action(
+            icon = Icons.Rounded.VisibilityOff,
             condition = true,
             toolTip = stringResource(id = R.string.hidden_cameras),
             checked = cameraState.filterMode == FilterMode.HIDDEN,
             onClick = {
                 cameraViewModel.changeFilterMode(FilterMode.HIDDEN)
-            })
-        val random = Action(icon = Icons.Rounded.Casino,
+            },
+        )
+        val random = Action(
+            icon = Icons.Rounded.Casino,
             condition = true,
             toolTip = stringResource(id = R.string.random_camera),
             onClick = {
                 showCameras(arrayListOf(cameraState.visibleCameras.random()))
-            })
+            },
+        )
         val shuffle = Action(
             icon = Icons.Rounded.Shuffle,
             condition = true,
             toolTip = stringResource(id = R.string.shuffle),
             onClick = {
                 showCameras(cameraViewModel.cameraState.value.visibleCameras as ArrayList<Camera>, true)
-            })
+            },
+        )
 
         var showDialog by remember { mutableStateOf(false) }
 

@@ -85,10 +85,6 @@ class Camera : BilingualObject, Parcelable {
         parcel.writeInt(num)
     }
 
-    override fun toString(): String {
-        return name
-    }
-
     override fun equals(other: Any?): Boolean {
         if (other !is Camera) return false
         return id == other.id && num == other.num

@@ -1,8 +1,6 @@
 package com.textfield.json.ottawastreetcameras.ui.activities
 
-import android.Manifest
 import android.content.ContentValues
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
@@ -20,8 +18,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.android.volley.toolbox.ImageRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.material.snackbar.Snackbar
@@ -37,8 +33,6 @@ import java.util.Date
 
 class CameraActivity : AppCompatActivity() {
     private var cameras = ArrayList<Camera>()
-    private var selectedCameras = ArrayList<Camera>()
-    private val requestForSave = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,63 +71,19 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
-    private fun requestStoragePermission(): Boolean {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                requestForSave
-            )
-            return false
-        }
-        return true
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (PackageManager.PERMISSION_GRANTED in grantResults && requestCode == requestForSave) {
-            saveSelectedImages()
-        }
-    }
-
     private fun downloadImage(camera: Camera) {
         val request = ImageRequest(camera.url, { response ->
-            if (response != null) {
-                if (saveImage(response, camera.name)) {
-                    Snackbar.make(
-                        window.decorView.rootView,
-                        resources.getString(R.string.image_saved),
-                        Snackbar.LENGTH_LONG
-                    ).show()
-                }
+            if (response != null && saveImage(response, camera.name)) {
+                Snackbar.make(
+                    window.decorView.rootView,
+                    resources.getString(R.string.image_saved, camera.name),
+                    Snackbar.LENGTH_LONG
+                ).show()
             }
         }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.RGB_565, {
             Log.w("STREETCAMS", it)
         })
         Volley.newRequestQueue(this).add(request)
-    }
-
-    private fun saveSelectedImages() {
-        var imagesSaved = 0
-        for (camera in selectedCameras) {
-            val request = ImageRequest(camera.url, { response ->
-                if (response != null) {
-                    saveImage(response, camera.name)
-                    imagesSaved++
-                }
-            }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.RGB_565, {
-                Log.w("STREETCAMS", it)
-            })
-            Volley.newRequestQueue(this).add(request)
-        }
-
-        Snackbar.make(
-            window.decorView.rootView,
-            resources.getQuantityString(R.plurals.images_saved, imagesSaved, imagesSaved),
-            Snackbar.LENGTH_LONG
-        ).show()
     }
 
     private fun saveImage(bitmapImage: Bitmap, fileName: String): Boolean {

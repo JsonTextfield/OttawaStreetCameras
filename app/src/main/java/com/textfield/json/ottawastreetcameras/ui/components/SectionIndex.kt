@@ -37,7 +37,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-private fun getIndexData(data: List<String>): ArrayList<Pair<String, Int>> {
+private fun getIndexData(data: List<String>): List<Pair<String, Int>> {
     val dataString = data.map {
         it.toUpperCase(Locale.current).first()
     }.sorted().joinToString("")
@@ -46,7 +46,7 @@ private fun getIndexData(data: List<String>): ArrayList<Pair<String, Int>> {
     val numbers = Regex("[0-9]")
     val special = Regex("[^0-9A-ZÀ-Ö]")
 
-    val result = LinkedHashSet<Pair<String, Int>>()
+    val result = ArrayList<Pair<String, Int>>()
 
     if (special.containsMatchIn(dataString)) {
         result.add(Pair("*", special.find(dataString)?.range?.first!!))
@@ -59,13 +59,13 @@ private fun getIndexData(data: List<String>): ArrayList<Pair<String, Int>> {
             result.add(Pair(character, dataString.indexOf(character)))
         }
     }
-    return ArrayList<Pair<String, Int>>(result)
+    return result
 }
 
 private fun getSelectedIndex(
     yPosition: Float,
     sectionIndexHeight: Float,
-    positions: ArrayList<Pair<String, Int>>,
+    positions: List<Pair<String, Int>>,
 ): Int {
     val result = ((yPosition / sectionIndexHeight) * positions.size)
         .toInt()
