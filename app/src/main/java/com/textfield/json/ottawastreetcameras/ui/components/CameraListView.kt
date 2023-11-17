@@ -9,13 +9,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.DismissDirection
+import androidx.compose.material3.DismissState
 import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,10 +42,12 @@ fun CameraListView(
 ) {
     LazyColumn(modifier = modifier, state = listState) {
         items(cameras, { camera -> camera.hashCode() }) { camera ->
-            val dismissState = rememberDismissState(
-                DismissValue.Default,
-                positionalThreshold = { this.density * 200f },
-            )
+            val dismissState = remember {
+                DismissState(
+                    DismissValue.Default,
+                    positionalThreshold = { this.density * 200f },
+                )
+            }
             if (dismissState.isDismissed(DismissDirection.EndToStart) || dismissState.isDismissed(DismissDirection.StartToEnd)) {
                 onItemDismissed(camera)
             }

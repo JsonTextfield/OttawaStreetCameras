@@ -73,6 +73,7 @@ class CameraViewModel(
                 prefs.edit()?.putBoolean("${camera.num}.isVisible", !anyVisible)?.apply()
             }
         }
+        selectAllCameras(false)
         _cameraState.update {
             it.copy(
                 lastUpdated = System.currentTimeMillis(),
@@ -85,7 +86,6 @@ class CameraViewModel(
                 )
             )
         }
-        selectAllCameras(false)
     }
 
     fun selectCamera(camera: Camera) {

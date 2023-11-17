@@ -134,7 +134,6 @@ class MainActivity : AppCompatActivity() {
                 val onItemDismissed = { camera: Camera ->
                     cameraViewModel.hideCameras(listOf(camera))
                     showUndoSnackbar(camera) {
-                        camera.isVisible = !camera.isVisible
                         cameraViewModel.hideCameras(listOf(camera))
                     }
                 }

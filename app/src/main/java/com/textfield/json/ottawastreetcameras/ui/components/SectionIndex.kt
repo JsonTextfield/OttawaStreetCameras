@@ -1,6 +1,5 @@
 package com.textfield.json.ottawastreetcameras.ui.components
 
-import android.util.Log
 import android.view.MotionEvent
 import androidx.compose.foundation.gestures.DraggableState
 import androidx.compose.foundation.gestures.Orientation
@@ -46,7 +45,7 @@ private fun getIndexData(data: List<String>): List<Pair<String, Int>> {
     val numbers = Regex("[0-9]")
     val special = Regex("[^0-9A-ZÀ-Ö]")
 
-    val result = ArrayList<Pair<String, Int>>()
+    val result = LinkedHashSet<Pair<String, Int>>()
 
     if (special.containsMatchIn(dataString)) {
         result.add(Pair("*", special.find(dataString)?.range?.first!!))
@@ -59,7 +58,7 @@ private fun getIndexData(data: List<String>): List<Pair<String, Int>> {
             result.add(Pair(character, dataString.indexOf(character)))
         }
     }
-    return result
+    return result.toList()
 }
 
 private fun getSelectedIndex(
@@ -67,12 +66,9 @@ private fun getSelectedIndex(
     sectionIndexHeight: Float,
     positions: List<Pair<String, Int>>,
 ): Int {
-    val result = ((yPosition / sectionIndexHeight) * positions.size)
+    return ((yPosition / sectionIndexHeight) * positions.size)
         .toInt()
         .coerceIn(0, positions.size - 1)
-    val tag = "SectionIndex"
-    Log.e(tag, result.toString())
-    return result
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
