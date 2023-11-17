@@ -8,7 +8,7 @@
     <string name="hide">Cacher</string>
     <string name="more">Plus</string>
     <string name="clear">Effacer</string>
-    <string name="image_saved">L\'image a été téléchargée</string>
+    <string name="image_saved">%s a été téléchargée</string>
     <string name="image_saved_at">L\'image a été téléchargée dans %s</string>
     <string name="licences">Licences</string>
     <string name="location_unavailable">L\'emplacement n\'est pas disponible</string>
@@ -40,6 +40,10 @@
     <string name="sort">Trier</string>
     <string name="back">Retourner</string>
     <string name="close">Fermer</string>
+    <string name="camera_visibility_changed">%s a été %s</string>
+    <string name="unhidden">dévoilée</string>
+    <string name="hidden">cachée</string>
+    <string name="undo">Annuler</string>
 
     <plurals name="images_saved">
         <item quantity="one">%d image a été enregistrée</item>

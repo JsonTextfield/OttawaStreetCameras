@@ -8,7 +8,7 @@
     <string name="hide">Hide</string>
     <string name="more">More</string>
     <string name="clear">Clear</string>
-    <string name="image_saved">Image saved</string>
+    <string name="image_saved">%s saved</string>
     <string name="image_saved_at">Image saved at %s</string>
     <string name="licences">Licences</string>
     <string name="location_unavailable">Location not available</string>
@@ -40,6 +40,10 @@
     <string name="sort">Sort</string>
     <string name="back">Back</string>
     <string name="close">Close</string>
+    <string name="camera_visibility_changed">%s has been %s</string>
+    <string name="unhidden">unhidden</string>
+    <string name="hidden">hidden</string>
+    <string name="undo">Undo</string>
 
     <plurals name="images_saved">
         <item quantity="one">%d image saved</item>
