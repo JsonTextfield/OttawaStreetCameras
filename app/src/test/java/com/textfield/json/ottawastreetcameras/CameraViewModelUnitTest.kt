@@ -11,14 +11,13 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
 class CameraViewModelUnitTest {
 
-    @Mock
-    private lateinit var mockPrefs: SharedPreferences
+    private var mockPrefs: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
 
     private var cameraViewModel = CameraViewModel(prefs = mockPrefs)
 

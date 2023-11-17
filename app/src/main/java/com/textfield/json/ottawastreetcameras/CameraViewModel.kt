@@ -26,7 +26,7 @@ class CameraViewModel(
         get() = _cameraState
 
     fun changeViewMode(viewMode: ViewMode) {
-        prefs.edit().putString("viewMode", viewMode.name).apply()
+        prefs.edit()?.putString("viewMode", viewMode.name)?.apply()
         _cameraState.update { it.copy(viewMode = viewMode) }
     }
 
@@ -59,7 +59,7 @@ class CameraViewModel(
         for (camera in _cameraState.value.allCameras) {
             if (camera in cameras) {
                 camera.isFavourite = !allFavourite
-                prefs.edit().putBoolean("${camera.num}.isFavourite", !allFavourite).apply()
+                prefs.edit()?.putBoolean("${camera.num}.isFavourite", !allFavourite)?.apply()
             }
         }
         _cameraState.update { it.copy(lastUpdated = System.currentTimeMillis()) }
@@ -70,7 +70,7 @@ class CameraViewModel(
         for (camera in _cameraState.value.allCameras) {
             if (camera in cameras) {
                 camera.isVisible = !anyVisible
-                prefs.edit().putBoolean("${camera.num}.isVisible", !anyVisible).apply()
+                prefs.edit()?.putBoolean("${camera.num}.isVisible", !anyVisible)?.apply()
             }
         }
         _cameraState.update {
