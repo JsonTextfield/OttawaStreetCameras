@@ -140,6 +140,7 @@ class CameraViewModel(
                         for (neighbourhood in neighbourhoods) {
                             if (neighbourhood.containsCamera(camera)) {
                                 camera.neighbourhood = neighbourhood.name
+                                break
                             }
                         }
                     }

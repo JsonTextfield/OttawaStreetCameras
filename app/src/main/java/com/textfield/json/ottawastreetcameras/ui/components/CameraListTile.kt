@@ -72,7 +72,8 @@ fun CameraListTile(
                     lineHeight = 14.sp,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .padding(5.dp)
+                        .padding(5.dp),
+                    color = if (camera.isSelected) Color.White else Color.Unspecified
                 )
             }
             Column(
