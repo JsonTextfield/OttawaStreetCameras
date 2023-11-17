@@ -16,13 +16,12 @@ class CameraStateUnitTest {
 
     @Test
     fun testFavourites() {
-        val cameraList = (0 until 10).map {
+        cameraState.allCameras = (0 until 10).map {
             Camera().apply {
                 isFavourite = it % 3 == 0
                 isVisible = it % 2 == 1
             }
         }
-        cameraState.allCameras.addAll(cameraList)
         val allFavourite = cameraState.favouriteCameras
 
         assertTrue(allFavourite.all { it.isFavourite })
@@ -30,13 +29,12 @@ class CameraStateUnitTest {
 
     @Test
     fun testHidden() {
-        val cameraList = (0 until 10).map {
+        cameraState.allCameras = (0 until 10).map {
             Camera().apply {
                 isFavourite = it % 2 == 0
                 isVisible = it % 3 == 1
             }
         }
-        cameraState.allCameras.addAll(cameraList)
         val allHidden = cameraState.hiddenCameras
 
         assertTrue(allHidden.all { !it.isVisible })
