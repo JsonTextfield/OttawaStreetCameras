@@ -144,7 +144,6 @@ class CameraViewModel(
                             }
                         }
                     }
-                    // show the newly loaded station
                     _cameraState.update { cameraState ->
                         cameraState.copy(
                             allCameras = cameras,

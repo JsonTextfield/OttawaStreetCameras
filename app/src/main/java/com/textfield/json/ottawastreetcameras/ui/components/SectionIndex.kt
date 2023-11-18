@@ -48,14 +48,14 @@ private fun getIndexData(data: List<String>): List<Pair<String, Int>> {
     val result = LinkedHashSet<Pair<String, Int>>()
 
     if (special.containsMatchIn(dataString)) {
-        result.add(Pair("*", special.find(dataString)?.range?.first!!))
+        result.add(Pair("*", dataString.indexOf(special.pattern)))
     }
     if (numbers.containsMatchIn(dataString)) {
-        result.add(Pair("#", numbers.find(dataString)?.range?.first!!))
+        result.add(Pair("#", dataString.indexOf(numbers.pattern)))
     }
-    for (character in dataString.split("")) {
-        if (letters.matches(character)) {
-            result.add(Pair(character, dataString.indexOf(character)))
+    for (letter in dataString.split("")) {
+        if (letters.matches(letter)) {
+            result.add(Pair(letter, dataString.indexOf(letter)))
         }
     }
     return result.toList()
