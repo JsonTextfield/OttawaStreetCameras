@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity() {
         val cameraState by cameraViewModel.cameraState.collectAsState()
         TopAppBar(
             navigationIcon = {
-                if (cameraState.selectedCameras.isEmpty() && (cameraState.searchMode != SearchMode.NONE || cameraState.filterMode != FilterMode.VISIBLE)) {
+                if (cameraState.showBackButton) {
                     IconButton(onClick = {
                         cameraViewModel.resetFilters()
                     }) {
@@ -385,7 +385,7 @@ class MainActivity : AppCompatActivity() {
         )
         val searchNeighbourhood = Action(
             icon = Icons.Rounded.TravelExplore,
-            condition = cameraState.searchMode != SearchMode.NEIGHBOURHOOD,
+            condition = cameraState.showSearchNeighbourhood,
             toolTip = stringResource(id = R.string.search_neighbourhood),
             checked = cameraState.searchMode == SearchMode.NEIGHBOURHOOD,
             onClick = {

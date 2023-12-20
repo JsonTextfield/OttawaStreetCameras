@@ -33,7 +33,7 @@ data class CameraState(
     var searchMode: SearchMode = SearchMode.NONE,
     var searchText: String = "",
     var filterMode: FilterMode = FilterMode.VISIBLE,
-    var viewMode: ViewMode = ViewMode.LIST,
+    var viewMode: ViewMode = ViewMode.GALLERY,
     var location: Location? = null,
     var lastUpdated: Long = 0L,
 ) {
@@ -56,6 +56,19 @@ data class CameraState(
             && searchMode == SearchMode.NONE
             && viewMode == ViewMode.LIST
 
+    val showSearchNeighbourhood
+        get() =
+            uiState == UIState.LOADED &&
+            searchMode != SearchMode.NEIGHBOURHOOD
+
+    val showBackButton
+        get() =
+            (filterMode != FilterMode.VISIBLE || searchMode != SearchMode.NONE) &&
+            selectedCameras.isEmpty()
+
+    val neighbourhoods
+        get() = allCameras.map { it.neighbourhood }.distinct()
+
     private fun filterCameras(filterMode: FilterMode): List<Camera> {
         return when (filterMode) {
             FilterMode.VISIBLE -> visibleCameras
@@ -72,7 +85,7 @@ data class CameraState(
         }
     }
 
-    private fun getCameraComparator(sortMode: SortMode, location: Location? = null) : Comparator<Camera> {
+    private fun getCameraComparator(sortMode: SortMode, location: Location? = null): Comparator<Camera> {
         return when (sortMode) {
             SortMode.NAME -> SortByName()
             SortMode.NEIGHBOURHOOD -> SortByNeighbourhood()

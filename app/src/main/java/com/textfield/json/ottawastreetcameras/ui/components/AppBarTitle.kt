@@ -85,10 +85,9 @@ fun AppBarTitle(cameraViewModel: CameraViewModel, listState: LazyListState) {
             }
 
             SearchMode.NEIGHBOURHOOD -> {
-                val neighbourhoods = cameraState.allCameras.map { it.neighbourhood }.distinct()
                 Box {
                     var value by rememberSaveable { mutableStateOf("") }
-                    val suggestionList = neighbourhoods.filter {
+                    val suggestionList = cameraState.neighbourhoods.filter {
                         it.contains(value, true)
                     }.map {
                         it
@@ -108,8 +107,8 @@ fun AppBarTitle(cameraViewModel: CameraViewModel, listState: LazyListState) {
                     SearchBarContent(
                         pluralStringResource(
                             R.plurals.search_hint_neighbourhood,
-                            neighbourhoods.size,
-                            neighbourhoods.size,
+                            cameraState.neighbourhoods.size,
+                            cameraState.neighbourhoods.size,
                         ), value
                     ) {
                         value = it
