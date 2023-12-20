@@ -36,7 +36,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-private fun getIndexData(data: List<String>): List<Pair<String, Int>> {
+private fun getIndexData(data: List<String>): LinkedHashMap<String, Int> {
     val dataString = data.map {
         it.toUpperCase(Locale.current).first()
     }.sorted().joinToString("")
@@ -45,20 +45,20 @@ private fun getIndexData(data: List<String>): List<Pair<String, Int>> {
     val numbers = Regex("[0-9]")
     val special = Regex("[^0-9A-ZÀ-Ö]")
 
-    val result = LinkedHashSet<Pair<String, Int>>()
+    val result = LinkedHashMap<String, Int>()
 
     if (special.containsMatchIn(dataString)) {
-        result.add(Pair("*", dataString.indexOf(special.pattern)))
+        result["*"] = dataString.indexOf(special.pattern)
     }
     if (numbers.containsMatchIn(dataString)) {
-        result.add(Pair("#", dataString.indexOf(numbers.pattern)))
+        result["#"] = dataString.indexOf(numbers.pattern)
     }
     for (letter in dataString.split("")) {
         if (letters.matches(letter)) {
-            result.add(Pair(letter, dataString.indexOf(letter)))
+            result[letter] = dataString.indexOf(letter)
         }
     }
-    return result.toList()
+    return result
 }
 
 private fun getSelectedIndex(
@@ -78,16 +78,16 @@ fun SectionIndex(
     listState: LazyListState,
     selectedColour: Color = colorResource(R.color.colorAccent),
 ) {
-    val result = getIndexData(data)
+    val indexData = getIndexData(data).toList()
     var selectedKey by remember { mutableStateOf("") }
     var offsetY by remember { mutableStateOf(0f) }
     var columnHeightPx by remember { mutableStateOf(0f) }
 
     val selectIndex = {
-        val listIndex = getSelectedIndex(offsetY, columnHeightPx, result)
-        if (selectedKey != result[listIndex].first) {
-            selectedKey = result[listIndex].first
-            val index = result[listIndex].second
+        val listIndex = getSelectedIndex(offsetY, columnHeightPx, indexData)
+        if (selectedKey != indexData[listIndex].first) {
+            selectedKey = indexData[listIndex].first
+            val index = indexData[listIndex].second
             CoroutineScope(Dispatchers.Main).launch {
                 listState.scrollToItem(index)
             }
@@ -133,7 +133,7 @@ fun SectionIndex(
                 true
             }
     ) {
-        result.map {
+        indexData.map {
             Box(
                 modifier = Modifier
                     .weight(1f)
