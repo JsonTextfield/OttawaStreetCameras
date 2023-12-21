@@ -1,4 +1,3 @@
-
 package com.textfield.json.ottawastreetcameras.ui.activities
 
 import android.Manifest.permission
@@ -295,9 +294,16 @@ class MainActivity : AppCompatActivity() {
             icon = when (cameraState.viewMode) {
                 ViewMode.LIST -> Icons.Rounded.List
                 ViewMode.MAP -> Icons.Filled.Place
-                else -> Icons.Rounded.GridView
+                ViewMode.GALLERY -> Icons.Rounded.GridView
             },
-            condition = true, isMenu = true, toolTip = stringResource(id = R.string.switch_view),
+            condition = true, isMenu = true,
+            toolTip = stringResource(
+                id = when (cameraState.viewMode) {
+                    ViewMode.LIST -> R.string.list
+                    ViewMode.MAP -> R.string.map
+                    ViewMode.GALLERY -> R.string.gallery
+                }
+            ),
             menuContent = {
                 var expanded by remember { mutableStateOf(it) }
                 DropdownMenu(
