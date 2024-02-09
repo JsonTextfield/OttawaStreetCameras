@@ -8,6 +8,6 @@ import com.textfield.json.ottawastreetcameras.entities.Camera
 class SortByDistance : Comparator<Camera> {
     override fun compare(cam1: Camera, cam2: Camera): Int {
         val result = cam1.distance.compareTo(cam2.distance)
-        return if (result == 0) SortByName<Camera>().compare(cam1, cam2) else result
+        return if (result == 0) SortByName().compare(cam1, cam2) else result
     }
 }
