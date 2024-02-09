@@ -68,6 +68,7 @@ fun CameraMapView(
             Marker(
                 state = MarkerState(position = LatLng(camera.lat, camera.lon)),
                 title = camera.name,
+                snippet = camera.neighbourhood.ifEmpty { null },
                 onInfoWindowClick = { onItemClick(camera) },
                 onInfoWindowLongClick = { onItemLongClick(camera) },
                 icon = if (cameraState.selectedCameras.contains(camera)) {

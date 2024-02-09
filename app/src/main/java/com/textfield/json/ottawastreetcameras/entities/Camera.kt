@@ -8,24 +8,33 @@ import kotlin.math.roundToInt
 /**
  * Created by Jason on 25/04/2016.
  */
-class Camera : BilingualObject, Parcelable {
-    var owner = ""
+class Camera : Parcelable {
+    var isFavourite = false
+    var isVisible = true
+    var isSelected = false
+    var distance = -1
+
+    var id = ""
         private set
+
+    private var _name = BilingualObject()
+    val name: String
+        get() = _name.name
+    val sortableName: String
+        get() = _name.sortableName
+
+    private var _neighbourhood = BilingualObject()
+    val neighbourhood: String
+        get() = _neighbourhood.name
+
     var lat = 0.0
         private set
     var lon = 0.0
         private set
-    var num = 0
-        private set
 
-    var isFavourite = false
-    var isVisible = true
-    var isSelected = false
-    var neighbourhood = ""
-    var distance = -1
-
+    private var _url = ""
     val url: String
-        get() = "https://traffic.ottawa.ca/beta/camera?id=$num&timems=${System.currentTimeMillis()}"
+        get() = "$_url&timems=${System.currentTimeMillis()}"
 
     val distanceString: String
         get() {
@@ -51,24 +60,31 @@ class Camera : BilingualObject, Parcelable {
 
     constructor()
 
-    constructor(jsonObject: JSONObject) {
-        nameEn = jsonObject.optString("description") ?: ""
-        nameFr = jsonObject.optString("descriptionFr") ?: nameEn
-        owner = jsonObject.optString("type") ?: ""
-        id = jsonObject.optInt("id")
-        num = jsonObject.optInt("number")
-        lat = jsonObject.optDouble("latitude")
-        lon = jsonObject.optDouble("longitude")
-    }
-
     constructor(parcel: Parcel) {
-        nameEn = parcel.readString()!!
-        nameFr = parcel.readString()!!
-        owner = parcel.readString()!!
+        id = parcel.readString() ?: ""
+        _name = BilingualObject(en = parcel.readString() ?: "", fr = parcel.readString() ?: "")
+        _neighbourhood = BilingualObject(en = parcel.readString() ?: "", fr = parcel.readString() ?: "")
         lat = parcel.readDouble()
         lon = parcel.readDouble()
-        id = parcel.readInt()
-        num = parcel.readInt()
+        _url = parcel.readString() ?: ""
+    }
+
+    private constructor(
+        id: String,
+        nameEn: String,
+        nameFr: String,
+        neighbourhoodEn: String,
+        neighbourhoodFr: String,
+        lat: Double,
+        lon: Double,
+        url: String,
+    ) {
+        this.id = id
+        _name = BilingualObject(en = nameEn, fr = nameFr)
+        _neighbourhood = BilingualObject(en = neighbourhoodEn, fr = neighbourhoodFr)
+        this.lat = lat
+        this.lon = lon
+        _url = url
     }
 
     override fun describeContents(): Int {
@@ -76,23 +92,26 @@ class Camera : BilingualObject, Parcelable {
     }
 
     override fun writeToParcel(parcel: Parcel, i: Int) {
-        parcel.writeString(nameEn)
-        parcel.writeString(nameFr)
-        parcel.writeString(owner)
+        parcel.writeString(id)
+        parcel.writeString(_name.en)
+        parcel.writeString(_name.fr)
+        parcel.writeString(_neighbourhood.en)
+        parcel.writeString(_neighbourhood.fr)
         parcel.writeDouble(lat)
         parcel.writeDouble(lon)
-        parcel.writeInt(id)
-        parcel.writeInt(num)
+        parcel.writeString(_url)
     }
 
     override fun equals(other: Any?): Boolean {
         if (other !is Camera) return false
-        return id == other.id && num == other.num
+        return id == other.id
     }
 
     override fun hashCode(): Int {
-        return 31 * id + num
+        return id.hashCode()
     }
+
+    override fun toString(): String = name
 
     companion object CREATOR : Parcelable.Creator<Camera> {
         override fun createFromParcel(`in`: Parcel): Camera {
@@ -101,6 +120,19 @@ class Camera : BilingualObject, Parcelable {
 
         override fun newArray(size: Int): Array<Camera?> {
             return arrayOfNulls(size)
+        }
+
+        fun fromJson(jsonObject: JSONObject): Camera {
+            return Camera(
+                id = jsonObject.optString("id"),
+                nameEn = jsonObject.optString("nameEn"),
+                nameFr = jsonObject.optString("nameFr"),
+                neighbourhoodEn = jsonObject.optString("neighbourhoodEn"),
+                neighbourhoodFr = jsonObject.optString("neighbourhoodFr"),
+                lat = jsonObject.getJSONObject("location").optDouble("lat"),
+                lon = jsonObject.getJSONObject("location").optDouble("lon"),
+                url = jsonObject.optString("url"),
+            )
         }
     }
 }

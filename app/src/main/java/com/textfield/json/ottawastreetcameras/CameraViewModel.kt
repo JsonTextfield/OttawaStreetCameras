@@ -57,7 +57,7 @@ class CameraViewModel(
         for (camera in _cameraState.value.allCameras) {
             if (camera in cameras) {
                 camera.isFavourite = !allFavourite
-                prefs.edit()?.putBoolean("${camera.num}.isFavourite", !allFavourite)?.apply()
+                prefs.edit()?.putBoolean("${camera.id}.isFavourite", !allFavourite)?.apply()
             }
         }
         _cameraState.update { it.copy(lastUpdated = System.currentTimeMillis()) }
@@ -68,7 +68,7 @@ class CameraViewModel(
         for (camera in _cameraState.value.allCameras) {
             if (camera in cameras) {
                 camera.isVisible = !anyVisible
-                prefs.edit()?.putBoolean("${camera.num}.isVisible", !anyVisible)?.apply()
+                prefs.edit()?.putBoolean("${camera.id}.isVisible", !anyVisible)?.apply()
             }
         }
         selectAllCameras(false)
@@ -119,12 +119,12 @@ class CameraViewModel(
         }
     }
 
-    fun downloadAll(context: Context) {
+    fun download(context: Context) {
         // show the loading view
         _cameraState.update { it.copy(uiState = UIState.LOADING) }
 
         if (_cameraState.value.allCameras.isEmpty()) {
-            downloadService.downloadAll(context) { cameras, neighbourhoods ->
+            downloadService.download(context) { cameras ->
                 if (cameras.isEmpty()) {
                     // show an error if the retrieved camera list is empty
                     _cameraState.update { it.copy(uiState = UIState.ERROR) }
@@ -133,16 +133,9 @@ class CameraViewModel(
                     val viewMode = ViewMode.valueOf(
                         prefs.getString("viewMode", ViewMode.LIST.name) ?: ViewMode.LIST.name
                     )
-
                     for (camera in cameras) {
-                        camera.isFavourite = prefs.getBoolean("${camera.num}.isFavourite", false)
-                        camera.isVisible = prefs.getBoolean("${camera.num}.isVisible", true)
-                        for (neighbourhood in neighbourhoods) {
-                            if (neighbourhood.containsCamera(camera)) {
-                                camera.neighbourhood = neighbourhood.name
-                                break
-                            }
-                        }
+                        camera.isFavourite = prefs.getBoolean("${camera.id}.isFavourite", false)
+                        camera.isVisible = prefs.getBoolean("${camera.id}.isVisible", true)
                     }
                     _cameraState.update { cameraState ->
                         cameraState.copy(

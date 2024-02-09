@@ -192,10 +192,10 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     Box(modifier = Modifier.padding(it)) {
                         when (uiState) {
-                            UIState.INITIAL -> LaunchedEffect(true) { cameraViewModel.downloadAll(context) }
+                            UIState.INITIAL -> LaunchedEffect(true) { cameraViewModel.download(context) }
                             UIState.LOADING -> LoadingScreen()
                             UIState.LOADED -> MainContent(cameraViewModel, listState)
-                            UIState.ERROR -> ErrorScreen { cameraViewModel.downloadAll(context) }
+                            UIState.ERROR -> ErrorScreen { cameraViewModel.download(context) }
                         }
                     }
                 }

@@ -2,26 +2,24 @@ package com.textfield.json.ottawastreetcameras.entities
 
 import java.util.Locale
 
-abstract class BilingualObject {
-    protected var nameEn = ""
-    protected var nameFr = ""
-    protected var id = 0
-
-    override fun toString(): String {
-        return name
-    }
-
+data class BilingualObject(val en: String = "", val fr: String = "") {
     /**
      * Returns the translated name of the object.
      */
     val name: String
-        get() = if (Locale.getDefault().displayLanguage.contains("fr", true) && nameFr.isNotBlank()) nameFr else nameEn
-
+        get() {
+            return if (Locale.getDefault().displayLanguage.contains(
+                    "fr",
+                    true
+                ) && fr.isNotBlank() || en.isBlank()
+            ) fr
+            else en
+        }
 
     /**
      * Returns an alphanumeric, uppercase, version of the translated name of the object.
      */
     val sortableName: String
-        get() = name.replace(Regex("\\W"), "").uppercase(Locale.ROOT)
+        get() = name.uppercase(Locale.ROOT).replace(Regex("[^0-9A-ZÀ-Ö]"), "")
 
 }

@@ -6,31 +6,25 @@ import org.junit.Test
 import java.util.Locale
 
 class BilingualObjectUnitTest {
-    private class MyBilingualObject(name: String, nameFr: String) : BilingualObject() {
-        init {
-            nameEn = name
-            this.nameFr = nameFr
-        }
-    }
 
     @Test
     fun testsortableName() {
-        val name = "name"
+        val nameEn = "name"
         val nameFr = "nameFr"
-        val myBilingualObject = MyBilingualObject(name, nameFr)
+        val bilingualObject = BilingualObject(nameEn, nameFr)
 
         Locale.setDefault(Locale("en"))
-        assertEquals(myBilingualObject.sortableName, name.uppercase(Locale.getDefault()))
+        assertEquals(bilingualObject.sortableName, nameEn.uppercase(Locale.getDefault()))
 
         Locale.setDefault(Locale("fr"))
-        assertEquals(myBilingualObject.sortableName, nameFr.uppercase(Locale.getDefault()))
+        assertEquals(bilingualObject.sortableName, nameFr.uppercase(Locale.getDefault()))
     }
 
     @Test
     fun testSortableNameSpecialCharacters() {
-        val name = "!@#\$%^&*()n!@#\$%^&*()a!@#\$%^&*()m!@#\$%^&*()e!@#\$%^&*()"
+        val nameEn = "!@#\$%^&*()n!@#\$%^&*()a!@#\$%^&*()m!@#\$%^&*()e!@#\$%^&*()"
         val nameFr = "n!@#\$%^&*()a!@#\$%^&*()m!@#\$%^&*()e!@#\$%^&*()F!@#\$%^&*()r!@#\$%^&*()"
-        val myBilingualObject = MyBilingualObject(name, nameFr)
+        val myBilingualObject = BilingualObject(nameEn, nameFr)
 
         Locale.setDefault(Locale("en"))
         assertEquals(myBilingualObject.sortableName, "NAME")
@@ -41,9 +35,9 @@ class BilingualObjectUnitTest {
 
     @Test
     fun testNameBasedOnLocale() {
-        val name = "name"
+        val nameEn = "name"
         val nameFr = "nameFr"
-        val myBilingualObject = MyBilingualObject(name, nameFr)
+        val myBilingualObject = BilingualObject(nameEn, nameFr)
 
         Locale.setDefault(Locale("en"))
         assertEquals(myBilingualObject.name, "name")
