@@ -7,8 +7,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.textfield.json.ottawastreetcameras.ui.components.Visibility
-
 
 @Composable
 fun OverflowMenuItem(
@@ -18,19 +16,16 @@ fun OverflowMenuItem(
     checked: Boolean = false,
     onClick: () -> Unit = {},
 ) {
-    Visibility(
-        visible = visible,
-        content = {
-            DropdownMenuItem(
-                text = { Text(text = tooltip) },
-                leadingIcon = { Icon(icon, tooltip) },
-                trailingIcon = {
-                    if (checked) {
-                        Icon(Icons.Rounded.Check, "")
-                    }
-                },
-                onClick = onClick,
-            )
-        }
-    )
+    if (visible) {
+        DropdownMenuItem(
+            text = { Text(text = tooltip) },
+            leadingIcon = { Icon(icon, tooltip) },
+            trailingIcon = {
+                if (checked) {
+                    Icon(Icons.Rounded.Check, "")
+                }
+            },
+            onClick = onClick,
+        )
+    }
 }
