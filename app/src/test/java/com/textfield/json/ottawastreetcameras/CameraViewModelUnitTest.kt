@@ -13,6 +13,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
+import kotlin.random.Random
 
 @RunWith(MockitoJUnitRunner::class)
 class CameraViewModelUnitTest {
@@ -67,13 +68,16 @@ class CameraViewModelUnitTest {
         cameraViewModel = CameraViewModel(
             _cameraState = MutableStateFlow(CameraState().apply {
                 allCameras = (0 until 10).map {
-                    Camera(JSONObject().apply {
-                        put("description", "Camera $it")
-                    }).apply {
+                    Camera.fromJson(JSONObject().apply {
+                        val location = JSONObject()
+                        location.put("lat", Random.nextDouble() * 90)
+                        location.put("lon", Random.nextDouble() * 180 - 90)
+                        put("location", location)
+                        put("nameEn", "Camera $it")
                         if (it == 1) {
-                            neighbourhood = "neighbourhood"
+                            put("neighbourhoodEn", "neighbourhood")
                         }
-                    }
+                    })
                 }
             }),
             prefs = mockPrefs,
@@ -100,9 +104,12 @@ class CameraViewModelUnitTest {
         cameraViewModel = CameraViewModel(
             _cameraState = MutableStateFlow(CameraState().apply {
                 allCameras = (0 until 10).map {
-                    Camera(JSONObject().apply {
-                        put("description", "Camera $it")
-                        put("number", it)
+                    Camera.fromJson(JSONObject().apply {
+                        val location = JSONObject()
+                        location.put("lat", Random.nextDouble() * 90)
+                        location.put("lon", Random.nextDouble() * 180 - 90)
+                        put("location", location)
+                        put("nameEn", "Camera $it")
                     })
                 }
                 displayedCameras = allCameras
@@ -124,9 +131,12 @@ class CameraViewModelUnitTest {
         cameraViewModel = CameraViewModel(
             _cameraState = MutableStateFlow(CameraState().apply {
                 allCameras = (0 until 10).map {
-                    Camera(JSONObject().apply {
-                        put("description", "Camera $it")
-                        put("number", it)
+                    Camera.fromJson(JSONObject().apply {
+                        val location = JSONObject()
+                        location.put("lat", Random.nextDouble() * 90)
+                        location.put("lon", Random.nextDouble() * 180 - 90)
+                        put("location", location)
+                        put("nameEn", "Camera $it")
                     })
                 }
                 displayedCameras = allCameras
@@ -146,9 +156,12 @@ class CameraViewModelUnitTest {
         cameraViewModel = CameraViewModel(
             _cameraState = MutableStateFlow(CameraState().apply {
                 allCameras = (0 until 10).map {
-                    Camera(JSONObject().apply {
-                        put("description", "Camera $it")
-                        put("number", it)
+                    Camera.fromJson(JSONObject().apply {
+                        val location = JSONObject()
+                        location.put("lat", Random.nextDouble() * 90)
+                        location.put("lon", Random.nextDouble() * 180 - 90)
+                        put("location", location)
+                        put("nameEn", "Camera $it")
                     })
                 }
             }),
@@ -167,9 +180,13 @@ class CameraViewModelUnitTest {
         cameraViewModel = CameraViewModel(
             _cameraState = MutableStateFlow(CameraState().apply {
                 allCameras = (0 until 10).map {
-                    Camera(JSONObject().apply {
-                        put("description", "Camera $it")
-                        put("number", it)
+                    Camera.fromJson(JSONObject().apply {
+                        val location = JSONObject()
+                        put("id", "$it")
+                        location.put("lat", 45.451235)
+                        location.put("lon", -75.6742136)
+                        put("location", location)
+                        put("nameEn", "Camera $it")
                     })
                 }
             }),
@@ -190,9 +207,13 @@ class CameraViewModelUnitTest {
         cameraViewModel = CameraViewModel(
             _cameraState = MutableStateFlow(CameraState().apply {
                 allCameras = (0 until 10).map {
-                    Camera(JSONObject().apply {
-                        put("description", "Camera $it")
-                        put("number", it)
+                    Camera.fromJson(JSONObject().apply {
+                        put("id", "$it")
+                        val location = JSONObject()
+                        location.put("lat", 45.451235)
+                        location.put("lon", -75.6742136)
+                        put("location", location)
+                        put("nameEn", "Camera $it")
                     })
                 }
             }),

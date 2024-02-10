@@ -15,85 +15,78 @@ class CameraUnitTest {
     @Before
     fun before() {
         json = JSONObject()
+        val location = JSONObject()
+        location.put("lat", 45.451235)
+        location.put("lon", -75.6742136)
+        json.put("location", location)
     }
 
     @Test
     fun testJSON() {
-        json.put("description", "name")
-        json.put("descriptionFr", "nameFr")
-        json.put("number", 100)
-        json.put("type", "Ottawa")
-        json.put("latitude", 45.451235)
-        json.put("longitude", -75.6742136)
+        json.put("nameEn", "nameEn")
+        json.put("nameFr", "nameFr")
+        json.put("lat", 45.451235)
+        json.put("lon", -75.6742136)
 
-        val camera = Camera(json)
+        val camera = Camera.fromJson(json)
 
         Locale.setDefault(Locale("en"))
-        assertEquals(json["description"], camera.name)
+        assertEquals(json["nameEn"], camera.name)
 
         Locale.setDefault(Locale("fr"))
-        assertEquals(json["descriptionFr"], camera.name)
+        assertEquals(json["nameFr"], camera.name)
 
-        assertEquals(json["number"], camera.num)
-        assertEquals(json["type"], camera.owner)
-        assertEquals(json["latitude"], camera.lat)
-        assertEquals(json["longitude"], camera.lon)
+        assertEquals(json["lat"], camera.lat)
+        assertEquals(json["lon"], camera.lon)
     }
 
     @Test
     fun testEquality() {
-        json.put("id", 1337)
-        json.put("number", 133)
-        val camera1 = Camera(json)
+        json.put("id", "1337")
+        val camera1 = Camera.fromJson(json)
 
         json = JSONObject()
-        json.put("id", 1337)
-        json.put("number", 133)
-        val camera2 = Camera(json)
+        json.put("id", "1337")
+        val location = JSONObject()
+        location.put("lat", 45.451235)
+        location.put("lon", -75.6742136)
+        json.put("location", location)
+
+        val camera2 = Camera.fromJson(json)
 
         assertEquals(camera1, camera2)
     }
 
     @Test
     fun testEqualityDifferentName() {
-        json.put("description", "Camera 1")
-        json.put("id", 1337)
-        json.put("number", 11)
-        val camera1 = Camera(json)
+        json.put("nameEn", "Camera 1")
+        json.put("id", "1337")
+        val camera1 = Camera.fromJson(json)
 
         json = JSONObject()
-        json.put("description", "Camera 2")
-        json.put("id", 1337)
-        json.put("number", 11)
-        val camera2 = Camera(json)
+        json.put("nameEn", "Camera 2")
+        json.put("id", "1337")
+        val location = JSONObject()
+        location.put("lat", 45.451235)
+        location.put("lon", -75.6742136)
+        json.put("location", location)
+        val camera2 = Camera.fromJson(json)
 
         assertEquals(camera1, camera2)
     }
 
     @Test
     fun testInequalityId() {
-        json.put("id", 1337)
-        json.put("number", 11)
-        val camera1 = Camera(json)
+        json.put("id", "1337")
+        val camera1 = Camera.fromJson(json)
 
         json = JSONObject()
-        json.put("id", 1331)
-        json.put("number", 11)
-        val camera2 = Camera(json)
-
-        assertNotEquals(camera1, camera2)
-    }
-
-    @Test
-    fun testInequalityNum() {
-        json.put("id", 1337)
-        json.put("number", 11)
-        val camera1 = Camera(json)
-
-        json = JSONObject()
-        json.put("id", 1337)
-        json.put("number", 12)
-        val camera2 = Camera(json)
+        json.put("id", "1331")
+        val location = JSONObject()
+        location.put("lat", 45.451235)
+        location.put("lon", -75.6742136)
+        json.put("location", location)
+        val camera2 = Camera.fromJson(json)
 
         assertNotEquals(camera1, camera2)
     }

@@ -93,22 +93,27 @@ class CameraStateUnitTest {
     fun testGetDisplayedCameras() {
         val cameras = List(100) { i ->
             val jsonObject = JSONObject()
-            jsonObject.put("latitude", Random.nextDouble() * 90)
-            jsonObject.put("longitude", Random.nextDouble() * 180 - 90)
+            val location = JSONObject()
+
+            location.put("lat", Random.nextDouble() * 90)
+            location.put("lon", Random.nextDouble() * 180 - 90)
+            jsonObject.put("location", location)
+
+            val neighbourhood = when (i % 3) {
+                0 ->"town"
+                1 -> "borough"
+                else -> "city"
+            }
+            jsonObject.put("neighbourhoodEn", neighbourhood)
             val name = when (i % 3) {
                 0 -> "hello"
                 1 -> "there"
                 else -> "world"
             }
-            jsonObject.put("description", name)
-            Camera(jsonObject).apply {
+            jsonObject.put("nameEn", name)
+            Camera.fromJson(jsonObject).apply {
                 isVisible = Random.nextBoolean()
                 isFavourite = Random.nextBoolean()
-                neighbourhood = when (i % 3) {
-                    0 -> "town"
-                    1 -> "borough"
-                    else -> "city"
-                }
             }
         }
         cameraState = CameraState(allCameras = cameras)
