@@ -325,7 +325,7 @@ class MainActivity : AppCompatActivity() {
                     expanded = expanded xor it,
                     onDismissRequest = { expanded = !expanded },
                 ) {
-                    ViewMode.values().forEach { viewMode ->
+                    ViewMode.entries.forEach { viewMode ->
                         RadioMenuItem(
                             title = stringResource(viewMode.key),
                             selected = cameraState.viewMode == viewMode,
@@ -377,7 +377,7 @@ class MainActivity : AppCompatActivity() {
                     expanded = expanded xor it,
                     onDismissRequest = { expanded = !expanded },
                 ) {
-                    SortMode.values().forEach { sortMode ->
+                    SortMode.entries.forEach { sortMode ->
                         RadioMenuItem(
                             title = stringResource(sortMode.key),
                             selected = cameraState.sortMode == sortMode,
