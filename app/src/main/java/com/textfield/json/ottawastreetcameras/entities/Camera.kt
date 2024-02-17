@@ -36,6 +36,9 @@ class Camera : Parcelable {
     val url: String
         get() = "$_url&timems=${System.currentTimeMillis()}"
 
+    val preview: String
+        get() = _url
+
     val distanceString: String
         get() {
             var distance = distance.toDouble()

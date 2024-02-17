@@ -3,7 +3,6 @@ package com.textfield.json.ottawastreetcameras.ui.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -22,13 +21,11 @@ import com.textfield.json.ottawastreetcameras.CameraViewModel
 import com.textfield.json.ottawastreetcameras.FilterMode
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.SearchMode
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.textfield.json.ottawastreetcameras.ViewMode
 
 
 @Composable
-fun AppBarTitle(cameraViewModel: CameraViewModel, listState: LazyListState) {
+fun AppBarTitle(cameraViewModel: CameraViewModel, onTitleClick: () -> Unit) {
     val cameraState by cameraViewModel.cameraState.collectAsState()
     if (cameraState.selectedCameras.isNotEmpty()) {
         Text(
@@ -39,12 +36,8 @@ fun AppBarTitle(cameraViewModel: CameraViewModel, listState: LazyListState) {
             ),
             color = Color.White,
             modifier = Modifier
-                .padding(10.dp)
-                .clickable {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        listState.scrollToItem(0)
-                    }
-                },
+                .clickable(enabled = cameraState.viewMode != ViewMode.MAP, onClick = onTitleClick)
+                .padding(10.dp),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
@@ -60,11 +53,7 @@ fun AppBarTitle(cameraViewModel: CameraViewModel, listState: LazyListState) {
                 Text(
                     title, color = Color.White,
                     modifier = Modifier
-                        .clickable {
-                            CoroutineScope(Dispatchers.Main).launch {
-                                listState.scrollToItem(0, 0)
-                            }
-                        }
+                        .clickable(enabled = cameraState.viewMode != ViewMode.MAP, onClick = onTitleClick)
                         .padding(10.dp),
                     fontSize = 20.sp,
                     maxLines = 1,

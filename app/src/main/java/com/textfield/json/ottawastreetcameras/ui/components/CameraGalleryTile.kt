@@ -60,9 +60,9 @@ fun CameraGalleryTile(
             )
         ) {
             val context = LocalContext.current
-            var model by remember { mutableStateOf(ImageRequest.Builder(context).data(camera.url).build()) }
+            var model by remember { mutableStateOf(ImageRequest.Builder(context).data(camera.preview).build()) }
             LaunchedEffect(camera.name) {
-                model = ImageRequest.Builder(context).data(camera.url).build()
+                model = ImageRequest.Builder(context).data(camera.preview).build()
             }
             AsyncImage(
                 model = model,

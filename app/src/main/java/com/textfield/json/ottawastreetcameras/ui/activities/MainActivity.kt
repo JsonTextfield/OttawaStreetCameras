@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Place
@@ -82,11 +84,14 @@ import com.textfield.json.ottawastreetcameras.ui.components.SectionIndex
 import com.textfield.json.ottawastreetcameras.ui.components.menu.Action
 import com.textfield.json.ottawastreetcameras.ui.components.menu.ActionBar
 import com.textfield.json.ottawastreetcameras.ui.components.menu.RadioMenuItem
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun MainAppBar(cameraViewModel: CameraViewModel, listState: LazyListState) {
+    fun MainAppBar(cameraViewModel: CameraViewModel, listState: LazyListState, gridState: LazyGridState) {
         val cameraState by cameraViewModel.cameraState.collectAsState()
         TopAppBar(
             navigationIcon = {
@@ -99,7 +104,15 @@ class MainActivity : AppCompatActivity() {
                 }
             },
             title = {
-                AppBarTitle(cameraViewModel, listState)
+                AppBarTitle(cameraViewModel) {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        when (cameraState.viewMode) {
+                            ViewMode.LIST -> listState.scrollToItem(0)
+                            ViewMode.GALLERY -> gridState.scrollToItem(0)
+                            else -> {}
+                        }
+                    }
+                }
             },
             actions = {
                 ActionBar(getActions(cameraViewModel))
@@ -116,7 +129,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Composable
-    fun MainContent(cameraViewModel: CameraViewModel, listState: LazyListState) {
+    fun MainContent(cameraViewModel: CameraViewModel, listState: LazyListState, gridState: LazyGridState) {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             Column {
                 val cameraState by cameraViewModel.cameraState.collectAsState()
@@ -166,6 +179,7 @@ class MainActivity : AppCompatActivity() {
                         CameraGalleryView(
                             cameraViewModel,
                             cameraState.displayedCameras,
+                            gridState = gridState,
                             onItemClick = onItemClick,
                             onItemLongClick = onItemLongClick
                         )
@@ -182,11 +196,12 @@ class MainActivity : AppCompatActivity() {
                 val cameraState by cameraViewModel.cameraState.collectAsState()
                 val uiState = cameraState.uiState
                 val listState = rememberLazyListState()
+                val gridState = rememberLazyGridState()
                 val context = LocalContext.current
                 Scaffold(
                     topBar = {
                         if (uiState == UIState.LOADED) {
-                            MainAppBar(cameraViewModel, listState)
+                            MainAppBar(cameraViewModel, listState, gridState)
                         }
                     },
                 ) {
@@ -194,7 +209,7 @@ class MainActivity : AppCompatActivity() {
                         when (uiState) {
                             UIState.INITIAL -> LaunchedEffect(true) { cameraViewModel.download(context) }
                             UIState.LOADING -> LoadingScreen()
-                            UIState.LOADED -> MainContent(cameraViewModel, listState)
+                            UIState.LOADED -> MainContent(cameraViewModel, listState, gridState)
                             UIState.ERROR -> ErrorScreen { cameraViewModel.download(context) }
                         }
                     }
