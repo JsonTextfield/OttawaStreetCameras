@@ -60,9 +60,11 @@ fun CameraGalleryTile(
             )
         ) {
             val context = LocalContext.current
-            var model by remember { mutableStateOf(ImageRequest.Builder(context).data(camera.preview).build()) }
+            var model by remember {
+                mutableStateOf(ImageRequest.Builder(context).data(camera.preview).crossfade(500).build())
+            }
             LaunchedEffect(camera.name) {
-                model = ImageRequest.Builder(context).data(camera.preview).build()
+                model = ImageRequest.Builder(context).data(camera.preview).crossfade(500).build()
             }
             AsyncImage(
                 model = model,
@@ -70,7 +72,7 @@ fun CameraGalleryTile(
                 modifier = Modifier
                     .fillMaxSize()
                     .align(Alignment.Center)
-                    .background(Color.DarkGray),
+                    .background(Color.LightGray),
                 contentScale = ContentScale.Crop,
             )
             Box(
