@@ -14,8 +14,8 @@ android {
         minSdk = 28
         compileSdk = 34
         targetSdk = 34
-        versionCode = 26
-        versionName = "2.0.3"
+        versionCode = 27
+        versionName = "2.1"
         vectorDrawables { useSupportLibrary = true }
     }
     kotlinOptions {
@@ -66,7 +66,7 @@ dependencies {
     implementation("com.android.support:multidex:1.0.3")
     implementation("com.android.volley:volley:1.2.1")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
-    implementation("com.google.android.material:material:1.10.0")
+    implementation("com.google.android.material:material:1.11.0")
     implementation("com.google.android.play:review:2.0.1")
     implementation("com.google.android.play:review-ktx:2.0.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
@@ -82,7 +82,7 @@ dependencies {
 
     // Choose one of the following:
     // Material Design 3
-    implementation("androidx.compose.material3:material3:1.1.2")
+    implementation("androidx.compose.material3:material3:1.2.0")
 
     // Android Studio Preview support
     implementation("androidx.compose.ui:ui-tooling-preview")
@@ -98,15 +98,15 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class")
 
     // Optional - Integration with activities
-    implementation("androidx.activity:activity-compose:1.8.0")
+    implementation("androidx.activity:activity-compose:1.8.2")
     // Optional - Integration with ViewModels
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
 
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
 
     implementation("io.coil-kt:coil-compose:2.4.0")
 
-    implementation("com.google.maps.android:maps-compose:2.11.4")
+    implementation("com.google.maps.android:maps-compose:4.3.3")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
 
 }
