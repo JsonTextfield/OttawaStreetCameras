@@ -5,7 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,7 +44,7 @@ fun BackButton() {
             ), onClick = {
             (context as ComponentActivity).onBackPressedDispatcher.onBackPressed()
         }) {
-            Icon(Icons.Rounded.ArrowBack, stringResource(id = R.string.back), tint = Color.Black)
+            Icon(Icons.AutoMirrored.Rounded.ArrowBack, stringResource(id = R.string.back), tint = Color.Black)
         }
     }
 }
