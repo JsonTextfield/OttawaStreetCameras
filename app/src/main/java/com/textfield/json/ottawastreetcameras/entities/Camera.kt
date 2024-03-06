@@ -41,7 +41,7 @@ class Camera : Parcelable {
 
     val distanceString: String
         get() {
-            var distance = distance.toDouble()
+            var distance = this.distance.toDouble()
 
             return if (distance < 0) {
                 ""

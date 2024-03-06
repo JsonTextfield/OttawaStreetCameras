@@ -23,18 +23,18 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.List
+import androidx.compose.material.icons.automirrored.rounded.Sort
 import androidx.compose.material.icons.filled.Place
-import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.CameraAlt
 import androidx.compose.material.icons.rounded.Casino
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.GridView
 import androidx.compose.material.icons.rounded.Info
-import androidx.compose.material.icons.rounded.List
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.SelectAll
 import androidx.compose.material.icons.rounded.Shuffle
-import androidx.compose.material.icons.rounded.Sort
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.StarBorder
 import androidx.compose.material.icons.rounded.TravelExplore
@@ -99,7 +99,7 @@ class MainActivity : AppCompatActivity() {
                     IconButton(onClick = {
                         cameraViewModel.resetFilters()
                     }) {
-                        Icon(Icons.Rounded.ArrowBack, stringResource(id = R.string.back), tint = Color.White)
+                        Icon(Icons.AutoMirrored.Rounded.ArrowBack, stringResource(id = R.string.back), tint = Color.White)
                     }
                 }
             },
@@ -307,7 +307,7 @@ class MainActivity : AppCompatActivity() {
         )
         val switchView = Action(
             icon = when (cameraState.viewMode) {
-                ViewMode.LIST -> Icons.Rounded.List
+                ViewMode.LIST -> Icons.AutoMirrored.Rounded.List
                 ViewMode.MAP -> Icons.Filled.Place
                 ViewMode.GALLERY -> Icons.Rounded.GridView
             },
@@ -339,7 +339,7 @@ class MainActivity : AppCompatActivity() {
             },
         )
         val sort = Action(
-            icon = Icons.Rounded.Sort,
+            icon = Icons.AutoMirrored.Rounded.Sort,
             condition = cameraState.viewMode != ViewMode.MAP,
             isMenu = true,
             toolTip = stringResource(id = R.string.sort),
