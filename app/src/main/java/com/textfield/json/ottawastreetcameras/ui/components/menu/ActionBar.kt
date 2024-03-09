@@ -1,6 +1,5 @@
 package com.textfield.json.ottawastreetcameras.ui.components.menu
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
@@ -15,51 +14,36 @@ import com.textfield.json.ottawastreetcameras.R
 
 @Composable
 fun ActionBar(actions: List<Action>, onItemSelected: () -> Unit = {}) {
-    val width = LocalConfiguration.current.screenWidthDp
-    val maxActions = width / 48 / 3
-    var remainingActions = maxActions
-    Log.d("WIDTH", width.toString())
-    Log.d("MAX_ACTIONS", remainingActions.toString())
+    val maxActions = LocalConfiguration.current.screenWidthDp / 144
 
-    val overflowActions = ArrayList<Action>()
-    for (action in actions) {
-        if (action.condition) {
-            if (remainingActions-- > 0) {
+    val visibleActions = actions.filter { it.condition }
+
+    val displayActions = visibleActions.take(maxActions)
+    displayActions.forEach { action ->
+        var showMenu by remember { mutableStateOf(false) }
+        if (action.isMenu) {
+            PopupMenu(
+                showMenu = showMenu,
+                menuContent = action.menuContent,
+            )
+        }
+        MenuItem(
+            icon = action.icon,
+            tooltip = action.toolTip,
+            onClick = {
                 if (action.isMenu) {
-                    var showMenu by remember { mutableStateOf(false) }
-                    PopupMenu(
-                        showMenu = showMenu,
-                        menuContent = action.menuContent,
-                        content = {
-                            MenuItem(
-                                icon = action.icon,
-                                tooltip = action.toolTip,
-                                onClick = {
-                                    showMenu = !showMenu
-                                    onItemSelected()
-                                }
-                            )
-                        },
-                    )
+                    showMenu = !showMenu
                 }
                 else {
-                    MenuItem(
-                        icon = action.icon,
-                        tooltip = action.toolTip,
-                        onClick = {
-                            action.onClick()
-                            onItemSelected()
-                        }
-                    )
+                    action.onClick()
                 }
+                onItemSelected()
             }
-            else {
-                overflowActions.add(action)
-            }
-        }
+        )
     }
 
-    if (remainingActions < 0) {
+    val overflowActions = visibleActions.drop(maxActions)
+    if (overflowActions.isNotEmpty()) {
         Box {
             var showOverflowMenu by remember { mutableStateOf(false) }
             OverflowMenu(showOverflowMenu, overflowActions) {
