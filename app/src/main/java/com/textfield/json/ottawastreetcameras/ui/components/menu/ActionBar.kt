@@ -34,11 +34,11 @@ fun ActionBar(actions: List<Action>, onItemSelected: () -> Unit = {}) {
                             MenuItem(
                                 icon = action.icon,
                                 tooltip = action.toolTip,
-                                visible = true
-                            ) {
-                                showMenu = !showMenu
-                                onItemSelected()
-                            }
+                                onClick = {
+                                    showMenu = !showMenu
+                                    onItemSelected()
+                                }
+                            )
                         },
                     )
                 }
@@ -46,11 +46,11 @@ fun ActionBar(actions: List<Action>, onItemSelected: () -> Unit = {}) {
                     MenuItem(
                         icon = action.icon,
                         tooltip = action.toolTip,
-                        visible = true
-                    ) {
-                        action.onClick()
-                        onItemSelected()
-                    }
+                        onClick = {
+                            action.onClick()
+                            onItemSelected()
+                        }
+                    )
                 }
             }
             else {
@@ -69,10 +69,10 @@ fun ActionBar(actions: List<Action>, onItemSelected: () -> Unit = {}) {
             MenuItem(
                 icon = Icons.Rounded.MoreVert,
                 tooltip = stringResource(R.string.more),
-                visible = true
-            ) {
-                showOverflowMenu = true
-            }
+                onClick = {
+                    showOverflowMenu = true
+                }
+            )
         }
     }
 }
