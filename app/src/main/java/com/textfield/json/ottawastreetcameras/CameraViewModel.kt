@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
 class CameraViewModel(
-    private var _cameraState: MutableStateFlow<CameraState> = MutableStateFlow(CameraState()),
+    private val _cameraState: MutableStateFlow<CameraState> = MutableStateFlow(CameraState()),
     private val downloadService: DownloadService = CameraDownloadService,
     private val prefs: SharedPreferences,
 ) : ViewModel() {
