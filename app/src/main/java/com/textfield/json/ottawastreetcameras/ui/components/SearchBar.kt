@@ -2,7 +2,9 @@ package com.textfield.json.ottawastreetcameras.ui.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
@@ -29,7 +31,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.textfield.json.ottawastreetcameras.R
 
@@ -58,39 +59,40 @@ fun SearchBarContent(hintText: String, value: String, onValueChange: (String) ->
         textStyle = TextStyle(color = Color.White, fontSize = 14.sp),
         cursorBrush = SolidColor(Color.White),
         decorationBox = { innerTextField ->
-            Row(modifier = Modifier.fillMaxWidth()) {
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(.8f)
-                        .align(Alignment.CenterVertically)
-                ) {
-                    innerTextField()
-                }
-
-                if (value.isNotEmpty()) {
-                    IconButton(
-                        onClick = { onValueChange("") },
+            Box {
+                Row(modifier = Modifier.fillMaxSize()) {
+                    Box(
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
-                            .weight(.2f)
+                            .weight(.75f)
                     ) {
-                        Icon(Icons.Rounded.Clear, stringResource(id = R.string.clear), tint = Color.White)
+                        innerTextField()
+                    }
+
+                    if (value.isNotEmpty()) {
+                        IconButton(
+                            onClick = { onValueChange("") },
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .weight(.25f)
+                        ) {
+                            Icon(
+                                Icons.Rounded.Clear,
+                                stringResource(id = R.string.clear),
+                                tint = Color.White,
+                            )
+                        }
                     }
                 }
-            }
-            if (value.isEmpty()) {
-                Row(modifier = Modifier.fillMaxWidth()) {
+                if (value.isEmpty()) {
                     Text(
                         hintText,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .align(Alignment.CenterVertically)
-                            .basicMarquee(),
+                            .basicMarquee()
+                            .align(Alignment.CenterStart),
                         maxLines = 1,
                         fontSize = 14.sp,
-                        overflow = TextOverflow.Ellipsis,
                         softWrap = false,
                         color = Color.White,
                     )
