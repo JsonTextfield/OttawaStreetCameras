@@ -18,7 +18,7 @@ fun OverflowMenu(
         onDismissRequest = { onItemSelected() },
     ) {
         for (action in actions) {
-            if (action.isMenu) {
+            if (action.menuContent != null) {
                 var showMenu by remember { mutableStateOf(false) }
                 PopupMenu(
                     showMenu = showMenu,
@@ -26,7 +26,7 @@ fun OverflowMenu(
                     content = {
                         OverflowMenuItem(
                             icon = action.icon,
-                            tooltip = action.toolTip,
+                            tooltip = action.tooltip,
                         ) {
                             showMenu = !showMenu
                         }
@@ -36,9 +36,9 @@ fun OverflowMenu(
             else {
                 OverflowMenuItem(
                     icon = action.icon,
-                    tooltip = action.toolTip,
-                    visible = action.condition,
-                    checked = action.checked,
+                    tooltip = action.tooltip,
+                    visible = action.isVisible,
+                    checked = action.isChecked,
                 ) {
                     action.onClick()
                     onItemSelected()

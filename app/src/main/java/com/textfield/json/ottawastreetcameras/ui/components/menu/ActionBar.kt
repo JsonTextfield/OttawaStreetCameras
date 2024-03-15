@@ -14,14 +14,15 @@ import com.textfield.json.ottawastreetcameras.R
 
 @Composable
 fun ActionBar(actions: List<Action>, onItemSelected: () -> Unit = {}) {
-    val maxActions = LocalConfiguration.current.screenWidthDp / 144
+    // actions should take up only 1/3 of the screen width
+    val maxActions = LocalConfiguration.current.screenWidthDp / 3 / 48
 
-    val visibleActions = actions.filter { it.condition }
+    val visibleActions = actions.filter { it.isVisible }
 
     val displayActions = visibleActions.take(maxActions)
     displayActions.forEach { action ->
         var showMenu by remember { mutableStateOf(false) }
-        if (action.isMenu) {
+        if (action.menuContent != null) {
             PopupMenu(
                 showMenu = showMenu,
                 menuContent = action.menuContent,
@@ -29,9 +30,9 @@ fun ActionBar(actions: List<Action>, onItemSelected: () -> Unit = {}) {
         }
         MenuItem(
             icon = action.icon,
-            tooltip = action.toolTip,
+            tooltip = action.tooltip,
             onClick = {
-                if (action.isMenu) {
+                if (action.menuContent != null) {
                     showMenu = !showMenu
                 }
                 else {

@@ -254,19 +254,19 @@ class MainActivity : AppCompatActivity() {
         val cameraState by cameraViewModel.cameraState.collectAsState()
         val selectedCameras = cameraState.selectedCameras
         val clearSelection = Action(
-            icon = Icons.Rounded.Clear, toolTip = stringResource(R.string.clear), true,
+            icon = Icons.Rounded.Clear, tooltip = stringResource(R.string.clear), true,
             onClick = { cameraViewModel.selectAllCameras(false) },
         )
         val view = Action(
             icon = Icons.Rounded.CameraAlt,
-            toolTip = stringResource(id = R.string.view),
+            tooltip = stringResource(id = R.string.view),
             selectedCameras.size <= 8,
             onClick = { showCameras(cameraViewModel.cameraState.value.selectedCameras) },
         )
         val allIsFavourite = selectedCameras.all { it.isFavourite }
         val favourite = Action(
             icon = if (allIsFavourite) Icons.Rounded.StarBorder else Icons.Rounded.Star,
-            toolTip = stringResource(
+            tooltip = stringResource(
                 if (allIsFavourite) {
                     R.string.remove_from_favourites
                 }
@@ -279,13 +279,13 @@ class MainActivity : AppCompatActivity() {
         val allIsHidden = selectedCameras.all { !it.isVisible }
         val hide = Action(
             icon = if (allIsHidden) Icons.Rounded.Visibility else Icons.Rounded.VisibilityOff,
-            toolTip = stringResource(if (allIsHidden) R.string.unhide else R.string.hide),
+            tooltip = stringResource(if (allIsHidden) R.string.unhide else R.string.hide),
             onClick = { cameraViewModel.hideCameras(cameraState.selectedCameras) },
         )
         val selectAll = Action(
             icon = Icons.Rounded.SelectAll,
-            toolTip = stringResource(R.string.select_all),
-            condition = selectedCameras.size < cameraState.displayedCameras.size,
+            tooltip = stringResource(R.string.select_all),
+            isVisible = selectedCameras.size < cameraState.displayedCameras.size,
             onClick = { cameraViewModel.selectAllCameras() },
         )
         val switchView = Action(
@@ -294,8 +294,7 @@ class MainActivity : AppCompatActivity() {
                 ViewMode.MAP -> Icons.Filled.Place
                 ViewMode.GALLERY -> Icons.Rounded.GridView
             },
-            isMenu = true,
-            toolTip = stringResource(
+            tooltip = stringResource(
                 id = when (cameraState.viewMode) {
                     ViewMode.LIST -> R.string.list
                     ViewMode.MAP -> R.string.map
@@ -323,9 +322,8 @@ class MainActivity : AppCompatActivity() {
         )
         val sort = Action(
             icon = Icons.AutoMirrored.Rounded.Sort,
-            condition = cameraState.viewMode != ViewMode.MAP,
-            isMenu = true,
-            toolTip = stringResource(id = R.string.sort),
+            isVisible = cameraState.viewMode != ViewMode.MAP,
+            tooltip = stringResource(id = R.string.sort),
             menuContent = {
                 val permissionArray = arrayOf(
                     permission.ACCESS_FINE_LOCATION, permission.ACCESS_COARSE_LOCATION
@@ -380,38 +378,38 @@ class MainActivity : AppCompatActivity() {
         )
         val search = Action(
             icon = Icons.Rounded.Search,
-            condition = cameraState.searchMode != SearchMode.NAME,
-            toolTip = stringResource(id = R.string.search),
-            checked = cameraState.searchMode == SearchMode.NAME,
+            isVisible = cameraState.searchMode != SearchMode.NAME,
+            tooltip = stringResource(id = R.string.search),
+            isChecked = cameraState.searchMode == SearchMode.NAME,
             onClick = { cameraViewModel.searchCameras(SearchMode.NAME) },
         )
         val searchNeighbourhood = Action(
             icon = Icons.Rounded.TravelExplore,
-            condition = cameraState.showSearchNeighbourhood,
-            toolTip = stringResource(id = R.string.search_neighbourhood),
-            checked = cameraState.searchMode == SearchMode.NEIGHBOURHOOD,
+            isVisible = cameraState.showSearchNeighbourhood,
+            tooltip = stringResource(id = R.string.search_neighbourhood),
+            isChecked = cameraState.searchMode == SearchMode.NEIGHBOURHOOD,
             onClick = { cameraViewModel.searchCameras(SearchMode.NEIGHBOURHOOD) },
         )
         val favourites = Action(
             icon = Icons.Rounded.Star,
-            toolTip = stringResource(id = R.string.favourites),
-            checked = cameraState.filterMode == FilterMode.FAVOURITE,
+            tooltip = stringResource(id = R.string.favourites),
+            isChecked = cameraState.filterMode == FilterMode.FAVOURITE,
             onClick = { cameraViewModel.changeFilterMode(FilterMode.FAVOURITE) },
         )
         val hidden = Action(
             icon = Icons.Rounded.VisibilityOff,
-            toolTip = stringResource(id = R.string.hidden_cameras),
-            checked = cameraState.filterMode == FilterMode.HIDDEN,
+            tooltip = stringResource(id = R.string.hidden_cameras),
+            isChecked = cameraState.filterMode == FilterMode.HIDDEN,
             onClick = { cameraViewModel.changeFilterMode(FilterMode.HIDDEN) },
         )
         val random = Action(
             icon = Icons.Rounded.Casino,
-            toolTip = stringResource(id = R.string.random_camera),
+            tooltip = stringResource(id = R.string.random_camera),
             onClick = { showCameras(arrayListOf(cameraState.visibleCameras.random())) },
         )
         val shuffle = Action(
             icon = Icons.Rounded.Shuffle,
-            toolTip = stringResource(id = R.string.shuffle),
+            tooltip = stringResource(id = R.string.shuffle),
             onClick = {
                 showCameras(cameraViewModel.cameraState.value.visibleCameras as ArrayList<Camera>, true)
             },
@@ -428,7 +426,7 @@ class MainActivity : AppCompatActivity() {
 
         val about = Action(
             icon = Icons.Rounded.Info,
-            toolTip = stringResource(id = R.string.about),
+            tooltip = stringResource(id = R.string.about),
             onClick = { showDialog = !showDialog },
         )
 
