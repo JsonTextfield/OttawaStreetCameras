@@ -15,10 +15,10 @@ interface DownloadService {
 }
 
 object CameraDownloadService : DownloadService {
-    private const val tag = "DownloadService"
+    private const val TAG = "DownloadService"
 
     override fun download(context: Context, onComplete: (cameras: List<Camera>) -> Unit) {
-        Log.d(tag, "downloading cameras")
+        Log.d(TAG, "downloading cameras")
         val apiKey = context.getString(R.string.supabase_key)
         val url = "https://nacudfxzbqaesoyjfluh.supabase.co/rest/v1/cameras?select=*&city=eq.ottawa&apikey=$apiKey"
         val cameraRequest = JsonArrayRequest(url, { response ->
