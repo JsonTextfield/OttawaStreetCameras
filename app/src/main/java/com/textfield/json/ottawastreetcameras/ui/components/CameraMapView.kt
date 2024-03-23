@@ -26,12 +26,12 @@ import kotlinx.coroutines.launch
 @Composable
 fun CameraMapView(
     cameraViewModel: CameraViewModel,
-    cameras: List<Camera>,
     isMyLocationEnabled: Boolean = false,
     onItemClick: (Camera) -> Unit = {},
     onItemLongClick: (Camera) -> Unit = {},
 ) {
     val cameraState by cameraViewModel.cameraState.collectAsState()
+    val cameras = cameraState.displayedCameras
     val context = LocalContext.current
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.builder().target(LatLng(45.45, -75.69)).zoom(9f).build()

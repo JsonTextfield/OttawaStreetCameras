@@ -1,6 +1,8 @@
 package com.textfield.json.ottawastreetcameras.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -36,77 +38,85 @@ import com.textfield.json.ottawastreetcameras.entities.Camera
 @Composable
 fun CameraListView(
     cameraViewModel: CameraViewModel,
-    cameras: List<Camera>,
-    modifier: Modifier,
     listState: LazyListState,
-    onItemClick: (Camera) -> Unit,
-    onItemLongClick: (Camera) -> Unit,
-    onItemDismissed: (Camera) -> Unit,
+    onItemClick: (Camera) -> Unit = {},
+    onItemLongClick: (Camera) -> Unit = {},
+    onItemDismissed: (Camera) -> Unit = {},
 ) {
     val cameraState by cameraViewModel.cameraState.collectAsState()
-    LazyColumn(modifier = modifier, state = listState) {
-        items(cameras, { camera -> camera.hashCode() }) { camera ->
-            if (cameraState.filterMode == FilterMode.FAVOURITE) {
-                CameraListTile(cameraViewModel, camera, onItemClick, onItemLongClick)
-            }
-            else {
-                val density = LocalDensity.current
-                val dismissState = remember {
-                    SwipeToDismissBoxState(
-                        density = density,
-                        initialValue = SwipeToDismissBoxValue.Settled,
-                        positionalThreshold = { density.density * 200f },
+    Row {
+        AnimatedVisibility(visible = cameraState.showSectionIndex) {
+            SectionIndex(
+                data = cameraState.displayedCameras.map { it.sortableName },
+                listState = listState,
+            )
+        }
+        val cameras = cameraState.displayedCameras
+        LazyColumn(state = listState) {
+            items(cameras, { camera -> camera.hashCode() }) { camera ->
+                if (cameraState.filterMode == FilterMode.FAVOURITE) {
+                    CameraListTile(cameraViewModel, camera, onItemClick, onItemLongClick)
+                }
+                else {
+                    val density = LocalDensity.current
+                    val dismissState = remember {
+                        SwipeToDismissBoxState(
+                            density = density,
+                            initialValue = SwipeToDismissBoxValue.Settled,
+                            positionalThreshold = { density.density * 200f },
+                        )
+                    }
+                    if (dismissState.currentValue == SwipeToDismissBoxValue.StartToEnd
+                        || dismissState.currentValue == SwipeToDismissBoxValue.EndToStart
+                    ) {
+                        onItemDismissed(camera)
+                    }
+                    SwipeToDismissBox(
+                        state = dismissState,
+                        modifier = Modifier.background(colorResource(id = R.color.colorAccent)),
+                        backgroundContent = {
+                            Icon(
+                                Icons.Rounded.VisibilityOff,
+                                "",
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .weight(0.1f)
+                                    .padding(10.dp),
+                                tint = Color.White,
+                            )
+                            Text(
+                                stringResource(if (camera.isVisible) R.string.hide else R.string.unhide),
+                                textAlign = TextAlign.Center,
+                                color = Color.White,
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .weight(0.5f)
+                            )
+                            Icon(
+                                Icons.Rounded.VisibilityOff,
+                                "",
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .weight(0.1f)
+                                    .padding(10.dp),
+                                tint = Color.White,
+                            )
+                        },
+                        content = {
+                            CameraListTile(cameraViewModel, camera, onItemClick, onItemLongClick)
+                        },
                     )
                 }
-                if (dismissState.currentValue == SwipeToDismissBoxValue.StartToEnd
-                    || dismissState.currentValue == SwipeToDismissBoxValue.EndToStart) {
-                    onItemDismissed(camera)
-                }
-                SwipeToDismissBox(
-                    state = dismissState,
-                    modifier = Modifier.background(colorResource(id = R.color.colorAccent)),
-                    backgroundContent = {
-                        Icon(
-                            Icons.Rounded.VisibilityOff,
-                            "",
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .weight(0.1f)
-                                .padding(10.dp),
-                            tint = Color.White,
-                        )
-                        Text(
-                            stringResource(if (camera.isVisible) R.string.hide else R.string.unhide),
-                            textAlign = TextAlign.Center,
-                            color = Color.White,
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .weight(0.5f)
-                        )
-                        Icon(
-                            Icons.Rounded.VisibilityOff,
-                            "",
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .weight(0.1f)
-                                .padding(10.dp),
-                            tint = Color.White,
-                        )
-                    },
-                    content = {
-                        CameraListTile(cameraViewModel, camera, onItemClick, onItemLongClick)
-                    },
+            }
+            item {
+                Text(
+                    pluralStringResource(R.plurals.camera_count, cameras.size, cameras.size),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .fillMaxWidth()
                 )
             }
-        }
-        item {
-            Text(
-                pluralStringResource(R.plurals.camera_count, cameras.size, cameras.size),
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(10.dp)
-                    .fillMaxWidth()
-            )
         }
     }
 }

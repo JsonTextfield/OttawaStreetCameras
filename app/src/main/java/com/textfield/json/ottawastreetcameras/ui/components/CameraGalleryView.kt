@@ -10,6 +10,8 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,11 +26,12 @@ import com.textfield.json.ottawastreetcameras.entities.Camera
 @Composable
 fun CameraGalleryView(
     cameraViewModel: CameraViewModel,
-    cameras: List<Camera>,
     gridState: LazyGridState,
     onItemClick: (Camera) -> Unit,
     onItemLongClick: (Camera) -> Unit,
 ) {
+    val cameraState by cameraViewModel.cameraState.collectAsState()
+    val cameras = cameraState.displayedCameras
     LazyVerticalGrid(
         state = gridState,
         columns = GridCells.Adaptive(100.dp),

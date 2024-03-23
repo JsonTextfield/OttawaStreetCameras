@@ -11,11 +11,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
@@ -80,7 +78,6 @@ import com.textfield.json.ottawastreetcameras.ui.components.CameraListView
 import com.textfield.json.ottawastreetcameras.ui.components.CameraMapView
 import com.textfield.json.ottawastreetcameras.ui.components.ErrorScreen
 import com.textfield.json.ottawastreetcameras.ui.components.LoadingScreen
-import com.textfield.json.ottawastreetcameras.ui.components.SectionIndex
 import com.textfield.json.ottawastreetcameras.ui.components.menu.Action
 import com.textfield.json.ottawastreetcameras.ui.components.menu.ActionBar
 import com.textfield.json.ottawastreetcameras.ui.components.menu.RadioMenuItem
@@ -154,26 +151,18 @@ class MainActivity : AppCompatActivity() {
                 }
                 when (cameraState.viewMode) {
                     ViewMode.LIST -> {
-                        Row {
-                            AnimatedVisibility(visible = cameraState.showSectionIndex) {
-                                SectionIndex(cameraState.displayedCameras.map { it.sortableName }, listState)
-                            }
-                            CameraListView(
-                                cameraViewModel,
-                                cameraState.displayedCameras,
-                                modifier = Modifier.weight(1f),
-                                listState = listState,
-                                onItemClick = onItemClick,
-                                onItemLongClick = onItemLongClick,
-                                onItemDismissed = onItemDismissed,
-                            )
-                        }
+                        CameraListView(
+                            cameraViewModel,
+                            listState = listState,
+                            onItemClick = onItemClick,
+                            onItemLongClick = onItemLongClick,
+                            onItemDismissed = onItemDismissed,
+                        )
                     }
 
                     ViewMode.MAP -> {
                         CameraMapView(
                             cameraViewModel,
-                            cameraState.displayedCameras,
                             onItemClick = onItemClick,
                             onItemLongClick = onItemLongClick
                         )
@@ -182,7 +171,6 @@ class MainActivity : AppCompatActivity() {
                     ViewMode.GALLERY -> {
                         CameraGalleryView(
                             cameraViewModel,
-                            cameraState.displayedCameras,
                             gridState = gridState,
                             onItemClick = onItemClick,
                             onItemLongClick = onItemLongClick
