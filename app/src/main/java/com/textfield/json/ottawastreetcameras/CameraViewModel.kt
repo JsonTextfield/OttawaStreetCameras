@@ -1,6 +1,7 @@
 package com.textfield.json.ottawastreetcameras
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.location.Location
 import androidx.lifecycle.ViewModel
@@ -9,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import com.textfield.json.ottawastreetcameras.ui.activities.CameraActivity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -117,6 +119,21 @@ class CameraViewModel(
                 filterMode = FilterMode.VISIBLE,
             )
         }
+    }
+
+    fun showCameras(
+        context: Context,
+        cameras: List<Camera> = ArrayList(),
+        displayedCameras: List<Camera> = ArrayList(),
+        shuffle: Boolean = false,
+    ) {
+        context.startActivity(
+            Intent(context, CameraActivity::class.java).apply {
+                putParcelableArrayListExtra("cameras", cameras as ArrayList<Camera>)
+                putParcelableArrayListExtra("displayedCameras", displayedCameras as ArrayList<Camera>)
+                putExtra("shuffle", shuffle)
+            }
+        )
     }
 
     fun download(context: Context) {
