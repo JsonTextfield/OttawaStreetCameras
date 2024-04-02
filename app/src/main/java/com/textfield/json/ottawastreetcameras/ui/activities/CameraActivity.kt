@@ -33,6 +33,7 @@ import java.util.Date
 
 class CameraActivity : AppCompatActivity() {
     private var cameras = ArrayList<Camera>()
+    private var displayedCameras = ArrayList<Camera>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +45,12 @@ class CameraActivity : AppCompatActivity() {
         }
         else {
             intent.getParcelableArrayListExtra("cameras") ?: cameras
+        }
+        displayedCameras = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableArrayListExtra("displayedCameras", Camera::class.java) ?: displayedCameras
+        }
+        else {
+            intent.getParcelableArrayListExtra("displayedCameras") ?: displayedCameras
         }
 
         loadView(shuffle)
@@ -61,7 +68,12 @@ class CameraActivity : AppCompatActivity() {
                                 update = !update
                             }
                         }
-                        CameraActivityContent(cameras, shuffle, update) { camera ->
+                        CameraActivityContent(
+                            cameras,
+                            displayedCameras = displayedCameras,
+                            shuffle = shuffle,
+                            update
+                        ) { camera ->
                             downloadImage(camera)
                         }
                         BackButton()
@@ -100,34 +112,33 @@ class CameraActivity : AppCompatActivity() {
             }
 
         val imageDetails = ContentValues().apply {
-            put(MediaStore.Images.Media.DISPLAY_NAME, (fileName + "_" + Date().toString() + ".jpg").replace(" ", "_"))
+            put(MediaStore.Images.Media.DISPLAY_NAME, ("${fileName}_${Date()}.jpg").replace(" ", "_"))
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 put(MediaStore.Images.Media.IS_PENDING, 1)
             }
         }
 
-        val songContentUri = resolver.insert(imageCollection, imageDetails)
-
-        resolver.openFileDescriptor(songContentUri!!, "w", null).use { pfd ->
-            // Write data into the pending file.
-
+        val imgUri = resolver.insert(imageCollection, imageDetails)
+        if (imgUri != null) {
             try {
-                val out = FileOutputStream(pfd?.fileDescriptor)
-                bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, out)
-                out.flush()
-                out.close()
+                resolver.openFileDescriptor(imgUri, "w", null)?.use { pfd ->
+                    FileOutputStream(pfd.fileDescriptor).use { out ->
+                        bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, out)
+                    }
+                }
             } catch (e: IOException) {
                 Log.e("StreetCams", e.message ?: e.stackTraceToString())
                 return false
             }
-        }
 
-        // Now that we're finished, release the "pending" status
-        imageDetails.clear()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            imageDetails.put(MediaStore.Images.Media.IS_PENDING, 0)
+            // Now that we're finished, release the "pending" status
+            imageDetails.clear()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                imageDetails.put(MediaStore.Images.Media.IS_PENDING, 0)
+            }
+            resolver.update(imgUri, imageDetails, null, null)
+            return true
         }
-        resolver.update(songContentUri, imageDetails, null, null)
-        return true
+        return false
     }
 }

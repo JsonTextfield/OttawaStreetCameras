@@ -42,7 +42,7 @@ fun CameraView(
     camera: Camera,
     shuffle: Boolean = false,
     update: Boolean = false,
-    onLongClick: (Camera) -> Unit,
+    onLongClick: (Camera) -> Unit = {},
 ) {
     val context = LocalContext.current
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
