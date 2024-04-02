@@ -23,9 +23,8 @@ import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.SearchMode
 import com.textfield.json.ottawastreetcameras.ViewMode
 
-
 @Composable
-fun AppBarTitle(cameraViewModel: CameraViewModel, onTitleClick: () -> Unit) {
+fun AppBarTitle(cameraViewModel: CameraViewModel, onClick: () -> Unit = {}) {
     val cameraState by cameraViewModel.cameraState.collectAsState()
     if (cameraState.selectedCameras.isNotEmpty()) {
         Text(
@@ -36,7 +35,7 @@ fun AppBarTitle(cameraViewModel: CameraViewModel, onTitleClick: () -> Unit) {
             ),
             color = Color.White,
             modifier = Modifier
-                .clickable(enabled = cameraState.viewMode != ViewMode.MAP, onClick = onTitleClick)
+                .clickable(enabled = cameraState.viewMode != ViewMode.MAP, onClick = onClick)
                 .padding(10.dp),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -53,7 +52,7 @@ fun AppBarTitle(cameraViewModel: CameraViewModel, onTitleClick: () -> Unit) {
                 Text(
                     title, color = Color.White,
                     modifier = Modifier
-                        .clickable(enabled = cameraState.viewMode != ViewMode.MAP, onClick = onTitleClick)
+                        .clickable(enabled = cameraState.viewMode != ViewMode.MAP, onClick = onClick)
                         .padding(10.dp),
                     fontSize = 20.sp,
                     maxLines = 1,
@@ -78,8 +77,6 @@ fun AppBarTitle(cameraViewModel: CameraViewModel, onTitleClick: () -> Unit) {
                     var value by rememberSaveable { mutableStateOf("") }
                     val suggestionList = cameraState.neighbourhoods.filter {
                         it.contains(value, true)
-                    }.map {
-                        it
                     }
                     val expanded =
                         cameraState.searchMode == SearchMode.NEIGHBOURHOOD
