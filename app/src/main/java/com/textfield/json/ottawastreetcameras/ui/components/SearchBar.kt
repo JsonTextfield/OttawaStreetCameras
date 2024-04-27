@@ -45,7 +45,11 @@ fun SearchBar(hintText: String, onValueChange: (String) -> Unit) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SearchBarContent(hintText: String, value: String, onValueChange: (String) -> Unit) {
+fun SearchBarContent(
+    hintText: String = "",
+    value: String = "",
+    onValueChange: (String) -> Unit = {},
+) {
     val textFieldValue = TextFieldValue(value, TextRange(value.length))
     val focusRequester = remember { FocusRequester() }
 

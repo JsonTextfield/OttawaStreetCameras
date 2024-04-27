@@ -12,16 +12,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 fun OverflowMenuItem(
     icon: ImageVector,
     tooltip: String = "",
-    visible: Boolean = true,
-    checked: Boolean = false,
+    isVisible: Boolean = true,
+    isChecked: Boolean = false,
     onClick: () -> Unit = {},
 ) {
-    if (visible) {
+    if (isVisible) {
         DropdownMenuItem(
             text = { Text(text = tooltip) },
             leadingIcon = { Icon(icon, tooltip) },
             trailingIcon = {
-                if (checked) {
+                if (isChecked) {
                     Icon(Icons.Rounded.Check, "")
                 }
             },

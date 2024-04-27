@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun RadioMenuItem(
     title: String = "",
-    selected: Boolean = false,
+    isSelected: Boolean = false,
     onClick: () -> Unit = {},
 ) {
     DropdownMenuItem(
@@ -24,7 +24,7 @@ fun RadioMenuItem(
         text = {
             Row {
                 RadioButton(
-                    selected = selected,
+                    selected = isSelected,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
                         .padding(0.dp),

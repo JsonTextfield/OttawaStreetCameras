@@ -23,11 +23,11 @@ import androidx.compose.ui.unit.dp
 fun MenuItem(
     icon: ImageVector,
     tooltip: String = "",
-    visible: Boolean = true,
+    isVisible: Boolean = true,
     onClick: () -> Unit = {},
 ) {
     AnimatedVisibility(
-        visible = visible,
+        visible = isVisible,
         content = {
             TooltipBox(
                 state = rememberTooltipState(),

@@ -9,12 +9,12 @@ import androidx.compose.runtime.setValue
 
 @Composable
 fun OverflowMenu(
-    expanded: Boolean = false,
+    isExpanded: Boolean = false,
     actions: List<Action>,
     onItemSelected: () -> Unit = {},
 ) {
     DropdownMenu(
-        expanded = expanded,
+        expanded = isExpanded,
         onDismissRequest = { onItemSelected() },
     ) {
         for (action in actions) {
@@ -37,8 +37,8 @@ fun OverflowMenu(
                 OverflowMenuItem(
                     icon = action.icon,
                     tooltip = action.tooltip,
-                    visible = action.isVisible,
-                    checked = action.isChecked,
+                    isVisible = action.isVisible,
+                    isChecked = action.isChecked,
                 ) {
                     action.onClick()
                     onItemSelected()

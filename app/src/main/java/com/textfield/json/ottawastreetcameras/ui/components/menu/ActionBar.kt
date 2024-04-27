@@ -167,7 +167,7 @@ fun getActions(cameraViewModel: CameraViewModel): List<Action> {
                 ViewMode.entries.forEach { viewMode ->
                     RadioMenuItem(
                         title = stringResource(viewMode.key),
-                        selected = cameraState.viewMode == viewMode,
+                        isSelected = cameraState.viewMode == viewMode,
                         onClick = {
                             isExpanded = !isExpanded
                             cameraViewModel.changeViewMode(viewMode)
@@ -219,7 +219,7 @@ fun getActions(cameraViewModel: CameraViewModel): List<Action> {
                 SortMode.entries.forEach { sortMode ->
                     RadioMenuItem(
                         title = stringResource(sortMode.key),
-                        selected = cameraState.sortMode == sortMode,
+                        isSelected = cameraState.sortMode == sortMode,
                         onClick = {
                             isExpanded = !isExpanded
                             if (sortMode == SortMode.DISTANCE) {

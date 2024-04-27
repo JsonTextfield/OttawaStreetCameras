@@ -12,8 +12,8 @@ import com.textfield.json.ottawastreetcameras.R
 
 @Composable
 fun AboutDialog(
-    onLicences: () -> Unit,
-    onDismiss: () -> Unit,
+    onLicences: () -> Unit = {},
+    onDismiss: () -> Unit = {},
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
