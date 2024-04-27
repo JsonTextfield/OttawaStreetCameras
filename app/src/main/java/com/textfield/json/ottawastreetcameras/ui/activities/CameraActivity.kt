@@ -40,23 +40,15 @@ class CameraActivity : AppCompatActivity() {
 
         val shuffle = intent.getBooleanExtra("shuffle", false)
 
-        cameras = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableArrayListExtra("cameras", Camera::class.java) ?: cameras
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            cameras = intent.getParcelableArrayListExtra("cameras", Camera::class.java) ?: cameras
+            displayedCameras = intent.getParcelableArrayListExtra("displayedCameras", Camera::class.java) ?: displayedCameras
         }
         else {
-            intent.getParcelableArrayListExtra("cameras") ?: cameras
-        }
-        displayedCameras = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableArrayListExtra("displayedCameras", Camera::class.java) ?: displayedCameras
-        }
-        else {
-            intent.getParcelableArrayListExtra("displayedCameras") ?: displayedCameras
+            cameras = intent.getParcelableArrayListExtra("cameras") ?: cameras
+            displayedCameras = intent.getParcelableArrayListExtra("displayedCameras") ?: displayedCameras
         }
 
-        loadView(shuffle)
-    }
-
-    private fun loadView(shuffle: Boolean) {
         setContent {
             AppTheme {
                 Scaffold {
@@ -69,13 +61,12 @@ class CameraActivity : AppCompatActivity() {
                             }
                         }
                         CameraActivityContent(
-                            cameras,
+                            cameras = cameras,
                             displayedCameras = displayedCameras,
                             shuffle = shuffle,
-                            update
-                        ) { camera ->
-                            downloadImage(camera)
-                        }
+                            update = update,
+                            onItemLongClick = { camera -> downloadImage(camera) }
+                        )
                         BackButton()
                     }
                 }
