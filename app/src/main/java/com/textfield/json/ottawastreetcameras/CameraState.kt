@@ -1,9 +1,6 @@
 package com.textfield.json.ottawastreetcameras
 
 import android.location.Location
-import com.textfield.json.ottawastreetcameras.comparators.SortByDistance
-import com.textfield.json.ottawastreetcameras.comparators.SortByName
-import com.textfield.json.ottawastreetcameras.comparators.SortByNeighbourhood
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import kotlin.math.roundToInt
 
@@ -87,8 +84,8 @@ data class CameraState(
 
     private fun getCameraComparator(sortMode: SortMode, location: Location? = null): Comparator<Camera> {
         return when (sortMode) {
-            SortMode.NAME -> SortByName()
-            SortMode.NEIGHBOURHOOD -> SortByNeighbourhood()
+            SortMode.NAME -> SortByName
+            SortMode.NEIGHBOURHOOD -> SortByNeighbourhood
             SortMode.DISTANCE -> {
                 if (location != null) {
                     for (camera in allCameras) {
@@ -96,10 +93,10 @@ data class CameraState(
                         Location.distanceBetween(location.latitude, location.longitude, camera.lat, camera.lon, result)
                         camera.distance = result[0].roundToInt()
                     }
-                    SortByDistance()
+                    SortByDistance
                 }
                 else {
-                    SortByName()
+                    SortByName
                 }
             }
         }
