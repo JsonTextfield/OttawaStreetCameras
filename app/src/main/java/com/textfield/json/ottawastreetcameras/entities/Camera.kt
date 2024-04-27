@@ -41,23 +41,13 @@ class Camera : Parcelable {
 
     val distanceString: String
         get() {
-            var distance = this.distance.toDouble()
-
-            return if (distance < 0) {
-                ""
-            }
-            else if (distance > 9000e3) {
-                ">9000\nkm"
-            }
-            else if (distance >= 100e3) {
-                "${(distance / 1000).roundToInt()}\nkm"
-            }
-            else if (distance >= 500) {
-                distance = (distance / 100.0).roundToInt().toDouble() / 10
-                "$distance\nkm"
-            }
-            else {
-                "${distance.roundToInt()}\nm"
+            val distance = this.distance.toDouble()
+            return when {
+                distance < 0 -> ""
+                distance > 9_000_000 -> ">9000\nkm"
+                distance >= 100_000 -> "${(distance / 1000).roundToInt()}\nkm"
+                distance >= 500 -> "${(distance / 100).roundToInt() / 10.0}\nkm"
+                else -> "${distance.roundToInt()}\nm"
             }
         }
 
