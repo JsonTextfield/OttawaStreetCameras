@@ -114,7 +114,10 @@ class CameraViewModel(
     fun resetFilters() {
         _cameraState.update {
             it.copy(
-                displayedCameras = it.visibleCameras,
+                displayedCameras = it.getDisplayedCameras(
+                    searchMode = SearchMode.NONE,
+                    filterMode = FilterMode.VISIBLE,
+                ),
                 searchMode = SearchMode.NONE,
                 filterMode = FilterMode.VISIBLE,
             )
@@ -129,8 +132,8 @@ class CameraViewModel(
     ) {
         context.startActivity(
             Intent(context, CameraActivity::class.java).apply {
-                putParcelableArrayListExtra("cameras", cameras as ArrayList<Camera>)
-                putParcelableArrayListExtra("displayedCameras", displayedCameras as ArrayList<Camera>)
+                putParcelableArrayListExtra("cameras", ArrayList(cameras))
+                putParcelableArrayListExtra("displayedCameras", ArrayList(displayedCameras))
                 putExtra("shuffle", shuffle)
             }
         )
