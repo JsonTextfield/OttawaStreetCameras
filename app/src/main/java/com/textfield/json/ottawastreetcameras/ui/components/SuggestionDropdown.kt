@@ -13,7 +13,7 @@ import androidx.compose.ui.window.PopupProperties
 @Composable
 fun SuggestionDropdown(
     expanded: Boolean,
-    suggestions: Collection<String>,
+    suggestions: List<String>,
     text: String,
     onItemSelected: (item: String) -> Unit,
 ) {
