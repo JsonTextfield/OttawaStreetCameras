@@ -12,21 +12,24 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.android.volley.toolbox.ImageRequest
 import com.android.volley.toolbox.Volley
-import com.google.android.material.snackbar.Snackbar
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.ui.components.AppTheme
 import com.textfield.json.ottawastreetcameras.ui.components.BackButton
 import com.textfield.json.ottawastreetcameras.ui.components.CameraActivityContent
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.Date
@@ -42,7 +45,8 @@ class CameraActivity : AppCompatActivity() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             cameras = intent.getParcelableArrayListExtra("cameras", Camera::class.java) ?: cameras
-            displayedCameras = intent.getParcelableArrayListExtra("displayedCameras", Camera::class.java) ?: displayedCameras
+            displayedCameras =
+                intent.getParcelableArrayListExtra("displayedCameras", Camera::class.java) ?: displayedCameras
         }
         else {
             cameras = intent.getParcelableArrayListExtra("cameras") ?: cameras
@@ -51,7 +55,11 @@ class CameraActivity : AppCompatActivity() {
 
         setContent {
             AppTheme {
-                Scaffold {
+                val scope = rememberCoroutineScope()
+                val snackbarHostState = remember { SnackbarHostState() }
+                Scaffold(snackbarHost = {
+                    SnackbarHost(hostState = snackbarHostState)
+                }) {
                     Box(modifier = Modifier.padding(it)) {
                         var update by remember { mutableStateOf(false) }
                         LaunchedEffect(update) {
@@ -65,7 +73,18 @@ class CameraActivity : AppCompatActivity() {
                             displayedCameras = displayedCameras,
                             shuffle = shuffle,
                             update = update,
-                            onItemLongClick = { camera -> downloadImage(camera) }
+                            onItemLongClick = { camera ->
+                                downloadImage(camera) {
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar(
+                                            resources.getString(
+                                                R.string.image_saved,
+                                                camera.name
+                                            )
+                                        )
+                                    }
+                                }
+                            }
                         )
                         BackButton()
                     }
@@ -74,14 +93,10 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
-    private fun downloadImage(camera: Camera) {
+    private fun downloadImage(camera: Camera, callback: (Camera) -> Unit = {}) {
         val request = ImageRequest(camera.url, { response ->
             if (response != null && saveImage(response, camera.name)) {
-                Snackbar.make(
-                    window.decorView.rootView,
-                    resources.getString(R.string.image_saved, camera.name),
-                    Snackbar.LENGTH_LONG
-                ).show()
+                callback(camera)
             }
         }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.RGB_565, {
             Log.w("STREETCAMS", it)
