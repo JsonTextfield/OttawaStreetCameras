@@ -41,7 +41,7 @@ android {
 
     buildTypes {
         debug {
-            multiDexEnabled = true
+            multiDexEnabled = false
         }
         release {
             multiDexEnabled = true
@@ -54,59 +54,37 @@ android {
 }
 
 dependencies {
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("androidx.activity:activity-compose:1.9.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
+
+    implementation("com.android.support:multidex:1.0.3")
+    implementation("com.android.volley:volley:1.2.1")
+
+    // Google
+    implementation("com.google.android.gms:play-services-oss-licenses:17.0.1")
+    implementation("com.google.maps.android:maps-compose:4.4.1")
+
+    // Compose
+    val composeBom = platform("androidx.compose:compose-bom:2023.04.01")
+    implementation(composeBom)
+    implementation("androidx.compose.material3:material3:1.2.1")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation("androidx.compose.material:material-icons-extended")
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
+    // Testing
+    androidTestImplementation(composeBom)
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     androidTestImplementation("androidx.test.ext:junit-ktx:1.1.5")
     androidTestImplementation("androidx.test:rules:1.5.0")
     androidTestImplementation("androidx.test:runner:1.5.2")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    implementation("jp.wasabeef:blurry:4.0.1")
-    implementation("com.google.android.gms:play-services-oss-licenses:17.0.1")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation("androidx.vectordrawable:vectordrawable:1.1.0")
-    implementation("com.android.support:multidex:1.0.3")
-    implementation("com.android.volley:volley:1.2.1")
-    implementation("com.google.android.gms:play-services-maps:18.2.0")
-    implementation("com.google.android.material:material:1.11.0")
-    implementation("com.google.android.play:review:2.0.1")
-    implementation("com.google.android.play:review-ktx:2.0.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.mockito:mockito-core:5.5.0")
     testImplementation("org.json:json:20230227")
     testImplementation("io.mockk:mockk:1.13.7")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
-
-    val composeBom = platform("androidx.compose:compose-bom:2023.04.01")
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
-
-    // Choose one of the following:
-    // Material Design 3
-    implementation("androidx.compose.material3:material3:1.2.0")
-
-    // Android Studio Preview support
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-
-    // UI Tests
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
-
-    // Optional - Add full set of material icons
-    implementation("androidx.compose.material:material-icons-extended")
-    // Optional - Add window size utils
-    implementation("androidx.compose.material3:material3-window-size-class")
-
-    // Optional - Integration with activities
-    implementation("androidx.activity:activity-compose:1.8.2")
-    // Optional - Integration with ViewModels
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
-
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
-
-    implementation("io.coil-kt:coil-compose:2.4.0")
-
-    implementation("com.google.maps.android:maps-compose:4.3.3")
-    implementation("com.google.android.gms:play-services-maps:18.2.0")
-
 }
