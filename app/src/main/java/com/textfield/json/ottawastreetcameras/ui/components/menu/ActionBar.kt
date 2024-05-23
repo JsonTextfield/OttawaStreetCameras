@@ -1,7 +1,6 @@
 package com.textfield.json.ottawastreetcameras.ui.components.menu
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -28,18 +27,19 @@ import androidx.compose.material.icons.rounded.TravelExplore
 import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
-import com.google.android.material.snackbar.Snackbar
 import com.textfield.json.ottawastreetcameras.CameraViewModel
 import com.textfield.json.ottawastreetcameras.FilterMode
 import com.textfield.json.ottawastreetcameras.R
@@ -48,6 +48,7 @@ import com.textfield.json.ottawastreetcameras.SortMode
 import com.textfield.json.ottawastreetcameras.ViewMode
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.ui.components.AboutDialog
+import kotlinx.coroutines.launch
 
 @Composable
 fun ActionBar(actions: List<Action> = ArrayList(), onItemSelected: () -> Unit = {}) {
@@ -100,7 +101,7 @@ fun ActionBar(actions: List<Action> = ArrayList(), onItemSelected: () -> Unit = 
 }
 
 @Composable
-fun getActions(cameraViewModel: CameraViewModel): List<Action> {
+fun getActions(cameraViewModel: CameraViewModel, snackbarHostState: SnackbarHostState): List<Action> {
     val cameraState by cameraViewModel.cameraState.collectAsState()
     val selectedCameras = cameraState.selectedCameras
     val context = LocalContext.current
@@ -186,7 +187,7 @@ fun getActions(cameraViewModel: CameraViewModel): List<Action> {
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
             )
-
+            val scope = rememberCoroutineScope()
             val locationPermissionLauncher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.RequestMultiplePermissions(),
                 onResult = { permissions ->
@@ -201,11 +202,9 @@ fun getActions(cameraViewModel: CameraViewModel): List<Action> {
                             cameraViewModel.changeSortMode(SortMode.DISTANCE, lastLocation)
                         }
                         else {
-                            Snackbar.make(
-                                (context as Activity).window.decorView.rootView,
-                                context.getString(R.string.location_unavailable),
-                                Snackbar.LENGTH_LONG
-                            ).show()
+                            scope.launch {
+                                snackbarHostState.showSnackbar(context.getString(R.string.location_unavailable))
+                            }
                         }
                     }
                 },
