@@ -34,19 +34,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.textfield.json.ottawastreetcameras.CameraViewModel
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CameraGalleryTile(
-    cameraViewModel: CameraViewModel,
+    mainViewModel: MainViewModel,
     camera: Camera,
     onClick: (Camera) -> Unit = {},
     onLongClick: (Camera) -> Unit = {},
 ) {
-    val cameraState by cameraViewModel.cameraState.collectAsState()
+    val cameraState by mainViewModel.cameraState.collectAsState()
 
     Box(
         modifier = Modifier

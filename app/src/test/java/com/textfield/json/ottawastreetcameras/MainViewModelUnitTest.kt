@@ -2,6 +2,7 @@ package com.textfield.json.ottawastreetcameras
 
 import android.content.SharedPreferences
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
@@ -16,56 +17,56 @@ import org.mockito.junit.MockitoJUnitRunner
 import kotlin.random.Random
 
 @RunWith(MockitoJUnitRunner::class)
-class CameraViewModelUnitTest {
+class MainViewModelUnitTest {
 
     private var mockPrefs: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
 
-    private var cameraViewModel = CameraViewModel(prefs = mockPrefs)
+    private var mainViewModel = MainViewModel(prefs = mockPrefs)
 
     @Before
     fun setup() {
-        cameraViewModel = CameraViewModel(prefs = mockPrefs)
+        mainViewModel = MainViewModel(prefs = mockPrefs)
     }
 
     @Test
     fun testChangeViewMode() {
-        cameraViewModel.changeViewMode(ViewMode.MAP)
-        assertEquals(ViewMode.MAP, cameraViewModel.cameraState.value.viewMode)
+        mainViewModel.changeViewMode(ViewMode.MAP)
+        assertEquals(ViewMode.MAP, mainViewModel.cameraState.value.viewMode)
 
-        cameraViewModel.changeViewMode(ViewMode.GALLERY)
-        assertEquals(ViewMode.GALLERY, cameraViewModel.cameraState.value.viewMode)
+        mainViewModel.changeViewMode(ViewMode.GALLERY)
+        assertEquals(ViewMode.GALLERY, mainViewModel.cameraState.value.viewMode)
     }
 
     @Test
     fun testChangeSortMode() {
-        cameraViewModel.changeSortMode(SortMode.NEIGHBOURHOOD)
-        assertEquals(SortMode.NEIGHBOURHOOD, cameraViewModel.cameraState.value.sortMode)
+        mainViewModel.changeSortMode(SortMode.NEIGHBOURHOOD)
+        assertEquals(SortMode.NEIGHBOURHOOD, mainViewModel.cameraState.value.sortMode)
 
-        cameraViewModel.changeSortMode(SortMode.NAME)
-        assertEquals(SortMode.NAME, cameraViewModel.cameraState.value.sortMode)
+        mainViewModel.changeSortMode(SortMode.NAME)
+        assertEquals(SortMode.NAME, mainViewModel.cameraState.value.sortMode)
     }
 
     @Test
     fun testChangeFilterMode() {
-        cameraViewModel.changeFilterMode(FilterMode.FAVOURITE)
-        assertEquals(FilterMode.FAVOURITE, cameraViewModel.cameraState.value.filterMode)
+        mainViewModel.changeFilterMode(FilterMode.FAVOURITE)
+        assertEquals(FilterMode.FAVOURITE, mainViewModel.cameraState.value.filterMode)
 
-        cameraViewModel.changeFilterMode(FilterMode.HIDDEN)
-        assertEquals(FilterMode.HIDDEN, cameraViewModel.cameraState.value.filterMode)
+        mainViewModel.changeFilterMode(FilterMode.HIDDEN)
+        assertEquals(FilterMode.HIDDEN, mainViewModel.cameraState.value.filterMode)
     }
 
     @Test
     fun testChangeSearchMode() {
-        cameraViewModel.searchCameras(SearchMode.NEIGHBOURHOOD)
-        assertEquals(SearchMode.NEIGHBOURHOOD, cameraViewModel.cameraState.value.searchMode)
+        mainViewModel.searchCameras(SearchMode.NEIGHBOURHOOD)
+        assertEquals(SearchMode.NEIGHBOURHOOD, mainViewModel.cameraState.value.searchMode)
 
-        cameraViewModel.searchCameras(SearchMode.NAME)
-        assertEquals(SearchMode.NAME, cameraViewModel.cameraState.value.searchMode)
+        mainViewModel.searchCameras(SearchMode.NAME)
+        assertEquals(SearchMode.NAME, mainViewModel.cameraState.value.searchMode)
     }
 
     @Test
     fun testSearchCameras() {
-        cameraViewModel = CameraViewModel(
+        mainViewModel = MainViewModel(
             _cameraState = MutableStateFlow(CameraState().apply {
                 allCameras = (0 until 10).map {
                     Camera.fromJson(JSONObject().apply {
@@ -83,25 +84,25 @@ class CameraViewModelUnitTest {
             prefs = mockPrefs,
         )
 
-        cameraViewModel.searchCameras(SearchMode.NAME, "Camera 5")
-        assertEquals(cameraViewModel.cameraState.value.displayedCameras.size, 1)
+        mainViewModel.searchCameras(SearchMode.NAME, "Camera 5")
+        assertEquals(mainViewModel.cameraState.value.displayedCameras.size, 1)
 
-        cameraViewModel.searchCameras(SearchMode.NONE, "any")
-        assertEquals(cameraViewModel.cameraState.value.displayedCameras.size, 10)
+        mainViewModel.searchCameras(SearchMode.NONE, "any")
+        assertEquals(mainViewModel.cameraState.value.displayedCameras.size, 10)
 
-        cameraViewModel.searchCameras(SearchMode.NEIGHBOURHOOD, "")
-        assertEquals(cameraViewModel.cameraState.value.displayedCameras.size, 10)
+        mainViewModel.searchCameras(SearchMode.NEIGHBOURHOOD, "")
+        assertEquals(mainViewModel.cameraState.value.displayedCameras.size, 10)
 
-        cameraViewModel.searchCameras(SearchMode.NAME, "")
-        assertEquals(cameraViewModel.cameraState.value.displayedCameras.size, 10)
+        mainViewModel.searchCameras(SearchMode.NAME, "")
+        assertEquals(mainViewModel.cameraState.value.displayedCameras.size, 10)
 
-        cameraViewModel.searchCameras(SearchMode.NEIGHBOURHOOD, "neighbourhood")
-        assertEquals(cameraViewModel.cameraState.value.displayedCameras.size, 1)
+        mainViewModel.searchCameras(SearchMode.NEIGHBOURHOOD, "neighbourhood")
+        assertEquals(mainViewModel.cameraState.value.displayedCameras.size, 1)
     }
 
     @Test
     fun testSelectAllCameras() {
-        cameraViewModel = CameraViewModel(
+        mainViewModel = MainViewModel(
             _cameraState = MutableStateFlow(CameraState().apply {
                 allCameras = (0 until 10).map {
                     Camera.fromJson(JSONObject().apply {
@@ -117,18 +118,18 @@ class CameraViewModelUnitTest {
             prefs = mockPrefs,
         )
 
-        cameraViewModel.selectAllCameras()
+        mainViewModel.selectAllCameras()
 
-        assertNotEquals(0, cameraViewModel.cameraState.value.selectedCameras.size)
+        assertNotEquals(0, mainViewModel.cameraState.value.selectedCameras.size)
         assertEquals(
-            cameraViewModel.cameraState.value.displayedCameras.size,
-            cameraViewModel.cameraState.value.selectedCameras.size
+            mainViewModel.cameraState.value.displayedCameras.size,
+            mainViewModel.cameraState.value.selectedCameras.size
         )
     }
 
     @Test
     fun testClearSelectedCameras() {
-        cameraViewModel = CameraViewModel(
+        mainViewModel = MainViewModel(
             _cameraState = MutableStateFlow(CameraState().apply {
                 allCameras = (0 until 10).map {
                     Camera.fromJson(JSONObject().apply {
@@ -144,16 +145,16 @@ class CameraViewModelUnitTest {
             prefs = mockPrefs,
         )
 
-        cameraViewModel.selectAllCameras()
-        assertNotEquals(0, cameraViewModel.cameraState.value.selectedCameras.size)
+        mainViewModel.selectAllCameras()
+        assertNotEquals(0, mainViewModel.cameraState.value.selectedCameras.size)
 
-        cameraViewModel.selectAllCameras(false)
-        assertEquals(0, cameraViewModel.cameraState.value.selectedCameras.size)
+        mainViewModel.selectAllCameras(false)
+        assertEquals(0, mainViewModel.cameraState.value.selectedCameras.size)
     }
 
     @Test
     fun testSelectCamera() {
-        cameraViewModel = CameraViewModel(
+        mainViewModel = MainViewModel(
             _cameraState = MutableStateFlow(CameraState().apply {
                 allCameras = (0 until 10).map {
                     Camera.fromJson(JSONObject().apply {
@@ -168,16 +169,16 @@ class CameraViewModelUnitTest {
             prefs = mockPrefs,
         )
 
-        assertTrue(cameraViewModel.cameraState.value.selectedCameras.isEmpty())
+        assertTrue(mainViewModel.cameraState.value.selectedCameras.isEmpty())
 
-        cameraViewModel.selectCamera(cameraViewModel.cameraState.value.allCameras.first())
+        mainViewModel.selectCamera(mainViewModel.cameraState.value.allCameras.first())
 
-        assertFalse(cameraViewModel.cameraState.value.selectedCameras.isEmpty())
+        assertFalse(mainViewModel.cameraState.value.selectedCameras.isEmpty())
     }
 
     @Test
     fun testFavouriteSelectedCameras() {
-        cameraViewModel = CameraViewModel(
+        mainViewModel = MainViewModel(
             _cameraState = MutableStateFlow(CameraState().apply {
                 allCameras = (0 until 10).map {
                     Camera.fromJson(JSONObject().apply {
@@ -193,18 +194,18 @@ class CameraViewModelUnitTest {
             prefs = mockPrefs,
         )
 
-        cameraViewModel.selectCamera(cameraViewModel.cameraState.value.allCameras[1])
-        cameraViewModel.selectCamera(cameraViewModel.cameraState.value.allCameras[4])
+        mainViewModel.selectCamera(mainViewModel.cameraState.value.allCameras[1])
+        mainViewModel.selectCamera(mainViewModel.cameraState.value.allCameras[4])
 
-        cameraViewModel.favouriteCameras(cameraViewModel.cameraState.value.selectedCameras)
+        mainViewModel.favouriteCameras(mainViewModel.cameraState.value.selectedCameras)
 
-        assertTrue(cameraViewModel.cameraState.value.allCameras[1].isFavourite)
-        assertTrue(cameraViewModel.cameraState.value.allCameras[4].isFavourite)
+        assertTrue(mainViewModel.cameraState.value.allCameras[1].isFavourite)
+        assertTrue(mainViewModel.cameraState.value.allCameras[4].isFavourite)
     }
 
     @Test
     fun testHideSelectedCameras() {
-        cameraViewModel = CameraViewModel(
+        mainViewModel = MainViewModel(
             _cameraState = MutableStateFlow(CameraState().apply {
                 allCameras = (0 until 10).map {
                     Camera.fromJson(JSONObject().apply {
@@ -220,12 +221,12 @@ class CameraViewModelUnitTest {
             prefs = mockPrefs,
         )
 
-        cameraViewModel.selectCamera(cameraViewModel.cameraState.value.allCameras[5])
-        cameraViewModel.selectCamera(cameraViewModel.cameraState.value.allCameras[8])
+        mainViewModel.selectCamera(mainViewModel.cameraState.value.allCameras[5])
+        mainViewModel.selectCamera(mainViewModel.cameraState.value.allCameras[8])
 
-        cameraViewModel.hideCameras(cameraViewModel.cameraState.value.selectedCameras)
+        mainViewModel.hideCameras(mainViewModel.cameraState.value.selectedCameras)
 
-        assertFalse(cameraViewModel.cameraState.value.allCameras[5].isVisible)
-        assertFalse(cameraViewModel.cameraState.value.allCameras[8].isVisible)
+        assertFalse(mainViewModel.cameraState.value.allCameras[5].isVisible)
+        assertFalse(mainViewModel.cameraState.value.allCameras[8].isVisible)
     }
 }

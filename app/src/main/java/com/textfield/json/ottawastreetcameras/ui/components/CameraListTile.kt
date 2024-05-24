@@ -24,20 +24,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.textfield.json.ottawastreetcameras.CameraViewModel
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.SortMode
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CameraListTile(
-    cameraViewModel: CameraViewModel,
+    mainViewModel: MainViewModel,
     camera: Camera,
     onClick: (Camera) -> Unit = {},
     onLongClick: (Camera) -> Unit = {},
 ) {
-    val cameraState by cameraViewModel.cameraState.collectAsState()
+    val cameraState by mainViewModel.cameraState.collectAsState()
     ListItem(
         modifier = Modifier
             .defaultMinSize(minHeight = 50.dp)
@@ -98,7 +98,7 @@ fun CameraListTile(
         trailingContent = {
             IconButton(
                 onClick = {
-                    cameraViewModel.favouriteCameras(listOf(camera))
+                    mainViewModel.favouriteCameras(listOf(camera))
                 }
             ) {
                 if (camera.isFavourite) {

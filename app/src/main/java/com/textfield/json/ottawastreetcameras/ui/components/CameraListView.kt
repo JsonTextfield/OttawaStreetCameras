@@ -29,21 +29,21 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.textfield.json.ottawastreetcameras.CameraViewModel
 import com.textfield.json.ottawastreetcameras.FilterMode
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CameraListView(
-    cameraViewModel: CameraViewModel,
+    mainViewModel: MainViewModel,
     listState: LazyListState,
     onItemClick: (Camera) -> Unit = {},
     onItemLongClick: (Camera) -> Unit = {},
     onItemDismissed: (Camera) -> Unit = {},
 ) {
-    val cameraState by cameraViewModel.cameraState.collectAsState()
+    val cameraState by mainViewModel.cameraState.collectAsState()
     Row {
         AnimatedVisibility(visible = cameraState.showSectionIndex) {
             SectionIndex(
@@ -55,7 +55,7 @@ fun CameraListView(
         LazyColumn(state = listState) {
             items(cameras, { camera -> camera.hashCode() }) { camera ->
                 if (cameraState.filterMode == FilterMode.FAVOURITE) {
-                    CameraListTile(cameraViewModel, camera, onItemClick, onItemLongClick)
+                    CameraListTile(mainViewModel, camera, onItemClick, onItemLongClick)
                 }
                 else {
                     val density = LocalDensity.current
@@ -103,7 +103,7 @@ fun CameraListView(
                             )
                         },
                         content = {
-                            CameraListTile(cameraViewModel, camera, onItemClick, onItemLongClick)
+                            CameraListTile(mainViewModel, camera, onItemClick, onItemLongClick)
                         },
                     )
                 }

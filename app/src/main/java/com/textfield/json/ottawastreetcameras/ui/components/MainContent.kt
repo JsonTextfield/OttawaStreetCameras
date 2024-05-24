@@ -14,39 +14,39 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import com.textfield.json.ottawastreetcameras.CameraViewModel
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.ViewMode
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun MainContent(
-    cameraViewModel: CameraViewModel,
+    mainViewModel: MainViewModel,
     listState: LazyListState,
     gridState: LazyGridState,
     snackbarHostState: SnackbarHostState,
 ) {
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column {
-            val cameraState by cameraViewModel.cameraState.collectAsState()
+            val cameraState by mainViewModel.cameraState.collectAsState()
             val context = LocalContext.current
             val onItemClick = { camera: Camera ->
                 if (cameraState.selectedCameras.isNotEmpty()) {
-                    cameraViewModel.selectCamera(camera)
+                    mainViewModel.selectCamera(camera)
                 }
                 else {
-                    cameraViewModel.showCameras(
+                    mainViewModel.showCameras(
                         context = context,
                         cameras = arrayListOf(camera),
                         displayedCameras = cameraState.displayedCameras,
                     )
                 }
             }
-            val onItemLongClick = { camera: Camera -> cameraViewModel.selectCamera(camera) }
+            val onItemLongClick = { camera: Camera -> mainViewModel.selectCamera(camera) }
             val scope = rememberCoroutineScope()
             val onItemDismissed : (Camera) -> Unit = { camera ->
-                cameraViewModel.hideCameras(listOf(camera))
+                mainViewModel.hideCameras(listOf(camera))
                 val visibilityStringId = if (camera.isVisible) R.string.unhidden else R.string.hidden
                 scope.launch {
                     val result = snackbarHostState.showSnackbar(context.getString(
@@ -55,14 +55,14 @@ fun MainContent(
                         context.getString(visibilityStringId)
                     ), context.getString(R.string.undo))
                     if (result == SnackbarResult.ActionPerformed) {
-                        cameraViewModel.hideCameras(listOf(camera))
+                        mainViewModel.hideCameras(listOf(camera))
                     }
                 }
             }
             when (cameraState.viewMode) {
                 ViewMode.LIST -> {
                     CameraListView(
-                        cameraViewModel,
+                        mainViewModel,
                         listState = listState,
                         onItemClick = onItemClick,
                         onItemLongClick = onItemLongClick,
@@ -72,7 +72,7 @@ fun MainContent(
 
                 ViewMode.MAP -> {
                     CameraMapView(
-                        cameraViewModel,
+                        mainViewModel,
                         onItemClick = onItemClick,
                         onItemLongClick = onItemLongClick
                     )
@@ -80,7 +80,7 @@ fun MainContent(
 
                 ViewMode.GALLERY -> {
                     CameraGalleryView(
-                        cameraViewModel,
+                        mainViewModel,
                         gridState = gridState,
                         onItemClick = onItemClick,
                         onItemLongClick = onItemLongClick

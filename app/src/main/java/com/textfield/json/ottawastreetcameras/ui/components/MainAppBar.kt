@@ -17,11 +17,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import com.textfield.json.ottawastreetcameras.CameraViewModel
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.ViewMode
 import com.textfield.json.ottawastreetcameras.ui.components.menu.ActionBar
 import com.textfield.json.ottawastreetcameras.ui.components.menu.getActions
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,16 +29,16 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainAppBar(
-    cameraViewModel: CameraViewModel,
+    mainViewModel: MainViewModel,
     listState: LazyListState,
     gridState: LazyGridState,
     snackbarHostState: SnackbarHostState,
 ) {
-    val cameraState by cameraViewModel.cameraState.collectAsState()
+    val cameraState by mainViewModel.cameraState.collectAsState()
     TopAppBar(
         navigationIcon = {
             if (cameraState.showBackButton) {
-                IconButton(onClick = { cameraViewModel.resetFilters() }) {
+                IconButton(onClick = { mainViewModel.resetFilters() }) {
                     Icon(
                         Icons.AutoMirrored.Rounded.ArrowBack,
                         stringResource(id = R.string.back),
@@ -48,7 +48,7 @@ fun MainAppBar(
             }
         },
         title = {
-            AppBarTitle(cameraViewModel) {
+            AppBarTitle(mainViewModel) {
                 CoroutineScope(Dispatchers.Main).launch {
                     when (cameraState.viewMode) {
                         ViewMode.LIST -> listState.scrollToItem(0)
@@ -59,7 +59,7 @@ fun MainAppBar(
             }
         },
         actions = {
-            ActionBar(getActions(cameraViewModel, snackbarHostState))
+            ActionBar(getActions(mainViewModel, snackbarHostState))
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = if (!isSystemInDarkTheme() || cameraState.selectedCameras.isNotEmpty()) {

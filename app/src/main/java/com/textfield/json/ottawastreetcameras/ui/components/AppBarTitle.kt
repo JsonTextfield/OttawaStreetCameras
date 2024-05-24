@@ -17,15 +17,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.textfield.json.ottawastreetcameras.CameraViewModel
 import com.textfield.json.ottawastreetcameras.FilterMode
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.SearchMode
 import com.textfield.json.ottawastreetcameras.ViewMode
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
 
 @Composable
-fun AppBarTitle(cameraViewModel: CameraViewModel, onClick: () -> Unit = {}) {
-    val cameraState by cameraViewModel.cameraState.collectAsState()
+fun AppBarTitle(mainViewModel: MainViewModel, onClick: () -> Unit = {}) {
+    val cameraState by mainViewModel.cameraState.collectAsState()
     if (cameraState.selectedCameras.isNotEmpty()) {
         Text(
             pluralStringResource(
@@ -68,7 +68,7 @@ fun AppBarTitle(cameraViewModel: CameraViewModel, onClick: () -> Unit = {}) {
                         cameraState.displayedCameras.size
                     )
                 ) {
-                    cameraViewModel.searchCameras(cameraState.searchMode, it)
+                    mainViewModel.searchCameras(cameraState.searchMode, it)
                 }
             }
 
@@ -88,7 +88,7 @@ fun AppBarTitle(cameraViewModel: CameraViewModel, onClick: () -> Unit = {}) {
 
                     SuggestionDropdown(expanded, suggestionList, value) {
                         value = it
-                        cameraViewModel.searchCameras(cameraState.searchMode, value)
+                        mainViewModel.searchCameras(cameraState.searchMode, value)
                     }
                     SearchBarContent(
                         pluralStringResource(
@@ -98,7 +98,7 @@ fun AppBarTitle(cameraViewModel: CameraViewModel, onClick: () -> Unit = {}) {
                         ), value
                     ) {
                         value = it
-                        cameraViewModel.searchCameras(cameraState.searchMode, value)
+                        mainViewModel.searchCameras(cameraState.searchMode, value)
                     }
                 }
             }

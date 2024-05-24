@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras
+package com.textfield.json.ottawastreetcameras.ui.viewmodels
 
 import android.content.Context
 import android.content.Intent
@@ -9,13 +9,21 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.textfield.json.ottawastreetcameras.CameraDownloadService
+import com.textfield.json.ottawastreetcameras.CameraState
+import com.textfield.json.ottawastreetcameras.DownloadService
+import com.textfield.json.ottawastreetcameras.FilterMode
+import com.textfield.json.ottawastreetcameras.SearchMode
+import com.textfield.json.ottawastreetcameras.SortMode
+import com.textfield.json.ottawastreetcameras.UIState
+import com.textfield.json.ottawastreetcameras.ViewMode
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.ui.activities.CameraActivity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
-class CameraViewModel(
+class MainViewModel(
     private val _cameraState: MutableStateFlow<CameraState> = MutableStateFlow(CameraState()),
     private val downloadService: DownloadService = CameraDownloadService,
     private val prefs: SharedPreferences,
@@ -175,10 +183,10 @@ class CameraViewModel(
     }
 
     companion object {
-        val CameraViewModelFactory: ViewModelProvider.Factory = viewModelFactory {
+        val MainViewModelFactory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = checkNotNull(this[APPLICATION_KEY])
-                CameraViewModel(
+                MainViewModel(
                     prefs = application.getSharedPreferences(application.packageName, Context.MODE_PRIVATE)
                 )
             }

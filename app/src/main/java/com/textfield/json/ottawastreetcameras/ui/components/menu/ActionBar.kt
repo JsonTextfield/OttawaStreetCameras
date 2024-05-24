@@ -40,7 +40,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
-import com.textfield.json.ottawastreetcameras.CameraViewModel
 import com.textfield.json.ottawastreetcameras.FilterMode
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.SearchMode
@@ -48,6 +47,7 @@ import com.textfield.json.ottawastreetcameras.SortMode
 import com.textfield.json.ottawastreetcameras.ViewMode
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.ui.components.AboutDialog
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -101,20 +101,20 @@ fun ActionBar(actions: List<Action> = ArrayList(), onItemSelected: () -> Unit = 
 }
 
 @Composable
-fun getActions(cameraViewModel: CameraViewModel, snackbarHostState: SnackbarHostState): List<Action> {
-    val cameraState by cameraViewModel.cameraState.collectAsState()
+fun getActions(mainViewModel: MainViewModel, snackbarHostState: SnackbarHostState): List<Action> {
+    val cameraState by mainViewModel.cameraState.collectAsState()
     val selectedCameras = cameraState.selectedCameras
     val context = LocalContext.current
     val clearSelection = Action(
         icon = Icons.Rounded.Clear, tooltip = stringResource(R.string.clear), true,
-        onClick = { cameraViewModel.selectAllCameras(false) },
+        onClick = { mainViewModel.selectAllCameras(false) },
     )
     val view = Action(
         icon = Icons.Rounded.CameraAlt,
         tooltip = stringResource(id = R.string.view),
         selectedCameras.size <= 8,
         onClick = {
-            cameraViewModel.showCameras(
+            mainViewModel.showCameras(
                 context = context,
                 cameras = cameraState.selectedCameras,
                 displayedCameras = cameraState.displayedCameras,
@@ -132,19 +132,19 @@ fun getActions(cameraViewModel: CameraViewModel, snackbarHostState: SnackbarHost
                 R.string.add_to_favourites
             }
         ),
-        onClick = { cameraViewModel.favouriteCameras(cameraState.selectedCameras) },
+        onClick = { mainViewModel.favouriteCameras(cameraState.selectedCameras) },
     )
     val allIsHidden = selectedCameras.all { !it.isVisible }
     val hide = Action(
         icon = if (allIsHidden) Icons.Rounded.Visibility else Icons.Rounded.VisibilityOff,
         tooltip = stringResource(if (allIsHidden) R.string.unhide else R.string.hide),
-        onClick = { cameraViewModel.hideCameras(cameraState.selectedCameras) },
+        onClick = { mainViewModel.hideCameras(cameraState.selectedCameras) },
     )
     val selectAll = Action(
         icon = Icons.Rounded.SelectAll,
         tooltip = stringResource(R.string.select_all),
         isVisible = selectedCameras.size < cameraState.displayedCameras.size,
-        onClick = { cameraViewModel.selectAllCameras() },
+        onClick = { mainViewModel.selectAllCameras() },
     )
     val switchView = Action(
         icon = when (cameraState.viewMode) {
@@ -171,7 +171,7 @@ fun getActions(cameraViewModel: CameraViewModel, snackbarHostState: SnackbarHost
                         isSelected = cameraState.viewMode == viewMode,
                         onClick = {
                             isExpanded = !isExpanded
-                            cameraViewModel.changeViewMode(viewMode)
+                            mainViewModel.changeViewMode(viewMode)
                         },
                     )
                 }
@@ -199,7 +199,7 @@ fun getActions(cameraViewModel: CameraViewModel, snackbarHostState: SnackbarHost
                         val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
                         val lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
                         if (lastLocation != null) {
-                            cameraViewModel.changeSortMode(SortMode.DISTANCE, lastLocation)
+                            mainViewModel.changeSortMode(SortMode.DISTANCE, lastLocation)
                         }
                         else {
                             scope.launch {
@@ -225,7 +225,7 @@ fun getActions(cameraViewModel: CameraViewModel, snackbarHostState: SnackbarHost
                                 locationPermissionLauncher.launch(permissionArray)
                             }
                             else {
-                                cameraViewModel.changeSortMode(sortMode)
+                                mainViewModel.changeSortMode(sortMode)
                             }
                         },
                     )
@@ -238,32 +238,32 @@ fun getActions(cameraViewModel: CameraViewModel, snackbarHostState: SnackbarHost
         isVisible = cameraState.searchMode != SearchMode.NAME,
         tooltip = stringResource(id = R.string.search),
         isChecked = cameraState.searchMode == SearchMode.NAME,
-        onClick = { cameraViewModel.searchCameras(SearchMode.NAME) },
+        onClick = { mainViewModel.searchCameras(SearchMode.NAME) },
     )
     val searchNeighbourhood = Action(
         icon = Icons.Rounded.TravelExplore,
         isVisible = cameraState.showSearchNeighbourhood,
         tooltip = stringResource(id = R.string.search_neighbourhood),
         isChecked = cameraState.searchMode == SearchMode.NEIGHBOURHOOD,
-        onClick = { cameraViewModel.searchCameras(SearchMode.NEIGHBOURHOOD) },
+        onClick = { mainViewModel.searchCameras(SearchMode.NEIGHBOURHOOD) },
     )
     val favourites = Action(
         icon = Icons.Rounded.Star,
         tooltip = stringResource(id = R.string.favourites),
         isChecked = cameraState.filterMode == FilterMode.FAVOURITE,
-        onClick = { cameraViewModel.changeFilterMode(FilterMode.FAVOURITE) },
+        onClick = { mainViewModel.changeFilterMode(FilterMode.FAVOURITE) },
     )
     val hidden = Action(
         icon = Icons.Rounded.VisibilityOff,
         tooltip = stringResource(id = R.string.hidden_cameras),
         isChecked = cameraState.filterMode == FilterMode.HIDDEN,
-        onClick = { cameraViewModel.changeFilterMode(FilterMode.HIDDEN) },
+        onClick = { mainViewModel.changeFilterMode(FilterMode.HIDDEN) },
     )
     val random = Action(
         icon = Icons.Rounded.Casino,
         tooltip = stringResource(id = R.string.random_camera),
         onClick = {
-            cameraViewModel.showCameras(
+            mainViewModel.showCameras(
                 context = context,
                 cameras = arrayListOf(cameraState.visibleCameras.random()),
                 displayedCameras = cameraState.visibleCameras,
@@ -274,7 +274,7 @@ fun getActions(cameraViewModel: CameraViewModel, snackbarHostState: SnackbarHost
         icon = Icons.Rounded.Shuffle,
         tooltip = stringResource(id = R.string.shuffle),
         onClick = {
-            cameraViewModel.showCameras(
+            mainViewModel.showCameras(
                 context = context,
                 cameras = cameraState.visibleCameras as ArrayList<Camera>,
                 displayedCameras = cameraState.visibleCameras as ArrayList<Camera>,

@@ -18,19 +18,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.textfield.json.ottawastreetcameras.CameraViewModel
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
 
 
 @Composable
 fun CameraGalleryView(
-    cameraViewModel: CameraViewModel,
+    mainViewModel: MainViewModel,
     gridState: LazyGridState,
     onItemClick: (Camera) -> Unit,
     onItemLongClick: (Camera) -> Unit,
 ) {
-    val cameraState by cameraViewModel.cameraState.collectAsState()
+    val cameraState by mainViewModel.cameraState.collectAsState()
     val cameras = cameraState.displayedCameras
     LazyVerticalGrid(
         state = gridState,
@@ -40,7 +40,7 @@ fun CameraGalleryView(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         items(cameras.size) {
-            CameraGalleryTile(cameraViewModel, cameras[it], onItemClick, onItemLongClick)
+            CameraGalleryTile(mainViewModel, cameras[it], onItemClick, onItemLongClick)
         }
 
         item {
