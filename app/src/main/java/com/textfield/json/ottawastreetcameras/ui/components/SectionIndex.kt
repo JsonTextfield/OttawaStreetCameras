@@ -4,7 +4,7 @@ import android.view.MotionEvent
 import androidx.compose.foundation.gestures.DraggableState
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,14 +28,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.textfield.json.ottawastreetcameras.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -73,7 +72,7 @@ private fun getSelectedIndex(yPosition: Float, sectionIndexHeight: Float, itemCo
 fun SectionIndex(
     data: List<String>,
     listState: LazyListState,
-    selectedColour: Color = colorResource(R.color.colorAccent),
+    selectedColour: Color = MaterialTheme.colorScheme.secondary,
     minSectionHeight: Dp = 30.dp, // Minimum pixels needed to display each section
 ) {
     val indexData = getIndexData(data).toList()
@@ -129,7 +128,8 @@ fun SectionIndex(
                     }
                 }
                 true
-            }
+            },
+        verticalArrangement = Arrangement.SpaceAround,
     ) {
         with(LocalDensity.current) {
             val minSectionHeightPx = minSectionHeight.toPx()
@@ -150,11 +150,8 @@ fun SectionIndex(
                         color = if (selectedKey == it.first) {
                             selectedColour
                         }
-                        else if (isSystemInDarkTheme()) {
-                            Color.White
-                        }
                         else {
-                            Color.Black
+                            MaterialTheme.colorScheme.onBackground
                         }
                     )
                 }

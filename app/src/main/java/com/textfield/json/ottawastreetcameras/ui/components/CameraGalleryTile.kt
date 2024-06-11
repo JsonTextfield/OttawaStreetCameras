@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -80,7 +81,7 @@ fun CameraGalleryTile(
                     .fillMaxSize()
                     .background(
                         color = if (cameraState.selectedCameras.contains(camera)) {
-                            colorResource(id = R.color.galleryTileSelectedColour)
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
                         }
                         else {
                             Color.Transparent

@@ -1,6 +1,5 @@
 package com.textfield.json.ottawastreetcameras.ui.components
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.material.icons.Icons
@@ -8,20 +7,19 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import com.textfield.json.ottawastreetcameras.R
-import com.textfield.json.ottawastreetcameras.ViewMode
 import com.textfield.json.ottawastreetcameras.ui.components.menu.ActionBar
 import com.textfield.json.ottawastreetcameras.ui.components.menu.getActions
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.ViewMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -42,7 +40,7 @@ fun MainAppBar(
                     Icon(
                         Icons.AutoMirrored.Rounded.ArrowBack,
                         stringResource(id = R.string.back),
-                        tint = Color.White
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }
@@ -62,12 +60,7 @@ fun MainAppBar(
             ActionBar(getActions(mainViewModel, snackbarHostState))
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = if (!isSystemInDarkTheme() || cameraState.selectedCameras.isNotEmpty()) {
-                colorResource(id = R.color.colorAccent)
-            }
-            else {
-                Color.Black
-            }
+            containerColor = MaterialTheme.colorScheme.primary
         ),
     )
 }

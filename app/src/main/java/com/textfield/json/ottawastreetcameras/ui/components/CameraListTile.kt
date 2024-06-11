@@ -2,7 +2,6 @@ package com.textfield.json.ottawastreetcameras.ui.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,21 +12,21 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.textfield.json.ottawastreetcameras.R
-import com.textfield.json.ottawastreetcameras.SortMode
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.SortMode
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -48,40 +47,20 @@ fun CameraListTile(
             .fillMaxWidth(),
         colors = ListItemDefaults.colors(
             containerColor = if (camera.isSelected) {
-                colorResource(R.color.colorAccent)
-            }
-            else if (isSystemInDarkTheme()) {
-                Color.Black
+                MaterialTheme.colorScheme.primaryContainer
             }
             else {
-                Color.White
+                ListItemDefaults.containerColor
             }
         ),
         headlineContent = {
-            Text(
-                camera.name,
-                color = if (camera.isSelected) Color.White else Color.Unspecified
-            )
+            Text(camera.name)
         },
-        supportingContent = if (camera.neighbourhood.isNotBlank()) {
-            {
-                Text(
-                    camera.neighbourhood,
-                    color = if (camera.isSelected) {
-                        Color.White
-                    }
-                    else if (isSystemInDarkTheme()) {
-                        Color.LightGray
-                    }
-                    else {
-                        Color.DarkGray
-                    },
-                    fontSize = 12.sp,
-                    lineHeight = 14.sp,
-                )
+        supportingContent = {
+            if (camera.neighbourhood.isNotBlank()) {
+                Text(camera.neighbourhood)
             }
-        }
-        else null,
+        },
         leadingContent = if (cameraState.sortMode == SortMode.DISTANCE && camera.distance > -1) {
             {
                 Text(
@@ -90,7 +69,6 @@ fun CameraListTile(
                     fontSize = 12.sp,
                     lineHeight = 14.sp,
                     modifier = Modifier.padding(5.dp),
-                    color = if (camera.isSelected) Color.White else Color.Unspecified
                 )
             }
         }
@@ -112,15 +90,6 @@ fun CameraListTile(
                     Icon(
                         Icons.Rounded.StarBorder,
                         contentDescription = stringResource(R.string.add_to_favourites),
-                        tint = if (camera.isSelected) {
-                            Color.White
-                        }
-                        else if (isSystemInDarkTheme()) {
-                            Color.White
-                        }
-                        else {
-                            Color.DarkGray
-                        },
                     )
                 }
             }

@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,7 +25,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
@@ -60,8 +60,8 @@ fun SearchBarContent(
             .fillMaxWidth()
             .focusRequester(focusRequester),
         singleLine = true,
-        textStyle = TextStyle(color = Color.White, fontSize = 14.sp),
-        cursorBrush = SolidColor(Color.White),
+        textStyle = TextStyle(color = MaterialTheme.colorScheme.onPrimary, fontSize = 14.sp),
+        cursorBrush = SolidColor(MaterialTheme.colorScheme.inversePrimary),
         decorationBox = { innerTextField ->
             Box {
                 Row(modifier = Modifier.fillMaxSize()) {
@@ -83,7 +83,7 @@ fun SearchBarContent(
                             Icon(
                                 Icons.Rounded.Clear,
                                 stringResource(id = R.string.clear),
-                                tint = Color.White,
+                                tint = MaterialTheme.colorScheme.onPrimary,
                             )
                         }
                     }
@@ -98,7 +98,7 @@ fun SearchBarContent(
                         maxLines = 1,
                         fontSize = 14.sp,
                         softWrap = false,
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.inversePrimary,
                     )
                 }
             }

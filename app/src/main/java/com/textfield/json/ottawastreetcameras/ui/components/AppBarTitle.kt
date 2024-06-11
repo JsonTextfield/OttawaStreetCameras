@@ -3,6 +3,7 @@ package com.textfield.json.ottawastreetcameras.ui.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -11,17 +12,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.textfield.json.ottawastreetcameras.FilterMode
 import com.textfield.json.ottawastreetcameras.R
-import com.textfield.json.ottawastreetcameras.SearchMode
-import com.textfield.json.ottawastreetcameras.ViewMode
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.FilterMode
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.SearchMode
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.ViewMode
 
 @Composable
 fun AppBarTitle(mainViewModel: MainViewModel, onClick: () -> Unit = {}) {
@@ -33,12 +33,12 @@ fun AppBarTitle(mainViewModel: MainViewModel, onClick: () -> Unit = {}) {
                 cameraState.selectedCameras.size,
                 cameraState.selectedCameras.size
             ),
-            color = Color.White,
             modifier = Modifier
                 .clickable(enabled = cameraState.viewMode != ViewMode.MAP, onClick = onClick)
                 .padding(10.dp),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
+            color = MaterialTheme.colorScheme.onPrimary
         )
     }
     else {
@@ -50,13 +50,14 @@ fun AppBarTitle(mainViewModel: MainViewModel, onClick: () -> Unit = {}) {
                     FilterMode.VISIBLE -> stringResource(id = R.string.app_name)
                 }
                 Text(
-                    title, color = Color.White,
+                    title,
                     modifier = Modifier
                         .clickable(enabled = cameraState.viewMode != ViewMode.MAP, onClick = onClick)
                         .padding(10.dp),
                     fontSize = 20.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
+                    color = MaterialTheme.colorScheme.onPrimary,
                 )
             }
 
