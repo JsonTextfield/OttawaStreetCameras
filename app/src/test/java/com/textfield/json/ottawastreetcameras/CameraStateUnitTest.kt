@@ -1,8 +1,12 @@
 package com.textfield.json.ottawastreetcameras
 
-import com.textfield.json.ottawastreetcameras.comparators.SortByName
-import com.textfield.json.ottawastreetcameras.comparators.SortByNeighbourhood
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.CameraState
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.FilterMode
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.SearchMode
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.SortMode
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.UIState
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.ViewMode
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -117,7 +121,7 @@ class CameraStateUnitTest {
             }
         }
         cameraState = CameraState(allCameras = cameras)
-        assertEquals(cameraState.getDisplayedCameras(), cameras.filter { it.isVisible }.sortedWith(SortByName()))
+        assertEquals(cameraState.getDisplayedCameras(), cameras.filter { it.isVisible }.sortedWith(SortByName))
 
         cameraState = cameraState.copy(
             searchMode = SearchMode.NAME,
@@ -127,7 +131,7 @@ class CameraStateUnitTest {
         )
         assertEquals(cameraState.getDisplayedCameras(),
             cameras.filter { it.isFavourite }.filter { it.name.trim().contains("l", true) }
-                .sortedWith(SortByNeighbourhood())
+                .sortedWith(SortByNeighbourhood)
         )
     }
 }

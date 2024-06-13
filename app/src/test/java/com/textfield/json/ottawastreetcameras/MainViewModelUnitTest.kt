@@ -2,7 +2,12 @@ package com.textfield.json.ottawastreetcameras
 
 import android.content.SharedPreferences
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.CameraState
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.FilterMode
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.SearchMode
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.SortMode
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.ViewMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
