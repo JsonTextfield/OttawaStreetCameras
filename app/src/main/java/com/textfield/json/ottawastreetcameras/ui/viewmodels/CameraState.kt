@@ -1,6 +1,10 @@
-package com.textfield.json.ottawastreetcameras
+package com.textfield.json.ottawastreetcameras.ui.viewmodels
 
 import android.location.Location
+import com.textfield.json.ottawastreetcameras.R
+import com.textfield.json.ottawastreetcameras.SortByDistance
+import com.textfield.json.ottawastreetcameras.SortByName
+import com.textfield.json.ottawastreetcameras.SortByNeighbourhood
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import kotlin.math.roundToInt
 

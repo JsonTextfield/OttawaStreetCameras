@@ -40,18 +40,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
-import com.textfield.json.ottawastreetcameras.FilterMode
 import com.textfield.json.ottawastreetcameras.R
-import com.textfield.json.ottawastreetcameras.SearchMode
-import com.textfield.json.ottawastreetcameras.SortMode
-import com.textfield.json.ottawastreetcameras.ViewMode
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.ui.components.AboutDialog
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.FilterMode
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.SearchMode
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.SortMode
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.ViewMode
 import kotlinx.coroutines.launch
 
 @Composable
-fun ActionBar(actions: List<Action> = ArrayList(), onItemSelected: () -> Unit = {}) {
+fun ActionBar(
+    actions: List<Action> = emptyList(),
+    onItemSelected: () -> Unit = {},
+) {
     // actions should take up only 1/3 of the screen width
     val maxActions = LocalConfiguration.current.screenWidthDp / 3 / 48
 
