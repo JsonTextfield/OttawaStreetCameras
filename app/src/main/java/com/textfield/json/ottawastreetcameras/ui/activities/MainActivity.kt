@@ -9,11 +9,10 @@ import com.textfield.json.ottawastreetcameras.ui.theme.AppTheme
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
 
 class MainActivity : ComponentActivity() {
-
-    val mainViewModel: MainViewModel by viewModels { MainViewModel.MainViewModelFactory }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val mainViewModel: MainViewModel by viewModels { MainViewModel.MainViewModelFactory }
         setContent { AppTheme { MainScreen(mainViewModel) } }
     }
 }
