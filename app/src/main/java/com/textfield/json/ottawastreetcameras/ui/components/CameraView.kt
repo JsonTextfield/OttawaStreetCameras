@@ -1,8 +1,6 @@
 package com.textfield.json.ottawastreetcameras.ui.components
 
 import android.graphics.Bitmap
-import android.util.Log
-import android.widget.ImageView
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,13 +24,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.android.volley.toolbox.ImageRequest
-import com.android.volley.toolbox.Volley
+import com.textfield.json.ottawastreetcameras.CameraDownloadService
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
 
@@ -44,18 +40,14 @@ fun CameraView(
     update: Boolean = false,
     onLongClick: (Camera) -> Unit = {},
 ) {
-    val context = LocalContext.current
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
-    val bitmapRequest = ImageRequest(camera.url, { response ->
-        Log.d("StreetCams", camera.url)
-        if (response != null) {
-            bitmap = response
-        }
-    }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.RGB_565, {
-        Log.w("StreetCams", it)
-    })
+
     LaunchedEffect(if (shuffle) camera.name else update) {
-        Volley.newRequestQueue(context).add(bitmapRequest)
+        CameraDownloadService.downloadImage(
+            camera.url,
+            onComplete = { bitmap = it },
+            onError = { bitmap = null },
+        )
     }
     Box(
         modifier = Modifier

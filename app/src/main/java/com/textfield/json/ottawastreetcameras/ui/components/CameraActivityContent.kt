@@ -46,7 +46,7 @@ fun CameraActivityContent(
                 pageCount = { displayedCameras.size },
             )
             HorizontalPager(pagerState) { index ->
-                CameraView(camera = displayedCameras[index]) { onItemLongClick(it) }
+                CameraView(displayedCameras[index], update = update) { onItemLongClick(it) }
             }
         }
         else {
