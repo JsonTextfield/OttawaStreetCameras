@@ -79,7 +79,7 @@ fun CameraListView(
                             ListItem(
                                 modifier = Modifier.fillMaxSize(),
                                 colors = ListItemDefaults.colors(
-                                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
                                 ),
                                 leadingContent = {
                                     Icon(Icons.Rounded.VisibilityOff, "")

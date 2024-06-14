@@ -72,7 +72,7 @@ private fun getSelectedIndex(yPosition: Float, sectionIndexHeight: Float, itemCo
 fun SectionIndex(
     data: List<String>,
     listState: LazyListState,
-    selectedColour: Color = MaterialTheme.colorScheme.secondary,
+    selectedColour: Color = MaterialTheme.colorScheme.primary,
     minSectionHeight: Dp = 30.dp, // Minimum pixels needed to display each section
 ) {
     val indexData = getIndexData(data).toList()
