@@ -9,12 +9,12 @@ import kotlin.math.roundToInt
  * Created by Jason on 25/04/2016.
  */
 data class Camera(
-    val id: String,
-    private val _name: BilingualObject,
-    private val _neighbourhood: BilingualObject,
-    val lat: Double,
-    val lon: Double,
-    private val _url: String,
+    val id: String = "",
+    private val _name: BilingualObject = BilingualObject(),
+    private val _neighbourhood: BilingualObject = BilingualObject(),
+    val lat: Double = 0.0,
+    val lon: Double = 0.0,
+    private val _url: String = "",
 ) : Parcelable {
     var isFavourite = false
     var isVisible = true
