@@ -38,7 +38,7 @@ fun AppBarTitle(mainViewModel: MainViewModel, onClick: () -> Unit = {}) {
                 .padding(10.dp),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            color = MaterialTheme.colorScheme.onPrimary
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
     else {
@@ -57,7 +57,7 @@ fun AppBarTitle(mainViewModel: MainViewModel, onClick: () -> Unit = {}) {
                     fontSize = 20.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
             }
 

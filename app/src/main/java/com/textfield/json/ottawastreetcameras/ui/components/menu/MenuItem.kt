@@ -41,7 +41,7 @@ fun MenuItem(
                     content = { Icon(icon, tooltip) },
                     onClick = onClick,
                     colors = IconButtonDefaults.iconButtonColors(
-                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                        contentColor = MaterialTheme.colorScheme.onSurface,
                     ),
                 )
             }

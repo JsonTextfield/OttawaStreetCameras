@@ -14,7 +14,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.ui.components.menu.ActionBar
 import com.textfield.json.ottawastreetcameras.ui.components.menu.getActions
@@ -34,13 +37,14 @@ fun MainAppBar(
 ) {
     val cameraState by mainViewModel.cameraState.collectAsState()
     TopAppBar(
+        modifier = Modifier.shadow(10.dp),
         navigationIcon = {
             if (cameraState.showBackButton) {
                 IconButton(onClick = { mainViewModel.resetFilters() }) {
                     Icon(
                         Icons.AutoMirrored.Rounded.ArrowBack,
                         stringResource(id = R.string.back),
-                        tint = MaterialTheme.colorScheme.onPrimary
+                        tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
@@ -60,7 +64,7 @@ fun MainAppBar(
             ActionBar(getActions(mainViewModel, snackbarHostState))
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary
+            containerColor = MaterialTheme.colorScheme.surface
         ),
     )
 }

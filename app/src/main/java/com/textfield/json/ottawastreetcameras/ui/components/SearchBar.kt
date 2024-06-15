@@ -60,7 +60,7 @@ fun SearchBarContent(
             .fillMaxWidth()
             .focusRequester(focusRequester),
         singleLine = true,
-        textStyle = TextStyle(color = MaterialTheme.colorScheme.onPrimary, fontSize = 14.sp),
+        textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface, fontSize = 14.sp),
         cursorBrush = SolidColor(MaterialTheme.colorScheme.inversePrimary),
         decorationBox = { innerTextField ->
             Box {
@@ -83,7 +83,7 @@ fun SearchBarContent(
                             Icon(
                                 Icons.Rounded.Clear,
                                 stringResource(id = R.string.clear),
-                                tint = MaterialTheme.colorScheme.onPrimary,
+                                tint = MaterialTheme.colorScheme.onSurface,
                             )
                         }
                     }
