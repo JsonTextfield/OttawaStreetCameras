@@ -19,11 +19,11 @@ import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CameraActivityContent(
-    cameras: List<Camera>,
+fun CameraViewList(
+    cameras: List<Camera> = emptyList(),
     displayedCameras: List<Camera> = ArrayList(),
     shuffle: Boolean = false,
-    update: Boolean,
+    update: Boolean = false,
     onItemLongClick: (Camera) -> Unit = {},
 ) {
     val verticalScrollState = rememberScrollState()
