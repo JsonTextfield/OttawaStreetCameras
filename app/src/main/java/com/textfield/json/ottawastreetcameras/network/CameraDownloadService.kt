@@ -1,12 +1,11 @@
 package com.textfield.json.ottawastreetcameras.network
 
-import android.content.Context
-import com.textfield.json.ottawastreetcameras.entities.Camera
+import android.graphics.Bitmap
 
 interface CameraDownloadService {
-    fun download(
-        context: Context,
+    fun downloadImage(
+        url: String,
         onError: () -> Unit = {},
-        onComplete: (data: List<Camera>) -> Unit = {},
+        onComplete: (bitmap: Bitmap) -> Unit = {},
     )
 }
