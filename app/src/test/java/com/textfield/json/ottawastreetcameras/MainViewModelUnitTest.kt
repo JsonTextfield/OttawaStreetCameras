@@ -1,7 +1,8 @@
 package com.textfield.json.ottawastreetcameras
 
 import android.content.SharedPreferences
-import com.textfield.json.ottawastreetcameras.entities.Camera
+import com.textfield.json.ottawastreetcameras.entities.CameraApiModel
+import com.textfield.json.ottawastreetcameras.entities.LocationApiModel
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.CameraState
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.FilterMode
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
@@ -9,7 +10,6 @@ import com.textfield.json.ottawastreetcameras.ui.viewmodels.SearchMode
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.SortMode
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.ViewMode
 import kotlinx.coroutines.flow.MutableStateFlow
-import org.json.JSONObject
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
@@ -74,35 +74,33 @@ class MainViewModelUnitTest {
         mainViewModel = MainViewModel(
             _cameraState = MutableStateFlow(CameraState().apply {
                 allCameras = (0 until 10).map {
-                    Camera.fromJson(JSONObject().apply {
-                        val location = JSONObject()
-                        location.put("lat", Random.nextDouble() * 90)
-                        location.put("lon", Random.nextDouble() * 180 - 90)
-                        put("location", location)
-                        put("nameEn", "Camera $it")
-                        if (it == 1) {
-                            put("neighbourhoodEn", "neighbourhood")
-                        }
-                    })
+                    CameraApiModel(
+                        nameEn = "Camera $it",
+                        neighbourhoodEn = if (it == 1) "neighbourhood" else "",
+                        location = LocationApiModel(
+                            lat = Random.nextDouble() * 90,
+                            lon = Random.nextDouble() * 180 - 90,
+                        ),
+                    ).toCamera()
                 }
             }),
             prefs = mockPrefs,
         )
 
         mainViewModel.searchCameras(SearchMode.NAME, "Camera 5")
-        assertEquals(mainViewModel.cameraState.value.displayedCameras.size, 1)
+        assertEquals(1, mainViewModel.cameraState.value.displayedCameras.size)
 
         mainViewModel.searchCameras(SearchMode.NONE, "any")
-        assertEquals(mainViewModel.cameraState.value.displayedCameras.size, 10)
+        assertEquals(10, mainViewModel.cameraState.value.displayedCameras.size)
 
         mainViewModel.searchCameras(SearchMode.NEIGHBOURHOOD, "")
-        assertEquals(mainViewModel.cameraState.value.displayedCameras.size, 10)
+        assertEquals(10, mainViewModel.cameraState.value.displayedCameras.size)
 
         mainViewModel.searchCameras(SearchMode.NAME, "")
-        assertEquals(mainViewModel.cameraState.value.displayedCameras.size, 10)
+        assertEquals(10, mainViewModel.cameraState.value.displayedCameras.size)
 
         mainViewModel.searchCameras(SearchMode.NEIGHBOURHOOD, "neighbourhood")
-        assertEquals(mainViewModel.cameraState.value.displayedCameras.size, 1)
+        assertEquals(1, mainViewModel.cameraState.value.displayedCameras.size)
     }
 
     @Test
@@ -110,13 +108,13 @@ class MainViewModelUnitTest {
         mainViewModel = MainViewModel(
             _cameraState = MutableStateFlow(CameraState().apply {
                 allCameras = (0 until 10).map {
-                    Camera.fromJson(JSONObject().apply {
-                        val location = JSONObject()
-                        location.put("lat", Random.nextDouble() * 90)
-                        location.put("lon", Random.nextDouble() * 180 - 90)
-                        put("location", location)
-                        put("nameEn", "Camera $it")
-                    })
+                    CameraApiModel(
+                        nameEn = "Camera $it",
+                        location = LocationApiModel(
+                            lat = Random.nextDouble() * 90,
+                            lon = Random.nextDouble() * 180 - 90,
+                        ),
+                    ).toCamera()
                 }
                 displayedCameras = allCameras
             }),
@@ -137,13 +135,13 @@ class MainViewModelUnitTest {
         mainViewModel = MainViewModel(
             _cameraState = MutableStateFlow(CameraState().apply {
                 allCameras = (0 until 10).map {
-                    Camera.fromJson(JSONObject().apply {
-                        val location = JSONObject()
-                        location.put("lat", Random.nextDouble() * 90)
-                        location.put("lon", Random.nextDouble() * 180 - 90)
-                        put("location", location)
-                        put("nameEn", "Camera $it")
-                    })
+                    CameraApiModel(
+                        nameEn = "Camera $it",
+                        location = LocationApiModel(
+                            lat = Random.nextDouble() * 90,
+                            lon = Random.nextDouble() * 180 - 90,
+                        ),
+                    ).toCamera()
                 }
                 displayedCameras = allCameras
             }),
@@ -162,13 +160,13 @@ class MainViewModelUnitTest {
         mainViewModel = MainViewModel(
             _cameraState = MutableStateFlow(CameraState().apply {
                 allCameras = (0 until 10).map {
-                    Camera.fromJson(JSONObject().apply {
-                        val location = JSONObject()
-                        location.put("lat", Random.nextDouble() * 90)
-                        location.put("lon", Random.nextDouble() * 180 - 90)
-                        put("location", location)
-                        put("nameEn", "Camera $it")
-                    })
+                    CameraApiModel(
+                        nameEn = "Camera $it",
+                        location = LocationApiModel(
+                            lat = Random.nextDouble() * 90,
+                            lon = Random.nextDouble() * 180 - 90,
+                        ),
+                    ).toCamera()
                 }
             }),
             prefs = mockPrefs,
@@ -186,14 +184,14 @@ class MainViewModelUnitTest {
         mainViewModel = MainViewModel(
             _cameraState = MutableStateFlow(CameraState().apply {
                 allCameras = (0 until 10).map {
-                    Camera.fromJson(JSONObject().apply {
-                        val location = JSONObject()
-                        put("id", "$it")
-                        location.put("lat", 45.451235)
-                        location.put("lon", -75.6742136)
-                        put("location", location)
-                        put("nameEn", "Camera $it")
-                    })
+                    CameraApiModel(
+                        id = "$it",
+                        nameEn = "Camera $it",
+                        location = LocationApiModel(
+                            lat = 45.451235,
+                            lon = -75.6742136,
+                        ),
+                    ).toCamera()
                 }
             }),
             prefs = mockPrefs,
@@ -213,14 +211,14 @@ class MainViewModelUnitTest {
         mainViewModel = MainViewModel(
             _cameraState = MutableStateFlow(CameraState().apply {
                 allCameras = (0 until 10).map {
-                    Camera.fromJson(JSONObject().apply {
-                        put("id", "$it")
-                        val location = JSONObject()
-                        location.put("lat", 45.451235)
-                        location.put("lon", -75.6742136)
-                        put("location", location)
-                        put("nameEn", "Camera $it")
-                    })
+                    CameraApiModel(
+                        id = "$it",
+                        nameEn = "Camera $it",
+                        location = LocationApiModel(
+                            lat = Random.nextDouble() * 45.451235,
+                            lon = Random.nextDouble() * -75.6742136,
+                        ),
+                    ).toCamera()
                 }
             }),
             prefs = mockPrefs,

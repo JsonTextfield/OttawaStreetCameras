@@ -8,20 +8,24 @@ import androidx.core.content.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.textfield.json.ottawastreetcameras.SortByName
+import com.textfield.json.ottawastreetcameras.data.CameraRepository
+import com.textfield.json.ottawastreetcameras.data.CameraRepositoryImpl
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import com.textfield.json.ottawastreetcameras.network.CameraDownloadService
-import com.textfield.json.ottawastreetcameras.network.CameraDownloadServiceImpl
 import com.textfield.json.ottawastreetcameras.ui.activities.CameraActivity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class MainViewModel(
+    private val cameraRepository: CameraRepository = CameraRepositoryImpl(),
     private val _cameraState: MutableStateFlow<CameraState> = MutableStateFlow(CameraState()),
-    private val downloadService: CameraDownloadService = CameraDownloadServiceImpl,
     private val prefs: SharedPreferences,
 ) : ViewModel() {
 
@@ -142,14 +146,11 @@ class MainViewModel(
         )
     }
 
-    fun download(context: Context) {
-        // show the loading view
+    fun getAllCameras() {
         _cameraState.update { it.copy(uiState = UIState.LOADING) }
-
         if (_cameraState.value.allCameras.isEmpty()) {
-            downloadService.download(
-                context,
-                onComplete = { cameras ->
+            viewModelScope.launch {
+                cameraRepository.getAllCameras().collectLatest { cameras ->
                     if (cameras.isEmpty()) {
                         // show an error if the retrieved camera list is empty
                         _cameraState.update { it.copy(uiState = UIState.ERROR) }
@@ -165,17 +166,14 @@ class MainViewModel(
                         _cameraState.update { cameraState ->
                             cameraState.copy(
                                 allCameras = cameras,
-                                displayedCameras = cameras.filter { it.isVisible },
+                                displayedCameras = cameras.filter { it.isVisible }.sortedWith(SortByName),
                                 uiState = UIState.LOADED,
                                 viewMode = viewMode,
                             )
                         }
                     }
-                },
-                onError = {
-
-                },
-            )
+                }
+            }
         }
         else {
             // don't reload if the camera list is not empty

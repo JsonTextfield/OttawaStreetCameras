@@ -1,13 +1,14 @@
 package com.textfield.json.ottawastreetcameras
 
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import com.textfield.json.ottawastreetcameras.entities.CameraApiModel
+import com.textfield.json.ottawastreetcameras.entities.LocationApiModel
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.CameraState
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.FilterMode
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.SearchMode
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.SortMode
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.UIState
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.ViewMode
-import org.json.JSONObject
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -96,26 +97,26 @@ class CameraStateUnitTest {
     @Test
     fun testGetDisplayedCameras() {
         val cameras = List(100) { i ->
-            val jsonObject = JSONObject()
-            val location = JSONObject()
-
-            location.put("lat", Random.nextDouble() * 90)
-            location.put("lon", Random.nextDouble() * 180 - 90)
-            jsonObject.put("location", location)
-
-            val neighbourhood = when (i % 3) {
-                0 ->"town"
-                1 -> "borough"
-                else -> "city"
-            }
-            jsonObject.put("neighbourhoodEn", neighbourhood)
             val name = when (i % 3) {
                 0 -> "hello"
                 1 -> "there"
                 else -> "world"
             }
-            jsonObject.put("nameEn", name)
-            Camera.fromJson(jsonObject).apply {
+            val neighbourhood = when (i % 3) {
+                0 -> "town"
+                1 -> "borough"
+                else -> "city"
+            }
+            val lat = Random.nextDouble() * 90
+            val lon = Random.nextDouble() * 180 - 90
+            CameraApiModel(
+                nameEn = name,
+                neighbourhoodEn = neighbourhood,
+                location = LocationApiModel(
+                    lat = lat,
+                    lon = lon,
+                )
+            ).toCamera().apply {
                 isVisible = Random.nextBoolean()
                 isFavourite = Random.nextBoolean()
             }
