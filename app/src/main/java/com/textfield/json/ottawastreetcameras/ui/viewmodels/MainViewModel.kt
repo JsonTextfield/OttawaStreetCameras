@@ -10,22 +10,22 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.textfield.json.ottawastreetcameras.CameraDownloadService
-import com.textfield.json.ottawastreetcameras.DownloadService
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import com.textfield.json.ottawastreetcameras.network.CameraDownloadService
+import com.textfield.json.ottawastreetcameras.network.CameraDownloadServiceImpl
 import com.textfield.json.ottawastreetcameras.ui.activities.CameraActivity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 class MainViewModel(
     private val _cameraState: MutableStateFlow<CameraState> = MutableStateFlow(CameraState()),
-    private val downloadService: DownloadService = CameraDownloadService,
+    private val downloadService: CameraDownloadService = CameraDownloadServiceImpl,
     private val prefs: SharedPreferences,
 ) : ViewModel() {
 
-    val cameraState: StateFlow<CameraState>
-        get() = _cameraState
+    val cameraState: StateFlow<CameraState> get() = _cameraState.asStateFlow()
 
     fun changeViewMode(viewMode: ViewMode) {
         prefs.edit { putString("viewMode", viewMode.name) }
