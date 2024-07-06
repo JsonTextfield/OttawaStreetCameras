@@ -28,9 +28,9 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.textfield.json.ottawastreetcameras.CameraDownloadService
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import com.textfield.json.ottawastreetcameras.network.CameraDownloadServiceImpl
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -43,7 +43,7 @@ fun CameraView(
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
 
     LaunchedEffect(if (shuffle) camera.name else update) {
-        CameraDownloadService.downloadImage(
+        CameraDownloadServiceImpl.downloadImage(
             camera.url,
             onComplete = { bitmap = it },
             onError = { bitmap = null },
