@@ -3,6 +3,7 @@ plugins {
     id("kotlin-android")
     id("com.google.android.gms.oss-licenses-plugin")
     id("org.jetbrains.kotlin.android")
+    kotlin("plugin.serialization") version "1.9.22"
 }
 
 android {
@@ -74,6 +75,11 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation("androidx.compose.material:material-icons-extended")
     implementation("io.coil-kt:coil-compose:2.4.0")
+
+    // Supabase
+    implementation(platform("io.github.jan-tennert.supabase:bom:2.5.1"))
+    implementation("io.github.jan-tennert.supabase:postgrest-kt")
+    implementation("io.ktor:ktor-client-android:2.3.11")
 
     // Testing
     androidTestImplementation(composeBom)
