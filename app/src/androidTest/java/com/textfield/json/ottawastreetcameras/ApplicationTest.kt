@@ -3,7 +3,8 @@ package com.textfield.json.ottawastreetcameras
 import android.os.Parcel
 import androidx.test.filters.SmallTest
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import org.json.JSONObject
+import com.textfield.json.ottawastreetcameras.entities.CameraApiModel
+import com.textfield.json.ottawastreetcameras.entities.LocationApiModel
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -16,16 +17,17 @@ class ApplicationTest {
     @Test
     fun test1() {
         val par = Parcel.obtain()
-        val json = JSONObject()
-        json.put("nameEn", "nameEn")
-        json.put("nameFr", "nameFr")
-        json.put("id", 0)
-        val loc = JSONObject()
-        loc.put("lat", 45.451235)
-        loc.put("lon", -75.6742136)
-        json.put("location", loc)
+        val cameraApiModel = CameraApiModel(
+            id = "0",
+            nameEn = "nameEn",
+            nameFr = "nameFr",
+            location = LocationApiModel(
+                lat = 45.451235,
+                lon = -75.6742136,
+            ),
+        )
 
-        val c = Camera.fromJson(json)
+        val c = cameraApiModel.toCamera()
         c.writeToParcel(par, 0)
         par.setDataPosition(0)
         val b = Camera(par)
