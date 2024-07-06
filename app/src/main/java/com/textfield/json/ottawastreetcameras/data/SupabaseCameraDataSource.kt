@@ -1,7 +1,7 @@
 package com.textfield.json.ottawastreetcameras.data
 
-import android.content.res.Resources
 import com.textfield.json.ottawastreetcameras.R
+import com.textfield.json.ottawastreetcameras.StreetCamsApp
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.entities.CameraApiModel
 import io.github.jan.supabase.createSupabaseClient
@@ -14,7 +14,7 @@ class SupabaseCameraDataSource : CameraDataSource {
     private val supabase by lazy {
         createSupabaseClient(
             supabaseUrl = "https://nacudfxzbqaesoyjfluh.supabase.co",
-            supabaseKey = Resources.getSystem().getString(R.string.supabase_key)
+            supabaseKey = StreetCamsApp.resources.getString(R.string.supabase_key)
         ) {
             install(Postgrest)
         }
