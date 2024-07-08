@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.network.CameraDownloadServiceImpl
+import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -43,11 +44,9 @@ fun CameraView(
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
 
     LaunchedEffect(if (shuffle) camera.name else update) {
-        CameraDownloadServiceImpl.downloadImage(
-            camera.url,
-            onComplete = { bitmap = it },
-            onError = { bitmap = null },
-        )
+        CameraDownloadServiceImpl.downloadImage(camera.url).collectLatest {
+            bitmap = it
+        }
     }
     Box(
         modifier = Modifier

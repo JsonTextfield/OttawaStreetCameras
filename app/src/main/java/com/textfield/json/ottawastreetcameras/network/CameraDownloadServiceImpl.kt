@@ -8,11 +8,13 @@ import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import okhttp3.Call
-import okhttp3.Callback
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.Response
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.Date
@@ -21,35 +23,25 @@ object CameraDownloadServiceImpl : CameraDownloadService {
     private const val TAG = "DownloadService"
     private val client = OkHttpClient()
 
-    override fun downloadImage(
-        url: String,
-        onError: () -> Unit,
-        onComplete: (bitmap: Bitmap) -> Unit,
-    ) {
-        Log.d(TAG, "downloading image")
-        val request = Request.Builder().url(url).build()
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                Log.e(TAG, e.toString())
-                onError()
+    override suspend fun downloadImage(url: String): Flow<Bitmap?> {
+        return channelFlow {
+            val request = Request.Builder().url(url).build()
+            withContext(Dispatchers.IO) {
+                try {
+                    val response = client.newCall(request).execute()
+                    val inputStream = response.body?.byteStream()
+                    send(BitmapFactory.decodeStream(inputStream))
+                } catch (ioException: IOException) {
+                    Log.e(TAG, ioException.stackTraceToString())
+                    send(null)
+                }
             }
-
-            override fun onResponse(call: Call, response: Response) {
-                val inputStream = response.body?.byteStream()
-                onComplete(BitmapFactory.decodeStream(inputStream))
-            }
-        })
+        }
     }
 
-    fun saveImage(
-        context: Context,
-        camera: Camera,
-        onError: () -> Unit = {},
-        onComplete: () -> Unit = {},
-    ) {
-        downloadImage(
-            camera.url,
-            onComplete = { bitmapImage ->
+    suspend fun saveImage(context: Context, camera: Camera) {
+        downloadImage(camera.url).collectLatest { bitmap ->
+            bitmap?.let { bitmapImage ->
                 // Add a media item that other apps shouldn't see until the item is fully written to the media store.
                 val resolver = context.contentResolver
 
@@ -63,7 +55,10 @@ object CameraDownloadServiceImpl : CameraDownloadService {
                     }
 
                 val imageDetails = ContentValues().apply {
-                    put(MediaStore.Images.Media.DISPLAY_NAME, ("${camera.name}_${Date()}.jpg").replace(" ", "_"))
+                    put(
+                        MediaStore.Images.Media.DISPLAY_NAME,
+                        ("${camera.name}_${Date()}.jpg").replace(" ", "_")
+                    )
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         put(MediaStore.Images.Media.IS_PENDING, 1)
                     }
@@ -78,9 +73,8 @@ object CameraDownloadServiceImpl : CameraDownloadService {
                             }
                         }
                     } catch (e: IOException) {
-                        Log.e("StreetCams", e.message ?: e.stackTraceToString())
-                        onError()
-                        return@downloadImage
+                        Log.e("StreetCams", e.stackTraceToString())
+                        return@collectLatest
                     }
 
                     // Now that we're finished, release the "pending" status
@@ -89,12 +83,8 @@ object CameraDownloadServiceImpl : CameraDownloadService {
                         imageDetails.put(MediaStore.Images.Media.IS_PENDING, 0)
                     }
                     resolver.update(imgUri, imageDetails, null, null)
-                    onComplete()
-                    return@downloadImage
                 }
-                onError()
-                return@downloadImage
-            },
-        )
+            }
+        }
     }
 }

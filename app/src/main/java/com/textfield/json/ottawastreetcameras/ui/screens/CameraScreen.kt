@@ -48,20 +48,15 @@ fun CameraScreen(
                 shuffle = isShuffling,
                 update = update,
                 onItemLongClick = { camera ->
-                    CameraDownloadServiceImpl.saveImage(
-                        context,
-                        camera,
-                        onComplete = {
-                            scope.launch {
-                                snackbarHostState.showSnackbar(
-                                    context.resources.getString(
-                                        R.string.image_saved,
-                                        camera.name,
-                                    )
-                                )
-                            }
-                        },
-                    )
+                    scope.launch {
+                        CameraDownloadServiceImpl.saveImage(context, camera)
+                        snackbarHostState.showSnackbar(
+                            context.resources.getString(
+                                R.string.image_saved,
+                                camera.name,
+                            )
+                        )
+                    }
                 }
             )
             BackButton()

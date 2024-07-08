@@ -1,11 +1,8 @@
 package com.textfield.json.ottawastreetcameras.network
 
 import android.graphics.Bitmap
+import kotlinx.coroutines.flow.Flow
 
 interface CameraDownloadService {
-    fun downloadImage(
-        url: String,
-        onError: () -> Unit = {},
-        onComplete: (bitmap: Bitmap) -> Unit = {},
-    )
+    suspend fun downloadImage(url: String): Flow<Bitmap?>
 }
