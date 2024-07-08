@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import com.textfield.json.ottawastreetcameras.network.CameraDownloadServiceImpl
+import com.textfield.json.ottawastreetcameras.network.CameraDownloadService
 import com.textfield.json.ottawastreetcameras.ui.components.BackButton
 import com.textfield.json.ottawastreetcameras.ui.components.CameraViewList
 import kotlinx.coroutines.delay
@@ -49,7 +49,7 @@ fun CameraScreen(
                 update = update,
                 onItemLongClick = { camera ->
                     scope.launch {
-                        CameraDownloadServiceImpl.saveImage(context, camera)
+                        CameraDownloadService.saveImage(context, camera)
                         snackbarHostState.showSnackbar(
                             context.resources.getString(
                                 R.string.image_saved,
