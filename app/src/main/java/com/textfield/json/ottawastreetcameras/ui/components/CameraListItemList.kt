@@ -37,7 +37,7 @@ import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CameraListView(
+fun CameraListItemList(
     mainViewModel: MainViewModel,
     listState: LazyListState,
     onItemClick: (Camera) -> Unit = {},
@@ -56,7 +56,7 @@ fun CameraListView(
         LazyColumn(state = listState) {
             items(cameras, { camera -> camera.hashCode() }) { camera ->
                 if (cameraState.filterMode == FilterMode.FAVOURITE) {
-                    CameraListTile(mainViewModel, camera, onItemClick, onItemLongClick)
+                    CameraListItem(mainViewModel, camera, onItemClick, onItemLongClick)
                 }
                 else {
                     val density = LocalDensity.current
@@ -97,7 +97,7 @@ fun CameraListView(
                             )
                         },
                         content = {
-                            CameraListTile(mainViewModel, camera, onItemClick, onItemLongClick)
+                            CameraListItem(mainViewModel, camera, onItemClick, onItemLongClick)
                         },
                     )
                 }

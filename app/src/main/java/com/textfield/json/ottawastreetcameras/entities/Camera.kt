@@ -2,7 +2,6 @@ package com.textfield.json.ottawastreetcameras.entities
 
 import android.os.Parcel
 import android.os.Parcelable
-import org.json.JSONObject
 import kotlin.math.roundToInt
 
 /**
@@ -72,25 +71,6 @@ data class Camera(
 
         override fun newArray(size: Int): Array<Camera?> {
             return arrayOfNulls(size)
-        }
-
-        fun fromJson(jsonObject: JSONObject): Camera {
-            val name = BilingualObject(
-                en = jsonObject.optString("nameEn"),
-                fr = jsonObject.optString("nameFr"),
-            )
-            val neighbourhood = BilingualObject(
-                en = jsonObject.optString("neighbourhoodEn"),
-                fr = jsonObject.optString("neighbourhoodFr"),
-            )
-            return Camera(
-                id = jsonObject.optString("id"),
-                _name = name,
-                _neighbourhood = neighbourhood,
-                lat = jsonObject.getJSONObject("location").optDouble("lat"),
-                lon = jsonObject.getJSONObject("location").optDouble("lon"),
-                _url = jsonObject.optString("url"),
-            )
         }
     }
 }

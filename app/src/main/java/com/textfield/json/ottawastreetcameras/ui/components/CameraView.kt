@@ -1,6 +1,6 @@
 package com.textfield.json.ottawastreetcameras.ui.components
 
-import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,11 +24,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.textfield.json.ottawastreetcameras.CameraDownloadService
+import androidx.core.graphics.drawable.toBitmap
+import coil.imageLoader
+import coil.request.ImageRequest
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
 
@@ -40,14 +43,13 @@ fun CameraView(
     update: Boolean = false,
     onLongClick: (Camera) -> Unit = {},
 ) {
-    var bitmap by remember { mutableStateOf<Bitmap?>(null) }
-
+    var drawable by remember { mutableStateOf<Drawable?>(null) }
+    val context = LocalContext.current
     LaunchedEffect(if (shuffle) camera.name else update) {
-        CameraDownloadService.downloadImage(
-            camera.url,
-            onComplete = { bitmap = it },
-            onError = { bitmap = null },
-        )
+        val request = ImageRequest.Builder(context)
+            .data(camera.url)
+            .build()
+        drawable = context.imageLoader.execute(request).drawable
     }
     Box(
         modifier = Modifier
@@ -55,12 +57,12 @@ fun CameraView(
             .fillMaxWidth()
             .combinedClickable(
                 onClick = {},
-                onLongClick = { onLongClick(camera) }
+                onLongClick = { onLongClick(camera) },
             )
     ) {
-        bitmap?.let {
+        drawable?.let {
             Image(
-                bitmap = it.asImageBitmap(),
+                bitmap = it.toBitmap().asImageBitmap(),
                 contentDescription = camera.name,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -68,10 +70,10 @@ fun CameraView(
                 contentScale = ContentScale.FillWidth,
             )
             Image(
-                bitmap = it.asImageBitmap(),
+                bitmap = it.toBitmap().asImageBitmap(),
                 contentDescription = camera.name,
                 contentScale = ContentScale.Fit,
-                modifier = Modifier.matchParentSize()
+                modifier = Modifier.matchParentSize(),
             )
             CameraLabel(
                 camera = camera,
@@ -85,10 +87,13 @@ fun CameraView(
 fun CameraLabel(camera: Camera, modifier: Modifier) {
     Box(
         modifier = modifier
-            .padding(horizontal = 5.dp, vertical = 2.dp)
+            .padding(
+                horizontal = 5.dp,
+                vertical = 2.dp,
+            )
             .background(
                 color = colorResource(id = R.color.cameraNameBackground),
-                shape = RoundedCornerShape(10.dp)
+                shape = RoundedCornerShape(10.dp),
             )
             .padding(
                 vertical = 5.dp,

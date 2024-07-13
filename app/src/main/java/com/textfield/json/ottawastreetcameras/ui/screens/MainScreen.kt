@@ -13,7 +13,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import com.textfield.json.ottawastreetcameras.ui.components.ErrorScreen
 import com.textfield.json.ottawastreetcameras.ui.components.LoadingScreen
 import com.textfield.json.ottawastreetcameras.ui.components.MainAppBar
@@ -39,12 +38,11 @@ fun MainScreen(mainViewModel: MainViewModel) {
         },
     ) {
         Box(modifier = Modifier.padding(it)) {
-            val context = LocalContext.current
             when (cameraState.uiState) {
-                UIState.INITIAL -> LaunchedEffect(Unit) { mainViewModel.download(context) }
+                UIState.INITIAL -> LaunchedEffect(Unit) { mainViewModel.getAllCameras() }
                 UIState.LOADING -> LoadingScreen()
                 UIState.LOADED -> MainContent(mainViewModel, listState, gridState, snackbarHostState)
-                UIState.ERROR -> ErrorScreen { mainViewModel.download(context) }
+                UIState.ERROR -> ErrorScreen { mainViewModel.getAllCameras() }
             }
         }
     }

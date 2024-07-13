@@ -30,7 +30,7 @@ import com.textfield.json.ottawastreetcameras.ui.viewmodels.SortMode
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CameraListTile(
+fun CameraListItem(
     mainViewModel: MainViewModel,
     camera: Camera,
     onClick: (Camera) -> Unit = {},

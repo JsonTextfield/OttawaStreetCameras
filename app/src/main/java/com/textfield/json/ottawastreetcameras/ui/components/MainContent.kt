@@ -59,7 +59,7 @@ fun MainContent(
     }
     when (cameraState.viewMode) {
         ViewMode.LIST -> {
-            CameraListView(
+            CameraListItemList(
                 mainViewModel,
                 listState = listState,
                 onItemClick = onItemClick,

@@ -8,27 +8,31 @@ import androidx.core.content.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.textfield.json.ottawastreetcameras.CameraDownloadService
-import com.textfield.json.ottawastreetcameras.DownloadService
+import com.textfield.json.ottawastreetcameras.SortByName
+import com.textfield.json.ottawastreetcameras.data.CameraRepository
+import com.textfield.json.ottawastreetcameras.data.CameraRepositoryImpl
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.ui.activities.CameraActivity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class MainViewModel(
+    private val cameraRepository: CameraRepository = CameraRepositoryImpl(),
     private val _cameraState: MutableStateFlow<CameraState> = MutableStateFlow(CameraState()),
-    private val downloadService: DownloadService = CameraDownloadService,
-    private val prefs: SharedPreferences,
+    private val prefs: SharedPreferences? = null,
 ) : ViewModel() {
 
-    val cameraState: StateFlow<CameraState>
-        get() = _cameraState
+    val cameraState: StateFlow<CameraState> get() = _cameraState.asStateFlow()
 
     fun changeViewMode(viewMode: ViewMode) {
-        prefs.edit { putString("viewMode", viewMode.name) }
+        prefs?.edit { putString("viewMode", viewMode.name) }
         _cameraState.update { it.copy(viewMode = viewMode) }
     }
 
@@ -62,7 +66,7 @@ class MainViewModel(
         for (camera in _cameraState.value.allCameras) {
             if (camera in cameras) {
                 camera.isFavourite = !allFavourite
-                prefs.edit { putBoolean("${camera.id}.isFavourite", !allFavourite) }
+                prefs?.edit { putBoolean("${camera.id}.isFavourite", !allFavourite) }
             }
         }
         _cameraState.update { it.copy(lastUpdated = System.currentTimeMillis()) }
@@ -73,7 +77,7 @@ class MainViewModel(
         for (camera in _cameraState.value.allCameras) {
             if (camera in cameras) {
                 camera.isVisible = !anyVisible
-                prefs.edit { putBoolean("${camera.id}.isVisible", !anyVisible) }
+                prefs?.edit { putBoolean("${camera.id}.isVisible", !anyVisible) }
             }
         }
         selectAllCameras(false)
@@ -142,40 +146,34 @@ class MainViewModel(
         )
     }
 
-    fun download(context: Context) {
-        // show the loading view
+    fun getAllCameras() {
         _cameraState.update { it.copy(uiState = UIState.LOADING) }
-
         if (_cameraState.value.allCameras.isEmpty()) {
-            downloadService.download(
-                context,
-                onComplete = { cameras ->
+            viewModelScope.launch {
+                cameraRepository.getAllCameras().collectLatest { cameras ->
                     if (cameras.isEmpty()) {
                         // show an error if the retrieved camera list is empty
                         _cameraState.update { it.copy(uiState = UIState.ERROR) }
                     }
                     else {
                         val viewMode = ViewMode.valueOf(
-                            prefs.getString("viewMode", ViewMode.LIST.name) ?: ViewMode.LIST.name
+                            prefs?.getString("viewMode", ViewMode.LIST.name) ?: ViewMode.LIST.name
                         )
                         for (camera in cameras) {
-                            camera.isFavourite = prefs.getBoolean("${camera.id}.isFavourite", false)
-                            camera.isVisible = prefs.getBoolean("${camera.id}.isVisible", true)
+                            camera.isFavourite = prefs?.getBoolean("${camera.id}.isFavourite", false) ?: false
+                            camera.isVisible = prefs?.getBoolean("${camera.id}.isVisible", true) ?: true
                         }
                         _cameraState.update { cameraState ->
                             cameraState.copy(
                                 allCameras = cameras,
-                                displayedCameras = cameras.filter { it.isVisible },
+                                displayedCameras = cameras.filter { it.isVisible }.sortedWith(SortByName),
                                 uiState = UIState.LOADED,
                                 viewMode = viewMode,
                             )
                         }
                     }
-                },
-                onError = {
-
-                },
-            )
+                }
+            }
         }
         else {
             // don't reload if the camera list is not empty
