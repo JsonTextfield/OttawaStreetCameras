@@ -1,6 +1,5 @@
 package com.textfield.json.ottawastreetcameras
 
-import android.content.SharedPreferences
 import com.textfield.json.ottawastreetcameras.entities.CameraApiModel
 import com.textfield.json.ottawastreetcameras.entities.LocationApiModel
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.CameraState
@@ -16,21 +15,15 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mockito
-import org.mockito.junit.MockitoJUnitRunner
 import kotlin.random.Random
 
-@RunWith(MockitoJUnitRunner::class)
 class MainViewModelUnitTest {
 
-    private var mockPrefs: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
-
-    private var mainViewModel = MainViewModel(prefs = mockPrefs)
+    private lateinit var mainViewModel :MainViewModel
 
     @Before
     fun setup() {
-        mainViewModel = MainViewModel(prefs = mockPrefs)
+        mainViewModel = MainViewModel()
     }
 
     @Test
@@ -84,7 +77,6 @@ class MainViewModelUnitTest {
                     ).toCamera()
                 }
             }),
-            prefs = mockPrefs,
         )
 
         mainViewModel.searchCameras(SearchMode.NAME, "Camera 5")
@@ -118,7 +110,6 @@ class MainViewModelUnitTest {
                 }
                 displayedCameras = allCameras
             }),
-            prefs = mockPrefs,
         )
 
         mainViewModel.selectAllCameras()
@@ -145,7 +136,6 @@ class MainViewModelUnitTest {
                 }
                 displayedCameras = allCameras
             }),
-            prefs = mockPrefs,
         )
 
         mainViewModel.selectAllCameras()
@@ -169,7 +159,6 @@ class MainViewModelUnitTest {
                     ).toCamera()
                 }
             }),
-            prefs = mockPrefs,
         )
 
         assertTrue(mainViewModel.cameraState.value.selectedCameras.isEmpty())
@@ -194,7 +183,6 @@ class MainViewModelUnitTest {
                     ).toCamera()
                 }
             }),
-            prefs = mockPrefs,
         )
 
         mainViewModel.selectCamera(mainViewModel.cameraState.value.allCameras[1])
@@ -221,7 +209,6 @@ class MainViewModelUnitTest {
                     ).toCamera()
                 }
             }),
-            prefs = mockPrefs,
         )
 
         mainViewModel.selectCamera(mainViewModel.cameraState.value.allCameras[5])

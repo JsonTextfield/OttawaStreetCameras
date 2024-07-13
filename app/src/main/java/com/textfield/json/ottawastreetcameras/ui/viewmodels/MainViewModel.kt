@@ -26,13 +26,13 @@ import kotlinx.coroutines.launch
 class MainViewModel(
     private val cameraRepository: CameraRepository = CameraRepositoryImpl(),
     private val _cameraState: MutableStateFlow<CameraState> = MutableStateFlow(CameraState()),
-    private val prefs: SharedPreferences,
+    private val prefs: SharedPreferences? = null,
 ) : ViewModel() {
 
     val cameraState: StateFlow<CameraState> get() = _cameraState.asStateFlow()
 
     fun changeViewMode(viewMode: ViewMode) {
-        prefs.edit { putString("viewMode", viewMode.name) }
+        prefs?.edit { putString("viewMode", viewMode.name) }
         _cameraState.update { it.copy(viewMode = viewMode) }
     }
 
@@ -66,7 +66,7 @@ class MainViewModel(
         for (camera in _cameraState.value.allCameras) {
             if (camera in cameras) {
                 camera.isFavourite = !allFavourite
-                prefs.edit { putBoolean("${camera.id}.isFavourite", !allFavourite) }
+                prefs?.edit { putBoolean("${camera.id}.isFavourite", !allFavourite) }
             }
         }
         _cameraState.update { it.copy(lastUpdated = System.currentTimeMillis()) }
@@ -77,7 +77,7 @@ class MainViewModel(
         for (camera in _cameraState.value.allCameras) {
             if (camera in cameras) {
                 camera.isVisible = !anyVisible
-                prefs.edit { putBoolean("${camera.id}.isVisible", !anyVisible) }
+                prefs?.edit { putBoolean("${camera.id}.isVisible", !anyVisible) }
             }
         }
         selectAllCameras(false)
@@ -157,11 +157,11 @@ class MainViewModel(
                     }
                     else {
                         val viewMode = ViewMode.valueOf(
-                            prefs.getString("viewMode", ViewMode.LIST.name) ?: ViewMode.LIST.name
+                            prefs?.getString("viewMode", ViewMode.LIST.name) ?: ViewMode.LIST.name
                         )
                         for (camera in cameras) {
-                            camera.isFavourite = prefs.getBoolean("${camera.id}.isFavourite", false)
-                            camera.isVisible = prefs.getBoolean("${camera.id}.isVisible", true)
+                            camera.isFavourite = prefs?.getBoolean("${camera.id}.isFavourite", false) ?: false
+                            camera.isVisible = prefs?.getBoolean("${camera.id}.isVisible", true) ?: true
                         }
                         _cameraState.update { cameraState ->
                             cameraState.copy(
