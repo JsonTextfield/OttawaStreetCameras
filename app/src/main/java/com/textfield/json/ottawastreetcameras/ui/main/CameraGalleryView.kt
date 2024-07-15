@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras.ui.components
+package com.textfield.json.ottawastreetcameras.ui.main
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

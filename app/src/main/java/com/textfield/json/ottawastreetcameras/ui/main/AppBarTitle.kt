@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras.ui.components
+package com.textfield.json.ottawastreetcameras.ui.main
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -18,6 +18,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.textfield.json.ottawastreetcameras.R
+import com.textfield.json.ottawastreetcameras.ui.components.SearchBar
+import com.textfield.json.ottawastreetcameras.ui.components.SearchBarContent
+import com.textfield.json.ottawastreetcameras.ui.components.SuggestionDropdown
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.FilterMode
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.SearchMode

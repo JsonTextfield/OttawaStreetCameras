@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras.ui.components
+package com.textfield.json.ottawastreetcameras.ui.main
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -32,6 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import com.textfield.json.ottawastreetcameras.ui.components.SectionIndex
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.FilterMode
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.SortMode

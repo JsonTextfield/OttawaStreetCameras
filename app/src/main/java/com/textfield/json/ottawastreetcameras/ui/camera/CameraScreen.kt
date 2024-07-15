@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras.ui.screens
+package com.textfield.json.ottawastreetcameras.ui.camera
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -18,7 +18,6 @@ import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.network.CameraDownloadService
 import com.textfield.json.ottawastreetcameras.ui.components.BackButton
-import com.textfield.json.ottawastreetcameras.ui.components.CameraViewList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras.ui.components
+package com.textfield.json.ottawastreetcameras.ui.camera
 
 import android.graphics.drawable.Drawable
 import androidx.compose.foundation.ExperimentalFoundationApi

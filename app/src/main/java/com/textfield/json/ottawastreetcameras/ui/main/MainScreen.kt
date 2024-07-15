@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras.ui.screens
+package com.textfield.json.ottawastreetcameras.ui.main
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -15,8 +15,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.textfield.json.ottawastreetcameras.ui.components.ErrorScreen
 import com.textfield.json.ottawastreetcameras.ui.components.LoadingScreen
-import com.textfield.json.ottawastreetcameras.ui.components.MainAppBar
-import com.textfield.json.ottawastreetcameras.ui.components.MainContent
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.UIState
 

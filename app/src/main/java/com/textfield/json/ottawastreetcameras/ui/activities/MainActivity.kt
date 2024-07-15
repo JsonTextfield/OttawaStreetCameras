@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import com.textfield.json.ottawastreetcameras.ui.screens.MainScreen
+import com.textfield.json.ottawastreetcameras.ui.main.MainScreen
 import com.textfield.json.ottawastreetcameras.ui.theme.AppTheme
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
 
