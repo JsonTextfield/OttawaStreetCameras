@@ -17,7 +17,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,18 +36,14 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CameraGalleryTile(
-    mainViewModel: MainViewModel,
-    camera: Camera,
+    camera: Camera = Camera(),
     onClick: (Camera) -> Unit = {},
     onLongClick: (Camera) -> Unit = {},
 ) {
-    val cameraState by mainViewModel.cameraState.collectAsState()
-
     Box(
         modifier = Modifier
             .clip(shape = RoundedCornerShape(10.dp))
@@ -62,7 +57,9 @@ fun CameraGalleryTile(
         ) {
             val context = LocalContext.current
             var model by remember {
-                mutableStateOf(ImageRequest.Builder(context).data(camera.preview).crossfade(500).build())
+                mutableStateOf(
+                    ImageRequest.Builder(context).data(camera.preview).crossfade(500).build()
+                )
             }
             LaunchedEffect(camera.name) {
                 model = ImageRequest.Builder(context).data(camera.preview).crossfade(500).build()
@@ -80,7 +77,7 @@ fun CameraGalleryTile(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
-                        color = if (cameraState.selectedCameras.contains(camera)) {
+                        color = if (camera.isSelected) {
                             MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
                         }
                         else {

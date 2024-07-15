@@ -34,6 +34,7 @@ import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.FilterMode
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
+import com.textfield.json.ottawastreetcameras.ui.viewmodels.SortMode
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,7 +57,13 @@ fun CameraListItemList(
         LazyColumn(state = listState) {
             items(cameras, { camera -> camera.hashCode() }) { camera ->
                 if (cameraState.filterMode == FilterMode.FAVOURITE) {
-                    CameraListItem(mainViewModel, camera, onItemClick, onItemLongClick)
+                    CameraListItem(
+                        camera = camera,
+                        showDistance = cameraState.sortMode == SortMode.DISTANCE && camera.distance > -1,
+                        onClick = onItemClick,
+                        onLongClick = onItemLongClick,
+                        onFavouriteClick = { mainViewModel.favouriteCameras(listOf(it)) }
+                    )
                 }
                 else {
                     val density = LocalDensity.current
@@ -97,7 +104,12 @@ fun CameraListItemList(
                             )
                         },
                         content = {
-                            CameraListItem(mainViewModel, camera, onItemClick, onItemLongClick)
+                            CameraListItem(
+                                camera = camera,
+                                showDistance = cameraState.sortMode == SortMode.DISTANCE,
+                                onClick = onItemClick,
+                                onLongClick = onItemLongClick,
+                            )
                         },
                     )
                 }

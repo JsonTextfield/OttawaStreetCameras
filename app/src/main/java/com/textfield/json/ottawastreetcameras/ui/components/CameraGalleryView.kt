@@ -40,7 +40,11 @@ fun CameraGalleryView(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         items(cameras.size) {
-            CameraGalleryTile(mainViewModel, cameras[it], onItemClick, onItemLongClick)
+            CameraGalleryTile(
+                camera = cameras[it],
+                onClick = onItemClick,
+                onLongClick = onItemLongClick,
+            )
         }
 
         item {
@@ -50,7 +54,11 @@ fun CameraGalleryView(
                     .aspectRatio(1f)
             ) {
                 Text(
-                    pluralStringResource(R.plurals.camera_count, cameras.size, cameras.size).replace(" ", "\n"),
+                    pluralStringResource(
+                        R.plurals.camera_count,
+                        cameras.size,
+                        cameras.size
+                    ).replace(" ", "\n"),
                     textAlign = TextAlign.Center,
                     modifier = Modifier.align(Alignment.Center)
                 )
