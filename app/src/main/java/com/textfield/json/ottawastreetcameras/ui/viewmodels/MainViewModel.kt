@@ -15,7 +15,7 @@ import com.textfield.json.ottawastreetcameras.SortByName
 import com.textfield.json.ottawastreetcameras.data.CameraRepository
 import com.textfield.json.ottawastreetcameras.data.CameraRepositoryImpl
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import com.textfield.json.ottawastreetcameras.ui.activities.CameraActivity
+import com.textfield.json.ottawastreetcameras.ui.camera.CameraActivity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

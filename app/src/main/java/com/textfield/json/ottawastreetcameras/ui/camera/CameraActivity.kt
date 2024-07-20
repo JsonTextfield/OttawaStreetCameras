@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras.ui.activities
+package com.textfield.json.ottawastreetcameras.ui.camera
 
 import android.os.Build
 import android.os.Bundle
@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import com.textfield.json.ottawastreetcameras.ui.camera.CameraScreen
 import com.textfield.json.ottawastreetcameras.ui.theme.AppTheme
 
 class CameraActivity : AppCompatActivity() {
