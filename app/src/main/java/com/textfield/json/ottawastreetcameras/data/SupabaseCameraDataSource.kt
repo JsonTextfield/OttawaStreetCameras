@@ -7,8 +7,6 @@ import com.textfield.json.ottawastreetcameras.entities.CameraApiModel
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
 class SupabaseCameraDataSource : CameraDataSource {
     private val supabase by lazy {
@@ -20,17 +18,13 @@ class SupabaseCameraDataSource : CameraDataSource {
         }
     }
 
-    override suspend fun getAllCameras(): Flow<List<Camera>> {
-        return flow {
-            emit(
-                supabase.from("cameras").select {
-                    filter {
-                        eq("city", "ottawa")
-                    }
-                }.decodeList<CameraApiModel>().map {
-                    it.toCamera()
-                }
-            )
+    override suspend fun getAllCameras(): List<Camera> {
+        return supabase.from("cameras").select {
+            filter {
+                eq("city", "ottawa")
+            }
+        }.decodeList<CameraApiModel>().map {
+            it.toCamera()
         }
     }
 }

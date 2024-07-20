@@ -19,7 +19,6 @@ import com.textfield.json.ottawastreetcameras.ui.camera.CameraActivity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -111,7 +110,10 @@ class MainViewModel(
     fun searchCameras(searchMode: SearchMode = SearchMode.NONE, searchText: String = "") {
         _cameraState.update {
             it.copy(
-                displayedCameras = it.getDisplayedCameras(searchMode = searchMode, searchText = searchText),
+                displayedCameras = it.getDisplayedCameras(
+                    searchMode = searchMode,
+                    searchText = searchText
+                ),
                 searchMode = searchMode,
                 searchText = searchText,
             )
@@ -150,27 +152,28 @@ class MainViewModel(
         _cameraState.update { it.copy(uiState = UIState.LOADING) }
         if (_cameraState.value.allCameras.isEmpty()) {
             viewModelScope.launch {
-                cameraRepository.getAllCameras().collectLatest { cameras ->
-                    if (cameras.isEmpty()) {
-                        // show an error if the retrieved camera list is empty
-                        _cameraState.update { it.copy(uiState = UIState.ERROR) }
+                val cameras = cameraRepository.getAllCameras()
+                if (cameras.isEmpty()) {
+                    // show an error if the retrieved camera list is empty
+                    _cameraState.update { it.copy(uiState = UIState.ERROR) }
+                }
+                else {
+                    val viewMode = ViewMode.valueOf(
+                        prefs?.getString("viewMode", ViewMode.LIST.name) ?: ViewMode.LIST.name
+                    )
+                    for (camera in cameras) {
+                        camera.isFavourite =
+                            prefs?.getBoolean("${camera.id}.isFavourite", false) ?: false
+                        camera.isVisible = prefs?.getBoolean("${camera.id}.isVisible", true) ?: true
                     }
-                    else {
-                        val viewMode = ViewMode.valueOf(
-                            prefs?.getString("viewMode", ViewMode.LIST.name) ?: ViewMode.LIST.name
+                    _cameraState.update { cameraState ->
+                        cameraState.copy(
+                            allCameras = cameras,
+                            displayedCameras = cameras.filter { it.isVisible }
+                                .sortedWith(SortByName),
+                            uiState = UIState.LOADED,
+                            viewMode = viewMode,
                         )
-                        for (camera in cameras) {
-                            camera.isFavourite = prefs?.getBoolean("${camera.id}.isFavourite", false) ?: false
-                            camera.isVisible = prefs?.getBoolean("${camera.id}.isVisible", true) ?: true
-                        }
-                        _cameraState.update { cameraState ->
-                            cameraState.copy(
-                                allCameras = cameras,
-                                displayedCameras = cameras.filter { it.isVisible }.sortedWith(SortByName),
-                                uiState = UIState.LOADED,
-                                viewMode = viewMode,
-                            )
-                        }
                     }
                 }
             }
@@ -186,7 +189,10 @@ class MainViewModel(
             initializer {
                 val application = checkNotNull(this[APPLICATION_KEY])
                 MainViewModel(
-                    prefs = application.getSharedPreferences(application.packageName, Context.MODE_PRIVATE)
+                    prefs = application.getSharedPreferences(
+                        application.packageName,
+                        Context.MODE_PRIVATE
+                    )
                 )
             }
         }
