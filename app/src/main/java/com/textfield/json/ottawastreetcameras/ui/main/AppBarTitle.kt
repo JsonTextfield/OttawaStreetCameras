@@ -21,7 +21,6 @@ import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.ui.components.SearchBar
 import com.textfield.json.ottawastreetcameras.ui.components.SearchBarContent
 import com.textfield.json.ottawastreetcameras.ui.components.SuggestionDropdown
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.FilterMode
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.SearchMode
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.ViewMode
@@ -47,15 +46,14 @@ fun AppBarTitle(mainViewModel: MainViewModel, onClick: () -> Unit = {}) {
     else {
         when (cameraState.searchMode) {
             SearchMode.NONE -> {
-                val title = when (cameraState.filterMode) {
-                    FilterMode.FAVOURITE -> stringResource(id = R.string.favourites)
-                    FilterMode.HIDDEN -> stringResource(id = R.string.hidden_cameras)
-                    FilterMode.VISIBLE -> stringResource(id = R.string.app_name)
-                }
+                val title = stringResource(id = cameraState.filterMode.key)
                 Text(
                     title,
                     modifier = Modifier
-                        .clickable(enabled = cameraState.viewMode != ViewMode.MAP, onClick = onClick)
+                        .clickable(
+                            enabled = cameraState.viewMode != ViewMode.MAP,
+                            onClick = onClick
+                        )
                         .padding(10.dp),
                     fontSize = 20.sp,
                     maxLines = 1,
@@ -84,9 +82,9 @@ fun AppBarTitle(mainViewModel: MainViewModel, onClick: () -> Unit = {}) {
                     }
                     val expanded =
                         cameraState.searchMode == SearchMode.NEIGHBOURHOOD
-                        && value.isNotEmpty()
-                        && suggestionList.isNotEmpty()
-                        && suggestionList.all {
+                                && value.isNotEmpty()
+                                && suggestionList.isNotEmpty()
+                                && suggestionList.all {
                             !it.equals(value, true)
                         }
 
