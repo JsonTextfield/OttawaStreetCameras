@@ -13,13 +13,18 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.textfield.json.ottawastreetcameras.ui.components.ErrorScreen
 import com.textfield.json.ottawastreetcameras.ui.components.LoadingScreen
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.UIState
 
 @Composable
-fun MainScreen(mainViewModel: MainViewModel) {
+fun MainScreen(
+    mainViewModel: MainViewModel = viewModel<MainViewModel>(
+        factory = MainViewModel.MainViewModelFactory,
+    )
+) {
     val cameraState by mainViewModel.cameraState.collectAsState()
     val listState = rememberLazyListState()
     val gridState = rememberLazyGridState()
@@ -39,7 +44,13 @@ fun MainScreen(mainViewModel: MainViewModel) {
             when (cameraState.uiState) {
                 UIState.INITIAL -> LaunchedEffect(Unit) { mainViewModel.getAllCameras() }
                 UIState.LOADING -> LoadingScreen()
-                UIState.LOADED -> MainContent(mainViewModel, listState, gridState, snackbarHostState)
+                UIState.LOADED -> MainContent(
+                    mainViewModel,
+                    listState,
+                    gridState,
+                    snackbarHostState
+                )
+
                 UIState.ERROR -> ErrorScreen { mainViewModel.getAllCameras() }
             }
         }
