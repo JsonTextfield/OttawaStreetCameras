@@ -1,0 +1,3 @@
+<resources>
+    <string name="supabase_key" translatable="false">API_KEY</string>
+</resources>
