@@ -33,7 +33,7 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("U:\\Jason\\.android\\release.keystore")
+            storeFile = file(properties["releaseStoreFile"].toString())
             storePassword = properties["releaseStorePassword"].toString()
             keyAlias = properties["releaseKeyAlias"].toString()
             keyPassword = properties["releaseKeyPassword"].toString()
@@ -49,7 +49,7 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
-            signingConfig = signingConfigs.getByName("release")
+            //signingConfig = signingConfigs.getByName("release")
         }
     }
 }
