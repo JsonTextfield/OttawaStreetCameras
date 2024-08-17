@@ -27,18 +27,4 @@ class SupabaseCameraDataSource : CameraDataSource {
             it.toCamera()
         }
     }
-
-    override suspend fun getCameras(ids: List<String>): List<Camera> {
-        return supabase.from("cameras").select {
-            filter {
-                or {
-                    ids.forEach { id ->
-                        eq("id", id)
-                    }
-                }
-            }
-        }.decodeList<CameraApiModel>().map {
-            it.toCamera()
-        }
-    }
 }

@@ -29,12 +29,20 @@ fun CameraScreen(
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     cameraViewModel: CameraViewModel = viewModel<CameraViewModel>(),
 ) {
+    val cameraList by cameraViewModel.cameraList.collectAsState()
+    val allCameras by cameraViewModel.allCameras.collectAsState()
+
     LaunchedEffect(Unit) {
         cameraViewModel.getCameras(ids)
     }
-
-    val cameraList by cameraViewModel.cameraList.collectAsState()
-
+    if(isShuffling) {
+        LaunchedEffect(Unit) {
+            while(isShuffling) {
+                delay(6000)
+                cameraViewModel.getRandomCamera()
+            }
+        }
+    }
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     ) {
@@ -50,7 +58,7 @@ fun CameraScreen(
             val context = LocalContext.current
             CameraViewList(
                 cameras = cameraList,
-                displayedCameras = cameraList,
+                displayedCameras = allCameras,
                 shuffle = isShuffling,
                 update = update,
                 onItemLongClick = { camera ->
