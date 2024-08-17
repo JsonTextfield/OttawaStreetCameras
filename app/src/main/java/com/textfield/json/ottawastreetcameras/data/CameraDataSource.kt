@@ -5,5 +5,5 @@ import com.textfield.json.ottawastreetcameras.entities.Camera
 interface CameraDataSource {
     suspend fun getAllCameras(): List<Camera>
 
-    suspend fun getCameraById(id: String): Camera
+    suspend fun getCameras(ids: List<String>): List<Camera>
 }

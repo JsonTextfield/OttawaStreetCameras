@@ -28,13 +28,17 @@ class SupabaseCameraDataSource : CameraDataSource {
         }
     }
 
-    override suspend fun getCameraById(id: String): Camera {
+    override suspend fun getCameras(ids: List<String>): List<Camera> {
         return supabase.from("cameras").select {
             filter {
-                eq("id", id)
+                or {
+                    ids.forEach { id ->
+                        eq("id", id)
+                    }
+                }
             }
         }.decodeList<CameraApiModel>().map {
             it.toCamera()
-        }.first()
+        }
     }
 }

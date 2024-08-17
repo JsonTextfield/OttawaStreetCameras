@@ -18,7 +18,7 @@ class CameraViewModel(private val cameraRepository: CameraRepository = CameraRep
 
     fun getCameras(id: String) {
         viewModelScope.launch {
-            _cameraList.value = id.split(",").map { cameraRepository.getCamera(it) }
+            _cameraList.value = cameraRepository.getCameras(id.split(","))
         }
     }
 }
