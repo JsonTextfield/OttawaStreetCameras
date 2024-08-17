@@ -1,0 +1,9 @@
+name: Run unit tests
+run-name: Running unit tests
+on: [push]
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - run: sudo apt-get update
+      - run: sudo apt-get android-sdk
