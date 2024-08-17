@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.ui.components.ErrorScreen
 import com.textfield.json.ottawastreetcameras.ui.components.LoadingScreen
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
@@ -23,7 +24,8 @@ import com.textfield.json.ottawastreetcameras.ui.viewmodels.UIState
 fun MainScreen(
     mainViewModel: MainViewModel = viewModel<MainViewModel>(
         factory = MainViewModel.MainViewModelFactory,
-    )
+    ),
+    onNavigateToCameraScreen: (List<Camera>, Boolean) -> Unit = { _, _ -> },
 ) {
     val cameraState by mainViewModel.cameraState.collectAsState()
     val listState = rememberLazyListState()
@@ -49,7 +51,9 @@ fun MainScreen(
                     listState,
                     gridState,
                     snackbarHostState
-                )
+                ) { selectedCameras ->
+                    onNavigateToCameraScreen(selectedCameras, false)
+                }
 
                 UIState.ERROR -> ErrorScreen { mainViewModel.getAllCameras() }
             }

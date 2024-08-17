@@ -1,7 +1,6 @@
 package com.textfield.json.ottawastreetcameras.ui.viewmodels
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.location.Location
 import androidx.core.content.edit
@@ -15,7 +14,6 @@ import com.textfield.json.ottawastreetcameras.SortByName
 import com.textfield.json.ottawastreetcameras.data.CameraRepository
 import com.textfield.json.ottawastreetcameras.data.CameraRepositoryImpl
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import com.textfield.json.ottawastreetcameras.ui.camera.CameraActivity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -131,21 +129,6 @@ class MainViewModel(
                 filterMode = FilterMode.VISIBLE,
             )
         }
-    }
-
-    fun showCameras(
-        context: Context,
-        cameras: List<Camera> = ArrayList(),
-        displayedCameras: List<Camera> = ArrayList(),
-        shuffle: Boolean = false,
-    ) {
-        context.startActivity(
-            Intent(context, CameraActivity::class.java).apply {
-                putParcelableArrayListExtra("cameras", ArrayList(cameras))
-                putParcelableArrayListExtra("displayedCameras", ArrayList(displayedCameras))
-                putExtra("shuffle", shuffle)
-            }
-        )
     }
 
     fun getAllCameras() {

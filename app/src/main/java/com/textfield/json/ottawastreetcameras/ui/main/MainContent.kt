@@ -22,19 +22,15 @@ fun MainContent(
     listState: LazyListState,
     gridState: LazyGridState,
     snackbarHostState: SnackbarHostState,
+    onNavigateToCameraScreen: (List<Camera>) -> Unit = {},
 ) {
     val cameraState by mainViewModel.cameraState.collectAsState()
     val context = LocalContext.current
     val onItemClick = { camera: Camera ->
         if (cameraState.selectedCameras.isNotEmpty()) {
             mainViewModel.selectCamera(camera)
-        }
-        else {
-            mainViewModel.showCameras(
-                context = context,
-                cameras = arrayListOf(camera),
-                displayedCameras = cameraState.displayedCameras,
-            )
+        } else {
+            onNavigateToCameraScreen(listOf(camera))
         }
     }
     val onItemLongClick = { camera: Camera -> mainViewModel.selectCamera(camera) }

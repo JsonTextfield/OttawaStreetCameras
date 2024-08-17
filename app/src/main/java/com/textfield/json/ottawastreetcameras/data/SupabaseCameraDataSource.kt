@@ -33,6 +33,8 @@ class SupabaseCameraDataSource : CameraDataSource {
             filter {
                 eq("id", id)
             }
-        }.decodeAs<CameraApiModel>().toCamera()
+        }.decodeList<CameraApiModel>().map {
+            it.toCamera()
+        }.first()
     }
 }
