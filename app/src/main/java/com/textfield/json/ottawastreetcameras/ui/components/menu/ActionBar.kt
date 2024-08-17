@@ -75,8 +75,7 @@ fun ActionBar(
             onClick = {
                 if (action.menuContent != null) {
                     showMenu = !showMenu
-                }
-                else {
+                } else {
                     action.onClick()
                 }
                 onItemSelected()
@@ -104,7 +103,11 @@ fun ActionBar(
 }
 
 @Composable
-fun getActions(mainViewModel: MainViewModel, snackbarHostState: SnackbarHostState): List<Action> {
+fun getActions(
+    mainViewModel: MainViewModel,
+    snackbarHostState: SnackbarHostState,
+    onNavigateToCameraScreen: (List<Camera>, Boolean) -> Unit = { _, _ -> }
+): List<Action> {
     val cameraState by mainViewModel.cameraState.collectAsState()
     val selectedCameras = cameraState.selectedCameras
     val context = LocalContext.current
@@ -116,13 +119,7 @@ fun getActions(mainViewModel: MainViewModel, snackbarHostState: SnackbarHostStat
         icon = Icons.Rounded.CameraAlt,
         tooltip = stringResource(id = R.string.view),
         selectedCameras.size <= 8,
-        onClick = {
-            mainViewModel.showCameras(
-                context = context,
-                cameras = cameraState.selectedCameras,
-                displayedCameras = cameraState.displayedCameras,
-            )
-        },
+        onClick = { onNavigateToCameraScreen(cameraState.selectedCameras, false) },
     )
     val allIsFavourite = selectedCameras.all { it.isFavourite }
     val favourite = Action(
@@ -130,8 +127,7 @@ fun getActions(mainViewModel: MainViewModel, snackbarHostState: SnackbarHostStat
         tooltip = stringResource(
             if (allIsFavourite) {
                 R.string.remove_from_favourites
-            }
-            else {
+            } else {
                 R.string.add_to_favourites
             }
         ),
@@ -195,16 +191,20 @@ fun getActions(mainViewModel: MainViewModel, snackbarHostState: SnackbarHostStat
                 contract = ActivityResultContracts.RequestMultiplePermissions(),
                 onResult = { permissions ->
                     val noPermissionsGranted = permissionArray.all { permission ->
-                        ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED
+                        ContextCompat.checkSelfPermission(
+                            context,
+                            permission
+                        ) != PackageManager.PERMISSION_GRANTED
                     }
 
                     if (!noPermissionsGranted) {
-                        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-                        val lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                        val locationManager =
+                            context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                        val lastLocation =
+                            locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
                         if (lastLocation != null) {
                             mainViewModel.changeSortMode(SortMode.DISTANCE, lastLocation)
-                        }
-                        else {
+                        } else {
                             scope.launch {
                                 snackbarHostState.showSnackbar(context.getString(R.string.location_unavailable))
                             }
@@ -226,8 +226,7 @@ fun getActions(mainViewModel: MainViewModel, snackbarHostState: SnackbarHostStat
                             isExpanded = !isExpanded
                             if (sortMode == SortMode.DISTANCE) {
                                 locationPermissionLauncher.launch(permissionArray)
-                            }
-                            else {
+                            } else {
                                 mainViewModel.changeSortMode(sortMode)
                             }
                         },
@@ -266,23 +265,14 @@ fun getActions(mainViewModel: MainViewModel, snackbarHostState: SnackbarHostStat
         icon = Icons.Rounded.Casino,
         tooltip = stringResource(id = R.string.random_camera),
         onClick = {
-            mainViewModel.showCameras(
-                context = context,
-                cameras = arrayListOf(cameraState.visibleCameras.random()),
-                displayedCameras = cameraState.visibleCameras,
-            )
+            onNavigateToCameraScreen(listOf(cameraState.visibleCameras.random()), false)
         },
     )
     val shuffle = Action(
         icon = Icons.Rounded.Shuffle,
         tooltip = stringResource(id = R.string.shuffle),
         onClick = {
-            mainViewModel.showCameras(
-                context = context,
-                cameras = cameraState.visibleCameras as ArrayList<Camera>,
-                displayedCameras = cameraState.visibleCameras as ArrayList<Camera>,
-                shuffle = true,
-            )
+            onNavigateToCameraScreen(cameraState.selectedCameras, true)
         },
     )
 

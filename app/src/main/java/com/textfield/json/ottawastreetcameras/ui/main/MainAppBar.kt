@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.textfield.json.ottawastreetcameras.R
+import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.ui.components.menu.ActionBar
 import com.textfield.json.ottawastreetcameras.ui.components.menu.getActions
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
@@ -34,6 +35,7 @@ fun MainAppBar(
     listState: LazyListState,
     gridState: LazyGridState,
     snackbarHostState: SnackbarHostState,
+    onNavigateToCameraScreen: (List<Camera>, Boolean) -> Unit = { _, _ -> },
 ) {
     val cameraState by mainViewModel.cameraState.collectAsState()
     TopAppBar(
@@ -61,7 +63,7 @@ fun MainAppBar(
             }
         },
         actions = {
-            ActionBar(getActions(mainViewModel, snackbarHostState))
+            ActionBar(getActions(mainViewModel, snackbarHostState, onNavigateToCameraScreen))
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.surface

@@ -38,7 +38,7 @@ fun MainScreen(
         },
         topBar = {
             if (cameraState.uiState == UIState.LOADED) {
-                MainAppBar(mainViewModel, listState, gridState, snackbarHostState)
+                MainAppBar(mainViewModel, listState, gridState, snackbarHostState, onNavigateToCameraScreen)
             }
         },
     ) {

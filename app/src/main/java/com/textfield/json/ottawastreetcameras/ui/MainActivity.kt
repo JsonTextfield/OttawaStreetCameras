@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras.ui.main
+package com.textfield.json.ottawastreetcameras.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.textfield.json.ottawastreetcameras.ui.camera.CameraScreen
+import com.textfield.json.ottawastreetcameras.ui.main.MainScreen
 import com.textfield.json.ottawastreetcameras.ui.theme.AppTheme
 
 class MainActivity : ComponentActivity() {
