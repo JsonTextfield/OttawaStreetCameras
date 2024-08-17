@@ -33,7 +33,7 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("U:\\Jason\\.android\\release.keystore")
+            storeFile = file("U:/Jason/.android/release.keystore")
             storePassword = properties["releaseStorePassword"].toString()
             keyAlias = properties["releaseKeyAlias"].toString()
             keyPassword = properties["releaseKeyPassword"].toString()
