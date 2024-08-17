@@ -21,7 +21,6 @@ import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.ui.components.SearchBar
 import com.textfield.json.ottawastreetcameras.ui.components.SearchBarContent
 import com.textfield.json.ottawastreetcameras.ui.components.SuggestionDropdown
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.SearchMode
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.ViewMode
 

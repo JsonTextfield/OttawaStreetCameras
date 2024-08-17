@@ -2,9 +2,9 @@ package com.textfield.json.ottawastreetcameras
 
 import com.textfield.json.ottawastreetcameras.entities.CameraApiModel
 import com.textfield.json.ottawastreetcameras.entities.LocationApiModel
+import com.textfield.json.ottawastreetcameras.ui.main.MainViewModel
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.CameraState
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.FilterMode
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.SearchMode
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.SortMode
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.ViewMode
@@ -19,7 +19,7 @@ import kotlin.random.Random
 
 class MainViewModelUnitTest {
 
-    private lateinit var mainViewModel :MainViewModel
+    private lateinit var mainViewModel : MainViewModel
 
     @Before
     fun setup() {

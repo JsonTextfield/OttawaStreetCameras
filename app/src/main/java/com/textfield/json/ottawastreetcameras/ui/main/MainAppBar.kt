@@ -22,7 +22,6 @@ import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.ui.components.menu.ActionBar
 import com.textfield.json.ottawastreetcameras.ui.components.menu.getActions
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
 import com.textfield.json.ottawastreetcameras.ui.viewmodels.ViewMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
