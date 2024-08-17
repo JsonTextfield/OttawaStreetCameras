@@ -6,4 +6,8 @@ class CameraRepositoryImpl(private val dataSource: CameraDataSource = SupabaseCa
     override suspend fun getAllCameras(): List<Camera> {
         return dataSource.getAllCameras()
     }
+
+    override suspend fun getCamera(id: String): Camera {
+        return dataSource.getCameraById(id)
+    }
 }

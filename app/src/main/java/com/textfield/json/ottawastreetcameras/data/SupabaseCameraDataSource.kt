@@ -27,4 +27,12 @@ class SupabaseCameraDataSource : CameraDataSource {
             it.toCamera()
         }
     }
+
+    override suspend fun getCameraById(id: String): Camera {
+        return supabase.from("cameras").select {
+            filter {
+                eq("id", id)
+            }
+        }.decodeAs<CameraApiModel>().toCamera()
+    }
 }
