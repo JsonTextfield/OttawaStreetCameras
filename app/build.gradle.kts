@@ -3,6 +3,9 @@ plugins {
     id("kotlin-android")
     id("com.google.android.gms.oss-licenses-plugin")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-parcelize")
+    id("com.google.devtools.ksp") version "2.0.10-1.0.24"
+    id("com.google.dagger.hilt.android")
     kotlin("plugin.serialization") version "1.9.22"
 }
 
@@ -56,10 +59,14 @@ android {
 
 dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation("androidx.activity:activity-compose:1.9.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3")
+    implementation("androidx.activity:activity-compose:1.9.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4")
 
     implementation("com.android.support:multidex:1.0.3")
+
+    // Hilt
+    implementation("com.google.dagger:hilt-android:2.44")
+    ksp("com.google.dagger:hilt-android-compiler:2.44")
 
     // Google
     implementation("com.google.android.gms:play-services-oss-licenses:17.1.0")
@@ -74,6 +81,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation("androidx.compose.material:material-icons-extended")
     implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
 
     // Supabase
     implementation(platform("io.github.jan-tennert.supabase:bom:2.5.1"))
