@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras.ui.viewmodels
+package com.textfield.json.ottawastreetcameras.ui.main
 
 import android.location.Location
 import com.textfield.json.ottawastreetcameras.R

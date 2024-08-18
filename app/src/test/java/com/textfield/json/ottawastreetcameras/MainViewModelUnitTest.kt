@@ -2,12 +2,12 @@ package com.textfield.json.ottawastreetcameras
 
 import com.textfield.json.ottawastreetcameras.entities.CameraApiModel
 import com.textfield.json.ottawastreetcameras.entities.LocationApiModel
+import com.textfield.json.ottawastreetcameras.ui.main.CameraState
+import com.textfield.json.ottawastreetcameras.ui.main.FilterMode
 import com.textfield.json.ottawastreetcameras.ui.main.MainViewModel
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.CameraState
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.FilterMode
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.SearchMode
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.SortMode
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.ViewMode
+import com.textfield.json.ottawastreetcameras.ui.main.SearchMode
+import com.textfield.json.ottawastreetcameras.ui.main.SortMode
+import com.textfield.json.ottawastreetcameras.ui.main.ViewMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse

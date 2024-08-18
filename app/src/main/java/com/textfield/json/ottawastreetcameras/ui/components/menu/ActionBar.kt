@@ -43,11 +43,11 @@ import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.ui.components.AboutDialog
+import com.textfield.json.ottawastreetcameras.ui.main.FilterMode
 import com.textfield.json.ottawastreetcameras.ui.main.MainViewModel
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.FilterMode
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.SearchMode
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.SortMode
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.ViewMode
+import com.textfield.json.ottawastreetcameras.ui.main.SearchMode
+import com.textfield.json.ottawastreetcameras.ui.main.SortMode
+import com.textfield.json.ottawastreetcameras.ui.main.ViewMode
 import kotlinx.coroutines.launch
 
 @Composable
