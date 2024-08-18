@@ -21,14 +21,21 @@ class MainActivity : ComponentActivity() {
                 NavHost(navController = navController, startDestination = "main") {
                     composable("main") {
                         MainScreen { selectedCameras, isShuffling ->
-                            navController.navigate("cameras/${selectedCameras.joinToString(",") { it.id }}/$isShuffling")
+                            navController.navigate("cameras?ids=${selectedCameras.joinToString(",") { it.id }}?isShuffling=$isShuffling")
                         }
                     }
                     composable(
-                        "cameras/{ids}/{isShuffling}",
+                        "cameras?ids={ids}?isShuffling={isShuffling}",
                         arguments = listOf(
-                            navArgument("ids") { type = NavType.StringType },
-                            navArgument("isShuffling") { type = NavType.BoolType },
+                            navArgument("ids") {
+                                type = NavType.StringType
+                                nullable = true
+                                defaultValue = ""
+                            },
+                            navArgument("isShuffling") {
+                                type = NavType.BoolType
+                                defaultValue = false
+                            },
                         )
                     ) {
                         CameraScreen(

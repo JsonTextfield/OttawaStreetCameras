@@ -272,7 +272,7 @@ fun getActions(
         icon = Icons.Rounded.Shuffle,
         tooltip = stringResource(id = R.string.shuffle),
         onClick = {
-            onNavigateToCameraScreen(listOf(cameraState.visibleCameras.random()), true)
+            onNavigateToCameraScreen(emptyList(), true)
         },
     )
 
