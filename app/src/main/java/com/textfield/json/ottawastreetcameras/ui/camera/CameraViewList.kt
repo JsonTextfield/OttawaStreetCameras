@@ -8,20 +8,14 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CameraViewList(
     cameras: List<Camera> = emptyList(),
-    displayedCameras: List<Camera> = ArrayList(),
+    displayedCameras: List<Camera> = emptyList(),
     shuffle: Boolean = false,
     update: Boolean = false,
     onItemLongClick: (Camera) -> Unit = {},
@@ -32,26 +26,25 @@ fun CameraViewList(
             .verticalScroll(verticalScrollState)
             .fillMaxSize()
     ) {
-        if (shuffle) {
-            var camera by remember { mutableStateOf(cameras.random()) }
-            CameraView(camera, true) { onItemLongClick(it) }
-            LaunchedEffect(camera) {
-                delay(6000)
-                camera = cameras.random()
-            }
-        }
-        else if (cameras.size == 1) {
+        if (cameras.size == 1 && !shuffle) {
             val pagerState = rememberPagerState(
                 initialPage = displayedCameras.indexOf(cameras.first()),
                 pageCount = { displayedCameras.size },
             )
             HorizontalPager(pagerState) { index ->
-                CameraView(displayedCameras[index], update = update) { onItemLongClick(it) }
+                CameraView(
+                    camera = displayedCameras[index],
+                    update = update,
+                    onLongClick = onItemLongClick,
+                )
             }
-        }
-        else {
+        } else {
             cameras.map { camera ->
-                CameraView(camera, update = update) { onItemLongClick(camera) }
+                CameraView(
+                    camera = camera,
+                    update = update,
+                    onLongClick = onItemLongClick,
+                )
             }
         }
     }

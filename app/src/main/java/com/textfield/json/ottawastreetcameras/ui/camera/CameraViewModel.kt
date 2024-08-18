@@ -28,7 +28,7 @@ class CameraViewModel(private val cameraRepository: CameraRepository = CameraRep
 
     fun getRandomCamera() {
         viewModelScope.launch {
-            _cameraList.value = listOf(cameraRepository.getAllCameras().random())
+            _cameraList.value = listOf(_allCameras.value.random())
         }
     }
 }

@@ -35,24 +35,17 @@ fun CameraScreen(
     LaunchedEffect(Unit) {
         cameraViewModel.getCameras(ids)
     }
-    if(isShuffling) {
-        LaunchedEffect(Unit) {
-            while(isShuffling) {
-                delay(6000)
-                cameraViewModel.getRandomCamera()
-            }
-        }
-    }
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     ) {
         Box(modifier = Modifier.padding(it)) {
             var update by remember { mutableStateOf(false) }
             LaunchedEffect(update) {
-                if (!isShuffling) {
-                    delay(6000)
-                    update = !update
+                if (isShuffling && allCameras.isNotEmpty()) {
+                    cameraViewModel.getRandomCamera()
                 }
+                update = !update
+                delay(6000)
             }
             val scope = rememberCoroutineScope()
             val context = LocalContext.current

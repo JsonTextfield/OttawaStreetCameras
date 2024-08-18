@@ -39,13 +39,12 @@ import com.textfield.json.ottawastreetcameras.entities.Camera
 @Composable
 fun CameraView(
     camera: Camera,
-    shuffle: Boolean = false,
     update: Boolean = false,
     onLongClick: (Camera) -> Unit = {},
 ) {
     var drawable by remember { mutableStateOf<Drawable?>(null) }
     val context = LocalContext.current
-    LaunchedEffect(if (shuffle) camera.name else update) {
+    LaunchedEffect(update) {
         val request = ImageRequest.Builder(context)
             .data(camera.url)
             .build()
