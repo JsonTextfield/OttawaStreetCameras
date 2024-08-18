@@ -5,7 +5,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:8.5.0")
+        classpath("com.android.tools.build:gradle:8.5.2")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22")
         classpath("com.google.android.gms:oss-licenses-plugin:0.10.6")
 
@@ -15,7 +15,7 @@ buildscript {
 }
 
 plugins {
-    id("com.google.dagger.hilt.android") version "2.44" apply false
+    //id("com.google.dagger.hilt.android") version "2.44" apply false
 }
 
 tasks.register<Delete>("clean") {
