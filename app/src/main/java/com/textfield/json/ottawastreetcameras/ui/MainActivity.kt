@@ -11,7 +11,9 @@ import androidx.navigation.navArgument
 import com.textfield.json.ottawastreetcameras.ui.camera.CameraScreen
 import com.textfield.json.ottawastreetcameras.ui.main.MainScreen
 import com.textfield.json.ottawastreetcameras.ui.theme.AppTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

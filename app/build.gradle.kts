@@ -4,9 +4,9 @@ plugins {
     id("com.google.android.gms.oss-licenses-plugin")
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
-    //id("com.google.devtools.ksp") version "2.0.10-1.0.24"
-    //id("com.google.dagger.hilt.android")
-    kotlin("plugin.serialization") version "1.9.22"
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
+    kotlin("plugin.serialization") version "1.9.24"
 }
 
 android {
@@ -19,11 +19,15 @@ android {
         compileSdk = 34
         targetSdk = 34
         versionCode = 30
-        versionName = "2.2.1"
+        versionName = "2.2.2"
         vectorDrawables { useSupportLibrary = true }
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
         compose = true
@@ -31,7 +35,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.9"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
 
     signingConfigs {
@@ -65,8 +69,9 @@ dependencies {
     implementation("com.android.support:multidex:1.0.3")
 
     // Hilt
-    //implementation("com.google.dagger:hilt-android:2.44")
-    //ksp("com.google.dagger:hilt-android-compiler:2.44")
+    val hiltVersion = "2.51"
+    implementation("com.google.dagger:hilt-android:$hiltVersion")
+    ksp("com.google.dagger:hilt-android-compiler:$hiltVersion")
 
     // Google
     implementation("com.google.android.gms:play-services-oss-licenses:17.1.0")
