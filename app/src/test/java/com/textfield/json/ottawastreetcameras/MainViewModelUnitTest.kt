@@ -1,5 +1,9 @@
 package com.textfield.json.ottawastreetcameras
 
+import com.textfield.json.ottawastreetcameras.data.CameraDataSource
+import com.textfield.json.ottawastreetcameras.data.CameraRepositoryImpl
+import com.textfield.json.ottawastreetcameras.entities.BilingualObject
+import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.entities.CameraApiModel
 import com.textfield.json.ottawastreetcameras.entities.LocationApiModel
 import com.textfield.json.ottawastreetcameras.ui.main.CameraState
@@ -19,11 +23,22 @@ import kotlin.random.Random
 
 class MainViewModelUnitTest {
 
-    private lateinit var mainViewModel : MainViewModel
+    private lateinit var mainViewModel: MainViewModel
+
+    class FakeCameraDataSource : CameraDataSource {
+        override suspend fun getAllCameras(): List<Camera> {
+            return (0 until 100).map {
+                Camera(
+                    id = "$it",
+                    _name = BilingualObject("Camera $it", "Camera $it"),
+                )
+            }
+        }
+    }
 
     @Before
     fun setup() {
-        mainViewModel = MainViewModel()
+        mainViewModel = MainViewModel(CameraRepositoryImpl(FakeCameraDataSource()))
     }
 
     @Test
@@ -65,6 +80,7 @@ class MainViewModelUnitTest {
     @Test
     fun testSearchCameras() {
         mainViewModel = MainViewModel(
+            cameraRepository = CameraRepositoryImpl(FakeCameraDataSource()),
             _cameraState = MutableStateFlow(CameraState().apply {
                 allCameras = (0 until 10).map {
                     CameraApiModel(
@@ -98,6 +114,7 @@ class MainViewModelUnitTest {
     @Test
     fun testSelectAllCameras() {
         mainViewModel = MainViewModel(
+            cameraRepository = CameraRepositoryImpl(FakeCameraDataSource()),
             _cameraState = MutableStateFlow(CameraState().apply {
                 allCameras = (0 until 10).map {
                     CameraApiModel(
@@ -124,6 +141,7 @@ class MainViewModelUnitTest {
     @Test
     fun testClearSelectedCameras() {
         mainViewModel = MainViewModel(
+            cameraRepository = CameraRepositoryImpl(FakeCameraDataSource()),
             _cameraState = MutableStateFlow(CameraState().apply {
                 allCameras = (0 until 10).map {
                     CameraApiModel(
@@ -148,6 +166,7 @@ class MainViewModelUnitTest {
     @Test
     fun testSelectCamera() {
         mainViewModel = MainViewModel(
+            cameraRepository = CameraRepositoryImpl(FakeCameraDataSource()),
             _cameraState = MutableStateFlow(CameraState().apply {
                 allCameras = (0 until 10).map {
                     CameraApiModel(
@@ -171,6 +190,7 @@ class MainViewModelUnitTest {
     @Test
     fun testFavouriteSelectedCameras() {
         mainViewModel = MainViewModel(
+            cameraRepository = CameraRepositoryImpl(FakeCameraDataSource()),
             _cameraState = MutableStateFlow(CameraState().apply {
                 allCameras = (0 until 10).map {
                     CameraApiModel(
@@ -197,6 +217,7 @@ class MainViewModelUnitTest {
     @Test
     fun testHideSelectedCameras() {
         mainViewModel = MainViewModel(
+            cameraRepository = CameraRepositoryImpl(FakeCameraDataSource()),
             _cameraState = MutableStateFlow(CameraState().apply {
                 allCameras = (0 until 10).map {
                     CameraApiModel(
