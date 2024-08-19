@@ -27,9 +27,7 @@ fun CameraScreen(
     ids: String = "",
     isShuffling: Boolean = false,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
-    cameraViewModel: CameraViewModel = viewModel<CameraViewModel>(
-        factory = CameraViewModel.CameraViewModelFactory
-    ),
+    cameraViewModel: CameraViewModel = viewModel<CameraViewModel>(),
 ) {
     val cameraList by cameraViewModel.cameraList.collectAsState()
     val allCameras by cameraViewModel.allCameras.collectAsState()

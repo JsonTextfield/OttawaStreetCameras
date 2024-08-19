@@ -1,23 +1,21 @@
 package com.textfield.json.ottawastreetcameras.ui.camera
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.textfield.json.ottawastreetcameras.data.CameraRepository
-import com.textfield.json.ottawastreetcameras.data.CameraRepositoryImpl
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class CameraViewModel(
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val cameraRepository: CameraRepository = CameraRepositoryImpl(),
+@HiltViewModel
+class CameraViewModel @Inject constructor(
+    private val dispatcher: CoroutineDispatcher,
+    private val cameraRepository: CameraRepository,
 ) :
     ViewModel() {
 
@@ -39,13 +37,5 @@ class CameraViewModel(
 
     fun getRandomCamera() {
         _cameraList.value = listOf(_allCameras.value.random())
-    }
-
-    companion object {
-        val CameraViewModelFactory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                CameraViewModel()
-            }
-        }
     }
 }

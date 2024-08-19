@@ -1,25 +1,16 @@
 package com.textfield.json.ottawastreetcameras.data
 
-import com.textfield.json.ottawastreetcameras.R
-import com.textfield.json.ottawastreetcameras.StreetCamsApp
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.entities.CameraApiModel
-import io.github.jan.supabase.createSupabaseClient
-import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
+import javax.inject.Inject
 
-class SupabaseCameraDataSource : CameraDataSource {
-    private val supabase by lazy {
-        createSupabaseClient(
-            supabaseUrl = "https://nacudfxzbqaesoyjfluh.supabase.co",
-            supabaseKey = StreetCamsApp.resources.getString(R.string.supabase_key)
-        ) {
-            install(Postgrest)
-        }
-    }
+class SupabaseCameraDataSource @Inject constructor(private val supabaseClient: SupabaseClient) :
+    CameraDataSource {
 
     override suspend fun getAllCameras(): List<Camera> {
-        return supabase.from("cameras").select {
+        return supabaseClient.from("cameras").select {
             filter {
                 eq("city", "ottawa")
             }

@@ -1,27 +1,24 @@
 package com.textfield.json.ottawastreetcameras.ui.main
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.location.Location
 import androidx.core.content.edit
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.textfield.json.ottawastreetcameras.SortByName
 import com.textfield.json.ottawastreetcameras.data.CameraRepository
-import com.textfield.json.ottawastreetcameras.data.CameraRepositoryImpl
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MainViewModel(
-    private val cameraRepository: CameraRepository = CameraRepositoryImpl(),
+@HiltViewModel
+class MainViewModel @Inject constructor(
+    private val cameraRepository: CameraRepository,
     private val _cameraState: MutableStateFlow<CameraState> = MutableStateFlow(CameraState()),
     private val prefs: SharedPreferences? = null,
 ) : ViewModel() {
@@ -164,20 +161,6 @@ class MainViewModel(
         else {
             // don't reload if the camera list is not empty
             _cameraState.update { it.copy(uiState = UIState.LOADED) }
-        }
-    }
-
-    companion object {
-        val MainViewModelFactory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val application = checkNotNull(this[APPLICATION_KEY])
-                MainViewModel(
-                    prefs = application.getSharedPreferences(
-                        application.packageName,
-                        Context.MODE_PRIVATE
-                    )
-                )
-            }
         }
     }
 }

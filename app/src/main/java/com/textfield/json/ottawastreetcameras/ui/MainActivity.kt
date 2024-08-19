@@ -3,13 +3,16 @@ package com.textfield.json.ottawastreetcameras.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.textfield.json.ottawastreetcameras.ui.camera.CameraScreen
+import com.textfield.json.ottawastreetcameras.ui.camera.CameraViewModel
 import com.textfield.json.ottawastreetcameras.ui.main.MainScreen
+import com.textfield.json.ottawastreetcameras.ui.main.MainViewModel
 import com.textfield.json.ottawastreetcameras.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -22,7 +25,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = "main") {
                     composable("main") {
-                        MainScreen { selectedCameras, isShuffling ->
+                        MainScreen(mainViewModel = hiltViewModel<MainViewModel>()) { selectedCameras, isShuffling ->
                             navController.navigate("cameras?ids=${selectedCameras.joinToString(",") { it.id }}?isShuffling=$isShuffling")
                         }
                     }
@@ -41,6 +44,7 @@ class MainActivity : ComponentActivity() {
                         )
                     ) {
                         CameraScreen(
+                            cameraViewModel = hiltViewModel<CameraViewModel>(),
                             ids = it.arguments?.getString("ids") ?: "",
                             isShuffling = it.arguments?.getBoolean("isShuffling") ?: false,
                         )

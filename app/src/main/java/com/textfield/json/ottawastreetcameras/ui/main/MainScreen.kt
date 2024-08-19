@@ -20,9 +20,7 @@ import com.textfield.json.ottawastreetcameras.ui.components.LoadingScreen
 
 @Composable
 fun MainScreen(
-    mainViewModel: MainViewModel = viewModel<MainViewModel>(
-        factory = MainViewModel.MainViewModelFactory,
-    ),
+    mainViewModel: MainViewModel = viewModel<MainViewModel>(),
     onNavigateToCameraScreen: (List<Camera>, Boolean) -> Unit = { _, _ -> },
 ) {
     val cameraState by mainViewModel.cameraState.collectAsState()
