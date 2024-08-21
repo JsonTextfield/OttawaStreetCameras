@@ -6,10 +6,10 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import kotlinx.coroutines.launch
@@ -22,7 +22,7 @@ fun MainContent(
     snackbarHostState: SnackbarHostState,
     onNavigateToCameraScreen: (List<Camera>) -> Unit = {},
 ) {
-    val cameraState by mainViewModel.cameraState.collectAsState()
+    val cameraState by mainViewModel.cameraState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val onItemClick = { camera: Camera ->
         if (cameraState.selectedCameras.isNotEmpty()) {

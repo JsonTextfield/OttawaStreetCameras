@@ -29,7 +29,6 @@ import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,6 +38,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
@@ -108,7 +108,7 @@ fun getActions(
     snackbarHostState: SnackbarHostState,
     onNavigateToCameraScreen: (List<Camera>, Boolean) -> Unit = { _, _ -> }
 ): List<Action> {
-    val cameraState by mainViewModel.cameraState.collectAsState()
+    val cameraState by mainViewModel.cameraState.collectAsStateWithLifecycle()
     val selectedCameras = cameraState.selectedCameras
     val context = LocalContext.current
     val clearSelection = Action(

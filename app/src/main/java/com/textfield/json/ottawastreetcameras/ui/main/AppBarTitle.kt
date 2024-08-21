@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -17,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.ui.components.SearchBar
 import com.textfield.json.ottawastreetcameras.ui.components.SearchBarContent
@@ -24,7 +24,7 @@ import com.textfield.json.ottawastreetcameras.ui.components.SuggestionDropdown
 
 @Composable
 fun AppBarTitle(mainViewModel: MainViewModel, onClick: () -> Unit = {}) {
-    val cameraState by mainViewModel.cameraState.collectAsState()
+    val cameraState by mainViewModel.cameraState.collectAsStateWithLifecycle()
     if (cameraState.selectedCameras.isNotEmpty()) {
         Text(
             pluralStringResource(

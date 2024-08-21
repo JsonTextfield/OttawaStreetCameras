@@ -2,9 +2,9 @@ package com.textfield.json.ottawastreetcameras.ui.main
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -29,7 +29,7 @@ fun CameraMapView(
     onItemClick: (Camera) -> Unit = {},
     onItemLongClick: (Camera) -> Unit = {},
 ) {
-    val cameraState by mainViewModel.cameraState.collectAsState()
+    val cameraState by mainViewModel.cameraState.collectAsStateWithLifecycle()
     val cameras = cameraState.displayedCameras
     val context = LocalContext.current
     val cameraPositionState = rememberCameraPositionState {

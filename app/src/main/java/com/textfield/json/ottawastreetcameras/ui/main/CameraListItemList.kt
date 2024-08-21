@@ -21,7 +21,6 @@ import androidx.compose.material3.SwipeToDismissBoxState
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -30,6 +29,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.ui.components.SectionIndex
@@ -43,7 +43,7 @@ fun CameraListItemList(
     onItemLongClick: (Camera) -> Unit = {},
     onItemDismissed: (Camera) -> Unit = {},
 ) {
-    val cameraState by mainViewModel.cameraState.collectAsState()
+    val cameraState by mainViewModel.cameraState.collectAsStateWithLifecycle()
     Row {
         AnimatedVisibility(visible = cameraState.showSectionIndex) {
             SectionIndex(

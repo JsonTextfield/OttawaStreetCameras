@@ -7,7 +7,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -15,6 +14,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.network.CameraDownloadService
@@ -29,8 +29,8 @@ fun CameraScreen(
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     cameraViewModel: CameraViewModel = viewModel<CameraViewModel>(),
 ) {
-    val cameraList by cameraViewModel.cameraList.collectAsState()
-    val allCameras by cameraViewModel.allCameras.collectAsState()
+    val cameraList by cameraViewModel.cameraList.collectAsStateWithLifecycle()
+    val allCameras by cameraViewModel.allCameras.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         if (allCameras.isEmpty()) {
