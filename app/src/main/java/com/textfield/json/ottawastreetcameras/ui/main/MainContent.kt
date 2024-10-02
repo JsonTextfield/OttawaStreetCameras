@@ -54,28 +54,29 @@ fun MainContent(
     when (cameraState.viewMode) {
         ViewMode.LIST -> {
             CameraListItemList(
-                mainViewModel,
+                cameraState = cameraState,
                 listState = listState,
                 onItemClick = onItemClick,
                 onItemLongClick = onItemLongClick,
                 onItemDismissed = onItemDismissed,
+                onFavouriteClick = { mainViewModel.favouriteCameras(listOf(it)) },
             )
         }
 
         ViewMode.MAP -> {
             CameraMapView(
-                mainViewModel,
+                cameraState = cameraState,
                 onItemClick = onItemClick,
-                onItemLongClick = onItemLongClick
+                onItemLongClick = onItemLongClick,
             )
         }
 
         ViewMode.GALLERY -> {
             CameraGalleryView(
-                mainViewModel,
+                cameraState = cameraState,
                 gridState = gridState,
                 onItemClick = onItemClick,
-                onItemLongClick = onItemLongClick
+                onItemLongClick = onItemLongClick,
             )
         }
     }
