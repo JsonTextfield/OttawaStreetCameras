@@ -23,7 +23,10 @@ import com.textfield.json.ottawastreetcameras.ui.components.SearchBarContent
 import com.textfield.json.ottawastreetcameras.ui.components.SuggestionDropdown
 
 @Composable
-fun AppBarTitle(mainViewModel: MainViewModel, onClick: () -> Unit = {}) {
+fun AppBarTitle(
+    mainViewModel: MainViewModel,
+    onClick: () -> Unit = {},
+) {
     val cameraState by mainViewModel.cameraState.collectAsStateWithLifecycle()
     if (cameraState.selectedCameras.isNotEmpty()) {
         Text(
