@@ -30,11 +30,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.textfield.json.ottawastreetcameras.R
+import com.textfield.json.ottawastreetcameras.entities.BilingualObject
 import com.textfield.json.ottawastreetcameras.entities.Camera
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -79,8 +81,7 @@ fun CameraGalleryTile(
                     .background(
                         color = if (camera.isSelected) {
                             MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
-                        }
-                        else {
+                        } else {
                             Color.Transparent
                         }
                     )
@@ -113,4 +114,15 @@ fun CameraGalleryTile(
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun CameraGalleryTilePreview() {
+    CameraGalleryTile(
+        Camera(
+            _name = BilingualObject("Name", "Name"),
+            _neighbourhood = BilingualObject("Neighbourhood", "Neighbourhood"),
+        )
+    )
 }

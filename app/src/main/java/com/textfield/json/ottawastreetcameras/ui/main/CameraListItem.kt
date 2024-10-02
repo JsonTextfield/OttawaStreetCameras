@@ -19,9 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.textfield.json.ottawastreetcameras.R
+import com.textfield.json.ottawastreetcameras.entities.BilingualObject
 import com.textfield.json.ottawastreetcameras.entities.Camera
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -44,8 +46,7 @@ fun CameraListItem(
         colors = ListItemDefaults.colors(
             containerColor = if (camera.isSelected) {
                 MaterialTheme.colorScheme.primaryContainer
-            }
-            else {
+            } else {
                 ListItemDefaults.containerColor
             }
         ),
@@ -67,8 +68,7 @@ fun CameraListItem(
                     modifier = Modifier.padding(5.dp),
                 )
             }
-        }
-        else null,
+        } else null,
         trailingContent = {
             IconButton(
                 onClick = { onFavouriteClick(camera) }
@@ -79,8 +79,7 @@ fun CameraListItem(
                         contentDescription = stringResource(R.string.remove_from_favourites),
                         tint = colorResource(id = R.color.favouriteColour)
                     )
-                }
-                else {
+                } else {
                     Icon(
                         Icons.Rounded.StarBorder,
                         contentDescription = stringResource(R.string.add_to_favourites),
@@ -88,5 +87,16 @@ fun CameraListItem(
                 }
             }
         }
+    )
+}
+
+@Preview
+@Composable
+private fun CameraListItemPreview() {
+    CameraListItem(
+        Camera(
+            _name = BilingualObject("Name", "Name"),
+            _neighbourhood = BilingualObject("Neighbourhood", "Neighbourhood"),
+        )
     )
 }

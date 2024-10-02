@@ -2,9 +2,8 @@ package com.textfield.json.ottawastreetcameras.ui.main
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.tooling.preview.Preview
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -17,6 +16,7 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.textfield.json.ottawastreetcameras.R
+import com.textfield.json.ottawastreetcameras.entities.BilingualObject
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,12 +24,11 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun CameraMapView(
-    mainViewModel: MainViewModel,
+    cameraState: CameraState,
     isMyLocationEnabled: Boolean = false,
     onItemClick: (Camera) -> Unit = {},
     onItemLongClick: (Camera) -> Unit = {},
 ) {
-    val cameraState by mainViewModel.cameraState.collectAsStateWithLifecycle()
     val cameras = cameraState.displayedCameras
     val context = LocalContext.current
     val cameraPositionState = rememberCameraPositionState {
@@ -82,4 +81,11 @@ fun CameraMapView(
             )
         }
     }
+}
+
+@Preview
+@Composable
+private fun CameraMapViewPreview() {
+    val cameraList = (0 until 10).map { Camera(_name = BilingualObject(en = "Camera $it", fr = "Caméra $it"))}
+    CameraMapView(CameraState(displayedCameras = cameraList))
 }
