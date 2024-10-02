@@ -81,18 +81,20 @@ class MainViewModelUnitTest {
     fun testSearchCameras() {
         mainViewModel = MainViewModel(
             cameraRepository = CameraRepositoryImpl(FakeCameraDataSource()),
-            _cameraState = MutableStateFlow(CameraState().apply {
-                allCameras = (0 until 10).map {
-                    CameraApiModel(
-                        nameEn = "Camera $it",
-                        neighbourhoodEn = if (it == 1) "neighbourhood" else "",
-                        location = LocationApiModel(
-                            lat = Random.nextDouble() * 90,
-                            lon = Random.nextDouble() * 180 - 90,
-                        ),
-                    ).toCamera()
-                }
-            }),
+            _cameraState = MutableStateFlow(
+                CameraState(
+                    allCameras = (0 until 10).map {
+                        CameraApiModel(
+                            nameEn = "Camera $it",
+                            neighbourhoodEn = if (it == 1) "neighbourhood" else "",
+                            location = LocationApiModel(
+                                lat = Random.nextDouble() * 90,
+                                lon = Random.nextDouble() * 180 - 90,
+                            ),
+                        ).toCamera()
+                    },
+                ),
+            ),
         )
 
         mainViewModel.searchCameras(SearchMode.NAME, "Camera 5")
@@ -113,20 +115,23 @@ class MainViewModelUnitTest {
 
     @Test
     fun testSelectAllCameras() {
+        val allCameras = (0 until 10).map {
+            CameraApiModel(
+                nameEn = "Camera $it",
+                location = LocationApiModel(
+                    lat = Random.nextDouble() * 90,
+                    lon = Random.nextDouble() * 180 - 90,
+                ),
+            ).toCamera()
+        }
         mainViewModel = MainViewModel(
             cameraRepository = CameraRepositoryImpl(FakeCameraDataSource()),
-            _cameraState = MutableStateFlow(CameraState().apply {
-                allCameras = (0 until 10).map {
-                    CameraApiModel(
-                        nameEn = "Camera $it",
-                        location = LocationApiModel(
-                            lat = Random.nextDouble() * 90,
-                            lon = Random.nextDouble() * 180 - 90,
-                        ),
-                    ).toCamera()
-                }
-                displayedCameras = allCameras
-            }),
+            _cameraState = MutableStateFlow(
+                CameraState(
+                    allCameras = allCameras,
+                    displayedCameras = allCameras,
+                ),
+            ),
         )
 
         mainViewModel.selectAllCameras()
@@ -140,20 +145,23 @@ class MainViewModelUnitTest {
 
     @Test
     fun testClearSelectedCameras() {
+        val allCameras = (0 until 10).map {
+            CameraApiModel(
+                nameEn = "Camera $it",
+                location = LocationApiModel(
+                    lat = Random.nextDouble() * 90,
+                    lon = Random.nextDouble() * 180 - 90,
+                ),
+            ).toCamera()
+        }
         mainViewModel = MainViewModel(
             cameraRepository = CameraRepositoryImpl(FakeCameraDataSource()),
-            _cameraState = MutableStateFlow(CameraState().apply {
-                allCameras = (0 until 10).map {
-                    CameraApiModel(
-                        nameEn = "Camera $it",
-                        location = LocationApiModel(
-                            lat = Random.nextDouble() * 90,
-                            lon = Random.nextDouble() * 180 - 90,
-                        ),
-                    ).toCamera()
-                }
-                displayedCameras = allCameras
-            }),
+            _cameraState = MutableStateFlow(
+                CameraState(
+                    allCameras = allCameras,
+                    displayedCameras = allCameras,
+                ),
+            ),
         )
 
         mainViewModel.selectAllCameras()
@@ -165,19 +173,18 @@ class MainViewModelUnitTest {
 
     @Test
     fun testSelectCamera() {
+        val allCameras = (0 until 10).map {
+            CameraApiModel(
+                nameEn = "Camera $it",
+                location = LocationApiModel(
+                    lat = Random.nextDouble() * 90,
+                    lon = Random.nextDouble() * 180 - 90,
+                ),
+            ).toCamera()
+        }
         mainViewModel = MainViewModel(
             cameraRepository = CameraRepositoryImpl(FakeCameraDataSource()),
-            _cameraState = MutableStateFlow(CameraState().apply {
-                allCameras = (0 until 10).map {
-                    CameraApiModel(
-                        nameEn = "Camera $it",
-                        location = LocationApiModel(
-                            lat = Random.nextDouble() * 90,
-                            lon = Random.nextDouble() * 180 - 90,
-                        ),
-                    ).toCamera()
-                }
-            }),
+            _cameraState = MutableStateFlow(CameraState(allCameras = allCameras)),
         )
 
         assertTrue(mainViewModel.cameraState.value.selectedCameras.isEmpty())
@@ -189,20 +196,19 @@ class MainViewModelUnitTest {
 
     @Test
     fun testFavouriteSelectedCameras() {
+        val allCameras = (0 until 10).map {
+            CameraApiModel(
+                id = "$it",
+                nameEn = "Camera $it",
+                location = LocationApiModel(
+                    lat = 45.451235,
+                    lon = -75.6742136,
+                ),
+            ).toCamera()
+        }
         mainViewModel = MainViewModel(
             cameraRepository = CameraRepositoryImpl(FakeCameraDataSource()),
-            _cameraState = MutableStateFlow(CameraState().apply {
-                allCameras = (0 until 10).map {
-                    CameraApiModel(
-                        id = "$it",
-                        nameEn = "Camera $it",
-                        location = LocationApiModel(
-                            lat = 45.451235,
-                            lon = -75.6742136,
-                        ),
-                    ).toCamera()
-                }
-            }),
+            _cameraState = MutableStateFlow(CameraState(allCameras = allCameras)),
         )
 
         mainViewModel.selectCamera(mainViewModel.cameraState.value.allCameras[1])
@@ -216,20 +222,19 @@ class MainViewModelUnitTest {
 
     @Test
     fun testHideSelectedCameras() {
+        val allCameras = (0 until 10).map {
+            CameraApiModel(
+                id = "$it",
+                nameEn = "Camera $it",
+                location = LocationApiModel(
+                    lat = Random.nextDouble() * 45.451235,
+                    lon = Random.nextDouble() * -75.6742136,
+                ),
+            ).toCamera()
+        }
         mainViewModel = MainViewModel(
             cameraRepository = CameraRepositoryImpl(FakeCameraDataSource()),
-            _cameraState = MutableStateFlow(CameraState().apply {
-                allCameras = (0 until 10).map {
-                    CameraApiModel(
-                        id = "$it",
-                        nameEn = "Camera $it",
-                        location = LocationApiModel(
-                            lat = Random.nextDouble() * 45.451235,
-                            lon = Random.nextDouble() * -75.6742136,
-                        ),
-                    ).toCamera()
-                }
-            }),
+            _cameraState = MutableStateFlow(CameraState(allCameras = allCameras)),
         )
 
         mainViewModel.selectCamera(mainViewModel.cameraState.value.allCameras[5])

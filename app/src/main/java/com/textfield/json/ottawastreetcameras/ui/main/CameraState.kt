@@ -31,16 +31,16 @@ enum class ViewMode(val key: Int) {
 enum class UIState { LOADING, LOADED, ERROR, INITIAL, }
 
 data class CameraState(
-    var allCameras: List<Camera> = ArrayList(),
-    var displayedCameras: List<Camera> = ArrayList(),
-    var uiState: UIState = UIState.INITIAL,
-    var sortMode: SortMode = SortMode.NAME,
-    var searchMode: SearchMode = SearchMode.NONE,
-    var searchText: String = "",
-    var filterMode: FilterMode = FilterMode.VISIBLE,
-    var viewMode: ViewMode = ViewMode.GALLERY,
-    var location: Location? = null,
-    var lastUpdated: Long = 0L,
+    val allCameras: List<Camera> = ArrayList(),
+    val displayedCameras: List<Camera> = ArrayList(),
+    val uiState: UIState = UIState.INITIAL,
+    val sortMode: SortMode = SortMode.NAME,
+    val searchMode: SearchMode = SearchMode.NONE,
+    val searchText: String = "",
+    val filterMode: FilterMode = FilterMode.VISIBLE,
+    val viewMode: ViewMode = ViewMode.GALLERY,
+    val location: Location? = null,
+    val lastUpdated: Long = 0L,
 ) {
     val selectedCameras
         get() = allCameras.filter { it.isSelected }
