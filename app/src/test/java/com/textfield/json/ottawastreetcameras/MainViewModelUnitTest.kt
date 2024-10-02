@@ -1,7 +1,7 @@
 package com.textfield.json.ottawastreetcameras
 
 import com.textfield.json.ottawastreetcameras.data.CameraDataSource
-import com.textfield.json.ottawastreetcameras.data.CameraRepositoryImpl
+import com.textfield.json.ottawastreetcameras.data.CameraRepository
 import com.textfield.json.ottawastreetcameras.entities.BilingualObject
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.entities.CameraApiModel
@@ -38,7 +38,7 @@ class MainViewModelUnitTest {
 
     @Before
     fun setup() {
-        mainViewModel = MainViewModel(CameraRepositoryImpl(FakeCameraDataSource()))
+        mainViewModel = MainViewModel(CameraRepository(FakeCameraDataSource()))
     }
 
     @Test
@@ -80,7 +80,7 @@ class MainViewModelUnitTest {
     @Test
     fun testSearchCameras() {
         mainViewModel = MainViewModel(
-            cameraRepository = CameraRepositoryImpl(FakeCameraDataSource()),
+            cameraRepository = CameraRepository(FakeCameraDataSource()),
             _cameraState = MutableStateFlow(
                 CameraState(
                     allCameras = (0 until 10).map {
@@ -125,7 +125,7 @@ class MainViewModelUnitTest {
             ).toCamera()
         }
         mainViewModel = MainViewModel(
-            cameraRepository = CameraRepositoryImpl(FakeCameraDataSource()),
+            cameraRepository = CameraRepository(FakeCameraDataSource()),
             _cameraState = MutableStateFlow(
                 CameraState(
                     allCameras = allCameras,
@@ -155,7 +155,7 @@ class MainViewModelUnitTest {
             ).toCamera()
         }
         mainViewModel = MainViewModel(
-            cameraRepository = CameraRepositoryImpl(FakeCameraDataSource()),
+            cameraRepository = CameraRepository(FakeCameraDataSource()),
             _cameraState = MutableStateFlow(
                 CameraState(
                     allCameras = allCameras,
@@ -183,7 +183,7 @@ class MainViewModelUnitTest {
             ).toCamera()
         }
         mainViewModel = MainViewModel(
-            cameraRepository = CameraRepositoryImpl(FakeCameraDataSource()),
+            cameraRepository = CameraRepository(FakeCameraDataSource()),
             _cameraState = MutableStateFlow(CameraState(allCameras = allCameras)),
         )
 
@@ -207,7 +207,7 @@ class MainViewModelUnitTest {
             ).toCamera()
         }
         mainViewModel = MainViewModel(
-            cameraRepository = CameraRepositoryImpl(FakeCameraDataSource()),
+            cameraRepository = CameraRepository(FakeCameraDataSource()),
             _cameraState = MutableStateFlow(CameraState(allCameras = allCameras)),
         )
 
@@ -233,7 +233,7 @@ class MainViewModelUnitTest {
             ).toCamera()
         }
         mainViewModel = MainViewModel(
-            cameraRepository = CameraRepositoryImpl(FakeCameraDataSource()),
+            cameraRepository = CameraRepository(FakeCameraDataSource()),
             _cameraState = MutableStateFlow(CameraState(allCameras = allCameras)),
         )
 

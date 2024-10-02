@@ -3,7 +3,7 @@ package com.textfield.json.ottawastreetcameras.di
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.StreetCamsApp
 import com.textfield.json.ottawastreetcameras.data.CameraRepository
-import com.textfield.json.ottawastreetcameras.data.CameraRepositoryImpl
+import com.textfield.json.ottawastreetcameras.data.ICameraRepository
 import com.textfield.json.ottawastreetcameras.data.SupabaseCameraDataSource
 import com.textfield.json.ottawastreetcameras.ui.main.MainViewModel
 import dagger.Module
@@ -33,8 +33,8 @@ object AppModule {
     val dispatcher: CoroutineDispatcher = Dispatchers.IO
 
     @Provides
-    fun provideCameraRepository(): CameraRepository {
-        return CameraRepositoryImpl(SupabaseCameraDataSource(supabase))
+    fun provideCameraRepository(): ICameraRepository {
+        return CameraRepository(SupabaseCameraDataSource(supabase))
     }
 
     @Provides

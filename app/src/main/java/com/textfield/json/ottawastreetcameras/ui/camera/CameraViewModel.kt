@@ -2,7 +2,7 @@ package com.textfield.json.ottawastreetcameras.ui.camera
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.textfield.json.ottawastreetcameras.data.CameraRepository
+import com.textfield.json.ottawastreetcameras.data.ICameraRepository
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -15,7 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CameraViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatcher,
-    private val cameraRepository: CameraRepository,
+    private val cameraRepository: ICameraRepository,
 ) :
     ViewModel() {
 

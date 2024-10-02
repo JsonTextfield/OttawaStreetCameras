@@ -6,7 +6,7 @@ import androidx.core.content.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.textfield.json.ottawastreetcameras.SortByName
-import com.textfield.json.ottawastreetcameras.data.CameraRepository
+import com.textfield.json.ottawastreetcameras.data.ICameraRepository
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val cameraRepository: CameraRepository,
+    private val cameraRepository: ICameraRepository,
     private val _cameraState: MutableStateFlow<CameraState> = MutableStateFlow(CameraState()),
     private val prefs: SharedPreferences? = null,
 ) : ViewModel() {
