@@ -126,6 +126,9 @@ fun CameraListItemList(
 @Preview
 @Composable
 private fun CameraListItemListPreview() {
-    val cameraList = (0 until 10).map { Camera(_name = BilingualObject(en = "Camera $it", fr = "Caméra $it"))}
+    val cameraList = (0 until 10).map { Camera(
+        _name = BilingualObject(en = "Camera $it", fr = "Caméra $it"),
+        _neighbourhood = BilingualObject(en = "Neighbourhood $it", fr = "Voisinage $it"),
+    )}
     CameraListItemList(CameraState(displayedCameras = cameraList), listState = LazyListState())
 }
