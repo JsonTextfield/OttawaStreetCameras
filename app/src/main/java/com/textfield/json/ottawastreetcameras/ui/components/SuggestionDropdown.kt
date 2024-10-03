@@ -7,6 +7,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 
@@ -36,4 +37,15 @@ fun SuggestionDropdown(
             )
         }
     }
+}
+
+@Preview(widthDp = 300, showSystemUi = true, showBackground = true)
+@Composable
+private fun SuggestionDropdownPreview() {
+    SuggestionDropdown(
+        expanded = true,
+        suggestions = "hello world this is a test".split(" "),
+        text = "",
+        onItemSelected = {},
+    )
 }

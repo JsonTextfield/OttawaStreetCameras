@@ -1,12 +1,14 @@
 package com.textfield.json.ottawastreetcameras.entities
 
-import android.os.Parcel
 import android.os.Parcelable
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 import kotlin.math.roundToInt
 
 /**
  * Created by Jason on 25/04/2016.
  */
+@Parcelize
 data class Camera(
     val id: String = "",
     private val _name: BilingualObject = BilingualObject(),
@@ -15,9 +17,13 @@ data class Camera(
     val lon: Double = 0.0,
     private val _url: String = "",
 ) : Parcelable {
+    @IgnoredOnParcel
     var isFavourite = false
+    @IgnoredOnParcel
     var isVisible = true
+    @IgnoredOnParcel
     var isSelected = false
+    @IgnoredOnParcel
     var distance = -1
 
     val name: String get() = _name.name
@@ -38,39 +44,5 @@ data class Camera(
             }
         }
 
-    constructor(parcel: Parcel) : this(
-        id = parcel.readString() ?: "",
-        _name = BilingualObject(en = parcel.readString() ?: "", fr = parcel.readString() ?: ""),
-        _neighbourhood = BilingualObject(en = parcel.readString() ?: "", fr = parcel.readString() ?: ""),
-        lat = parcel.readDouble(),
-        lon = parcel.readDouble(),
-        _url = parcel.readString() ?: "",
-    )
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun writeToParcel(parcel: Parcel, i: Int) {
-        parcel.writeString(id)
-        parcel.writeString(_name.en)
-        parcel.writeString(_name.fr)
-        parcel.writeString(_neighbourhood.en)
-        parcel.writeString(_neighbourhood.fr)
-        parcel.writeDouble(lat)
-        parcel.writeDouble(lon)
-        parcel.writeString(_url)
-    }
-
     override fun toString(): String = name
-
-    companion object CREATOR : Parcelable.Creator<Camera> {
-        override fun createFromParcel(`in`: Parcel): Camera {
-            return Camera(`in`)
-        }
-
-        override fun newArray(size: Int): Array<Camera?> {
-            return arrayOfNulls(size)
-        }
-    }
 }

@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras.ui.components
+package com.textfield.json.ottawastreetcameras.ui.main
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.VisibilityOff
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
@@ -21,30 +20,28 @@ import androidx.compose.material3.SwipeToDismissBoxState
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.textfield.json.ottawastreetcameras.R
+import com.textfield.json.ottawastreetcameras.entities.BilingualObject
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.FilterMode
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
+import com.textfield.json.ottawastreetcameras.ui.components.SectionIndex
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CameraListItemList(
-    mainViewModel: MainViewModel,
+    cameraState: CameraState,
     listState: LazyListState,
     onItemClick: (Camera) -> Unit = {},
     onItemLongClick: (Camera) -> Unit = {},
     onItemDismissed: (Camera) -> Unit = {},
+    onFavouriteClick: (Camera) -> Unit = {},
 ) {
-    val cameraState by mainViewModel.cameraState.collectAsState()
     Row {
         AnimatedVisibility(visible = cameraState.showSectionIndex) {
             SectionIndex(
@@ -56,7 +53,13 @@ fun CameraListItemList(
         LazyColumn(state = listState) {
             items(cameras, { camera -> camera.hashCode() }) { camera ->
                 if (cameraState.filterMode == FilterMode.FAVOURITE) {
-                    CameraListItem(mainViewModel, camera, onItemClick, onItemLongClick)
+                    CameraListItem(
+                        camera = camera,
+                        showDistance = cameraState.sortMode == SortMode.DISTANCE && camera.distance > -1,
+                        onClick = onItemClick,
+                        onLongClick = onItemLongClick,
+                        onFavouriteClick = onFavouriteClick
+                    )
                 }
                 else {
                     val density = LocalDensity.current
@@ -97,7 +100,12 @@ fun CameraListItemList(
                             )
                         },
                         content = {
-                            CameraListItem(mainViewModel, camera, onItemClick, onItemLongClick)
+                            CameraListItem(
+                                camera = camera,
+                                showDistance = cameraState.sortMode == SortMode.DISTANCE,
+                                onClick = onItemClick,
+                                onLongClick = onItemLongClick,
+                            )
                         },
                     )
                 }
@@ -113,4 +121,14 @@ fun CameraListItemList(
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun CameraListItemListPreview() {
+    val cameraList = (0 until 10).map { Camera(
+        _name = BilingualObject(en = "Camera $it", fr = "Caméra $it"),
+        _neighbourhood = BilingualObject(en = "Neighbourhood $it", fr = "Voisinage $it"),
+    )}
+    CameraListItemList(CameraState(displayedCameras = cameraList), listState = LazyListState())
 }

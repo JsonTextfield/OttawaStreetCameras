@@ -1,8 +1,11 @@
 package com.textfield.json.ottawastreetcameras.entities
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import java.util.Locale
 
-data class BilingualObject(val en: String = "", val fr: String = "") {
+@Parcelize
+data class BilingualObject(val en: String = "", val fr: String = "") : Parcelable {
     /**
      * Returns the translated name of the object.
      */

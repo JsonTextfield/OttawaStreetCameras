@@ -3,12 +3,12 @@ package com.textfield.json.ottawastreetcameras
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.entities.CameraApiModel
 import com.textfield.json.ottawastreetcameras.entities.LocationApiModel
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.CameraState
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.FilterMode
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.SearchMode
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.SortMode
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.UIState
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.ViewMode
+import com.textfield.json.ottawastreetcameras.ui.main.CameraState
+import com.textfield.json.ottawastreetcameras.ui.main.FilterMode
+import com.textfield.json.ottawastreetcameras.ui.main.SearchMode
+import com.textfield.json.ottawastreetcameras.ui.main.SortMode
+import com.textfield.json.ottawastreetcameras.ui.main.UIState
+import com.textfield.json.ottawastreetcameras.ui.main.ViewMode
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -48,12 +48,12 @@ class CameraStateUnitTest {
 
     @Test
     fun testFavourites() {
-        cameraState.allCameras = List(10) {
+        cameraState = cameraState.copy(allCameras = List(10) {
             Camera().apply {
                 isFavourite = it % 3 == 0
                 isVisible = it % 2 == 1
             }
-        }
+        })
         val allFavourite = cameraState.favouriteCameras
 
         assertTrue(allFavourite.all { it.isFavourite })
@@ -61,12 +61,12 @@ class CameraStateUnitTest {
 
     @Test
     fun testHidden() {
-        cameraState.allCameras = List(10) {
+        cameraState = cameraState.copy(allCameras = List(10) {
             Camera().apply {
                 isFavourite = it % 2 == 0
                 isVisible = it % 3 == 1
             }
-        }
+        })
         val allHidden = cameraState.hiddenCameras
 
         assertTrue(allHidden.all { !it.isVisible })
@@ -74,23 +74,24 @@ class CameraStateUnitTest {
 
     @Test
     fun testShowSectionIndex() {
-        cameraState.filterMode = FilterMode.HIDDEN
-        cameraState.sortMode = SortMode.DISTANCE
-        cameraState.searchMode = SearchMode.NAME
-        cameraState.viewMode = ViewMode.MAP
-
+        cameraState = cameraState.copy(
+            filterMode = FilterMode.HIDDEN,
+            sortMode = SortMode.DISTANCE,
+            searchMode = SearchMode.NAME,
+            viewMode = ViewMode.MAP,
+        )
         assertEquals(false, cameraState.showSectionIndex)
 
-        cameraState.filterMode = FilterMode.VISIBLE
+        cameraState = cameraState.copy(filterMode = FilterMode.VISIBLE)
         assertEquals(false, cameraState.showSectionIndex)
 
-        cameraState.sortMode = SortMode.NAME
+        cameraState = cameraState.copy(sortMode = SortMode.NAME)
         assertEquals(false, cameraState.showSectionIndex)
 
-        cameraState.searchMode = SearchMode.NONE
+        cameraState = cameraState.copy(searchMode = SearchMode.NONE)
         assertEquals(false, cameraState.showSectionIndex)
 
-        cameraState.viewMode = ViewMode.LIST
+        cameraState = cameraState.copy(viewMode = ViewMode.LIST)
         assertEquals(true, cameraState.showSectionIndex)
     }
 
@@ -122,7 +123,10 @@ class CameraStateUnitTest {
             }
         }
         cameraState = CameraState(allCameras = cameras)
-        assertEquals(cameraState.getDisplayedCameras(), cameras.filter { it.isVisible }.sortedWith(SortByName))
+        assertEquals(
+            cameraState.getDisplayedCameras(),
+            cameras.filter { it.isVisible }.sortedWith(SortByName)
+        )
 
         cameraState = cameraState.copy(
             searchMode = SearchMode.NAME,

@@ -1,8 +1,9 @@
 package com.textfield.json.ottawastreetcameras.data
 
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import kotlinx.coroutines.flow.Flow
 
-interface CameraRepository {
-    suspend fun getAllCameras(): Flow<List<Camera>>
+class CameraRepository(private val dataSource: CameraDataSource) : ICameraRepository {
+    override suspend fun getAllCameras(): List<Camera> {
+        return dataSource.getAllCameras()
+    }
 }

@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras.ui.components
+package com.textfield.json.ottawastreetcameras.ui.main
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,27 +10,25 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.textfield.json.ottawastreetcameras.R
+import com.textfield.json.ottawastreetcameras.entities.BilingualObject
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
 
 
 @Composable
 fun CameraGalleryView(
-    mainViewModel: MainViewModel,
+    cameraState: CameraState,
     gridState: LazyGridState,
     onItemClick: (Camera) -> Unit,
     onItemLongClick: (Camera) -> Unit,
 ) {
-    val cameraState by mainViewModel.cameraState.collectAsState()
     val cameras = cameraState.displayedCameras
     LazyVerticalGrid(
         state = gridState,
@@ -40,7 +38,11 @@ fun CameraGalleryView(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         items(cameras.size) {
-            CameraGalleryTile(mainViewModel, cameras[it], onItemClick, onItemLongClick)
+            CameraGalleryTile(
+                camera = cameras[it],
+                onClick = onItemClick,
+                onLongClick = onItemLongClick,
+            )
         }
 
         item {
@@ -50,11 +52,22 @@ fun CameraGalleryView(
                     .aspectRatio(1f)
             ) {
                 Text(
-                    pluralStringResource(R.plurals.camera_count, cameras.size, cameras.size).replace(" ", "\n"),
+                    pluralStringResource(
+                        R.plurals.camera_count,
+                        cameras.size,
+                        cameras.size
+                    ).replace(" ", "\n"),
                     textAlign = TextAlign.Center,
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
         }
     }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xEEEEEE)
+@Composable
+private fun CameraGalleryViewPreview() {
+    val cameraList = (0 until 10).map { Camera(_name = BilingualObject(en = "Camera $it", fr = "Caméra $it"))}
+    CameraGalleryView(CameraState(displayedCameras = cameraList), LazyGridState(), {}, {})
 }

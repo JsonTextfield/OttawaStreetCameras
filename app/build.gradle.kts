@@ -3,7 +3,10 @@ plugins {
     id("kotlin-android")
     id("com.google.android.gms.oss-licenses-plugin")
     id("org.jetbrains.kotlin.android")
-    kotlin("plugin.serialization") version "1.9.22"
+    id("kotlin-parcelize")
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
+    kotlin("plugin.serialization") version "1.9.24"
 }
 
 android {
@@ -16,11 +19,15 @@ android {
         compileSdk = 34
         targetSdk = 34
         versionCode = 30
-        versionName = "2.2.1"
+        versionName = "2.2.2"
         vectorDrawables { useSupportLibrary = true }
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
         compose = true
@@ -28,7 +35,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.9"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
 
     signingConfigs {
@@ -49,44 +56,50 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
-            //signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 }
 
 dependencies {
-    implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation("androidx.activity:activity-compose:1.9.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3")
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
 
-    implementation("com.android.support:multidex:1.0.3")
+    implementation(libs.multidex)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     // Google
-    implementation("com.google.android.gms:play-services-oss-licenses:17.1.0")
-    implementation("com.google.maps.android:maps-compose:4.4.1")
+    implementation(libs.play.services.oss.licenses)
+    implementation(libs.maps.compose)
 
     // Compose
-    val composeBom = platform("androidx.compose:compose-bom:2023.04.01")
-    implementation(composeBom)
-    implementation("androidx.compose.material3:material3:1.2.1")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
-    implementation("androidx.compose.material:material-icons-extended")
-    implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.ui.tooling.preview)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.androidx.material.icons.extended)
+    implementation(libs.coil.compose)
+    implementation(libs.androidx.navigation.compose)
 
     // Supabase
-    implementation(platform("io.github.jan-tennert.supabase:bom:2.5.1"))
-    implementation("io.github.jan-tennert.supabase:postgrest-kt")
-    implementation("io.ktor:ktor-client-android:2.3.11")
+    implementation(platform(libs.bom))
+    implementation(libs.postgrest.kt)
+    implementation(libs.ktor.client.android)
 
     // Testing
-    androidTestImplementation(composeBom)
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    androidTestImplementation("androidx.test.ext:junit-ktx:1.2.1")
-    androidTestImplementation("androidx.test:rules:1.6.1")
-    androidTestImplementation("androidx.test:runner:1.6.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-    testImplementation("junit:junit:4.13.2")
-    testImplementation("org.json:json:20230227")
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.androidx.junit.ktx)
+    androidTestImplementation(libs.androidx.rules)
+    androidTestImplementation(libs.androidx.runner)
+    androidTestImplementation(libs.androidx.espresso.core)
+    testImplementation(libs.junit)
+    testImplementation(libs.json)
 }

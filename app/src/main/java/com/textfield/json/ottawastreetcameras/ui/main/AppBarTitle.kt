@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras.ui.components
+package com.textfield.json.ottawastreetcameras.ui.main
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -17,15 +16,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.textfield.json.ottawastreetcameras.R
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.FilterMode
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.SearchMode
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.ViewMode
+import com.textfield.json.ottawastreetcameras.ui.components.SearchBar
+import com.textfield.json.ottawastreetcameras.ui.components.SearchBarContent
+import com.textfield.json.ottawastreetcameras.ui.components.SuggestionDropdown
 
 @Composable
-fun AppBarTitle(mainViewModel: MainViewModel, onClick: () -> Unit = {}) {
-    val cameraState by mainViewModel.cameraState.collectAsState()
+fun AppBarTitle(
+    mainViewModel: MainViewModel,
+    onClick: () -> Unit = {},
+) {
+    val cameraState by mainViewModel.cameraState.collectAsStateWithLifecycle()
     if (cameraState.selectedCameras.isNotEmpty()) {
         Text(
             pluralStringResource(
@@ -44,15 +46,14 @@ fun AppBarTitle(mainViewModel: MainViewModel, onClick: () -> Unit = {}) {
     else {
         when (cameraState.searchMode) {
             SearchMode.NONE -> {
-                val title = when (cameraState.filterMode) {
-                    FilterMode.FAVOURITE -> stringResource(id = R.string.favourites)
-                    FilterMode.HIDDEN -> stringResource(id = R.string.hidden_cameras)
-                    FilterMode.VISIBLE -> stringResource(id = R.string.app_name)
-                }
+                val title = stringResource(id = cameraState.filterMode.key)
                 Text(
                     title,
                     modifier = Modifier
-                        .clickable(enabled = cameraState.viewMode != ViewMode.MAP, onClick = onClick)
+                        .clickable(
+                            enabled = cameraState.viewMode != ViewMode.MAP,
+                            onClick = onClick
+                        )
                         .padding(10.dp),
                     fontSize = 20.sp,
                     maxLines = 1,
@@ -81,9 +82,9 @@ fun AppBarTitle(mainViewModel: MainViewModel, onClick: () -> Unit = {}) {
                     }
                     val expanded =
                         cameraState.searchMode == SearchMode.NEIGHBOURHOOD
-                        && value.isNotEmpty()
-                        && suggestionList.isNotEmpty()
-                        && suggestionList.all {
+                                && value.isNotEmpty()
+                                && suggestionList.isNotEmpty()
+                                && suggestionList.all {
                             !it.equals(value, true)
                         }
 

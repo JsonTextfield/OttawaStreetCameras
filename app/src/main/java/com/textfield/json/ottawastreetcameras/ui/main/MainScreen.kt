@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras.ui.screens
+package com.textfield.json.ottawastreetcameras.ui.main
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -9,20 +9,21 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.ui.components.ErrorScreen
 import com.textfield.json.ottawastreetcameras.ui.components.LoadingScreen
-import com.textfield.json.ottawastreetcameras.ui.components.MainAppBar
-import com.textfield.json.ottawastreetcameras.ui.components.MainContent
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.UIState
 
 @Composable
-fun MainScreen(mainViewModel: MainViewModel) {
-    val cameraState by mainViewModel.cameraState.collectAsState()
+fun MainScreen(
+    mainViewModel: MainViewModel = viewModel<MainViewModel>(),
+    onNavigateToCameraScreen: (List<Camera>, Boolean) -> Unit = { _, _ -> },
+) {
+    val cameraState by mainViewModel.cameraState.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
     val gridState = rememberLazyGridState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -33,7 +34,7 @@ fun MainScreen(mainViewModel: MainViewModel) {
         },
         topBar = {
             if (cameraState.uiState == UIState.LOADED) {
-                MainAppBar(mainViewModel, listState, gridState, snackbarHostState)
+                MainAppBar(mainViewModel, listState, gridState, snackbarHostState, onNavigateToCameraScreen)
             }
         },
     ) {
@@ -41,7 +42,15 @@ fun MainScreen(mainViewModel: MainViewModel) {
             when (cameraState.uiState) {
                 UIState.INITIAL -> LaunchedEffect(Unit) { mainViewModel.getAllCameras() }
                 UIState.LOADING -> LoadingScreen()
-                UIState.LOADED -> MainContent(mainViewModel, listState, gridState, snackbarHostState)
+                UIState.LOADED -> MainContent(
+                    mainViewModel,
+                    listState,
+                    gridState,
+                    snackbarHostState
+                ) { selectedCameras ->
+                    onNavigateToCameraScreen(selectedCameras, false)
+                }
+
                 UIState.ERROR -> ErrorScreen { mainViewModel.getAllCameras() }
             }
         }

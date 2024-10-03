@@ -1,6 +1,5 @@
 package com.textfield.json.ottawastreetcameras.ui.components
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -31,11 +30,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.textfield.json.ottawastreetcameras.R
 
 @Composable
-fun SearchBar(hintText: String, onValueChange: (String) -> Unit) {
+fun SearchBar(
+    hintText: String,
+    onValueChange: (String) -> Unit = {},
+) {
     var value by rememberSaveable { mutableStateOf("") }
     SearchBarContent(hintText, value) {
         value = it
@@ -43,7 +46,6 @@ fun SearchBar(hintText: String, onValueChange: (String) -> Unit) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchBarContent(
     hintText: String = "",
@@ -113,4 +115,17 @@ fun SearchBarContent(
             }
         }
     }
+}
+
+
+@Preview(showBackground = true, heightDp = 50, backgroundColor = 0xFFFFFF)
+@Composable
+private fun SearchBarPreview() {
+    SearchBar(hintText = "Search")
+}
+
+@Preview(showBackground = true, heightDp = 50, backgroundColor = 0xFFFFFF)
+@Composable
+private fun SearchBarContentPreview() {
+    SearchBarContent(hintText = "Search")
 }

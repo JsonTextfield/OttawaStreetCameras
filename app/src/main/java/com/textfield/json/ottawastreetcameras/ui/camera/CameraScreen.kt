@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras.ui.screens
+package com.textfield.json.ottawastreetcameras.ui.camera
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -14,37 +14,55 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.textfield.json.ottawastreetcameras.R
-import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.network.CameraDownloadService
 import com.textfield.json.ottawastreetcameras.ui.components.BackButton
-import com.textfield.json.ottawastreetcameras.ui.components.CameraViewList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun CameraScreen(
-    cameras: List<Camera> = emptyList(),
-    displayedCameras: List<Camera> = emptyList(),
+    ids: String = "",
     isShuffling: Boolean = false,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
+    cameraViewModel: CameraViewModel = viewModel<CameraViewModel>(),
 ) {
+    val cameraList by cameraViewModel.cameraList.collectAsStateWithLifecycle()
+    val allCameras by cameraViewModel.allCameras.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        if (allCameras.isEmpty()) {
+            cameraViewModel.getAllCameras()
+        }
+    }
+    LaunchedEffect(allCameras) {
+        if (allCameras.isNotEmpty() && cameraList.isEmpty()) {
+            if (isShuffling) {
+                cameraViewModel.getRandomCamera()
+            } else {
+                cameraViewModel.getCameras(ids)
+            }
+        }
+    }
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     ) {
         Box(modifier = Modifier.padding(it)) {
             var update by remember { mutableStateOf(false) }
             LaunchedEffect(update) {
-                if (!isShuffling) {
-                    delay(6000)
-                    update = !update
+                delay(6000)
+                if (isShuffling) {
+                    cameraViewModel.getRandomCamera()
                 }
+                update = !update
             }
             val scope = rememberCoroutineScope()
             val context = LocalContext.current
             CameraViewList(
-                cameras = cameras,
-                displayedCameras = displayedCameras,
+                cameras = cameraList,
+                displayedCameras = allCameras,
                 shuffle = isShuffling,
                 update = update,
                 onItemLongClick = { camera ->

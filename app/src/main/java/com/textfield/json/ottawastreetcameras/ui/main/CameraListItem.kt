@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras.ui.components
+package com.textfield.json.ottawastreetcameras.ui.main
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
@@ -15,28 +15,26 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.textfield.json.ottawastreetcameras.R
+import com.textfield.json.ottawastreetcameras.entities.BilingualObject
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.MainViewModel
-import com.textfield.json.ottawastreetcameras.ui.viewmodels.SortMode
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CameraListItem(
-    mainViewModel: MainViewModel,
     camera: Camera,
+    showDistance: Boolean = false,
     onClick: (Camera) -> Unit = {},
     onLongClick: (Camera) -> Unit = {},
+    onFavouriteClick: (Camera) -> Unit = {},
 ) {
-    val cameraState by mainViewModel.cameraState.collectAsState()
     ListItem(
         modifier = Modifier
             .defaultMinSize(minHeight = 50.dp)
@@ -48,8 +46,7 @@ fun CameraListItem(
         colors = ListItemDefaults.colors(
             containerColor = if (camera.isSelected) {
                 MaterialTheme.colorScheme.primaryContainer
-            }
-            else {
+            } else {
                 ListItemDefaults.containerColor
             }
         ),
@@ -61,7 +58,7 @@ fun CameraListItem(
                 Text(camera.neighbourhood)
             }
         },
-        leadingContent = if (cameraState.sortMode == SortMode.DISTANCE && camera.distance > -1) {
+        leadingContent = if (showDistance) {
             {
                 Text(
                     camera.distanceString,
@@ -71,13 +68,10 @@ fun CameraListItem(
                     modifier = Modifier.padding(5.dp),
                 )
             }
-        }
-        else null,
+        } else null,
         trailingContent = {
             IconButton(
-                onClick = {
-                    mainViewModel.favouriteCameras(listOf(camera))
-                }
+                onClick = { onFavouriteClick(camera) }
             ) {
                 if (camera.isFavourite) {
                     Icon(
@@ -85,8 +79,7 @@ fun CameraListItem(
                         contentDescription = stringResource(R.string.remove_from_favourites),
                         tint = colorResource(id = R.color.favouriteColour)
                     )
-                }
-                else {
+                } else {
                     Icon(
                         Icons.Rounded.StarBorder,
                         contentDescription = stringResource(R.string.add_to_favourites),
@@ -94,5 +87,16 @@ fun CameraListItem(
                 }
             }
         }
+    )
+}
+
+@Preview
+@Composable
+private fun CameraListItemPreview() {
+    CameraListItem(
+        Camera(
+            _name = BilingualObject("Name", "Name"),
+            _neighbourhood = BilingualObject("Neighbourhood", "Neighbourhood"),
+        )
     )
 }
