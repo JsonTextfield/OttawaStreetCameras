@@ -15,8 +15,10 @@ import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.rounded.CameraAlt
 import androidx.compose.material.icons.rounded.Casino
 import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material.icons.rounded.DarkMode
 import androidx.compose.material.icons.rounded.GridView
 import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.rounded.LightMode
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.SelectAll
@@ -275,6 +277,12 @@ fun getActions(
             onNavigateToCameraScreen(emptyList(), true)
         },
     )
+    val isDarkMode by mainViewModel.isDarkMode.collectAsStateWithLifecycle()
+    val darkMode = Action(
+        icon = if (isDarkMode) Icons.Rounded.LightMode else Icons.Rounded.DarkMode,
+        tooltip = stringResource(if (isDarkMode) R.string.light_mode else R.string.dark_mode),
+        onClick = { mainViewModel.toggleDarkMode() },
+    )
 
     var showAboutDialog by remember { mutableStateOf(false) }
 
@@ -303,6 +311,7 @@ fun getActions(
             hidden,
             random,
             shuffle,
+            darkMode,
             about,
         )
     }
