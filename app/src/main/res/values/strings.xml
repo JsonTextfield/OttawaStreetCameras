@@ -44,6 +44,8 @@
     <string name="unhidden">unhidden</string>
     <string name="hidden">hidden</string>
     <string name="undo">Undo</string>
+    <string name="light_mode">Light mode</string>
+    <string name="dark_mode">Dark mode</string>
 
     <plurals name="images_saved">
         <item quantity="one">%d image saved</item>
