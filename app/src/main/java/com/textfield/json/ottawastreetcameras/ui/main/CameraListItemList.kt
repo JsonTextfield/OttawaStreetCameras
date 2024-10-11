@@ -105,6 +105,7 @@ fun CameraListItemList(
                                 showDistance = cameraState.sortMode == SortMode.DISTANCE,
                                 onClick = onItemClick,
                                 onLongClick = onItemLongClick,
+                                onFavouriteClick = onFavouriteClick,
                             )
                         },
                     )
