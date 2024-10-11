@@ -1,7 +1,7 @@
 package com.textfield.json.ottawastreetcameras
 
-import com.textfield.json.ottawastreetcameras.data.CameraDataSource
 import com.textfield.json.ottawastreetcameras.data.CameraRepository
+import com.textfield.json.ottawastreetcameras.data.ICameraDataSource
 import com.textfield.json.ottawastreetcameras.entities.BilingualObject
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.entities.CameraApiModel
@@ -25,7 +25,7 @@ class MainViewModelUnitTest {
 
     private lateinit var mainViewModel: MainViewModel
 
-    class FakeCameraDataSource : CameraDataSource {
+    class FakeCameraDataSource : ICameraDataSource {
         override suspend fun getAllCameras(): List<Camera> {
             return (0 until 100).map {
                 Camera(
