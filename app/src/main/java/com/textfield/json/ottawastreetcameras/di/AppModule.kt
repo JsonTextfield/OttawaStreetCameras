@@ -49,6 +49,6 @@ object AppModule {
 
     @Provides
     fun provideMainViewModel(@ApplicationContext context: Context): MainViewModel {
-        return MainViewModel(provideCameraRepository(context))
+        return MainViewModel(provideCameraRepository(context), prefs = provideSharedPreferences(context))
     }
 }

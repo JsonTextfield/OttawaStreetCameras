@@ -3,7 +3,9 @@ package com.textfield.json.ottawastreetcameras.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,11 +23,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            AppTheme {
+            val viewModel = hiltViewModel<MainViewModel>()
+            val isDarkMode by viewModel.isDarkMode.collectAsStateWithLifecycle()
+            AppTheme(darkTheme = isDarkMode) {
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = "main") {
                     composable("main") {
-                        MainScreen(mainViewModel = hiltViewModel<MainViewModel>()) { selectedCameras, isShuffling ->
+                        MainScreen(mainViewModel = viewModel) { selectedCameras, isShuffling ->
                             navController.navigate("cameras?ids=${selectedCameras.joinToString(",") { it.id }}?isShuffling=$isShuffling")
                         }
                     }

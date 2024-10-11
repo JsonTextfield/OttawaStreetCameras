@@ -20,13 +20,26 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val cameraRepository: ICameraRepository,
     private val _cameraState: MutableStateFlow<CameraState> = MutableStateFlow(CameraState()),
-    private val prefs: SharedPreferences? = null,
+    private val prefs: SharedPreferences,
 ) : ViewModel() {
 
     val cameraState: StateFlow<CameraState> get() = _cameraState.asStateFlow()
 
+    private var _isDarkMode: MutableStateFlow<Boolean> =
+        MutableStateFlow(prefs.getBoolean("isDarkMode", false))
+    val isDarkMode: StateFlow<Boolean> get() = _isDarkMode.asStateFlow()
+
+    init {
+        _isDarkMode = MutableStateFlow(prefs.getBoolean("isDarkMode", false))
+    }
+
+    fun toggleDarkMode() {
+        prefs.edit { putBoolean("isDarkMode", !isDarkMode.value) }
+        _isDarkMode.value = !isDarkMode.value
+    }
+
     fun changeViewMode(viewMode: ViewMode) {
-        prefs?.edit { putString("viewMode", viewMode.name) }
+        prefs.edit { putString("viewMode", viewMode.name) }
         _cameraState.update { it.copy(viewMode = viewMode) }
     }
 
@@ -43,8 +56,7 @@ class MainViewModel @Inject constructor(
     fun changeFilterMode(filterMode: FilterMode) {
         val mode = if (filterMode == _cameraState.value.filterMode) {
             FilterMode.VISIBLE
-        }
-        else {
+        } else {
             filterMode
         }
         _cameraState.update {
@@ -60,7 +72,7 @@ class MainViewModel @Inject constructor(
         for (camera in _cameraState.value.allCameras) {
             if (camera in cameras) {
                 camera.isFavourite = !allFavourite
-                prefs?.edit { putBoolean("${camera.id}.isFavourite", !allFavourite) }
+                prefs.edit { putBoolean("${camera.id}.isFavourite", !allFavourite) }
             }
         }
         _cameraState.update { it.copy(lastUpdated = System.currentTimeMillis()) }
@@ -71,7 +83,7 @@ class MainViewModel @Inject constructor(
         for (camera in _cameraState.value.allCameras) {
             if (camera in cameras) {
                 camera.isVisible = !anyVisible
-                prefs?.edit { putBoolean("${camera.id}.isVisible", !anyVisible) }
+                prefs.edit { putBoolean("${camera.id}.isVisible", !anyVisible) }
             }
         }
         selectAllCameras(false)
@@ -136,15 +148,14 @@ class MainViewModel @Inject constructor(
                 if (cameras.isEmpty()) {
                     // show an error if the retrieved camera list is empty
                     _cameraState.update { it.copy(uiState = UIState.ERROR) }
-                }
-                else {
+                } else {
                     val viewMode = ViewMode.valueOf(
-                        prefs?.getString("viewMode", ViewMode.LIST.name) ?: ViewMode.LIST.name
+                        prefs.getString("viewMode", ViewMode.LIST.name) ?: ViewMode.LIST.name
                     )
                     for (camera in cameras) {
                         camera.isFavourite =
-                            prefs?.getBoolean("${camera.id}.isFavourite", false) ?: false
-                        camera.isVisible = prefs?.getBoolean("${camera.id}.isVisible", true) ?: true
+                            prefs.getBoolean("${camera.id}.isFavourite", false)
+                        camera.isVisible = prefs.getBoolean("${camera.id}.isVisible", true)
                     }
                     _cameraState.update { cameraState ->
                         cameraState.copy(
@@ -157,8 +168,7 @@ class MainViewModel @Inject constructor(
                     }
                 }
             }
-        }
-        else {
+        } else {
             // don't reload if the camera list is not empty
             _cameraState.update { it.copy(uiState = UIState.LOADED) }
         }
