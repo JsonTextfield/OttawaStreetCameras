@@ -1,0 +1,4734 @@
+[
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.341343,
+      "lon": -75.81467
+    },
+    "nameEn": "(MTO) Hwy 416 NB ramp to Hwy 417 East",
+    "nameFr": "(MTO) Autoroute 416 bretelle vers autoroute 417 est",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2025",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "32e81798-116b-4c91-abc4-4be1a332b0e7"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.419178,
+      "lon": -75.647274
+    },
+    "nameEn": "(MTO) Hwy 417 Near Belfast Rd",
+    "nameFr": "(MTO) Hwy 417 près du chemin Belfast",
+    "neighbourhoodEn": "East Industrial",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2019",
+    "neighbourhoodFr": "Industriel-Est",
+    "id": "7b308d7b-6d9d-4c68-bb17-d0042e036d84"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.395966,
+      "lon": -75.729321
+    },
+    "nameEn": "(MTO) Hwy 417 between Holland Ave and Parkdale Ave",
+    "nameFr": "(MTO) Autoroute 417 entre l'avenue Holland et l'avenue Parkdale",
+    "neighbourhoodEn": "Hintonburg - Mechanicsville",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2005",
+    "neighbourhoodFr": " ",
+    "id": "36cb6be4-8d0c-48d4-8a15-92784b375a04"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.326547,
+      "lon": -75.869782
+    },
+    "nameEn": "(MTO) Hwy 417 east of Eagleson Rd",
+    "nameFr": "(MTO) Autoroute 417 à l'est du chemin Eagleson",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2029",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "330a3823-24c9-46de-b561-294c0a3da0a0"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.341919,
+      "lon": -75.826734
+    },
+    "nameEn": "(MTO) Hwy 417 east of Moodie Drive",
+    "nameFr": "(MTO) Autoroute 417 à l'est de la promenade Moodie",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2026",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "de6cf840-5182-46f5-a45e-7029a9bd0f99"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.424053,
+      "lon": -75.619479
+    },
+    "nameEn": "(MTO) Hwy 417 near Aviation Parkway",
+    "nameFr": "(MTO) Autoroute 417 près de la promenade Aviation",
+    "neighbourhoodEn": "Pineview",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2016",
+    "neighbourhoodFr": " ",
+    "id": "46727de7-14c9-420f-865f-d5d8b03de83e"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.400964,
+      "lon": -75.717902
+    },
+    "nameEn": "(MTO) Hwy 417 near Bayswater Ave",
+    "nameFr": "(MTO) Autoroute 417 près de l'avenue Bayswater ",
+    "neighbourhoodEn": "Hintonburg - Mechanicsville",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2037",
+    "neighbourhoodFr": " ",
+    "id": "4f2f55b7-4d08-4537-87e1-0439fc0a78e3"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.404673,
+      "lon": -75.702151
+    },
+    "nameEn": "(MTO) Hwy 417 near Bronson Ave",
+    "nameFr": "(MTO) Autoroute 417 près de l'avenue Bronson",
+    "neighbourhoodEn": "Glebe - Dows Lake",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2023",
+    "neighbourhoodFr": "Glebe – Lac Dows",
+    "id": "6fc71144-91e8-41d6-8aee-9e2ed60dc39f"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.386052,
+      "lon": -75.737085
+    },
+    "nameEn": "(MTO) Hwy 417 near Carling Ave",
+    "nameFr": "(MTO) Autoroute 417 près de l'avenue Carling",
+    "neighbourhoodEn": "Civic Hospital-Central Park",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2006",
+    "neighbourhoodFr": "Hôpital Civique - Parc Central",
+    "id": "d33aba41-6edb-4c26-b40e-4771d3580421"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.280801,
+      "lon": -75.956864
+    },
+    "nameEn": "(MTO) Hwy 417 near Carp Rd",
+    "nameFr": "(MTO) Autoroute 417 près le chemin Carp",
+    "neighbourhoodEn": "Stittsville",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2034",
+    "neighbourhoodFr": " ",
+    "id": "b0f28ac4-633c-442f-8ed1-bd3e95cb3dae"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.379568,
+      "lon": -75.745438
+    },
+    "nameEn": "(MTO) Hwy 417 near Churchill Ave",
+    "nameFr": "(MTO) Autoroute 417 près de l'avenue Churchill",
+    "neighbourhoodEn": "Carlingwood West - Glabar Park - McKellar Heights",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2007",
+    "neighbourhoodFr": " ",
+    "id": "8e53381b-5d47-4d6b-9af2-df81ced84750"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.320404,
+      "lon": -75.885902
+    },
+    "nameEn": "(MTO) Hwy 417 near Eagleson Rd",
+    "nameFr": "(MTO) Autoroute 417 près le chemin Eagleson",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2030",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "1a8a5048-cf86-488a-8962-5ffdbd0c9497"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.423742,
+      "lon": -75.620581
+    },
+    "nameEn": "(MTO) Hwy 417 near Hwy 174",
+    "nameFr": "(MTO) Autoroute 417 près de autoroute 174",
+    "neighbourhoodEn": "Pineview",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2017",
+    "neighbourhoodFr": " ",
+    "id": "8dca6711-4a0b-415f-b843-1f3336c1e52e"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.271037,
+      "lon": -75.974625
+    },
+    "nameEn": "(MTO) Hwy 417 near Hwy 7",
+    "nameFr": "(MTO) Autoroute 417 près de autoroute 7",
+    "neighbourhoodEn": "Corkery",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2035",
+    "neighbourhoodFr": " ",
+    "id": "9f0ca610-8512-4850-b104-8c5d6ad6bd93"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.413954,
+      "lon": -75.610957
+    },
+    "nameEn": "(MTO) Hwy 417 near Innes Rd",
+    "nameFr": "(MTO) Autoroute 417 près du chemin Innes",
+    "neighbourhoodEn": "East Industrial",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2015",
+    "neighbourhoodFr": "Industriel-Est",
+    "id": "b2bcb3d3-09c8-437b-a9ab-3ac9aed20a8e"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.310771,
+      "lon": -75.902063
+    },
+    "nameEn": "(MTO) Hwy 417 near Kanata Ave",
+    "nameFr": "(MTO) Autoroute 417 près de l'avenue Kanata",
+    "neighbourhoodEn": "Katimavik - Hazeldean",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2031",
+    "neighbourhoodFr": " ",
+    "id": "22eb4790-1bce-4786-91ec-48eb8c47cb7f"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.4168835,
+      "lon": -75.6739088
+    },
+    "nameEn": "(MTO) Hwy 417 near Lees Ave",
+    "nameFr": "(MTO) Autoroute 417 près de l'avenue Lees",
+    "neighbourhoodEn": "Sandy Hill",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2021",
+    "neighbourhoodFr": "Côte-de-Sable",
+    "id": "64359497-afeb-4d4b-830a-da61933b8dc0"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.337677,
+      "lon": -75.842231
+    },
+    "nameEn": "(MTO) Hwy 417 near Moodie Drive",
+    "nameFr": "(MTO) Autoroute 417 près de la promenade Moodie",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2027",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "e596448e-68f9-4a0a-a3ba-cd41cc1692cd"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.410137,
+      "lon": -75.688676
+    },
+    "nameEn": "(MTO) Hwy 417 near O'Connor St",
+    "nameFr": "(MTO) Autoroute 417 près de la rue O'Connor",
+    "neighbourhoodEn": "Glebe - Dows Lake",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2022",
+    "neighbourhoodFr": "Glebe – Lac Dows",
+    "id": "fafa15f2-920b-4e44-9831-30f2c0f17e69"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.293194,
+      "lon": -75.937241
+    },
+    "nameEn": "(MTO) Hwy 417 near Palladium Drive",
+    "nameFr": "(MTO) Autoroute 417 près de la promenade Palladium ",
+    "neighbourhoodEn": "Stittsville",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2033",
+    "neighbourhoodFr": " ",
+    "id": "6823c39a-12d4-4be3-82cb-f92c393c9bdb"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.349009,
+      "lon": -75.790139
+    },
+    "nameEn": "(MTO) Hwy 417 near Pinecrest Rd",
+    "nameFr": "(MTO) Autoroute 417 près le chemin Pinecrest",
+    "neighbourhoodEn": "Qualicum - Redwood Park",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2009",
+    "neighbourhoodFr": "Qualicum - Parc Redwood",
+    "id": "7d3c7196-e3ec-4647-846d-8eda3b81df08"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.420018,
+      "lon": -75.63554
+    },
+    "nameEn": "(MTO) Hwy 417 near St. Laurent Blvd",
+    "nameFr": "(MTO) Autoroute 417 près de le boulevard St. Laurent ",
+    "neighbourhoodEn": "Overbrook - McArthur",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2018",
+    "neighbourhoodFr": " ",
+    "id": "ad93e72c-6103-4ac7-a5c0-286125839ed4"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.305097,
+      "lon": -75.911313
+    },
+    "nameEn": "(MTO) Hwy 417 near Terry Fox Drive",
+    "nameFr": "(MTO) Autoroute 417 près de la promenade Terry Fox",
+    "neighbourhoodEn": "Katimavik - Hazeldean",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2032",
+    "neighbourhoodFr": " ",
+    "id": "a2d30493-8f59-4546-aa6a-6d74861a9c0d"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.417257,
+      "lon": -75.656728
+    },
+    "nameEn": "(MTO) Hwy 417 near Vanier Parkway",
+    "nameFr": "(MTO) Autoroute 417 près de la promenade Vanier",
+    "neighbourhoodEn": "East Industrial",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2020",
+    "neighbourhoodFr": "Industriel-Est",
+    "id": "11ed0d82-703c-4303-bc54-9d779b033d65"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.3981,
+      "lon": -75.592864
+    },
+    "nameEn": "(MTO) Hwy 417 near Walkley Rd",
+    "nameFr": "(MTO) Autoroute 417 près du chemin Walkley",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2014",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "30fa00c8-ee36-43e4-8961-c5a45e722b58"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.361007,
+      "lon": -75.767995
+    },
+    "nameEn": "(MTO) Hwy 417 near Woodroffe Ave",
+    "nameFr": "(MTO) Autoroute 417 près de l'avenue Woodroffe",
+    "neighbourhoodEn": "Braemar Park - Bel Air Heights - Copeland Park",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2008",
+    "neighbourhoodFr": "Parc Braemar - Hauteurs Bel Air - Parc Copeland",
+    "id": "5ccc3715-a41c-4c66-80bc-76cf796bf790"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.34392,
+      "lon": -75.815315
+    },
+    "nameEn": "(MTO) Hwy 417 west of Holly Acres Rd",
+    "nameFr": "(MTO) Autoroute 417 à l'ouest du chemin Holly Acres",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2024",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "4871f262-c812-4742-be13-48016000bd52"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.329826,
+      "lon": -75.86164
+    },
+    "nameEn": "(MTO) Hwy 417 west of Moodie Drive",
+    "nameFr": "(MTO) Autoroute 417 à l'ouest de la promenade Moodie ",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2028",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "3420fd5e-1ce1-401c-b9c1-1c164a0adf40"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.344907,
+      "lon": -75.807794
+    },
+    "nameEn": "(MTO) South of Hwy 417 between Hwy 416 and Richmond Rd",
+    "nameFr": "(MTO) Sud de l'autoroute 417 entre l'autoroute 416 et le chemin Richmond",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2011",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "16f60cf6-2a51-436a-8922-9bf597b5aa9d"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.329167,
+      "lon": -75.653535
+    },
+    "nameEn": "Airport & Lester / Uplands",
+    "nameFr": "Aéroport et Lester / Uplands",
+    "neighbourhoodEn": "Hunt Club - Ottawa Airport",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=176",
+    "neighbourhoodFr": "Hunt Club - Aéroport d'Ottawa",
+    "id": "fabfe5ae-8881-41fe-8ea0-b7c36808c242"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.4174954,
+      "lon": -75.7059897
+    },
+    "nameEn": "Albert & Bay",
+    "nameFr": "Albert et Bay",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=297",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "533565c4-4167-467a-a4db-c15dd6bed57c"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.412903,
+      "lon": -75.712646
+    },
+    "nameEn": "Albert & Booth",
+    "nameFr": "Albert et Booth",
+    "neighbourhoodEn": "Lebreton Development",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=43",
+    "neighbourhoodFr": "Développement Lebreton",
+    "id": "a48993ea-66c0-4c9c-bbfe-37351c1c87b1"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.4163524261,
+      "lon": -75.7085833511
+    },
+    "nameEn": "Albert & Bronson",
+    "nameFr": "Albert et Bronson",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=308",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "5327d99c-4e1a-4803-96eb-1b58a272d2c9"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.410383,
+      "lon": -75.718693
+    },
+    "nameEn": "Albert & City Centre",
+    "nameFr": "Albert et City Centre",
+    "neighbourhoodEn": "Lebreton Development",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=260",
+    "neighbourhoodFr": "Développement Lebreton",
+    "id": "80887974-b492-4205-a278-6b39e540d8dd"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.418135,
+      "lon": -75.704411
+    },
+    "nameEn": "Albert & Lyon",
+    "nameFr": "Albert et Lyon",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=41",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "e2997454-9b3a-4b99-aaf9-35c6237a0a25"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.420842,
+      "lon": -75.698319
+    },
+    "nameEn": "Albert & O'Connor",
+    "nameFr": "Albert et O'Connor",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=42",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "7dc28223-7f0b-4fba-b282-dc9a891583d5"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.411434,
+      "lon": -75.716046
+    },
+    "nameEn": "Albert & Preston",
+    "nameFr": "Albert et Preston",
+    "neighbourhoodEn": "West Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=78",
+    "neighbourhoodFr": "Centre-Ville Ouest",
+    "id": "eefafb43-f305-43a0-b15c-e70339b924b6"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.3094089311,
+      "lon": -75.6173678238
+    },
+    "nameEn": "Albion & Findlay Creek",
+    "nameFr": "Albion et Findlay Creek",
+    "neighbourhoodEn": "Findlay Creek",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=345",
+    "neighbourhoodFr": " ",
+    "id": "a678e5c7-8ce0-4b73-bedf-c85f59e4a66d"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.320368,
+      "lon": -75.623688
+    },
+    "nameEn": "Albion & Leitrim",
+    "nameFr": "Albion et Leitrim",
+    "neighbourhoodEn": "Findlay Creek",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=222",
+    "neighbourhoodFr": " ",
+    "id": "1970cd51-0548-4af6-a7c3-ecae2c331a5e"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.337714,
+      "lon": -75.633703
+    },
+    "nameEn": "Albion & Lester",
+    "nameFr": "Albion et Lester",
+    "neighbourhoodEn": "Hunt Club Upper -Blossom Park - Timbermill",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=129",
+    "neighbourhoodFr": "Hunt Club Supérieur - Parc Blossom - Timbermill",
+    "id": "6c10de15-d91f-4002-b286-069306375990"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.2696030339,
+      "lon": -75.5938252426
+    },
+    "nameEn": "Albion & Mitch Owens",
+    "nameFr": "Albio et Mitch Owens",
+    "neighbourhoodEn": "Greely",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=333",
+    "neighbourhoodFr": " ",
+    "id": "2a443697-07fb-43d0-9d5a-537a125536c1"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.424711,
+      "lon": -75.719782
+    },
+    "nameEn": "Alexander-Tache/Laurier & Eddy",
+    "nameFr": "Alexander-Taché/Laurier et Eddy",
+    "neighbourhoodEn": "",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=55",
+    "neighbourhoodFr": "",
+    "id": "12591f7b-a4ab-4c70-ada1-1eb9976e37b2"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.346946,
+      "lon": -75.759517
+    },
+    "nameEn": "Algonquin & Woodroffe",
+    "nameFr": "Algonquin et Woodroffe",
+    "neighbourhoodEn": "Cityview - Crestview - Meadowlands",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=170",
+    "neighbourhoodFr": " ",
+    "id": "f6726f56-c827-4a01-8913-3abc2b83da4d"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.378957,
+      "lon": -75.661199
+    },
+    "nameEn": "Alta Vista & Heron",
+    "nameFr": "Alta Vista et Heron",
+    "neighbourhoodEn": "Billings Bridge - Alta Vista",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=194",
+    "neighbourhoodFr": " ",
+    "id": "54248b77-a5a1-400e-9737-64c20c705edc"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.411783,
+      "lon": -75.655718
+    },
+    "nameEn": "Alta Vista & Industrial",
+    "nameFr": "Alta Vista et Industrial",
+    "neighbourhoodEn": "Riverview",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=221",
+    "neighbourhoodFr": " ",
+    "id": "230fd2af-82f3-496c-90fd-2bdc92268205"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.398574,
+      "lon": -75.661672
+    },
+    "nameEn": "Alta Vista & Smyth",
+    "nameFr": "Alta Vista et Smyth",
+    "neighbourhoodEn": "Billings Bridge - Alta Vista",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=21",
+    "neighbourhoodFr": " ",
+    "id": "bad4e769-fe92-4d27-9988-0e3ba0689f9b"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.266265,
+      "lon": -75.755387
+    },
+    "nameEn": "Andora & Strandherd",
+    "nameFr": "Andora & Strandherd",
+    "neighbourhoodEn": "Old Barrhaven East",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=282",
+    "neighbourhoodFr": "Old Barrhaven Est",
+    "id": "213f4fbb-e44b-4650-93cb-bcd5f496f263"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.427972,
+      "lon": -75.627022
+    },
+    "nameEn": "Aviation & Ogilvie",
+    "nameFr": "Aviation et Ogilvie",
+    "neighbourhoodEn": "Carson Grove - Carson Meadows",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=116",
+    "neighbourhoodFr": " ",
+    "id": "7e810690-b10a-4aa5-a96c-49f0912417ca"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.396207,
+      "lon": -75.684482
+    },
+    "nameEn": "Bank & Aylmer (Bank St. Bridge)",
+    "nameFr": "Bank et Aylmer (Pont de la rue Bank)",
+    "neighbourhoodEn": "",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=27",
+    "neighbourhoodFr": "",
+    "id": "9d86c3cf-59b5-4d18-820f-55c904bf8b04"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.3837978792,
+      "lon": -75.6718230377
+    },
+    "nameEn": "Bank & Belanger / Lamira",
+    "nameFr": "Bank et Belanger / Lamira",
+    "neighbourhoodEn": "Billings Bridge - Alta Vista",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=349",
+    "neighbourhoodFr": " ",
+    "id": "ead906de-4078-47be-9b2a-25d05cda24fa"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.3928886152,
+      "lon": -75.6824914479
+    },
+    "nameEn": "Bank & Belmont",
+    "nameFr": "Bank et Belmont",
+    "neighbourhoodEn": "Old Ottawa South",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=304",
+    "neighbourhoodFr": "Vieil Ottawa-Sud",
+    "id": "1df1fc35-6643-45d8-9d32-ad7476430d9f"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.313863298,
+      "lon": -75.5899464663
+    },
+    "nameEn": "Bank & Blais",
+    "nameFr": "Bank Et Blais",
+    "neighbourhoodEn": "Findlay Creek",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=351",
+    "neighbourhoodFr": " ",
+    "id": "614ba33a-e11e-48e4-a882-a0e1a4da9408"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.409527,
+      "lon": -75.692079
+    },
+    "nameEn": "Bank & Catherine",
+    "nameFr": "Bank et Catherine",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=104",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "ddb568e8-a4e3-45e9-8027-81de5577056a"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.408486,
+      "lon": -75.691488
+    },
+    "nameEn": "Bank & Chamberlain",
+    "nameFr": "Bank et Chamberlain",
+    "neighbourhoodEn": "Glebe - Dows Lake",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=151",
+    "neighbourhoodFr": "Glebe – Lac Dows",
+    "id": "b72d8fc7-9a5a-43e7-961e-27d666aa8714"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.401661,
+      "lon": -75.687592
+    },
+    "nameEn": "Bank & Fifth",
+    "nameFr": "Bank et Fifth",
+    "neighbourhoodEn": "Glebe - Dows Lake",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=189",
+    "neighbourhoodFr": "Glebe – Lac Dows",
+    "id": "8e527521-c9fd-468f-b497-f75de9599694"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.320479,
+      "lon": -75.593787
+    },
+    "nameEn": "Bank & Findlay Creek",
+    "nameFr": "Bank et Findlay Creek",
+    "neighbourhoodEn": "Findlay Creek",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=144",
+    "neighbourhoodFr": " ",
+    "id": "cf1cae84-6b3b-4b57-a1f8-74efdef82b0a"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.404422,
+      "lon": -75.68915
+    },
+    "nameEn": "Bank & First",
+    "nameFr": "Bank et First",
+    "neighbourhoodEn": "Glebe - Dows Lake",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=152",
+    "neighbourhoodFr": "Glebe – Lac Dows",
+    "id": "1ec737c9-a012-4f71-843a-1b1353b15e57"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.41219,
+      "lon": -75.693599
+    },
+    "nameEn": "Bank & Gladstone",
+    "nameFr": "Bank et Gladstone",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=103",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "3258c030-817d-417c-b2da-150fc6c8623a"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.378576,
+      "lon": -75.667528
+    },
+    "nameEn": "Bank & Heron",
+    "nameFr": "Bank et Heron",
+    "neighbourhoodEn": "Billings Bridge - Alta Vista",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=81",
+    "neighbourhoodFr": " ",
+    "id": "37abc5c1-f34d-4ef7-af90-dc8f20c46c98"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.353713,
+      "lon": -75.647382
+    },
+    "nameEn": "Bank & Hunt Club",
+    "nameFr": "Bank et Hunt Club",
+    "neighbourhoodEn": "South Keys - Greenboro West",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=16",
+    "neighbourhoodFr": "South Keys - Greenboro Ouest",
+    "id": "5978c77f-eed7-4735-87e6-9ccf0a7a857d"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.418549,
+      "lon": -75.69906
+    },
+    "nameEn": "Bank & Laurier",
+    "nameFr": "Bank et Laurier",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=123",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "25155a3a-2275-4597-aed5-29e9f398e3a0"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.330995,
+      "lon": -75.599826
+    },
+    "nameEn": "Bank & Leitrim",
+    "nameFr": "Bank et Leitrim",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=135",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "d0acbbaf-7e94-4893-aa70-c7b4be580f50"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.2797199364,
+      "lon": -75.570059944
+    },
+    "nameEn": "Bank & Mitch Owens",
+    "nameFr": "Bank et Mitch Owens",
+    "neighbourhoodEn": "Edwards - Carlsbad Springs",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=306",
+    "neighbourhoodFr": " ",
+    "id": "9ac4ab1c-087c-4389-a704-260e8b2073e9"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.420542,
+      "lon": -75.700786
+    },
+    "nameEn": "Bank & Queen",
+    "nameFr": "Bank et Queen",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=255",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "382f78c4-8fde-4339-ae9b-f575b0b8447a"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.2968545057,
+      "lon": -75.5800229592
+    },
+    "nameEn": "Bank & Rideau",
+    "nameFr": "Bank et Rideau",
+    "neighbourhoodEn": "Greely",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=320",
+    "neighbourhoodFr": " ",
+    "id": "2721dcb5-8a01-4171-bcee-52d11a30a82a"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.388824,
+      "lon": -75.677266
+    },
+    "nameEn": "Bank & Riverside (North)",
+    "nameFr": "Bank et Riverside (nord)",
+    "neighbourhoodEn": "Billings Bridge - Alta Vista",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=48",
+    "neighbourhoodFr": " ",
+    "id": "c6f612f3-dd90-4fa8-84a7-5c9c69a45467"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.3880217688,
+      "lon": -75.6762356685
+    },
+    "nameEn": "Bank & Riverside (South)",
+    "nameFr": "Bank et Riverside (sud)",
+    "neighbourhoodEn": "Billings Bridge - Alta Vista",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=330",
+    "neighbourhoodFr": " ",
+    "id": "c970e277-f923-4f2c-ad69-aa4f14512f22"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.41541,
+      "lon": -75.696381
+    },
+    "nameEn": "Bank & Somerset",
+    "nameFr": "Bank et Somerset",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=64",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "4d6c5ced-232a-47af-aae2-dd6147d33fb3"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.394286,
+      "lon": -75.683434
+    },
+    "nameEn": "Bank & Sunnyside",
+    "nameFr": "Bank et Sunnyside",
+    "neighbourhoodEn": "Old Ottawa South",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=223",
+    "neighbourhoodFr": "Vieil Ottawa-Sud",
+    "id": "ce71f31c-8844-4720-ab85-584e19041b7d"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.3868249828,
+      "lon": -75.6747557891
+    },
+    "nameEn": "Bank & Transitway",
+    "nameFr": "Bank et Transitway",
+    "neighbourhoodEn": "Billings Bridge - Alta Vista",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=334",
+    "neighbourhoodFr": " ",
+    "id": "254dfe88-74c7-48d7-b95d-3e577b741b50"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.370411,
+      "lon": -75.663325
+    },
+    "nameEn": "Bank & Walkley",
+    "nameFr": "Bank et Walkley",
+    "neighbourhoodEn": "Ledbury - Heron Gate - Ridgemont",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=5",
+    "neighbourhoodFr": " ",
+    "id": "288d9759-299c-48e4-8847-a95e75c5c816"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.421802,
+      "lon": -75.701927
+    },
+    "nameEn": "Bank & Wellington",
+    "nameFr": "Bank et Wellington",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=39",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "3e379625-3235-4241-9015-8d549f57b847"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.323694575,
+      "lon": -75.595625688
+    },
+    "nameEn": "Bank & White Alder",
+    "nameFr": "Bank et White Alder",
+    "neighbourhoodEn": "Findlay Creek",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=347",
+    "neighbourhoodFr": " ",
+    "id": "1f1c775c-7cbc-4de9-a4a5-7f4b7378cb4f"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.21803,
+      "lon": -75.715887
+    },
+    "nameEn": "Bankfield & Prince of Wales",
+    "nameFr": "Bankfield et Prince of Wales",
+    "neighbourhoodEn": "Manotick",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=99",
+    "neighbourhoodFr": " ",
+    "id": "11e9f94c-1965-431e-aacf-d18644b36a39"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.332927,
+      "lon": -75.808921
+    },
+    "nameEn": "Baseline & Cedarview",
+    "nameFr": "Baseline et Cedarview",
+    "neighbourhoodEn": "Briar Green - Leslie Park",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=266",
+    "neighbourhoodFr": "Briar Green - Parc Leslie",
+    "id": "64ca9f46-eb79-4c05-9ad6-5889d90af361"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.3614294336,
+      "lon": -75.7397595539
+    },
+    "nameEn": "Baseline & Clyde",
+    "nameFr": "Baseline et Clyde",
+    "neighbourhoodEn": "Cityview - Crestview - Meadowlands",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=59",
+    "neighbourhoodFr": " ",
+    "id": "f96c3aa1-d41f-4071-8da7-32dd18e428c4"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.371506,
+      "lon": -75.716528
+    },
+    "nameEn": "Baseline & Fisher",
+    "nameFr": "Baseline et Fisher",
+    "neighbourhoodEn": "Civic Hospital-Central Park",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=225",
+    "neighbourhoodFr": "Hôpital Civique - Parc Central",
+    "id": "61a131d5-92d8-45c4-b34d-643ca8efa26b"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.340963,
+      "lon": -75.787972
+    },
+    "nameEn": "Baseline & Greenbank",
+    "nameFr": "Baseline et Greenbank",
+    "neighbourhoodEn": "Briar Green - Leslie Park",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=1",
+    "neighbourhoodFr": "Briar Green - Parc Leslie",
+    "id": "569cd172-9a86-426b-908a-0c16935af72b"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.365308,
+      "lon": -75.730766
+    },
+    "nameEn": "Baseline & Merivale",
+    "nameFr": "Baseline et Merivale",
+    "neighbourhoodEn": "Skyline - Fisher Heights",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=52",
+    "neighbourhoodFr": " ",
+    "id": "9238f3b7-1fcf-40d5-9a57-607ed80946e2"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.33428,
+      "lon": -75.813067
+    },
+    "nameEn": "Baseline & Richmond",
+    "nameFr": "Baseline et Richmond",
+    "neighbourhoodEn": "Qualicum - Redwood Park",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=212",
+    "neighbourhoodFr": "Qualicum - Parc Redwood",
+    "id": "daba1e25-8dd3-40b3-8c0f-cdcee1154857"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.351474,
+      "lon": -75.762974
+    },
+    "nameEn": "Baseline & Woodroffe",
+    "nameFr": "Baseline et Woodroffe",
+    "neighbourhoodEn": "Centrepointe",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=2",
+    "neighbourhoodFr": " ",
+    "id": "e84eab21-9742-4903-947a-e4b840e19ec9"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.375121,
+      "lon": -75.707463
+    },
+    "nameEn": "Baseline/Heron & Prince of Wales",
+    "nameFr": "Baseline et Prince of Wales",
+    "neighbourhoodEn": "Carleton Heights - Rideauview",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=24",
+    "neighbourhoodFr": "Hauteurs Carleton - Rideauview",
+    "id": "6bf25ecc-b93d-42a7-ad7d-4794e55d3055"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.447243,
+      "lon": -75.625247
+    },
+    "nameEn": "Bathgate & Montreal",
+    "nameFr": "Bathgate et Montreal",
+    "neighbourhoodEn": "Carson Grove - Carson Meadows",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=280",
+    "neighbourhoodFr": " ",
+    "id": "1f257470-906c-4d09-97c0-efc4da7e8f91"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.416144,
+      "lon": -75.704829
+    },
+    "nameEn": "Bay & Laurier",
+    "nameFr": "Bay et Laurier",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=157",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "f945b6ec-2446-4c1e-8948-27607a7301de"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.418092,
+      "lon": -75.706519
+    },
+    "nameEn": "Bay & Queen",
+    "nameFr": "Bay et Queen",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=298",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "dc5c140f-8751-4c16-bf01-8599963e20d6"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.416897,
+      "lon": -75.705492
+    },
+    "nameEn": "Bay & Slater",
+    "nameFr": "Bay et Slater",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=112",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "440237e2-fe24-43a9-be32-5f56757efa99"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.419357,
+      "lon": -75.70764
+    },
+    "nameEn": "Bay & Wellington",
+    "nameFr": "Bay et Wellington",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=180",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "f8b3c59c-6522-40f8-8212-dccc64bcab15"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.353714,
+      "lon": -75.80821
+    },
+    "nameEn": "Bayshore & Carling",
+    "nameFr": "Bayshore et Carling",
+    "neighbourhoodEn": "Bayshore - Belltown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=132",
+    "neighbourhoodFr": " ",
+    "id": "663f07fa-8a36-419b-88b0-ec3f1ef0b551"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.348111,
+      "lon": -75.803526
+    },
+    "nameEn": "Bayshore & Richmond",
+    "nameFr": "Bayshore et Richmond",
+    "neighbourhoodEn": "Bayshore - Belltown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=60",
+    "neighbourhoodFr": " ",
+    "id": "9676d442-b581-4cf6-983d-385ec2fcf58b"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.349452856,
+      "lon": -75.8053167687
+    },
+    "nameEn": "Bayshore & Woodridge",
+    "nameFr": "Bayshore et Woodridge",
+    "neighbourhoodEn": "Bayshore - Belltown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=316",
+    "neighbourhoodFr": " ",
+    "id": "0bd00ac3-0119-4b01-b616-0f14760b4f04"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.407942,
+      "lon": -75.724333
+    },
+    "nameEn": "Bayview & Scott",
+    "nameFr": "Bayview et Scott",
+    "neighbourhoodEn": "Hintonburg - Mechanicsville",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=242",
+    "neighbourhoodFr": " ",
+    "id": "17e60934-10d7-429c-819e-6b1b1425c5c9"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.453344011,
+      "lon": -75.5752539333
+    },
+    "nameEn": "Bearbrook & St. Joseph",
+    "nameFr": "Bearbrook et St. Joseph",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=314",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "a6b41d0b-8dd9-47f4-aebf-ace8601183fd"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.438362,
+      "lon": -75.677779
+    },
+    "nameEn": "Beechwood/St. Patrick & Vanier",
+    "nameFr": "Beechwood/St. Patrick et Vanier",
+    "neighbourhoodEn": "Vanier North",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=100",
+    "neighbourhoodFr": "Vanier Nord",
+    "id": "f7eaabff-e71b-4086-a4c8-3160900a5bc5"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.411858,
+      "lon": -75.630376
+    },
+    "nameEn": "Belfast & St. Laurent",
+    "nameFr": "Belfast et St. Laurent",
+    "neighbourhoodEn": "East Industrial",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=8",
+    "neighbourhoodFr": "Industriel-Est",
+    "id": "c67d8ed8-2bac-43fa-8c3e-947ce2eacf62"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.414939,
+      "lon": -75.642914
+    },
+    "nameEn": "Belfast & Trainyards",
+    "nameFr": "Belfast et Trainyards",
+    "neighbourhoodEn": "East Industrial",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=118",
+    "neighbourhoodFr": "Industriel-Est",
+    "id": "ac085396-cb6b-4cef-89a9-d5ba464b409a"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.418642,
+      "lon": -75.646979
+    },
+    "nameEn": "Belfast & Tremblay",
+    "nameFr": "Belfast et Tremblay",
+    "neighbourhoodEn": "Overbrook - McArthur",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=115",
+    "neighbourhoodFr": " ",
+    "id": "20f30de9-1766-4745-8323-5edf2035efe0"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.426742,
+      "lon": -75.688348
+    },
+    "nameEn": "Besserer & Waller",
+    "nameFr": "Besserer et Waller",
+    "neighbourhoodEn": "Sandy Hill",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=184",
+    "neighbourhoodFr": "Côte-de-Sable",
+    "id": "50286d66-6c07-4de2-84b9-a9dd09345bc9"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.419344,
+      "lon": -75.595636
+    },
+    "nameEn": "Blair & Innes",
+    "nameFr": "Blair et Innes",
+    "neighbourhoodEn": "Pineview",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=6",
+    "neighbourhoodFr": " ",
+    "id": "ca9d89e6-7f18-451d-96c9-fe7ffcdc36a7"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.435277,
+      "lon": -75.609058
+    },
+    "nameEn": "Blair & Ogilvie",
+    "nameFr": "Blair et Ogilvie",
+    "neighbourhoodEn": "Beacon Hill South - Cardinal Heights",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=73",
+    "neighbourhoodFr": "Beacon Hill Sud - Cardinal Heights",
+    "id": "5f6643b6-e9de-4267-b8ea-a6b0d91f7e6b"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.420463977,
+      "lon": -75.7178022746
+    },
+    "nameEn": "Booth & Chaudiere",
+    "nameFr": "Booth et Chaudiere",
+    "neighbourhoodEn": "Lebreton Development",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=262",
+    "neighbourhoodFr": "Développement Lebreton",
+    "id": "c41628e1-9d52-4a7b-af79-9c498883949e"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.416354,
+      "lon": -75.714726
+    },
+    "nameEn": "Booth & Kichi Zībī Mīkan / Wellington",
+    "nameFr": "Booth et Kichi Zībī Mīkan / Wellington",
+    "neighbourhoodEn": "Lebreton Development",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=49",
+    "neighbourhoodFr": "Développement Lebreton",
+    "id": "40f035c5-96a5-49bf-baf9-c7ae13d9c465"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.409487,
+      "lon": -75.71057
+    },
+    "nameEn": "Booth & Somerset",
+    "nameFr": "Booth et Somerset",
+    "neighbourhoodEn": "West Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=97",
+    "neighbourhoodFr": "Centre-Ville Ouest",
+    "id": "b87cc30c-8c88-4f6c-aa97-bfc9f195fe8f"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.433891,
+      "lon": -75.699255
+    },
+    "nameEn": "Boteler & Sussex",
+    "nameFr": "Boteler et Sussex",
+    "neighbourhoodEn": "Byward Market",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=214",
+    "neighbourhoodFr": "Marché By",
+    "id": "d54c6052-15ed-4a09-9f69-003a55e56864"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.345352,
+      "lon": -75.443357
+    },
+    "nameEn": "Boundary & Thunder",
+    "nameFr": "Boundary et Thunder",
+    "neighbourhoodEn": "Edwards - Carlsbad Springs",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=252",
+    "neighbourhoodFr": " ",
+    "id": "90ab275f-5b28-422f-8ca4-42ce9aebac87"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.4520568,
+      "lon": -75.4775278212
+    },
+    "nameEn": "Brian Coburn & Aquaview",
+    "nameFr": "Brian Coburn et Aquaview",
+    "neighbourhoodEn": "Portobello South",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=292",
+    "neighbourhoodFr": " ",
+    "id": "17ea2af3-2a6a-4819-87a9-c48e6d1da9d7"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.4534845431,
+      "lon": -75.4728607776
+    },
+    "nameEn": "Brian Coburn & Esprit",
+    "nameFr": "Brian Coburn et Esprit",
+    "neighbourhoodEn": "Portobello South",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=293",
+    "neighbourhoodFr": " ",
+    "id": "ce47413c-5622-4d86-99cb-6ae00bde696c"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.45065312,
+      "lon": -75.4820124747
+    },
+    "nameEn": "Brian Coburn & Tenth Line",
+    "nameFr": "Brian Coburn et Tenth Line",
+    "neighbourhoodEn": "Portobello South",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=291",
+    "neighbourhoodFr": " ",
+    "id": "a5dfc984-b1e3-4347-a125-3f8ce9fe0959"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.226445,
+      "lon": -75.686249
+    },
+    "nameEn": "Bridge & Manotick Main",
+    "nameFr": "Bridge et Manotick Main",
+    "neighbourhoodEn": "Manotick",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=98",
+    "neighbourhoodFr": " ",
+    "id": "dd5e5201-766e-4a58-91f5-94ba9487c94c"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.23391,
+      "lon": -75.675958
+    },
+    "nameEn": "Bridge/Mitch Owens & River",
+    "nameFr": "Bridge/Mitch Owens et River",
+    "neighbourhoodEn": "Manotick",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=136",
+    "neighbourhoodFr": " ",
+    "id": "15de35ae-d836-45c6-bfd2-67a64458e30d"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.351548,
+      "lon": -75.651438
+    },
+    "nameEn": "Bridle Path/Daze & Hunt Club",
+    "nameFr": "Bridle Path/Daze et Hunt Club",
+    "neighbourhoodEn": "South Keys - Greenboro West",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=139",
+    "neighbourhoodFr": "South Keys - Greenboro Ouest",
+    "id": "e8848ff4-4423-4bfe-8b73-8aaefa8c135d"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.404529,
+      "lon": -75.701733
+    },
+    "nameEn": "Bronson & 417 Offramp east",
+    "nameFr": "Bronson et 417 bretelle de sortie est",
+    "neighbourhoodEn": "Glebe - Dows Lake",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=279",
+    "neighbourhoodFr": "Glebe – Lac Dows",
+    "id": "92cb7815-cb2f-4b62-babc-db7f122236a0"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.401101,
+      "lon": -75.699733
+    },
+    "nameEn": "Bronson & Carling",
+    "nameFr": "Bronson et Carling",
+    "neighbourhoodEn": "Glebe - Dows Lake",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=4",
+    "neighbourhoodFr": "Glebe – Lac Dows",
+    "id": "dc19e82d-dba7-43f5-81d3-95cfbf94cd42"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.40538,
+      "lon": -75.702141
+    },
+    "nameEn": "Bronson & Catherine",
+    "nameFr": "Bronson et Catherine",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=177",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "3b7afa37-da51-4085-819b-eb2af9aeb234"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.4157339369,
+      "lon": -75.7082464723
+    },
+    "nameEn": "Bronson & Commissioner / Slater",
+    "nameFr": "Bronson et Commissioner / Slater",
+    "neighbourhoodEn": "Lebreton Development",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=350",
+    "neighbourhoodFr": "Développement Lebreton",
+    "id": "af0ae157-09ef-4f18-8adb-b862ae9a97ab"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.407876,
+      "lon": -75.703676
+    },
+    "nameEn": "Bronson & Gladstone",
+    "nameFr": "Bronson et Gladstone",
+    "neighbourhoodEn": "West Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=165",
+    "neighbourhoodFr": "Centre-Ville Ouest",
+    "id": "28866593-cad9-4689-babf-bfffdad61af8"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.37731,
+      "lon": -75.684949
+    },
+    "nameEn": "Bronson & Heron",
+    "nameFr": "Bronson et Heron",
+    "neighbourhoodEn": "Riverside Park",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=85",
+    "neighbourhoodFr": "Parc Riverside",
+    "id": "3122a6b0-e22e-4b47-b1cc-bd5a239789be"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.3957346265,
+      "lon": -75.6966092451
+    },
+    "nameEn": "Bronson & Holmwood",
+    "nameFr": "Bronson et Holmwood",
+    "neighbourhoodEn": "Glebe - Dows Lake",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=288",
+    "neighbourhoodFr": "Glebe – Lac Dows",
+    "id": "48696a9f-8fc4-4a63-a0bc-601ea6d0e4f8"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.414919,
+      "lon": -75.707774
+    },
+    "nameEn": "Bronson & Laurier",
+    "nameFr": "Bronson et Laurier",
+    "neighbourhoodEn": "West Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=44",
+    "neighbourhoodFr": "Centre-Ville Ouest",
+    "id": "84f220c9-57b6-42cf-a412-120e391b28f0"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.38483032,
+      "lon": -75.6899011205
+    },
+    "nameEn": "Bronson & Raven",
+    "nameFr": "Bronson et Raven",
+    "neighbourhoodEn": "Carleton University",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=283",
+    "neighbourhoodFr": "Université Carleton",
+    "id": "ddc2b638-ff58-4ec4-961a-cc6ddf06bd61"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.411471,
+      "lon": -75.705777
+    },
+    "nameEn": "Bronson & Somerset",
+    "nameFr": "Bronson et Somerset",
+    "neighbourhoodEn": "West Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=187",
+    "neighbourhoodFr": "Centre-Ville Ouest",
+    "id": "da8c16b8-d464-4762-9fcd-2ff1e8f37eaa"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.389932,
+      "lon": -75.693852
+    },
+    "nameEn": "Bronson & Sunnyside",
+    "nameFr": "Bronson et Sunnyside",
+    "neighbourhoodEn": "Old Ottawa South",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=171",
+    "neighbourhoodFr": "Vieil Ottawa-Sud",
+    "id": "9e60cd2f-1355-4047-8edf-d3d4919d8a7b"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.373071,
+      "lon": -75.690942
+    },
+    "nameEn": "Brookfield/Hog's Back & Riverside",
+    "nameFr": "Brookfield/Hog's Back et Riverside",
+    "neighbourhoodEn": "Riverside Park",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=69",
+    "neighbourhoodFr": "Parc Riverside",
+    "id": "a97bb226-d55e-44c9-933d-e7d6012495d7"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.2991863428,
+      "lon": -75.9389162315
+    },
+    "nameEn": "Campeau & Journeyman",
+    "nameFr": "Campeau et Journeyman",
+    "neighbourhoodEn": "Kanata Lakes - Arcardia",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=227",
+    "neighbourhoodFr": " ",
+    "id": "93d0ff95-14a8-4a36-a4e7-1320b63b46e5"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.32254,
+      "lon": -75.88714
+    },
+    "nameEn": "Campeau & March",
+    "nameFr": "Campeau et March",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=28",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "f47de3a8-1544-4fb5-b7e9-1d7970b37c66"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.30959,
+      "lon": -75.917772
+    },
+    "nameEn": "Campeau & Terry Fox",
+    "nameFr": "Campeau et Terry Fox",
+    "neighbourhoodEn": "Kanata Lakes - Arcardia",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=126",
+    "neighbourhoodFr": " ",
+    "id": "9d3998df-4434-46bf-abdf-fd316844e491"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.380501,
+      "lon": -75.746936
+    },
+    "nameEn": "Carling & Churchill",
+    "nameFr": "Carling et Churchill",
+    "neighbourhoodEn": "Westboro",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=160",
+    "neighbourhoodFr": " ",
+    "id": "715dceaa-96d3-40df-beca-886b4d9e8a92"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.38955,
+      "lon": -75.725785
+    },
+    "nameEn": "Carling & Holland",
+    "nameFr": "Carling et Holland",
+    "neighbourhoodEn": "Civic Hospital-Central Park",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=62",
+    "neighbourhoodFr": "Hôpital Civique - Parc Central",
+    "id": "161b8c30-287c-45c9-bd1e-97ec4764c245"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.384871,
+      "lon": -75.740477
+    },
+    "nameEn": "Carling & Kirkwood (North)",
+    "nameFr": "Carling et Kirkwood (Nord)",
+    "neighbourhoodEn": "Westboro",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=68",
+    "neighbourhoodFr": " ",
+    "id": "327bf720-5cfc-4aaa-a997-78f84b958544"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.383474,
+      "lon": -75.739512
+    },
+    "nameEn": "Carling & Kirkwood (South)",
+    "nameFr": "Carling et Kirkwood (Sud)",
+    "neighbourhoodEn": "Carlington",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=158",
+    "neighbourhoodFr": " ",
+    "id": "55a92430-05d9-47c8-af2a-b18d76897a52"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.375881,
+      "lon": -75.757624
+    },
+    "nameEn": "Carling & Maitland",
+    "nameFr": "Carling et Maitland",
+    "neighbourhoodEn": "Laurentian",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=66",
+    "neighbourhoodFr": " ",
+    "id": "39f341af-979f-4986-97d4-9034f0048f1c"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.338654,
+      "lon": -75.911685
+    },
+    "nameEn": "Carling & March",
+    "nameFr": "Carling et March",
+    "neighbourhoodEn": "Brookside - Briarbrook - Morgan's Grant",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=133",
+    "neighbourhoodFr": " ",
+    "id": "fa2a3935-723c-4fb4-bb14-3c8c57ad99bb"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.386725,
+      "lon": -75.732658
+    },
+    "nameEn": "Carling & Merivale",
+    "nameFr": "Carling et Merivale",
+    "neighbourhoodEn": "Carlington",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=63",
+    "neighbourhoodFr": " ",
+    "id": "ef241acc-2701-4c5d-90bb-ac53b5d55c56"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.359398,
+      "lon": -75.7953
+    },
+    "nameEn": "Carling & Pinecrest",
+    "nameFr": "Carling et Pinecrest",
+    "neighbourhoodEn": "Whitehaven - Queensway Terrace North",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=29",
+    "neighbourhoodFr": "Whitehaven - Terrasse Queensway Nord",
+    "id": "e08f1122-a777-4cea-a7c1-763876a205d2"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.397551,
+      "lon": -75.707692
+    },
+    "nameEn": "Carling & Preston",
+    "nameFr": "Carling et Preston",
+    "neighbourhoodEn": "West Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=93",
+    "neighbourhoodFr": "Centre-Ville Ouest",
+    "id": "e9d371d4-df29-415a-8320-6b9c9dfbe56f"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.3607205833,
+      "lon": -75.7922561908
+    },
+    "nameEn": "Carling & Richmond",
+    "nameFr": "Carling & Richmond",
+    "neighbourhoodEn": "Whitehaven - Queensway Terrace North",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=312",
+    "neighbourhoodFr": "Whitehaven - Terrasse Queensway Nord",
+    "id": "134c2895-5460-4b03-a3ed-a8004c9e6f98"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.365768,
+      "lon": -75.780776
+    },
+    "nameEn": "Carling & Transitway",
+    "nameFr": "Carling et Transitway",
+    "neighbourhoodEn": "Carlingwood West - Glabar Park - McKellar Heights",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=149",
+    "neighbourhoodFr": " ",
+    "id": "f676e535-6c70-4ed2-9d30-98b9a94b2d37"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.369212,
+      "lon": -75.772802
+    },
+    "nameEn": "Carling & Woodroffe",
+    "nameFr": "Carling et Woodroffe",
+    "neighbourhoodEn": "Carlingwood West - Glabar Park - McKellar Heights",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=67",
+    "neighbourhoodFr": " ",
+    "id": "a0a04654-3482-49ed-a048-f9e1b2d8dbfd"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.3651835156,
+      "lon": -75.7821099575
+    },
+    "nameEn": "Carling west of Kichi Zībī Mīkan",
+    "nameFr": "Carling à l'ouest de Kichi Zībī Mīkan",
+    "neighbourhoodEn": "Carlingwood West - Glabar Park - McKellar Heights",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=325",
+    "neighbourhoodFr": " ",
+    "id": "5949f1ea-048d-48aa-a63b-34ebb8fb29f0"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.267755,
+      "lon": -75.939204
+    },
+    "nameEn": "Carp & Hazeldean",
+    "nameFr": "Carp et Hazeldean",
+    "neighbourhoodEn": "Stittsville",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=125",
+    "neighbourhoodFr": " ",
+    "id": "169c505f-ac1f-47e1-8f71-53bdef223a0b"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.282034,
+      "lon": -75.95848
+    },
+    "nameEn": "Carp & Highway 417",
+    "nameFr": "Carp et Autoroute 417",
+    "neighbourhoodEn": "Carp",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=134",
+    "neighbourhoodFr": " ",
+    "id": "f4e2408b-055b-46c0-8140-cfdddf851345"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.297433,
+      "lon": -75.889543
+    },
+    "nameEn": "Castlefrank & Hazeldean",
+    "nameFr": "Castlefrank et Hazeldean",
+    "neighbourhoodEn": "Katimavik - Hazeldean",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=192",
+    "neighbourhoodFr": " ",
+    "id": "499e978b-a0fa-40c8-a5fe-43c37ad46b3d"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.2850797351,
+      "lon": -75.8856716879
+    },
+    "nameEn": "Castlefrank & Terry Fox",
+    "nameFr": "Castlefrank et Terry Fox",
+    "neighbourhoodEn": "Glen Cairn - Kanata South Business Park",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=302",
+    "neighbourhoodFr": "Glen Cairn - Parc d'Affaires Kanata-Sud",
+    "id": "265dc726-8019-42a9-b935-b786e48d239d"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.4122708456,
+      "lon": -75.6854955004
+    },
+    "nameEn": "Catherine & Elgin",
+    "nameFr": "Catherine et Elgin",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=284",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "3b162a74-e8af-49dc-ba8a-e4e7e64be842"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.408836,
+      "lon": -75.693728
+    },
+    "nameEn": "Catherine & Kent",
+    "nameFr": "Cathering et Kent",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=179",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "6c5d2983-2656-4d6a-ac4e-badf2d119087"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.411437,
+      "lon": -75.687522
+    },
+    "nameEn": "Catherine & Metcalfe",
+    "nameFr": "Catherine et Metcalfe",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=161",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "1da6e5bc-9e52-4891-8575-e680df097703"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.410625,
+      "lon": -75.689427
+    },
+    "nameEn": "Catherine & O'Connor",
+    "nameFr": "Catherine et O'Connor",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=213",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "d88f108f-1921-4083-806b-9477158bf7a9"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.313796,
+      "lon": -75.79963
+    },
+    "nameEn": "Cedarview &  Hunt Club",
+    "nameFr": "Cedarview et Hunt Club",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=88",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "97e91001-ecb6-4fe5-837d-e4a5b4ac2af7"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.4095065557,
+      "lon": -75.7591565874
+    },
+    "nameEn": "Champlain Bridge (north)",
+    "nameFr": "pont Champlain (nord)",
+    "neighbourhoodEn": "",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=248",
+    "neighbourhoodFr": "",
+    "id": "31c7fccb-b8a3-4f7f-b63f-9230c25265ba"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.4065840585,
+      "lon": -75.7554622924
+    },
+    "nameEn": "Champlain Bridge (south)",
+    "nameFr": "pont Champlain (sud)",
+    "neighbourhoodEn": "",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=249",
+    "neighbourhoodFr": "",
+    "id": "f41e7efa-e5ee-4a41-a731-3a2daca3bf75"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.430816,
+      "lon": -75.680901
+    },
+    "nameEn": "Chapel & Rideau",
+    "nameFr": "Chapel et Rideau",
+    "neighbourhoodEn": "Lowertown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=190",
+    "neighbourhoodFr": "Basse-ville",
+    "id": "f87b2214-acaa-4be8-a94a-f19cbcbae25b"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.263495,
+      "lon": -75.758999
+    },
+    "nameEn": "Chapman Mills & Strandherd",
+    "nameFr": "Chapman Mills et Strandherd",
+    "neighbourhoodEn": "Old Barrhaven East",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=286",
+    "neighbourhoodFr": "Old Barrhaven Est",
+    "id": "5ead6ef9-1ed6-4c5b-aa5a-cb9410ba6e59"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.432745,
+      "lon": -75.676212
+    },
+    "nameEn": "Charlotte & Rideau",
+    "nameFr": "Charlotte et Rideau",
+    "neighbourhoodEn": "Lowertown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=94",
+    "neighbourhoodFr": "Basse-ville",
+    "id": "4016931e-d6f8-4e85-832d-d2a29df3582b"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.392155,
+      "lon": -75.753809
+    },
+    "nameEn": "Churchill & Richmond",
+    "nameFr": "Churchill et Richmond",
+    "neighbourhoodEn": "Westboro",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=124",
+    "neighbourhoodFr": " ",
+    "id": "5adf4ce1-8c36-49e6-956f-acb5ad468737"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.3947801716,
+      "lon": -75.7554587153
+    },
+    "nameEn": "Churchill & Scott",
+    "nameFr": "Churchill et Scott",
+    "neighbourhoodEn": "Westboro",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=311",
+    "neighbourhoodFr": " ",
+    "id": "20a7e4a2-25ef-4db2-97f2-41b3df007520"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.40467,
+      "lon": -75.680282
+    },
+    "nameEn": "Clegg & Colonel By",
+    "nameFr": "Clegg et Colonel By",
+    "neighbourhoodEn": "Old Ottawa East",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=241",
+    "neighbourhoodFr": "Vieil Ottawa-Est",
+    "id": "da0dec20-5367-47ff-9619-648e40e341f8"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.42425,
+      "lon": -75.69237
+    },
+    "nameEn": "Colonel By & Daly",
+    "nameFr": "Colonel By et Daly",
+    "neighbourhoodEn": "Sandy Hill",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=299",
+    "neighbourhoodFr": "Côte-de-Sable",
+    "id": "fa637cba-421f-4254-a990-59ec12df704e"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.4117550644,
+      "lon": -75.6827520421
+    },
+    "nameEn": "Colonel By & Hawthorne",
+    "nameFr": "Colonel By et Hawthorne",
+    "neighbourhoodEn": "Old Ottawa East",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=318",
+    "neighbourhoodFr": "Vieil Ottawa-Est",
+    "id": "7a154ee9-24a2-47af-bb92-05bfea6815ab"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.4151125954,
+      "lon": -75.6815173569
+    },
+    "nameEn": "Colonel By & Main",
+    "nameFr": "Colonel By et Main",
+    "neighbourhoodEn": "Old Ottawa East",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=317",
+    "neighbourhoodFr": "Vieil Ottawa-Est",
+    "id": "15fa52aa-ed72-48b8-8ae9-3b279f53f11f"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.383718,
+      "lon": -75.630466
+    },
+    "nameEn": "Conroy & Walkley",
+    "nameFr": "Conroy et Walkley",
+    "neighbourhoodEn": "South Keys - Greenboro West",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=23",
+    "neighbourhoodFr": "South Keys - Greenboro Ouest",
+    "id": "db7b99fa-8cd3-4dac-a577-0369a52f9618"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.3429,
+      "lon": -75.842285
+    },
+    "nameEn": "Corkstown & Moodie",
+    "nameFr": "Corkstown et Moodie",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=20",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "6293c44f-4a4f-4ff5-9655-dcfe10449834"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.421263,
+      "lon": -75.658341
+    },
+    "nameEn": "Coventry & Vanier",
+    "nameFr": "Coventry et Vanier",
+    "neighbourhoodEn": "Overbrook - McArthur",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=269",
+    "neighbourhoodFr": " ",
+    "id": "bd354fe6-6964-4f0b-8be3-fb31932cde4f"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.424229,
+      "lon": -75.637306
+    },
+    "nameEn": "Coventry/Ogilvie & St. Laurent",
+    "nameFr": "Coventry/Ogilvie et St. Laurent",
+    "neighbourhoodEn": "Overbrook - McArthur",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=57",
+    "neighbourhoodFr": " ",
+    "id": "652ff7f5-f463-45f9-bafb-89b89dc37f13"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.424559,
+      "lon": -75.684734
+    },
+    "nameEn": "Cumberland & Laurier",
+    "nameFr": "Cumberland et Laurier",
+    "neighbourhoodEn": "Sandy Hill",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=206",
+    "neighbourhoodFr": "Côte-de-Sable",
+    "id": "3a3b6193-5891-4bd3-9a47-95bee25ed032"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.431192,
+      "lon": -75.690084
+    },
+    "nameEn": "Cumberland & Murray",
+    "nameFr": "Cumberland et Murray",
+    "neighbourhoodEn": "Byward Market",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=96",
+    "neighbourhoodFr": "Marché By",
+    "id": "1ca30f81-8583-49de-bb10-f9736e4f4c65"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.423445,
+      "lon": -75.630287
+    },
+    "nameEn": "Cummings & Cyrville",
+    "nameFr": "Cummings et Cyrville",
+    "neighbourhoodEn": "Overbrook - McArthur",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=263",
+    "neighbourhoodFr": " ",
+    "id": "06027506-e2db-4baf-9a5b-eb2769cc4790"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.426016,
+      "lon": -75.631685
+    },
+    "nameEn": "Cummings & Ogilvie",
+    "nameFr": "Cummings et Ogilvie",
+    "neighbourhoodEn": "Overbrook - McArthur",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=147",
+    "neighbourhoodFr": " ",
+    "id": "d10e83ea-5b48-4452-a3f0-de89dd1cb4fc"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.416489,
+      "lon": -75.602432
+    },
+    "nameEn": "Cyrville & Innes",
+    "nameFr": "Cyrville et Innes",
+    "neighbourhoodEn": "East Industrial",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=146",
+    "neighbourhoodFr": "Industriel-Est",
+    "id": "dfe5806d-a4fd-47f0-91d0-fe685524046b"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.430288,
+      "lon": -75.692304
+    },
+    "nameEn": "Dalhousie & Murray",
+    "nameFr": "Dalhousie et Murray",
+    "neighbourhoodEn": "Byward Market",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=185",
+    "neighbourhoodFr": "Marché By",
+    "id": "9f104d6d-c676-4090-b4b2-d46e0634ec07"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.427129,
+      "lon": -75.689662
+    },
+    "nameEn": "Dalhousie & Rideau",
+    "nameFr": "Dalhousie et Rideau",
+    "neighbourhoodEn": "Byward Market",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=107",
+    "neighbourhoodFr": "Marché By",
+    "id": "845afbff-d2bf-4a5f-a326-c9b1e8cd9989"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.4254836438,
+      "lon": -75.6894564833
+    },
+    "nameEn": "Daly & Nicholas",
+    "nameFr": "Daly et Nicholas",
+    "neighbourhoodEn": "Sandy Hill",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=323",
+    "neighbourhoodFr": "Côte-de-Sable",
+    "id": "54e6aa8d-641e-403b-9c61-a5bfbc2c2995"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.459271,
+      "lon": -75.50997
+    },
+    "nameEn": "Des Epinettes & Jeanne D'Arc",
+    "nameFr": "Des Epinettes et Jeanne D'Arc",
+    "neighbourhoodEn": "Orléans Village - Chateauneuf",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=251",
+    "neighbourhoodFr": " ",
+    "id": "85612169-7861-4298-badc-ed1f16f1f5e6"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.428871,
+      "lon": -75.640021
+    },
+    "nameEn": "Donald & St. Laurent",
+    "nameFr": "Donald et St. Laurent",
+    "neighbourhoodEn": "Overbrook - McArthur",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=195",
+    "neighbourhoodFr": " ",
+    "id": "17419294-8c12-4071-91d6-9435c0033bdd"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.304052,
+      "lon": -75.876786
+    },
+    "nameEn": "Eagleson & Hazeldean/Robertson",
+    "nameFr": "Eagleson et Hazeldean/Robertson",
+    "neighbourhoodEn": "Glen Cairn - Kanata South Business Park",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=3",
+    "neighbourhoodFr": "Glen Cairn - Parc d'Affaires Kanata-Sud",
+    "id": "226360ff-e959-4276-bcdf-e279b5bfda80"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.314348,
+      "lon": -75.882488
+    },
+    "nameEn": "Eagleson & Katimavik/Timm",
+    "nameFr": "Eagleson et Katimavik/Timm",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=178",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "3350ffc2-10f7-48a4-80b0-48b98ad32676"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.28788,
+      "lon": -75.867925
+    },
+    "nameEn": "Eagleson & Michael Cowpland/Stonehaven",
+    "nameFr": "Eagleson et Michael Cowpland/Stonehaven",
+    "neighbourhoodEn": "Bridlewood - Emerald Meadows",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=191",
+    "neighbourhoodFr": " ",
+    "id": "3c3d3e64-ae98-4e9a-8384-7c761a70416f"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.2698066428,
+      "lon": -75.857909293
+    },
+    "nameEn": "Eagleson & Terry Fox / Hope Side",
+    "nameFr": "Eagleson et Terry Fox / Hope Side",
+    "neighbourhoodEn": "Bridlewood - Emerald Meadows",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=341",
+    "neighbourhoodFr": " ",
+    "id": "ad4d8bbf-4c9b-4e15-a390-a0b753cb718e"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.28054,
+      "lon": -75.666913
+    },
+    "nameEn": "Earl Armstrong & Limebank",
+    "nameFr": "Earl Armstrong et Limebank",
+    "neighbourhoodEn": "Riverside South - Leitrim",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=142",
+    "neighbourhoodFr": "Riverside Sud - Leitrim",
+    "id": "5513c1a6-33ce-424e-b3d2-8e266d3ea633"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.269284,
+      "lon": -75.699937
+    },
+    "nameEn": "Earl Armstrong & River",
+    "nameFr": "Earl Armstrong et River",
+    "neighbourhoodEn": "Riverside South - Leitrim",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=143",
+    "neighbourhoodFr": "Riverside Sud - Leitrim",
+    "id": "f8987c2a-677a-40aa-8bcc-5301e98e7c6d"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.27221,
+      "lon": -75.68952
+    },
+    "nameEn": "Earl Armstrong & Spratt",
+    "nameFr": "Earl Armstrong et Spratt",
+    "neighbourhoodEn": "Riverside South - Leitrim",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=289",
+    "neighbourhoodFr": "Riverside Sud - Leitrim",
+    "id": "19a28fc8-36e7-4135-826c-f141322d89d2"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.312028,
+      "lon": -75.911428
+    },
+    "nameEn": "Earl Grey & Kanata ",
+    "nameFr": "Earl Grey et Kanata",
+    "neighbourhoodEn": "Kanata Lakes - Arcardia",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=110",
+    "neighbourhoodFr": " ",
+    "id": "a4e6eafc-67fe-42ec-9fb1-100acdb819c5"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.414645,
+      "lon": -75.68754
+    },
+    "nameEn": "Elgin & Gladstone",
+    "nameFr": "Elgin et Gladstone",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=216",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "5eb6dfe0-5e1f-445e-bf1c-dda3ef745ce7"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.421115,
+      "lon": -75.692977
+    },
+    "nameEn": "Elgin & Laurier",
+    "nameFr": "Elgin et Laurier",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=35",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "4fc6f089-fc8d-4b7a-be8b-8df3ae51c0d4"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.411373,
+      "lon": -75.684054
+    },
+    "nameEn": "Elgin & Pretoria/Queen Elizabeth",
+    "nameFr": "Elgin et Pretoria/Queen Elizabeth",
+    "neighbourhoodEn": "Glebe - Dows Lake",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=54",
+    "neighbourhoodFr": "Glebe – Lac Dows",
+    "id": "e4703193-3981-4044-9ff5-2858a709da11"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.423239,
+      "lon": -75.694817
+    },
+    "nameEn": "Elgin & Queen",
+    "nameFr": "Elgin et Queen",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=34",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "b516ebaa-22e7-4a50-8c83-26d8f3ef32cd"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.417891,
+      "lon": -75.69037
+    },
+    "nameEn": "Elgin & Somerset",
+    "nameFr": "Elgin et Somerset",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=247",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "44ee59cc-9789-4559-82ee-56d82d004494"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.4377942892,
+      "lon": -75.602871553
+    },
+    "nameEn": "Elmlea & Ogilvie",
+    "nameFr": "Elmlea & Ogilvie",
+    "neighbourhoodEn": "Beacon Hill South - Cardinal Heights",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=285",
+    "neighbourhoodFr": "Beacon Hill Sud - Cardinal Heights",
+    "id": "088bbf1b-3ed0-437b-9ad9-e27c5b479db9"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.293827,
+      "lon": -75.743212
+    },
+    "nameEn": "Fallowfield & Barrhaven Crossing",
+    "nameFr": "Fallowfield et Barrhaven Crossing",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=246",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "5267f10c-2c8f-4daa-a196-ffb6b0e64e5e"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.288122,
+      "lon": -75.756975
+    },
+    "nameEn": "Fallowfield & Greenbank",
+    "nameFr": "Fallowfield et Greenbank",
+    "neighbourhoodEn": "Old Barrhaven West",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=61",
+    "neighbourhoodFr": "Old Barrhaven Ouest",
+    "id": "68d79e2e-b546-45ac-9e11-f62507ad0f32"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.30679,
+      "lon": -75.708194
+    },
+    "nameEn": "Fallowfield & Merivale",
+    "nameFr": "Fallowfield et Merivale",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=15",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "6658fc11-66a2-4048-b1e9-3e5ac1b0994e"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.269529,
+      "lon": -75.802825
+    },
+    "nameEn": "Fallowfield & Moodie",
+    "nameFr": "Fallowfield et Moodie",
+    "neighbourhoodEn": "Richmond",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=281",
+    "neighbourhoodFr": " ",
+    "id": "ae4fb1b4-116e-4466-995f-e3fbe82f975b"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.309605,
+      "lon": -75.701653
+    },
+    "nameEn": "Fallowfield & Prince of Wales",
+    "nameFr": "Fallowfield & Prince of Wales",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=226",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "74c9acd5-042b-4d17-9d22-d687149b2a16"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.272364,
+      "lon": -75.786972
+    },
+    "nameEn": "Fallowfield & Strandherd",
+    "nameFr": "Fallowfield et Strandherd",
+    "neighbourhoodEn": "Stonebridge - Half Moon Bay - Heart's Desire",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=271",
+    "neighbourhoodFr": " ",
+    "id": "bfe875e6-ec70-4fff-858a-0c8c1b91b9ea"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.29537,
+      "lon": -75.739208
+    },
+    "nameEn": "Fallowfield & Transitway",
+    "nameFr": "Fallowfield et Transitway",
+    "neighbourhoodEn": "Old Barrhaven East",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=148",
+    "neighbourhoodFr": "Old Barrhaven Est",
+    "id": "9c2bab34-5614-4234-b1e0-0cc2ccac8722"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.298554,
+      "lon": -75.731226
+    },
+    "nameEn": "Fallowfield & Woodroffe",
+    "nameFr": "Fallowfield et Woodroffe",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=9",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "45d4c440-7f0d-468e-83e1-c673408d3612"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.2744048705,
+      "lon": -75.8690574523
+    },
+    "nameEn": "Fernbank & Terry Fox",
+    "nameFr": "Fernbank et Terry Fox",
+    "neighbourhoodEn": "Glen Cairn - Kanata South Business Park",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=303",
+    "neighbourhoodFr": "Glen Cairn - Parc d'Affaires Kanata-Sud",
+    "id": "c0067ef0-c09f-4eff-9ca4-02f276306ce1"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.40396,
+      "lon": -75.681997
+    },
+    "nameEn": "Fifth and Queens Elizabeth Driveway",
+    "nameFr": "Fifth et promenade Reine-Élizabeth ",
+    "neighbourhoodEn": "Glebe - Dows Lake",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=218",
+    "neighbourhoodFr": "Glebe – Lac Dows",
+    "id": "0bb8d88b-359c-429c-b396-0105dab69843"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.362648,
+      "lon": -75.711412
+    },
+    "nameEn": "Fisher & Meadowlands",
+    "nameFr": "Fisher et Meadowlands",
+    "neighbourhoodEn": "Carleton Heights - Rideauview",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=167",
+    "neighbourhoodFr": "Hauteurs Carleton - Rideauview",
+    "id": "5fa2b8c2-7819-4c28-8602-5158c082a106"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.283267,
+      "lon": -75.754104
+    },
+    "nameEn": "Foxfield & Greenbank",
+    "nameFr": "Foxfield & Greenbank",
+    "neighbourhoodEn": "Old Barrhaven West",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=233",
+    "neighbourhoodFr": "Old Barrhaven Ouest",
+    "id": "8e1d7dfa-a517-48eb-b892-1149b5e67eac"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.317358,
+      "lon": -75.630413
+    },
+    "nameEn": "Gilligan & Leitrim",
+    "nameFr": "Gilligan et Leitrim",
+    "neighbourhoodEn": "Findlay Creek",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=153",
+    "neighbourhoodFr": " ",
+    "id": "f8c00acd-b39e-4f56-95d9-4ebf39df2410"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.41304,
+      "lon": -75.691545
+    },
+    "nameEn": "Gladstone & O'Connor",
+    "nameFr": "Gladstone et O'Connor",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=244",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "2611378d-e038-42c4-bdbe-e4e2df0cdd26"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.404626,
+      "lon": -75.711937
+    },
+    "nameEn": "Gladstone & Preston",
+    "nameFr": "Gladstone et Preston",
+    "neighbourhoodEn": "West Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=101",
+    "neighbourhoodFr": "Centre-Ville Ouest",
+    "id": "88c182e8-1de7-4309-b30b-f87dcde69b4a"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.274935,
+      "lon": -75.748987
+    },
+    "nameEn": "Greenbank & Berrigan/Wessex",
+    "nameFr": "Greenbank et Berrigan/Wessex",
+    "neighbourhoodEn": "Old Barrhaven East",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=74",
+    "neighbourhoodFr": "Old Barrhaven Est",
+    "id": "8821124c-9637-43ec-831f-8b8329082dac"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.322147,
+      "lon": -75.777009
+    },
+    "nameEn": "Greenbank & Hunt Club",
+    "nameFr": "Greenbank et Hunt Club",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=90",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "13ece957-995d-4644-b4c0-a5b9891ee4d3"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.347601,
+      "lon": -75.788774
+    },
+    "nameEn": "Greenbank & Iris",
+    "nameFr": "Greenbank et Iris",
+    "neighbourhoodEn": "Iris - Queensway Terrance South",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=150",
+    "neighbourhoodFr": "Iris - Queensway Terrance Sud",
+    "id": "092f06cf-3556-43a7-a0ee-d76f4fcbf85c"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.270529,
+      "lon": -75.746377
+    },
+    "nameEn": "Greenbank & Strandherd",
+    "nameFr": "Greenbank et Strandherd",
+    "neighbourhoodEn": "Chapman Mills",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=120",
+    "neighbourhoodFr": " ",
+    "id": "3f081af6-13aa-42f7-8b18-e14f1d3bed0c"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.414348,
+      "lon": -75.681108
+    },
+    "nameEn": "Greenfield & Main",
+    "nameFr": "Greenfield et Main",
+    "neighbourhoodEn": "Old Ottawa East",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=228",
+    "neighbourhoodFr": "Vieil Ottawa-Est",
+    "id": "fed85b12-03f3-4153-b9ac-3f34ae7e6bee"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.374033,
+      "lon": -75.597258
+    },
+    "nameEn": "Hawthorne & Hunt Club",
+    "nameFr": "Hawthorne et Hunt Club",
+    "neighbourhoodEn": "Hunt Club Park",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=117",
+    "neighbourhoodFr": "Parc Hunt Club",
+    "id": "b8dac992-2df1-4bfe-9bac-c0dfa36cc5f3"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.3406037408,
+      "lon": -75.5782382173
+    },
+    "nameEn": "Hawthorne & Leitrim",
+    "nameFr": "Hawthorne Et Leitrim",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=344",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "d7b59e98-63fb-481e-96f4-a599705ce16d"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.412719,
+      "lon": -75.680142
+    },
+    "nameEn": "Hawthorne & Main",
+    "nameFr": "Hawthorne et Main",
+    "neighbourhoodEn": "Old Ottawa East",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=229",
+    "neighbourhoodFr": "Vieil Ottawa-Est",
+    "id": "5ec8d38f-998d-4a39-9e7d-bb85ff05e693"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.283089,
+      "lon": -75.911772
+    },
+    "nameEn": "Hazeldean & Huntmar",
+    "nameFr": "Hazeldean et Huntmar",
+    "neighbourhoodEn": "Stittsville",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=127",
+    "neighbourhoodFr": " ",
+    "id": "42e777a3-31ad-4111-92b5-3086c58575a0"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.2886958691,
+      "lon": -75.9031222341
+    },
+    "nameEn": "Hazeldean & Mantra / Tillage",
+    "nameFr": "Hazeldean et Mantra / Tillage",
+    "neighbourhoodEn": "Stittsville",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=332",
+    "neighbourhoodFr": " ",
+    "id": "639e83bb-2302-4dcd-a3b4-a18d38d660b9"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.272394,
+      "lon": -75.929655
+    },
+    "nameEn": "Hazeldean & Stittsville Main",
+    "nameFr": "Hazeldean et Stittsville Main",
+    "neighbourhoodEn": "Stittsville",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=119",
+    "neighbourhoodFr": " ",
+    "id": "d31926f4-f0ae-47d0-aba2-7092af2c4c42"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.293498,
+      "lon": -75.895678
+    },
+    "nameEn": "Hazeldean & Terry Fox",
+    "nameFr": "Hazeldean et Terry Fox",
+    "neighbourhoodEn": "Katimavik - Hazeldean",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=32",
+    "neighbourhoodFr": " ",
+    "id": "5e835c9b-e94e-4182-916d-eef606e5afac"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.376832,
+      "lon": -75.691477
+    },
+    "nameEn": "Heron & Riverside",
+    "nameFr": "Heron et Riverside",
+    "neighbourhoodEn": "Riverside Park",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=193",
+    "neighbourhoodFr": "Parc Riverside",
+    "id": "4c5bd06f-4bb9-44ab-8ee0-15244f09d3c0"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.518277,
+      "lon": -75.41121
+    },
+    "nameEn": "Highway 174 & Cameron",
+    "nameFr": "Autoroute 174 et Cameron",
+    "neighbourhoodEn": "Cumberland",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=145",
+    "neighbourhoodFr": " ",
+    "id": "8df75bb0-39e6-41e3-a44b-f8ddd1721c35"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.5247067372,
+      "lon": -75.3354272539
+    },
+    "nameEn": "Highway 174 & Canaan",
+    "nameFr": "Autoroute 174 et Canaan",
+    "neighbourhoodEn": "Cumberland",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=326",
+    "neighbourhoodFr": " ",
+    "id": "6e2f4f53-52e1-4756-9ab8-2a3ef8a292de"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.479437,
+      "lon": -75.517715
+    },
+    "nameEn": "Highway 174 & Champlain",
+    "nameFr": "Autoroute 174 et Champlain",
+    "neighbourhoodEn": "Convent Glen - Orléans Woods",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=197",
+    "neighbourhoodFr": " ",
+    "id": "414a7b9e-0acf-4c78-8185-d7f95dcee20c"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.468985,
+      "lon": -75.545787
+    },
+    "nameEn": "Highway 174 & Jeanne D'Arc",
+    "nameFr": "Autoroute 174 et Jeanne D'Arc",
+    "neighbourhoodEn": "Convent Glen - Orléans Woods",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=198",
+    "neighbourhoodFr": " ",
+    "id": "9f76206f-6534-407b-8ef3-ab99aa4a82c1"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.496713,
+      "lon": -75.479474
+    },
+    "nameEn": "Highway 174 & Trim",
+    "nameFr": "Autoroute 174 et Trim",
+    "neighbourhoodEn": "Cardinal Creek",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=72",
+    "neighbourhoodFr": " ",
+    "id": "ebfc78fa-c67b-4a90-a1cc-2138c7c1a729"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.430354,
+      "lon": -75.60401
+    },
+    "nameEn": "Highway 174 (East) at Blair",
+    "nameFr": "Autoroute 174 (Est) à Blair",
+    "neighbourhoodEn": "Pineview",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=234",
+    "neighbourhoodFr": " ",
+    "id": "db8b96f1-2256-4ab4-a086-d42f253ce87a"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.451727,
+      "lon": -75.582576
+    },
+    "nameEn": "Highway 174 (East) at Montreal",
+    "nameFr": "Autoroute 174 (Est) à Montreal",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=265",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "1628116c-76ad-45a5-a75e-1c7ea8519ee4"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.433378,
+      "lon": -75.607627
+    },
+    "nameEn": "Highway 174 (West) at Blair",
+    "nameFr": "Autoroute 174 (Ouest) à Blair",
+    "neighbourhoodEn": "Carson Grove - Carson Meadows",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=235",
+    "neighbourhoodFr": " ",
+    "id": "9532d847-ba87-49c0-af32-ac27e919778c"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.451079,
+      "lon": -75.584664
+    },
+    "nameEn": "Highway 174 (West) at Montreal",
+    "nameFr": "Autoroute 174 (Ouest) à Montreal",
+    "neighbourhoodEn": "Beacon Hill South - Cardinal Heights",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=264",
+    "neighbourhoodFr": "Beacon Hill Sud - Cardinal Heights",
+    "id": "58e6c311-f8a2-4b98-a32d-4f60de62401e"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.455385,
+      "lon": -75.580482
+    },
+    "nameEn": "Highway 174 east of Montreal",
+    "nameFr": "Autoroute 174 à l'est du chemin Montréal",
+    "neighbourhoodEn": "Rothwell Heights - Beacon Hill North",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=199",
+    "neighbourhoodFr": "Rothwell Heights - Beacon Hill Nord",
+    "id": "38b8ca7c-fbe6-439a-a7fd-15192d7ce550"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.428041,
+      "lon": -75.612116
+    },
+    "nameEn": "Highway 174 west of Blair",
+    "nameFr": "Autoroute 174 à l'ouest du chemin Blair",
+    "neighbourhoodEn": "Pineview",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=201",
+    "neighbourhoodFr": " ",
+    "id": "8093c8e8-009c-4c6b-b262-eb45f2d5d3b5"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.311453,
+      "lon": -75.902921
+    },
+    "nameEn": "Highway 417 & Kanata",
+    "nameFr": "Autoroute 417 et Kanata",
+    "neighbourhoodEn": "Kanata Lakes - Arcardia",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=45",
+    "neighbourhoodFr": " ",
+    "id": "259ebb54-86ea-4f09-a283-bc5fdf34ea7d"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.350843,
+      "lon": -75.790593
+    },
+    "nameEn": "Highway 417 & Pinecrest",
+    "nameFr": "Autoroute 417 et Pinecrest",
+    "neighbourhoodEn": "Whitehaven - Queensway Terrace North",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=70",
+    "neighbourhoodFr": "Whitehaven - Terrasse Queensway Nord",
+    "id": "ce09668f-162f-4bae-86bc-0b8695db88e6"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.3508552983,
+      "lon": -75.7905868922
+    },
+    "nameEn": "Highway 417 & Pinecrest",
+    "nameFr": "Autoroute 417 et Pinecrest",
+    "neighbourhoodEn": "Whitehaven - Queensway Terrace North",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=70",
+    "neighbourhoodFr": "Whitehaven - Terrasse Queensway Nord",
+    "id": "5fa14421-8d3b-401d-b504-9a65636968d2"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.41936,
+      "lon": -75.656744
+    },
+    "nameEn": "Highway 417 & Vanier",
+    "nameFr": "Autoroute 417 et Vanier",
+    "neighbourhoodEn": "Overbrook - McArthur",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=80",
+    "neighbourhoodFr": " ",
+    "id": "981170e4-83b5-40af-8825-24c2eb654593"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.359845,
+      "lon": -75.767576
+    },
+    "nameEn": "Highway 417 & Woodroffe",
+    "nameFr": "Autoroute 417 et Woodroffe",
+    "neighbourhoodEn": "Braemar Park - Bel Air Heights - Copeland Park",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=181",
+    "neighbourhoodFr": "Parc Braemar - Hauteurs Bel Air - Parc Copeland",
+    "id": "3264fd02-23b0-4900-9ef1-74f0961c5022"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.413297,
+      "lon": -75.612127
+    },
+    "nameEn": "Highway 417 (East) & Innes",
+    "nameFr": "Autoroute 417 (Est) et Innes",
+    "neighbourhoodEn": "East Industrial",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=30",
+    "neighbourhoodFr": "Industriel-Est",
+    "id": "1a2d82f7-ea33-4d2d-861b-432426ef13f3"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.36946,
+      "lon": -75.754073
+    },
+    "nameEn": "Highway 417 (East) & Maitland",
+    "nameFr": "Autoroute 417 (Est) et Maitland",
+    "neighbourhoodEn": "Braemar Park - Bel Air Heights - Copeland Park",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=164",
+    "neighbourhoodFr": "Parc Braemar - Hauteurs Bel Air - Parc Copeland",
+    "id": "07fa9a52-a8c6-4398-9be6-076ea695643f"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.419283,
+      "lon": -75.63459
+    },
+    "nameEn": "Highway 417 (East) & St. Laurent",
+    "nameFr": "Autoroute 417 (Est) et St. Laurent",
+    "neighbourhoodEn": "East Industrial",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=238",
+    "neighbourhoodFr": "Industriel-Est",
+    "id": "aa2ac28c-49ec-4e10-9217-9a755505eedf"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.414744,
+      "lon": -75.607679
+    },
+    "nameEn": "Highway 417 (West) & Innes",
+    "nameFr": "Autoroute 417 (Ouest) et Innes",
+    "neighbourhoodEn": "East Industrial",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=237",
+    "neighbourhoodFr": "Industriel-Est",
+    "id": "3c0ff480-35cb-4d02-a6c5-cdc5d486ce4e"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.371317,
+      "lon": -75.75512
+    },
+    "nameEn": "Highway 417 (West) & Maitland",
+    "nameFr": "Autoroute 417 (Ouest) et Maitland",
+    "neighbourhoodEn": "Carlingwood West - Glabar Park - McKellar Heights",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=186",
+    "neighbourhoodFr": " ",
+    "id": "d2cb4056-8307-48ec-b1d4-d8acf3a878f0"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.4177353143,
+      "lon": -75.6784296957
+    },
+    "nameEn": "Highway 417 on-ramp (West) & Greenfield / Mann",
+    "nameFr": "Autoroute 417 bretelle d'entrée (Ouest) et Greenfield / Mann",
+    "neighbourhoodEn": "Old Ottawa East",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=339",
+    "neighbourhoodFr": "Vieil Ottawa-Est",
+    "id": "8b7cd6bf-0e0f-473a-9dd0-78f174463f26"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.3700127782,
+      "lon": -75.6981962329
+    },
+    "nameEn": "Hogs Back & Colonel By",
+    "nameFr": "Hogs Back Et Colonel By",
+    "neighbourhoodEn": "Carleton Heights - Rideauview",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=294",
+    "neighbourhoodFr": "Hauteurs Carleton - Rideauview",
+    "id": "b9b0c61b-6eb2-41c7-ac6d-812fe80193c0"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.40375,
+      "lon": -75.734321
+    },
+    "nameEn": "Holland & Scott",
+    "nameFr": "Holland et Scott",
+    "neighbourhoodEn": "Hintonburg - Mechanicsville",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=114",
+    "neighbourhoodFr": " ",
+    "id": "e127f20a-b8f0-4477-bd63-88d1f2e4a8e9"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.399755,
+      "lon": -75.731937
+    },
+    "nameEn": "Holland & Wellington",
+    "nameFr": "Holland et Wellington",
+    "neighbourhoodEn": "Hintonburg - Mechanicsville",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=182",
+    "neighbourhoodFr": " ",
+    "id": "e7905cb8-bee1-40f1-aa9b-b1af4dde566e"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.3436875634,
+      "lon": -75.8115055241
+    },
+    "nameEn": "Holly Acres & 416 Offramp",
+    "nameFr": "Holly Acres & 416 bretelle de sortie",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=307",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "7ad3e4de-1d45-4578-8af3-47dd0ef9785d"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.3448048994,
+      "lon": -75.814855842
+    },
+    "nameEn": "Holly Acres & Transitway",
+    "nameFr": "Holly Acres et Transitway",
+    "neighbourhoodEn": "Crystal Bay - Lakeview Park",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=309",
+    "neighbourhoodFr": "Baie Crystal - Parc Lakeview",
+    "id": "cd4d2a8e-791f-4390-92e0-9f19dccf115f"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.342597,
+      "lon": -75.807631
+    },
+    "nameEn": "Holly Acres/Nanaimo & Richmond",
+    "nameFr": "Holly Acres/Nanaimo et Richmond",
+    "neighbourhoodEn": "Qualicum - Redwood Park",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=89",
+    "neighbourhoodFr": "Qualicum - Parc Redwood",
+    "id": "abab2129-f01e-448f-8c46-d663f532c17d"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.350134,
+      "lon": -75.654939
+    },
+    "nameEn": "Hunt Club & Airport",
+    "nameFr": "Hunt Club et Aéroport",
+    "neighbourhoodEn": "Hunt Club East - Western Community",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=17",
+    "neighbourhoodFr": "Hunt Club Est - Communauté de l'Ouest",
+    "id": "e0b8f669-29b3-44ee-ad4e-8b4c3ef45099"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.3651357051,
+      "lon": -75.6196469482
+    },
+    "nameEn": "Hunt Club & Conroy",
+    "nameFr": "Hunt Club et Conroy",
+    "neighbourhoodEn": "Greenboro East",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=336",
+    "neighbourhoodFr": "Greenboro Est",
+    "id": "c1f56a45-9401-4f30-9e07-61b0359739ce"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.322846,
+      "lon": -75.77215
+    },
+    "nameEn": "Hunt Club & Knoxdale",
+    "nameFr": "Hunt Club et Knoxdale",
+    "neighbourhoodEn": "Woodvale - Craig Henry - Manordale - Estates of Arlington Woods",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=156",
+    "neighbourhoodFr": "Woodvale - Craig Henry - Manordale - Domaines des Bois d'Arlington",
+    "id": "34a5dcc7-e24d-4d27-80ef-742670d63c5f"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.3761261059,
+      "lon": -75.5922023679
+    },
+    "nameEn": "Hunt Club & Last Mile",
+    "nameFr": "Hunt Club et Last Mile",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=324",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "59b03cf6-0fc4-49f0-bc7f-38e4807defe5"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.339249,
+      "lon": -75.713611
+    },
+    "nameEn": "Hunt Club & Lowes",
+    "nameFr": "Hunt Club et Lowes",
+    "neighbourhoodEn": "Hunt Club South Industrial",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=203",
+    "neighbourhoodFr": "Hunt Club Sud Industriel",
+    "id": "9b2c003a-3ae3-4613-932e-5d4b6159363e"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.334749,
+      "lon": -75.724039
+    },
+    "nameEn": "Hunt Club & Merivale",
+    "nameFr": "Hunt Club et Merivale",
+    "neighbourhoodEn": "Hunt Club South Industrial",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=22",
+    "neighbourhoodFr": "Hunt Club Sud Industriel",
+    "id": "975f8a46-a3a9-4763-ab85-c884cc9d8ebe"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.334235,
+      "lon": -75.70055
+    },
+    "nameEn": "Hunt Club & Prince of Wales",
+    "nameFr": "Hunt Club et Prince of Wales",
+    "neighbourhoodEn": "Hunt Club South Industrial",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=11",
+    "neighbourhoodFr": "Hunt Club Sud Industriel",
+    "id": "9cf9d07d-5683-4bca-a058-d2192c65ca61"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.334617,
+      "lon": -75.693139
+    },
+    "nameEn": "Hunt Club & Riverside",
+    "nameFr": "Hunt Club et Riverside",
+    "neighbourhoodEn": "Hunt Club Woods - Quintarra - Revelstoke",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=19",
+    "neighbourhoodFr": "Hunt Club Woods - Quintarra - Revelstoke",
+    "id": "3572fa4c-635a-45b7-a04a-c46ccb04c9d9"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.344997,
+      "lon": -75.665932
+    },
+    "nameEn": "Hunt Club & Uplands",
+    "nameFr": "Hunt Club et Uplands",
+    "neighbourhoodEn": "Hunt Club East - Western Community",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=219",
+    "neighbourhoodFr": "Hunt Club Est - Communauté de l'Ouest",
+    "id": "a1f0c634-c059-4dea-8be3-b2cb94603e4a"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.328782,
+      "lon": -75.748975
+    },
+    "nameEn": "Hunt Club & Woodroffe",
+    "nameFr": "Hunt Club et Woodroffe",
+    "neighbourhoodEn": "Tanglewood",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=12",
+    "neighbourhoodFr": " ",
+    "id": "c6dc7090-0c7c-4686-8ed6-d5f06f26274d"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.288907967,
+      "lon": -75.9203729253
+    },
+    "nameEn": "Huntmar & Maple Grove",
+    "nameFr": "Huntmar et Maple Grove",
+    "neighbourhoodEn": "Stittsville",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=335",
+    "neighbourhoodFr": " ",
+    "id": "3aefe40a-0d23-4a52-8b69-503371bbf5e0"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.412186,
+      "lon": -75.658399
+    },
+    "nameEn": "Industrial & Riverside",
+    "nameFr": "Industrial et Riverside",
+    "neighbourhoodEn": "East Industrial",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=131",
+    "neighbourhoodFr": "Industriel-Est",
+    "id": "e768e4f7-7d5c-469b-85ae-fae8f8d780e9"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.411587,
+      "lon": -75.645504
+    },
+    "nameEn": "Industrial & Trainyards",
+    "nameFr": "Industrial et Trainyards",
+    "neighbourhoodEn": "East Industrial",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=204",
+    "neighbourhoodFr": "Industriel-Est",
+    "id": "f02081d5-de2d-4239-964f-8993a3c33060"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.431719,
+      "lon": -75.564458
+    },
+    "nameEn": "Innes & Bearbrook",
+    "nameFr": "Innes et Bearbrook",
+    "neighbourhoodEn": "Blackburn Hamlet",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=208",
+    "neighbourhoodFr": " ",
+    "id": "b67bed05-2f25-43aa-a4b3-f66191e52556"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.425639,
+      "lon": -75.575037
+    },
+    "nameEn": "Innes & Blackburn Hamlet Bypass",
+    "nameFr": "Innes et rocade de Blackburn Hamlet",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=215",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "1ec9f151-e818-4b4a-b00b-78e0f5b9dd17"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.455703,
+      "lon": -75.504788
+    },
+    "nameEn": "Innes & Jeanne D'Arc",
+    "nameFr": "Innes et Jeanne D'Arc",
+    "neighbourhoodEn": "Chapel Hill South",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=82",
+    "neighbourhoodFr": "Chapel Hill Sud",
+    "id": "92a59224-bf72-4077-886c-8018cbf8c259"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.444451,
+      "lon": -75.532775
+    },
+    "nameEn": "Innes & Orleans",
+    "nameFr": "Innes et Orléans",
+    "neighbourhoodEn": "Chapel Hill South",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=71",
+    "neighbourhoodFr": "Chapel Hill Sud",
+    "id": "84380559-0a06-44cb-9a44-581da08478d8"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.460854,
+      "lon": -75.487759
+    },
+    "nameEn": "Innes & Tenth Line ",
+    "nameFr": "Innes et Tenth Line",
+    "neighbourhoodEn": "Portobello South",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=77",
+    "neighbourhoodFr": " ",
+    "id": "5520062f-9d62-4a05-8d94-10d163564fee"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.4617345776,
+      "lon": -75.4849677669
+    },
+    "nameEn": "Innes 240M east of Tenth Line",
+    "nameFr": "Innes 240m à l'est de Tenth Line",
+    "neighbourhoodEn": "Fallingbrook",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=328",
+    "neighbourhoodFr": " ",
+    "id": "e421c603-ab86-45d6-812a-4609caf94e52"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.406627,
+      "lon": -75.627473
+    },
+    "nameEn": "Innes/Industrial & St. Laurent",
+    "nameFr": "Innes/Industrial et St. Laurent",
+    "neighbourhoodEn": "East Industrial",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=14",
+    "neighbourhoodFr": "Industriel-Est",
+    "id": "75f967be-33ef-4c86-8823-d3ce8b063ce6"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.3557757018,
+      "lon": -75.76976533
+    },
+    "nameEn": "Iris & Transitway",
+    "nameFr": "Iris et Transitway",
+    "neighbourhoodEn": "Iris - Queensway Terrance South",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=290",
+    "neighbourhoodFr": "Iris - Queensway Terrance Sud",
+    "id": "3b6f70d5-781b-41dd-bc8b-5a556a89df12"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.357563,
+      "lon": -75.766298
+    },
+    "nameEn": "Iris & Woodroffe",
+    "nameFr": "Iris et Woodroffe",
+    "neighbourhoodEn": "Braemar Park - Bel Air Heights - Copeland Park",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=84",
+    "neighbourhoodFr": "Parc Braemar - Hauteurs Bel Air - Parc Copeland",
+    "id": "22809d18-af3c-42f8-b73a-924ea217ea00"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.410609,
+      "lon": -75.68679
+    },
+    "nameEn": "Isabella & Metcalfe",
+    "nameFr": "Isabella et Metcalfe",
+    "neighbourhoodEn": "Glebe - Dows Lake",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=162",
+    "neighbourhoodFr": "Glebe – Lac Dows",
+    "id": "052c3623-b476-42f6-839a-c4bdd4388bba"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.40256,
+      "lon": -75.752816
+    },
+    "nameEn": "Island Park & Kichi Zībī Mīkan",
+    "nameFr": "Island Park et Kichi Zībī Mīkan",
+    "neighbourhoodEn": "Westboro",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=47",
+    "neighbourhoodFr": " ",
+    "id": "f7485060-2777-4a37-9a5f-f308c1498297"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.397224,
+      "lon": -75.742211
+    },
+    "nameEn": "Island Park & Richmond",
+    "nameFr": "Island Park et Richmond",
+    "neighbourhoodEn": "Westboro",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=277",
+    "neighbourhoodFr": " ",
+    "id": "0836428e-d59f-4937-9900-36b1036936d2"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.398829,
+      "lon": -75.745958
+    },
+    "nameEn": "Island Park & Scott",
+    "nameFr": "Island Park et Scott",
+    "neighbourhoodEn": "Westboro",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=113",
+    "neighbourhoodFr": " ",
+    "id": "5aa45836-db1e-46fe-9c02-e33e80d7ff36"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.4662279937,
+      "lon": -75.5425397139
+    },
+    "nameEn": "Jeanne D'Arc & Youville / Grey Nuns",
+    "nameFr": "Jeanne D'Arc et Youville / Grey Nuns",
+    "neighbourhoodEn": "Orléans Industrial",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=342",
+    "neighbourhoodFr": "Orléans Industriel",
+    "id": "b0674f62-025a-4feb-b390-c7250e6ff7ac"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.302036,
+      "lon": -75.907514
+    },
+    "nameEn": "Katimavik/Palladium & Terry Fox",
+    "nameFr": "Katimavik/Palladium et Terry Fox",
+    "neighbourhoodEn": "Katimavik - Hazeldean",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=53",
+    "neighbourhoodFr": " ",
+    "id": "c6fec0bf-670b-43e9-8fe5-505fdc58bea6"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.41965,
+      "lon": -75.7029
+    },
+    "nameEn": "Kent & Queen",
+    "nameFr": "Kent et Queen",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=217",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "fe84d1e9-8d47-45e6-8151-8fff7c83c274"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.418445,
+      "lon": -75.701901
+    },
+    "nameEn": "Kent & Slater",
+    "nameFr": "Kent et Slater",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=46",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "48cf108d-ea52-4b81-b755-c8853b2d92dc"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.41448,
+      "lon": -75.698539
+    },
+    "nameEn": "Kent & Somerset",
+    "nameFr": "Kent et Somerset",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=254",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "4bbdc1fc-588f-4ebd-bd97-51edd4f9279b"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.392005715,
+      "lon": -75.7611798672
+    },
+    "nameEn": "Kichi Zībī Mīkan & Transitway",
+    "nameFr": "Kichi Zībī Mīkan et Transitway",
+    "neighbourhoodEn": "Westboro",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=319",
+    "neighbourhoodFr": " ",
+    "id": "442a434e-14c9-48dd-9179-ee7c240659d7"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.414477,
+      "lon": -75.718374
+    },
+    "nameEn": "Kichi Zībī Mīkan & Vimy",
+    "nameFr": "Kichi Zībī Mīkan et Vimy",
+    "neighbourhoodEn": "Lebreton Development",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=232",
+    "neighbourhoodFr": "Développement Lebreton",
+    "id": "8a7d3401-0d20-4d51-b697-6b0eabe393fd"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.419058,
+      "lon": -75.711335
+    },
+    "nameEn": "Kichi Zībī Mīkan/Wellington & Portage Bridge",
+    "nameFr": "Kichi Zībī Mīkan/Wellington et pont Portage",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=40",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "7eb01edb-41cc-4b4d-a619-e9bd55e46ff1"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.425358,
+      "lon": -75.682877
+    },
+    "nameEn": "King Edward & Laurier",
+    "nameFr": "King Edward et Laurier",
+    "neighbourhoodEn": "Sandy Hill",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=95",
+    "neighbourhoodFr": "Côte-de-Sable",
+    "id": "85528a94-7ab7-4a12-b8f5-8aec142af1a6"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.419011,
+      "lon": -75.677358
+    },
+    "nameEn": "King Edward & Mann",
+    "nameFr": "King Edward et Mann",
+    "neighbourhoodEn": "Sandy Hill",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=130",
+    "neighbourhoodFr": "Côte-de-Sable",
+    "id": "4dd989a1-ab12-4166-b1e6-986142c396d9"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.428792,
+      "lon": -75.685726
+    },
+    "nameEn": "King Edward & Rideau",
+    "nameFr": "King Edward et Rideau",
+    "neighbourhoodEn": "Byward Market",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=38",
+    "neighbourhoodFr": "Marché By",
+    "id": "240e97b6-c2ea-47cd-b532-f25ea8d03294"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.432537,
+      "lon": -75.688987
+    },
+    "nameEn": "King Edward & St. Patrick",
+    "nameFr": "King Edward et St. Patrick",
+    "neighbourhoodEn": "Byward Market",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=65",
+    "neighbourhoodFr": "Marché By",
+    "id": "23c2cfad-7454-433c-90c7-6baff1bcd325"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.438595,
+      "lon": -75.696484
+    },
+    "nameEn": "King Edward & Sussex",
+    "nameFr": "King Edward et Sussex",
+    "neighbourhoodEn": "Byward Market",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=51",
+    "neighbourhoodFr": "Marché By",
+    "id": "a2a6a3ac-18e2-496a-8e1f-ed865ed35dd1"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.3771897147,
+      "lon": -75.733227719
+    },
+    "nameEn": "Kirkwood & Merivale",
+    "nameFr": "Kirkwood et Merivale",
+    "neighbourhoodEn": "Carlington",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=327",
+    "neighbourhoodFr": " ",
+    "id": "7709b9a2-27fe-4b4c-ad0d-3e07a95165e6"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.395238,
+      "lon": -75.746702
+    },
+    "nameEn": "Kirkwood & Richmond",
+    "nameFr": "Kirkwood et Richmond",
+    "neighbourhoodEn": "Westboro",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=31",
+    "neighbourhoodFr": " ",
+    "id": "5b5dced8-d3ea-43f4-8e5f-519dfadbadfe"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.355101,
+      "lon": -75.932468
+    },
+    "nameEn": "Klondike & March",
+    "nameFr": "Klondike et March",
+    "neighbourhoodEn": "Brookside - Briarbrook - Morgan's Grant",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=138",
+    "neighbourhoodFr": " ",
+    "id": "f244f897-20f2-4547-842a-76e2972428a2"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.333918,
+      "lon": -75.752092
+    },
+    "nameEn": "Knoxdale & Woodroffe",
+    "nameFr": "Knoxdale et Woodroffe",
+    "neighbourhoodEn": "Woodvale - Craig Henry - Manordale - Estates of Arlington Woods",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=18",
+    "neighbourhoodFr": "Woodvale - Craig Henry - Manordale - Domaines des Bois d'Arlington",
+    "id": "4b0660eb-c080-4a0a-9ea2-7adf8a907cd9"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.39882,
+      "lon": -75.68596
+    },
+    "nameEn": "Lansdowne",
+    "nameFr": "Lansdowne",
+    "neighbourhoodEn": "Glebe - Dows Lake",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=188",
+    "neighbourhoodFr": "Glebe – Lac Dows",
+    "id": "9b4664e9-7d43-4745-b9e4-1276969f3d63"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.423329,
+      "lon": -75.687542
+    },
+    "nameEn": "Laurier & Nicholas",
+    "nameFr": "Laurier et Nicholas",
+    "neighbourhoodEn": "Sandy Hill",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=36",
+    "neighbourhoodFr": "Côte-de-Sable",
+    "id": "02e6478c-2961-437d-a0b8-eed3a9635d9b"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.419401,
+      "lon": -75.697084
+    },
+    "nameEn": "Laurier & O'Connor",
+    "nameFr": "Laurier et O'Connor",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=163",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "7b7bb6fe-6ad6-4d0e-92ab-adbceefdc70f"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.423764,
+      "lon": -75.686531
+    },
+    "nameEn": "Laurier & Transitway",
+    "nameFr": "Laurier et Le Transitway",
+    "neighbourhoodEn": "Sandy Hill",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=202",
+    "neighbourhoodFr": "Côte-de-Sable",
+    "id": "8a1888d0-34cb-4c07-8665-62f37d809c1b"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.3252310703,
+      "lon": -75.6126658701
+    },
+    "nameEn": "Leitrim & Kelly Farm",
+    "nameFr": "Leitrim & Kelly Farm",
+    "neighbourhoodEn": "Findlay Creek",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=346",
+    "neighbourhoodFr": " ",
+    "id": "6dffd76e-db7b-4fb1-a9cd-29c20f1485ec"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.297856,
+      "lon": -75.676851
+    },
+    "nameEn": "Leitrim & Limebank",
+    "nameFr": "Leitrim et Limebank",
+    "neighbourhoodEn": "Riverside South - Leitrim",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=91",
+    "neighbourhoodFr": "Riverside Sud - Leitrim",
+    "id": "0d098929-a3cd-4c35-ba31-eede083f14c2"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.422332,
+      "lon": -75.636288
+    },
+    "nameEn": "Lemieux & St. Laurent",
+    "nameFr": "Lemieux & St. Laurent",
+    "neighbourhoodEn": "Overbrook - McArthur",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=236",
+    "neighbourhoodFr": " ",
+    "id": "a9ecd8be-18c8-4816-b8ce-7ccc0fc41f57"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.321357,
+      "lon": -75.688692
+    },
+    "nameEn": "Limebank & River",
+    "nameFr": "Limebank et River",
+    "neighbourhoodEn": "Hunt Club - Ottawa Airport",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=86",
+    "neighbourhoodFr": "Hunt Club - Aéroport d'Ottawa",
+    "id": "ff42bbd7-ec87-401b-b91f-e65f927d9692"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.367224,
+      "lon": -75.783457
+    },
+    "nameEn": "Lincoln Fields Station & Kichi Zībī Mīkan",
+    "nameFr": "Station Lincoln Fields et Kichi Zībī Mīkan",
+    "neighbourhoodEn": "Britannia Village",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=108",
+    "neighbourhoodFr": " ",
+    "id": "f84cf23c-1b3e-4ea9-8095-3162554f25ed"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.2720055106,
+      "lon": -75.7374771241
+    },
+    "nameEn": "Longfields & Marketplace",
+    "nameFr": "Longfields & Marketplace",
+    "neighbourhoodEn": "Chapman Mills",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=305",
+    "neighbourhoodFr": " ",
+    "id": "8f139282-9b76-4e81-b187-30a85d46ade2"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.27397,
+      "lon": -75.738475
+    },
+    "nameEn": "Longfields & Strandherd",
+    "nameFr": "Longfields et Strandherd",
+    "neighbourhoodEn": "Chapman Mills",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=79",
+    "neighbourhoodFr": " ",
+    "id": "a5e47f68-8475-4091-bf14-ab00b247989a"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.418777,
+      "lon": -75.704957
+    },
+    "nameEn": "Lyon & Queen",
+    "nameFr": "Lyon et Queen",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=245",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "9c2f6a12-d770-45bb-b749-066f40f3f82b"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.420017,
+      "lon": -75.706062
+    },
+    "nameEn": "Lyon & Wellington",
+    "nameFr": "Lyon et Wellington",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=207",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "e01bacef-e385-4226-afc2-43dc50572b45"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.4251954992,
+      "lon": -75.6940488545
+    },
+    "nameEn": "Mackenzie & Rideau",
+    "nameFr": "Mackenzie et Rideau",
+    "neighbourhoodEn": "Sandy Hill",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=338",
+    "neighbourhoodFr": "Côte-de-Sable",
+    "id": "355464c6-dc43-4bb5-ae19-1f41638fdf2d"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.424997,
+      "lon": -75.68768
+    },
+    "nameEn": "Mackenzie & Waller",
+    "nameFr": "Mackenzie et Waller",
+    "neighbourhoodEn": "Sandy Hill",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=37",
+    "neighbourhoodFr": "Côte-de-Sable",
+    "id": "d552658c-b622-4732-8254-ee4c24f01d6c"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.406283,
+      "lon": -75.676358
+    },
+    "nameEn": "Main & Clegg",
+    "nameFr": "Main et Clegg",
+    "neighbourhoodEn": "Old Ottawa East",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=211",
+    "neighbourhoodFr": "Vieil Ottawa-Est",
+    "id": "55c1ac71-985d-4ef3-9a2b-ebffd73a6271"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.402755,
+      "lon": -75.674418
+    },
+    "nameEn": "Main & Riverdale",
+    "nameFr": "Main et Riverdale",
+    "neighbourhoodEn": "Old Ottawa East",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=230",
+    "neighbourhoodFr": "Vieil Ottawa-Est",
+    "id": "362b5724-680b-4a2b-8c62-dedd2cc1a335"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.3643288462,
+      "lon": -75.7480084694
+    },
+    "nameEn": "Maitland & Erindale / Glenmount",
+    "nameFr": "Maitland et Erindale / Glenmount",
+    "neighbourhoodEn": "Braemar Park - Bel Air Heights - Copeland Park",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=340",
+    "neighbourhoodFr": "Parc Braemar - Hauteurs Bel Air - Parc Copeland",
+    "id": "f0b60a19-619c-4a94-9869-5568ab17c7f5"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.332157,
+      "lon": -75.893499
+    },
+    "nameEn": "March & Herzberg",
+    "nameFr": "March et Herzberg",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=272",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "e6a51ee5-0f47-4314-aa6e-f3db11a9325b"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.358362,
+      "lon": -75.936675
+    },
+    "nameEn": "March & Maxwell Bridge/Old Carp",
+    "nameFr": "March et Maxwell Bridge/Old Carp",
+    "neighbourhoodEn": "Brookside - Briarbrook - Morgan's Grant",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=140",
+    "neighbourhoodFr": " ",
+    "id": "39ab5823-00b0-4d09-a41c-aea49c442f68"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.34913,
+      "lon": -75.92492
+    },
+    "nameEn": "March & Terry Fox",
+    "nameFr": "March et Terry Fox",
+    "neighbourhoodEn": "Brookside - Briarbrook - Morgan's Grant",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=137",
+    "neighbourhoodFr": " ",
+    "id": "70720b45-8b5e-49ee-a188-a3362b47612d"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.432672,
+      "lon": -75.642106
+    },
+    "nameEn": "McArthur & St. Laurent",
+    "nameFr": "McArthur et St. Laurent",
+    "neighbourhoodEn": "Overbrook - McArthur",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=274",
+    "neighbourhoodFr": " ",
+    "id": "44b08f48-47c9-41e7-9600-ecb677bf4403"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.431082,
+      "lon": -75.663966
+    },
+    "nameEn": "McArthur & Vanier",
+    "nameFr": "McArthur et Vanier",
+    "neighbourhoodEn": "Overbrook - McArthur",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=278",
+    "neighbourhoodFr": " ",
+    "id": "529fe689-9067-448f-84d8-8867a64b2bb3"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.350905,
+      "lon": -75.733533
+    },
+    "nameEn": "Meadowlands & Merivale",
+    "nameFr": "Meadowlands et Merivale",
+    "neighbourhoodEn": "Cityview - Crestview - Meadowlands",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=92",
+    "neighbourhoodFr": " ",
+    "id": "dd772968-ee23-43f4-869a-2416b0185052"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.368409,
+      "lon": -75.701215
+    },
+    "nameEn": "Meadowlands/Hog's Back &  Prince of Wales",
+    "nameFr": "Meadowlands/Hog's Back et  Prince of Wales",
+    "neighbourhoodEn": "Carleton Heights - Rideauview",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=105",
+    "neighbourhoodFr": "Hauteurs Carleton - Rideauview",
+    "id": "64fb8c4c-59b9-4107-aa67-64f6e4a7df01"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.342067,
+      "lon": -75.756682
+    },
+    "nameEn": "Meadowlands/Tallwood & Woodroffe",
+    "nameFr": "Meadowlands/Tallwood et Woodroffe",
+    "neighbourhoodEn": "Centrepointe",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=25",
+    "neighbourhoodFr": " ",
+    "id": "d7ee861f-e23f-46fd-a7ef-e886377cb68e"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.325897,
+      "lon": -75.719037
+    },
+    "nameEn": "Merivale & Slack",
+    "nameFr": "Merivale et Slack",
+    "neighbourhoodEn": "Hunt Club South Industrial",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=155",
+    "neighbourhoodFr": "Hunt Club Sud Industriel",
+    "id": "7519224e-c8a3-49f0-8365-e1119b472ddc"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.343879,
+      "lon": -75.729333
+    },
+    "nameEn": "Merivale & Viewmount",
+    "nameFr": "Merivale et Viewmount",
+    "neighbourhoodEn": "Tanglewood",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=166",
+    "neighbourhoodFr": " ",
+    "id": "bbfc6545-26b3-4847-94a7-263ecde544b3"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.422254,
+      "lon": -75.696851
+    },
+    "nameEn": "Metcalfe & Queen",
+    "nameFr": "Metcalfe et Queen",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=257",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "5a5ffd37-1ab6-4ba9-a26f-eca0d2045306"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.421032,
+      "lon": -75.69584
+    },
+    "nameEn": "Metcalfe & Slater",
+    "nameFr": "Metcalfe et Slater",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=13",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "600ff20b-fbb4-46d4-ae47-cbe3317af0de"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.417054,
+      "lon": -75.692395
+    },
+    "nameEn": "Metcalfe & Somerset",
+    "nameFr": "Metcalfe et Somerset",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=250",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "96f4a331-2a6b-42e3-a51f-56c7338d59ca"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.443616,
+      "lon": -75.638981
+    },
+    "nameEn": "Montreal & Aviation",
+    "nameFr": "Montreal et Promenade Aviation",
+    "neighbourhoodEn": "Carson Grove - Carson Meadows",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=210",
+    "neighbourhoodFr": " ",
+    "id": "780e66e2-40df-44eb-916b-56716bf18ad9"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.446387,
+      "lon": -75.615292
+    },
+    "nameEn": "Montreal & Blair",
+    "nameFr": "Montreal et Blair",
+    "neighbourhoodEn": "Carson Grove - Carson Meadows",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=205",
+    "neighbourhoodFr": " ",
+    "id": "4daf57f4-65fb-4908-8965-6700a74647cf"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.438054,
+      "lon": -75.656057
+    },
+    "nameEn": "Montreal & Granville",
+    "nameFr": "Montreal et Granville",
+    "neighbourhoodEn": "Vanier South",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=275",
+    "neighbourhoodFr": "Vanier Sud",
+    "id": "63f4d111-0333-4061-8afa-840360a2f5ee"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.436219,
+      "lon": -75.661292
+    },
+    "nameEn": "Montreal & Marier",
+    "nameFr": "Montreal et Marier",
+    "neighbourhoodEn": "Vanier North",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=270",
+    "neighbourhoodFr": "Vanier Nord",
+    "id": "7a731130-a213-423b-b065-02d05532b5f9"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.432934,
+      "lon": -75.66998
+    },
+    "nameEn": "Montreal & North River",
+    "nameFr": "Montreal et North River",
+    "neighbourhoodEn": "Vanier North",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=273",
+    "neighbourhoodFr": "Vanier Nord",
+    "id": "77eaa890-1f90-4963-8b69-30891df0ec6d"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.447339,
+      "lon": -75.594177
+    },
+    "nameEn": "Montreal & Ogilvie",
+    "nameFr": "Montreal et Ogilvie",
+    "neighbourhoodEn": "Beacon Hill South - Cardinal Heights",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=141",
+    "neighbourhoodFr": "Beacon Hill Sud - Cardinal Heights",
+    "id": "8bbfb472-d5e8-47b1-ac9b-455080c4a300"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.450016,
+      "lon": -75.588173
+    },
+    "nameEn": "Montreal & Shefford",
+    "nameFr": "Montreal et Shefford",
+    "neighbourhoodEn": "Rothwell Heights - Beacon Hill North",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=183",
+    "neighbourhoodFr": "Rothwell Heights - Beacon Hill Nord",
+    "id": "1ed08dcd-b2a3-4389-8189-619f2d24699d"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.441102,
+      "lon": -75.646835
+    },
+    "nameEn": "Montreal & St. Laurent",
+    "nameFr": "Montréal et St. Laurent",
+    "neighbourhoodEn": "Overbrook - McArthur",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=7",
+    "neighbourhoodFr": " ",
+    "id": "9bb093db-2eb5-4b03-8136-0e63bd754fc0"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.434419,
+      "lon": -75.665832
+    },
+    "nameEn": "Montreal & Vanier",
+    "nameFr": "Montreal et Vanier",
+    "neighbourhoodEn": "Vanier South",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=174",
+    "neighbourhoodFr": "Vanier Sud",
+    "id": "1372bcb6-3f5d-4bdd-85da-dcb1cc262e22"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.3475182033,
+      "lon": -75.8445867744
+    },
+    "nameEn": "Moodie & 715m south of Carling",
+    "nameFr": "Moodie et 715m au sud de Carling",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=253",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "3f13ac4b-12d8-4f72-a64b-4cdaa6853d19"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.322091,
+      "lon": -75.833324
+    },
+    "nameEn": "Moodie & Robertson",
+    "nameFr": "Moodie et Robertson",
+    "neighbourhoodEn": "Bells Corners West",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=83",
+    "neighbourhoodFr": "Bells Corners Ouest",
+    "id": "f3d033f9-e273-4829-8569-46193dec7542"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.421396,
+      "lon": -75.698845
+    },
+    "nameEn": "O'Connor & Queen",
+    "nameFr": "O'Connor et Queen",
+    "neighbourhoodEn": "Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=175",
+    "neighbourhoodFr": "Centre-Ville",
+    "id": "4cb37459-4c06-4e41-bde3-5fba0e08686f"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.468625,
+      "lon": -75.530235
+    },
+    "nameEn": "Orleans & St. Joseph",
+    "nameFr": "Orléans et St. Joseph",
+    "neighbourhoodEn": "Orléans Village - Chateauneuf",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=10",
+    "neighbourhoodFr": " ",
+    "id": "14d67662-08e8-4ee8-8e60-b11afd7e9ade"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.2994239841,
+      "lon": -75.9102634909
+    },
+    "nameEn": "Palladium & Silver Seven",
+    "nameFr": "Palladium et Silver Seven",
+    "neighbourhoodEn": "Katimavik - Hazeldean",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=331",
+    "neighbourhoodFr": " ",
+    "id": "9220691b-acc2-4def-8feb-2a511577b348"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.396925879,
+      "lon": -75.7267854641
+    },
+    "nameEn": "Parkdale & 417 Offramp east",
+    "nameFr": "Parkdale et 417 bretelle de sortie est",
+    "neighbourhoodEn": "Civic Hospital-Central Park",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=287",
+    "neighbourhoodFr": "Hôpital Civique - Parc Central",
+    "id": "753f2a7e-323c-4cfc-a9ba-b3362295074a"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.404901,
+      "lon": -75.731614
+    },
+    "nameEn": "Parkdale & Scott",
+    "nameFr": "Parkdale et Scott",
+    "neighbourhoodEn": "Hintonburg - Mechanicsville",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=243",
+    "neighbourhoodFr": " ",
+    "id": "5b323c5c-c41a-4bbc-a2b7-7e75d5a27201"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.400774,
+      "lon": -75.729137
+    },
+    "nameEn": "Parkdale & Wellington ",
+    "nameFr": "Parkdale et Wellington",
+    "neighbourhoodEn": "Hintonburg - Mechanicsville",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=109",
+    "neighbourhoodFr": " ",
+    "id": "c1c632cf-d838-4e96-81e1-cffdc7779cfd"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.397706,
+      "lon": -75.727273
+    },
+    "nameEn": "Parkdale & Westmount",
+    "nameFr": "Parkdale et Westmount",
+    "neighbourhoodEn": "Hintonburg - Mechanicsville",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=128",
+    "neighbourhoodFr": " ",
+    "id": "7f09e375-9e54-4c69-9150-1db3bf398247"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.358022,
+      "lon": -75.794516
+    },
+    "nameEn": "Pinecrest & Richmond",
+    "nameFr": "Pinecrest et Richmond",
+    "neighbourhoodEn": "Whitehaven - Queensway Terrace North",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=173",
+    "neighbourhoodFr": "Whitehaven - Terrasse Queensway Nord",
+    "id": "a41a3c98-aea8-424f-b17b-4793b8bfc6f9"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.474802,
+      "lon": -75.517839
+    },
+    "nameEn": "Place d'Orleans & St. Joseph",
+    "nameFr": "Place d'Orleans et St. Joseph",
+    "neighbourhoodEn": "Convent Glen - Orléans Woods",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=196",
+    "neighbourhoodFr": " ",
+    "id": "7c524bff-2c4f-4776-b9d3-4d1a9de203ca"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.408367,
+      "lon": -75.714206
+    },
+    "nameEn": "Preston & Somerset",
+    "nameFr": "Preston et Somerset",
+    "neighbourhoodEn": "West Centretown",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=169",
+    "neighbourhoodFr": "Centre-Ville Ouest",
+    "id": "82fd0d40-163c-459b-becc-229f238b787f"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.34651,
+      "lon": -75.70117
+    },
+    "nameEn": "Prince of Wales & Collonade",
+    "nameFr": "Prince of Wales et Collonade",
+    "neighbourhoodEn": "Hunt Club South Industrial",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=343",
+    "neighbourhoodFr": "Hunt Club Sud Industriel",
+    "id": "3093fabd-cd72-45db-9ee1-88b6efb5114b"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.270372,
+      "lon": -75.705181
+    },
+    "nameEn": "Prince of Wales & Strandherd",
+    "nameFr": "Prince of Wales et Strandherd",
+    "neighbourhoodEn": "Chapman Mills",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=159",
+    "neighbourhoodFr": " ",
+    "id": "3ed49229-a35b-4335-bac0-adfa02a75123"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.37065,
+      "lon": -75.78149
+    },
+    "nameEn": "Richmond & McEwen",
+    "nameFr": "Richmond et McEwen",
+    "neighbourhoodEn": "Carlingwood West - Glabar Park - McKellar Heights",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=300",
+    "neighbourhoodFr": " ",
+    "id": "ef591d55-2049-4cab-8263-81228c2b7a55"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.37364,
+      "lon": -75.77869
+    },
+    "nameEn": "Richmond & New Orchard",
+    "nameFr": "Richmond et New Orchard",
+    "neighbourhoodEn": "Carlingwood West - Glabar Park - McKellar Heights",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=301",
+    "neighbourhoodFr": " ",
+    "id": "9d095520-dd41-42ce-996d-1a2a23ad181c"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.377535,
+      "lon": -75.774972
+    },
+    "nameEn": "Richmond & Woodroffe",
+    "nameFr": "Richmond et Woodroffe",
+    "neighbourhoodEn": "Carlingwood West - Glabar Park - McKellar Heights",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=102",
+    "neighbourhoodFr": " ",
+    "id": "f076c42e-cba1-4a16-a2ec-803d79c01437"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.425489,
+      "lon": -75.693365
+    },
+    "nameEn": "Rideau & Sussex",
+    "nameFr": "Rideau et Sussex",
+    "neighbourhoodEn": "Sandy Hill",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=33",
+    "neighbourhoodFr": "Côte-de-Sable",
+    "id": "0d1c8f94-70f1-4441-b072-826c2eefae0a"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.271906,
+      "lon": -75.743242
+    },
+    "nameEn": "Riocan & Strandherd",
+    "nameFr": "Riocan et Strandherd",
+    "neighbourhoodEn": "Chapman Mills",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=122",
+    "neighbourhoodFr": " ",
+    "id": "2ee914e8-f50e-4e39-b82a-fa4c6f5b4ea2"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.415928,
+      "lon": -75.656662
+    },
+    "nameEn": "Riverside & Tremblay",
+    "nameFr": "Riverside et Tremblay",
+    "neighbourhoodEn": "East Industrial",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=172",
+    "neighbourhoodFr": "Industriel-Est",
+    "id": "536e524e-7525-4812-8ffb-bd5434ba5688"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.360735,
+      "lon": -75.687946
+    },
+    "nameEn": "Riverside & Walkley",
+    "nameFr": "Riverside et Walkley",
+    "neighbourhoodEn": "Riverside Park",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=106",
+    "neighbourhoodFr": "Parc Riverside",
+    "id": "4e5d458c-2a3e-4a25-956f-6fbebb5ab2a0"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.39286,
+      "lon": -75.607575
+    },
+    "nameEn": "Russell & Walkley",
+    "nameFr": "Russell et Walkley",
+    "neighbourhoodEn": "East Industrial",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=26",
+    "neighbourhoodFr": "Industriel-Est",
+    "id": "58f1c548-5b18-4aae-a8f2-65f8279efc46"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.402642,
+      "lon": -75.736923
+    },
+    "nameEn": "Scott & Smirle",
+    "nameFr": "Scott et Smirle",
+    "neighbourhoodEn": "Island Park - Wellington Village",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=258",
+    "neighbourhoodFr": "Island Park - Village Wellington",
+    "id": "612aab46-9e8a-4ddb-9828-7d83f92736b5"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.395439,
+      "lon": -75.600074
+    },
+    "nameEn": "Sheffield & Walkley",
+    "nameFr": "Sheffield et Walkley",
+    "neighbourhoodEn": "East Industrial",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=121",
+    "neighbourhoodFr": "Industriel-Est",
+    "id": "2bd9f27b-a7d2-40d6-a2d6-38ff671cae7f"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.317209,
+      "lon": -75.741892
+    },
+    "nameEn": "Slack  & Woodroffe",
+    "nameFr": "Slack et Woodroffe",
+    "neighbourhoodEn": "Greenbelt",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=154",
+    "neighbourhoodFr": "Ceinture de Verdure",
+    "id": "98071eb4-60ee-464a-b075-d03470aa2379"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.39935,
+      "lon": -75.647875
+    },
+    "nameEn": "Smyth & Hospital",
+    "nameFr": "Smyth et l'hôpital",
+    "neighbourhoodEn": "Billings Bridge - Alta Vista",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=209",
+    "neighbourhoodFr": " ",
+    "id": "77d9533d-367c-4096-bef2-c1f3e335799f"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.401389,
+      "lon": -75.624198
+    },
+    "nameEn": "Smyth & St. Laurent",
+    "nameFr": "Smyth et St. Laurent",
+    "neighbourhoodEn": "Elmvale - Canterbury",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=168",
+    "neighbourhoodFr": " ",
+    "id": "56a0a502-2a42-4659-99c7-9f748851e02e"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.483568,
+      "lon": -75.50103
+    },
+    "nameEn": "St Joseph & Tenth Line",
+    "nameFr": "St Joseph et Tenth Line",
+    "neighbourhoodEn": "Fallingbrook",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=231",
+    "neighbourhoodFr": " ",
+    "id": "c218a3ca-b01a-40e2-b591-6f1b0e072b48"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.421474,
+      "lon": -75.635764
+    },
+    "nameEn": "St. Laurent & Transitway",
+    "nameFr": "St. Laurent et Transitway",
+    "neighbourhoodEn": "Overbrook - McArthur",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=256",
+    "neighbourhoodFr": " ",
+    "id": "682362a9-5f4e-4c4a-b523-ac50b7a16399"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.38894,
+      "lon": -75.61751
+    },
+    "nameEn": "St. Laurent & Walkley",
+    "nameFr": "St. Laurent et Walkley",
+    "neighbourhoodEn": "East Industrial",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=220",
+    "neighbourhoodFr": "Industriel-Est",
+    "id": "cb896782-6ea8-4b87-932a-d70b6374cf7b"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.259565,
+      "lon": -75.767463
+    },
+    "nameEn": "Strandherd & Borrisokane/Tartan",
+    "nameFr": "Strandherd et Borrisokane/Tartan",
+    "neighbourhoodEn": "Old Barrhaven East",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=259",
+    "neighbourhoodFr": "Old Barrhaven Est",
+    "id": "4b824b69-26a2-4cd8-bc69-1ea185e811bd"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.2687055411,
+      "lon": -75.751179856
+    },
+    "nameEn": "Strandherd & Jockvale",
+    "nameFr": "Strandherd et Jockvale",
+    "neighbourhoodEn": "Old Barrhaven East",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=321",
+    "neighbourhoodFr": "Old Barrhaven Est",
+    "id": "7455f0bf-b05b-4cee-ab68-025763c97abd"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.268971,
+      "lon": -75.780149
+    },
+    "nameEn": "Strandherd & Maravista",
+    "nameFr": "Strandherd et Maravista",
+    "neighbourhoodEn": "Stonebridge - Half Moon Bay - Heart's Desire",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=268",
+    "neighbourhoodFr": " ",
+    "id": "5072b179-3676-4295-b206-f100091887c2"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.275825,
+      "lon": -75.718598
+    },
+    "nameEn": "Strandherd & Woodroffe",
+    "nameFr": "Stranherd et Woodroffe",
+    "neighbourhoodEn": "Chapman Mills",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=75",
+    "neighbourhoodFr": " ",
+    "id": "cf075a4d-8569-409c-8f91-bdcccf0f4ce5"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.369026,
+      "lon": -75.666653
+    },
+    "nameEn": "Transitway & Walkley",
+    "nameFr": "Transitway & Walkley",
+    "neighbourhoodEn": "Hunt Club Woods - Quintarra - Revelstoke",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=87",
+    "neighbourhoodFr": "Hunt Club Woods - Quintarra - Revelstoke",
+    "id": "e1636707-8df0-4021-b4ed-c5e16916239a"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.4095214295,
+      "lon": -75.7400577116
+    },
+    "nameEn": "Tunney's Pasture & Kichi Zībī Mīkan",
+    "nameFr": "Pré Tunney et Kichi Zībī Mīkan",
+    "neighbourhoodEn": "Island Park - Wellington Village",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=310",
+    "neighbourhoodFr": "Island Park - Village Wellington",
+    "id": "3a7daa5b-687f-44fc-b8c3-3252e2fff8d7"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.3620714725,
+      "lon": -75.7688077489
+    },
+    "nameEn": "Woodroffe & 417 Offramp west",
+    "nameFr": "Woodroffe et 417 bretelle de sortie ouest",
+    "neighbourhoodEn": "Whitehaven - Queensway Terrace North",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=315",
+    "neighbourhoodFr": "Whitehaven - Terrasse Queensway Nord",
+    "id": "e9d5828d-5163-4ca4-98a3-da6a33f84417"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.287695916,
+      "lon": -75.7252174731
+    },
+    "nameEn": "Woodroffe & Claridge / Stoneway",
+    "nameFr": "Woodroffe et Claridge / Stoneway",
+    "neighbourhoodEn": "Old Barrhaven East",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=329",
+    "neighbourhoodFr": "Old Barrhaven Est",
+    "id": "8e8a54e5-d2d1-43de-864a-f57e937303d6"
+  },
+  {
+    "city": "ottawa",
+    "location": {
+      "lat": 45.365975,
+      "lon": -75.770959
+    },
+    "nameEn": "Woodroffe & Georgina/Lenester",
+    "nameFr": "Woodroffe et Georgina/Lenester",
+    "neighbourhoodEn": "Carlingwood West - Glabar Park - McKellar Heights",
+    "url": "https://traffic.ottawa.ca/beta/camera?id=295",
+    "neighbourhoodFr": " ",
+    "id": "e528369c-ed62-40dc-97d9-df41e3a049ed"
+  }
+]
