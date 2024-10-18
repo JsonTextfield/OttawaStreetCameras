@@ -15,4 +15,5 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
--keep class androidx.appcompat.widget.SearchView { *; }
+#-keep class androidx.appcompat.widget.SearchView { *; }
+-dontwarn org.slf4j.impl.StaticLoggerBinder
