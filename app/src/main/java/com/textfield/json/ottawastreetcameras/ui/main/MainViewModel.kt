@@ -1,14 +1,14 @@
 package com.textfield.json.ottawastreetcameras.ui.main
 
-import android.content.SharedPreferences
 import android.location.Location
-import androidx.core.content.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.textfield.json.ottawastreetcameras.SortByName
 import com.textfield.json.ottawastreetcameras.data.ICameraRepository
+import com.textfield.json.ottawastreetcameras.data.IPreferencesRepository
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,27 +20,33 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val cameraRepository: ICameraRepository,
     private val _cameraState: MutableStateFlow<CameraState> = MutableStateFlow(CameraState()),
-    private val prefs: SharedPreferences,
+    private val prefs: IPreferencesRepository,
+    private val dispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
     val cameraState: StateFlow<CameraState> get() = _cameraState.asStateFlow()
 
-    private var _isDarkMode: MutableStateFlow<Boolean> =
-        MutableStateFlow(prefs.getBoolean("isDarkMode", false))
-    val isDarkMode: StateFlow<Boolean> get() = _isDarkMode.asStateFlow()
+    private var _theme: MutableStateFlow<ThemeMode> = MutableStateFlow(ThemeMode.SYSTEM)
+    val theme: StateFlow<ThemeMode> get() = _theme.asStateFlow()
 
     init {
-        _isDarkMode = MutableStateFlow(prefs.getBoolean("isDarkMode", false))
+        viewModelScope.launch(dispatcher) {
+            _theme.value = prefs.getTheme()
+        }
     }
 
-    fun toggleDarkMode() {
-        prefs.edit { putBoolean("isDarkMode", !isDarkMode.value) }
-        _isDarkMode.value = !isDarkMode.value
+    fun changeTheme(theme: ThemeMode) {
+        viewModelScope.launch(dispatcher) {
+            prefs.setTheme(theme)
+            _theme.value = theme
+        }
     }
 
     fun changeViewMode(viewMode: ViewMode) {
-        prefs.edit { putString("viewMode", viewMode.name) }
-        _cameraState.update { it.copy(viewMode = viewMode) }
+        viewModelScope.launch(dispatcher) {
+            prefs.setViewMode(viewMode)
+            _cameraState.update { it.copy(viewMode = viewMode) }
+        }
     }
 
     fun changeSortMode(sortMode: SortMode, location: Location? = null) {
@@ -68,30 +74,34 @@ class MainViewModel @Inject constructor(
     }
 
     fun favouriteCameras(cameras: List<Camera>) {
-        val allFavourite = cameras.all { it.isFavourite }
-        for (camera in _cameraState.value.allCameras) {
-            if (camera in cameras) {
-                camera.isFavourite = !allFavourite
-                prefs.edit { putBoolean("${camera.id}.isFavourite", !allFavourite) }
+        viewModelScope.launch(dispatcher) {
+            val allFavourite = cameras.all { it.isFavourite }
+            for (camera in _cameraState.value.allCameras) {
+                if (camera in cameras) {
+                    camera.isFavourite = !allFavourite
+                    prefs.favourite(camera.id, !allFavourite)
+                }
             }
+            _cameraState.update { it.copy(lastUpdated = System.currentTimeMillis()) }
         }
-        _cameraState.update { it.copy(lastUpdated = System.currentTimeMillis()) }
     }
 
     fun hideCameras(cameras: List<Camera>) {
-        val anyVisible = cameras.any { it.isVisible }
-        for (camera in _cameraState.value.allCameras) {
-            if (camera in cameras) {
-                camera.isVisible = !anyVisible
-                prefs.edit { putBoolean("${camera.id}.isVisible", !anyVisible) }
+        viewModelScope.launch(dispatcher) {
+            val anyVisible = cameras.any { it.isVisible }
+            for (camera in _cameraState.value.allCameras) {
+                if (camera in cameras) {
+                    camera.isVisible = !anyVisible
+                    prefs.setVisibility(camera.id, !anyVisible)
+                }
             }
-        }
-        selectAllCameras(false)
-        _cameraState.update {
-            it.copy(
-                lastUpdated = System.currentTimeMillis(),
-                displayedCameras = it.getDisplayedCameras(),
-            )
+            selectAllCameras(false)
+            _cameraState.update {
+                it.copy(
+                    lastUpdated = System.currentTimeMillis(),
+                    displayedCameras = it.getDisplayedCameras(),
+                )
+            }
         }
     }
 
@@ -149,13 +159,10 @@ class MainViewModel @Inject constructor(
                     // show an error if the retrieved camera list is empty
                     _cameraState.update { it.copy(uiState = UIState.ERROR) }
                 } else {
-                    val viewMode = ViewMode.valueOf(
-                        prefs.getString("viewMode", ViewMode.LIST.name) ?: ViewMode.LIST.name
-                    )
+                    val viewMode = prefs.getViewMode()
                     for (camera in cameras) {
-                        camera.isFavourite =
-                            prefs.getBoolean("${camera.id}.isFavourite", false)
-                        camera.isVisible = prefs.getBoolean("${camera.id}.isVisible", true)
+                        camera.isFavourite = prefs.isFavourite(camera.id)
+                        camera.isVisible = prefs.isVisible(camera.id)
                     }
                     _cameraState.update { cameraState ->
                         cameraState.copy(

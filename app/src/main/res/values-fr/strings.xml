@@ -46,6 +46,8 @@
     <string name="undo">Annuler</string>
     <string name="light_mode">Mode lumière</string>
     <string name="dark_mode">Mode sombre</string>
+    <string name="system_default">Défaut du système</string>
+    <string name="change_theme">Changer de thème</string>
 
     <plurals name="images_saved">
         <item quantity="one">%d image a été enregistrée</item>

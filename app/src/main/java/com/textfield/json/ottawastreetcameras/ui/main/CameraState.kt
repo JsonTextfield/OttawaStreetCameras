@@ -8,6 +8,12 @@ import com.textfield.json.ottawastreetcameras.SortByNeighbourhood
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import kotlin.math.roundToInt
 
+enum class ThemeMode(val key: Int) {
+    LIGHT(R.string.light_mode),
+    DARK(R.string.dark_mode),
+    SYSTEM(R.string.system_default),
+}
+
 enum class SortMode(val key: Int) {
     NAME(R.string.sort_by_name),
     DISTANCE(R.string.sort_by_distance),

@@ -93,6 +93,8 @@ dependencies {
     implementation(libs.postgrest.kt)
     implementation(libs.ktor.client.android)
 
+    implementation(libs.androidx.datastore.preferences)
+
     // Testing
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)

@@ -12,13 +12,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.List
 import androidx.compose.material.icons.automirrored.rounded.Sort
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.rounded.BrightnessMedium
 import androidx.compose.material.icons.rounded.CameraAlt
 import androidx.compose.material.icons.rounded.Casino
 import androidx.compose.material.icons.rounded.Clear
-import androidx.compose.material.icons.rounded.DarkMode
 import androidx.compose.material.icons.rounded.GridView
 import androidx.compose.material.icons.rounded.Info
-import androidx.compose.material.icons.rounded.LightMode
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.SelectAll
@@ -49,6 +48,7 @@ import com.textfield.json.ottawastreetcameras.ui.main.FilterMode
 import com.textfield.json.ottawastreetcameras.ui.main.MainViewModel
 import com.textfield.json.ottawastreetcameras.ui.main.SearchMode
 import com.textfield.json.ottawastreetcameras.ui.main.SortMode
+import com.textfield.json.ottawastreetcameras.ui.main.ThemeMode
 import com.textfield.json.ottawastreetcameras.ui.main.ViewMode
 import kotlinx.coroutines.launch
 
@@ -277,11 +277,28 @@ fun getActions(
             onNavigateToCameraScreen(emptyList(), true)
         },
     )
-    val isDarkMode by mainViewModel.isDarkMode.collectAsStateWithLifecycle()
+    val theme by mainViewModel.theme.collectAsStateWithLifecycle()
     val darkMode = Action(
-        icon = if (isDarkMode) Icons.Rounded.LightMode else Icons.Rounded.DarkMode,
-        tooltip = stringResource(if (isDarkMode) R.string.light_mode else R.string.dark_mode),
-        onClick = { mainViewModel.toggleDarkMode() },
+        icon = Icons.Rounded.BrightnessMedium,
+        tooltip = stringResource(R.string.change_theme),
+        menuContent = {
+            var isExpanded by remember { mutableStateOf(it) }
+            DropdownMenu(
+                expanded = isExpanded xor it,
+                onDismissRequest = { isExpanded = !isExpanded },
+            ) {
+                ThemeMode.entries.forEach { themeMode ->
+                    RadioMenuItem(
+                        title = stringResource(themeMode.key),
+                        isSelected =theme == themeMode,
+                        onClick = {
+                            isExpanded = !isExpanded
+                            mainViewModel.changeTheme(themeMode)
+                        },
+                    )
+                }
+            }
+        },
     )
 
     var showAboutDialog by remember { mutableStateOf(false) }

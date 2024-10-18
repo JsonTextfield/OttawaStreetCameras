@@ -46,6 +46,8 @@
     <string name="undo">Undo</string>
     <string name="light_mode">Light mode</string>
     <string name="dark_mode">Dark mode</string>
+    <string name="system_default">System default</string>
+    <string name="change_theme">Change theme</string>
 
     <plurals name="images_saved">
         <item quantity="one">%d image saved</item>

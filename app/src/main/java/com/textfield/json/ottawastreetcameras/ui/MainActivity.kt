@@ -24,8 +24,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val viewModel = hiltViewModel<MainViewModel>()
-            val isDarkMode by viewModel.isDarkMode.collectAsStateWithLifecycle()
-            AppTheme(darkTheme = isDarkMode) {
+            val theme by viewModel.theme.collectAsStateWithLifecycle()
+            AppTheme(theme = theme) {
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = "main") {
                     composable("main") {
