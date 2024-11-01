@@ -44,10 +44,10 @@
     <string name="unhidden">unhidden</string>
     <string name="hidden">hidden</string>
     <string name="undo">Undo</string>
-    <string name="light_mode">Light mode</string>
-    <string name="dark_mode">Dark mode</string>
-    <string name="system_default">System default</string>
-    <string name="change_theme">Change theme</string>
+    <string name="light_mode">Light</string>
+    <string name="dark_mode">Dark</string>
+    <string name="system_default">Default</string>
+    <string name="change_theme">Theme</string>
 
     <plurals name="images_saved">
         <item quantity="one">%d image saved</item>

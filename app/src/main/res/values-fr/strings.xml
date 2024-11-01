@@ -44,10 +44,10 @@
     <string name="unhidden">dévoilée</string>
     <string name="hidden">cachée</string>
     <string name="undo">Annuler</string>
-    <string name="light_mode">Mode lumière</string>
-    <string name="dark_mode">Mode sombre</string>
-    <string name="system_default">Défaut du système</string>
-    <string name="change_theme">Changer de thème</string>
+    <string name="light_mode">Lumière</string>
+    <string name="dark_mode">Sombre</string>
+    <string name="system_default">Défaut</string>
+    <string name="change_theme">Thème</string>
 
     <plurals name="images_saved">
         <item quantity="one">%d image a été enregistrée</item>
