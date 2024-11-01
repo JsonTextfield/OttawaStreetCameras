@@ -10,9 +10,9 @@ import com.textfield.json.ottawastreetcameras.StreetCamsApp
 import com.textfield.json.ottawastreetcameras.data.CameraRepository
 import com.textfield.json.ottawastreetcameras.data.ICameraRepository
 import com.textfield.json.ottawastreetcameras.data.IPreferencesRepository
-import com.textfield.json.ottawastreetcameras.data.LocalCameraDataSource
 import com.textfield.json.ottawastreetcameras.data.PreferencesDataStorePreferencesRepository
 import com.textfield.json.ottawastreetcameras.data.SharedPreferencesRepository
+import com.textfield.json.ottawastreetcameras.data.SupabaseCameraDataSource
 import com.textfield.json.ottawastreetcameras.ui.main.MainViewModel
 import dagger.Module
 import dagger.Provides
@@ -51,14 +51,14 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideCameraRepository(@ApplicationContext context: Context): ICameraRepository {
-        return CameraRepository(LocalCameraDataSource(context))
+    fun provideCameraRepository(): ICameraRepository {
+        return CameraRepository(SupabaseCameraDataSource(supabase))
     }
 
     @Provides
     fun provideMainViewModel(@ApplicationContext context: Context): MainViewModel {
         return MainViewModel(
-            cameraRepository = provideCameraRepository(context),
+            cameraRepository = provideCameraRepository(),
             prefs = providePreferencesDataStoreRepository(context),
             dispatcher = dispatcher
         )
