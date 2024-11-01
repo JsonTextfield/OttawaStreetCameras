@@ -2,7 +2,6 @@ package com.textfield.json.ottawastreetcameras.ui.components.menu
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.RadioButton
@@ -19,22 +18,17 @@ fun RadioMenuItem(
     onClick: () -> Unit = {},
 ) {
     DropdownMenuItem(
-        modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(0.dp),
         text = {
-            Row {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 RadioButton(
                     selected = isSelected,
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .padding(0.dp),
+                    modifier = Modifier.padding(0.dp),
                     onClick = onClick,
                 )
                 Text(
                     title,
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .padding(end = 10.dp),
+                    modifier = Modifier.padding(end = 10.dp),
                 )
             }
         },
