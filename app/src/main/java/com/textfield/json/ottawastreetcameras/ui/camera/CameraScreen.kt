@@ -28,6 +28,7 @@ fun CameraScreen(
     isShuffling: Boolean = false,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     cameraViewModel: CameraViewModel = viewModel<CameraViewModel>(),
+    onBackPressed: () -> Unit = {},
 ) {
     val cameraList by cameraViewModel.cameraList.collectAsStateWithLifecycle()
     val allCameras by cameraViewModel.allCameras.collectAsStateWithLifecycle()
@@ -77,7 +78,7 @@ fun CameraScreen(
                     }
                 }
             )
-            BackButton()
+            BackButton(onClick = onBackPressed)
         }
     }
 }

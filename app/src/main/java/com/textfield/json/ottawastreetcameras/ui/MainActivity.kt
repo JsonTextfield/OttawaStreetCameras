@@ -45,12 +45,13 @@ class MainActivity : ComponentActivity() {
                                 type = NavType.BoolType
                                 defaultValue = false
                             },
-                        )
+                        ),
                     ) {
                         CameraScreen(
                             cameraViewModel = hiltViewModel<CameraViewModel>(),
                             ids = it.arguments?.getString("ids") ?: "",
                             isShuffling = it.arguments?.getBoolean("isShuffling") ?: false,
+                            onBackPressed = { navController.navigateUp() },
                         )
                     }
                 }
