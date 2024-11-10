@@ -9,6 +9,8 @@ import com.textfield.json.ottawastreetcameras.data.IPreferencesRepository
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,9 +23,9 @@ class MainViewModel @Inject constructor(
     private val cameraRepository: ICameraRepository,
     private val _cameraState: MutableStateFlow<CameraState> = MutableStateFlow(CameraState()),
     private val prefs: IPreferencesRepository,
-    private val dispatcher: CoroutineDispatcher,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ViewModel() {
-
+    private var searchJob: kotlinx.coroutines.Job? = null
     val cameraState: StateFlow<CameraState> get() = _cameraState.asStateFlow()
 
     private var _theme: MutableStateFlow<ThemeMode> = MutableStateFlow(ThemeMode.SYSTEM)
@@ -125,15 +127,19 @@ class MainViewModel @Inject constructor(
     }
 
     fun searchCameras(searchMode: SearchMode = SearchMode.NONE, searchText: String = "") {
-        _cameraState.update {
-            it.copy(
-                displayedCameras = it.getDisplayedCameras(
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch(dispatcher) {
+            delay(1000)
+            _cameraState.update {
+                it.copy(
+                    displayedCameras = it.getDisplayedCameras(
+                        searchMode = searchMode,
+                        searchText = searchText
+                    ),
                     searchMode = searchMode,
-                    searchText = searchText
-                ),
-                searchMode = searchMode,
-                searchText = searchText,
-            )
+                    searchText = searchText,
+                )
+            }
         }
     }
 
@@ -153,7 +159,7 @@ class MainViewModel @Inject constructor(
     fun getAllCameras() {
         _cameraState.update { it.copy(uiState = UIState.LOADING) }
         if (_cameraState.value.allCameras.isEmpty()) {
-            viewModelScope.launch {
+            viewModelScope.launch(dispatcher) {
                 val cameras = cameraRepository.getAllCameras()
                 if (cameras.isEmpty()) {
                     // show an error if the retrieved camera list is empty
