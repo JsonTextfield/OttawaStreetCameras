@@ -55,7 +55,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun ActionBar(
     actions: List<Action> = emptyList(),
-    onItemSelected: () -> Unit = {},
 ) {
     // actions should take up only 1/3 of the screen width
     val maxActions = LocalConfiguration.current.screenWidthDp / 3 / 48
@@ -80,7 +79,6 @@ fun ActionBar(
                 } else {
                     action.onClick()
                 }
-                onItemSelected()
             }
         )
     }
@@ -91,7 +89,6 @@ fun ActionBar(
             var showOverflowMenu by remember { mutableStateOf(false) }
             OverflowMenu(showOverflowMenu, overflowActions) {
                 showOverflowMenu = false
-                onItemSelected()
             }
             MenuItem(
                 icon = Icons.Rounded.MoreVert,

@@ -20,8 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val cameraRepository: ICameraRepository,
     private val _cameraState: MutableStateFlow<CameraState> = MutableStateFlow(CameraState()),
+    private val cameraRepository: ICameraRepository,
     private val prefs: IPreferencesRepository,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ViewModel() {
@@ -157,33 +157,30 @@ class MainViewModel @Inject constructor(
     }
 
     fun getAllCameras() {
+        if (cameraState.value.uiState == UIState.LOADED) {
+            return
+        }
         _cameraState.update { it.copy(uiState = UIState.LOADING) }
-        if (_cameraState.value.allCameras.isEmpty()) {
-            viewModelScope.launch(dispatcher) {
-                val cameras = cameraRepository.getAllCameras()
-                if (cameras.isEmpty()) {
-                    // show an error if the retrieved camera list is empty
-                    _cameraState.update { it.copy(uiState = UIState.ERROR) }
-                } else {
-                    val viewMode = prefs.getViewMode()
-                    for (camera in cameras) {
-                        camera.isFavourite = prefs.isFavourite(camera.id)
-                        camera.isVisible = prefs.isVisible(camera.id)
-                    }
-                    _cameraState.update { cameraState ->
-                        cameraState.copy(
-                            allCameras = cameras,
-                            displayedCameras = cameras.filter { it.isVisible }
-                                .sortedWith(SortByName),
-                            uiState = UIState.LOADED,
-                            viewMode = viewMode,
-                        )
-                    }
+        viewModelScope.launch(dispatcher) {
+            val cameras = cameraRepository.getAllCameras()
+            if (cameras.isEmpty()) {
+                // show an error if the retrieved camera list is empty
+                _cameraState.update { it.copy(uiState = UIState.ERROR) }
+            } else {
+                val viewMode = prefs.getViewMode()
+                for (camera in cameras) {
+                    camera.isFavourite = prefs.isFavourite(camera.id)
+                    camera.isVisible = prefs.isVisible(camera.id)
+                }
+                _cameraState.update { cameraState ->
+                    cameraState.copy(
+                        allCameras = cameras,
+                        displayedCameras = cameras.filter { it.isVisible }.sortedWith(SortByName),
+                        uiState = UIState.LOADED,
+                        viewMode = viewMode,
+                    )
                 }
             }
-        } else {
-            // don't reload if the camera list is not empty
-            _cameraState.update { it.copy(uiState = UIState.LOADED) }
         }
     }
 }

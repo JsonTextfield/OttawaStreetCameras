@@ -16,7 +16,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.ui.components.SearchBar
 import com.textfield.json.ottawastreetcameras.ui.components.SearchBarContent
@@ -24,10 +23,10 @@ import com.textfield.json.ottawastreetcameras.ui.components.SuggestionDropdown
 
 @Composable
 fun AppBarTitle(
-    mainViewModel: MainViewModel,
+    cameraState: CameraState = CameraState(),
     onClick: () -> Unit = {},
+    onTextChanged: (String) -> Unit = {},
 ) {
-    val cameraState by mainViewModel.cameraState.collectAsStateWithLifecycle()
     if (cameraState.selectedCameras.isNotEmpty()) {
         Text(
             pluralStringResource(
@@ -68,10 +67,9 @@ fun AppBarTitle(
                         R.plurals.search_hint,
                         cameraState.displayedCameras.size,
                         cameraState.displayedCameras.size
-                    )
-                ) {
-                    mainViewModel.searchCameras(cameraState.searchMode, it)
-                }
+                    ),
+                    onValueChange = onTextChanged,
+                )
             }
 
             SearchMode.NEIGHBOURHOOD -> {
@@ -90,7 +88,7 @@ fun AppBarTitle(
 
                     SuggestionDropdown(expanded, suggestionList, value) {
                         value = it
-                        mainViewModel.searchCameras(cameraState.searchMode, value)
+                        onTextChanged(value)
                     }
                     SearchBarContent(
                         pluralStringResource(
@@ -100,7 +98,7 @@ fun AppBarTitle(
                         ), value
                     ) {
                         value = it
-                        mainViewModel.searchCameras(cameraState.searchMode, value)
+                        onTextChanged(value)
                     }
                 }
             }

@@ -13,6 +13,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
@@ -22,8 +23,6 @@ import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.ui.components.menu.ActionBar
 import com.textfield.json.ottawastreetcameras.ui.components.menu.getActions
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,7 +39,7 @@ fun MainAppBar(
         modifier = Modifier.shadow(10.dp),
         navigationIcon = {
             if (cameraState.showBackButton) {
-                IconButton(onClick = { mainViewModel.resetFilters() }) {
+                IconButton(onClick = mainViewModel::resetFilters) {
                     Icon(
                         Icons.AutoMirrored.Rounded.ArrowBack,
                         stringResource(id = R.string.back),
@@ -50,15 +49,20 @@ fun MainAppBar(
             }
         },
         title = {
-            AppBarTitle(mainViewModel) {
-                CoroutineScope(Dispatchers.Main).launch {
-                    when (cameraState.viewMode) {
-                        ViewMode.LIST -> listState.scrollToItem(0)
-                        ViewMode.GALLERY -> gridState.scrollToItem(0)
-                        else -> {}
+            val scope = rememberCoroutineScope()
+            AppBarTitle(
+                cameraState,
+                onClick = {
+                    scope.launch {
+                        when (cameraState.viewMode) {
+                            ViewMode.LIST -> listState.scrollToItem(0)
+                            ViewMode.GALLERY -> gridState.scrollToItem(0)
+                            else -> {}
+                        }
                     }
-                }
-            }
+                },
+                onTextChanged = { mainViewModel.searchCameras(cameraState.searchMode, it) },
+            )
         },
         actions = {
             ActionBar(getActions(mainViewModel, snackbarHostState, onNavigateToCameraScreen))
