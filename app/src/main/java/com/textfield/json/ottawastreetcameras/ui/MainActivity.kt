@@ -3,6 +3,8 @@ package com.textfield.json.ottawastreetcameras.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -27,7 +29,10 @@ class MainActivity : ComponentActivity() {
             val theme by viewModel.theme.collectAsStateWithLifecycle()
             AppTheme(theme = theme) {
                 val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = "main") {
+                NavHost(
+                    navController = navController,
+                    startDestination = "main",
+                ) {
                     composable("main") {
                         MainScreen(mainViewModel = viewModel) { selectedCameras, isShuffling ->
                             navController.navigate("cameras?ids=${selectedCameras.joinToString(",") { it.id }}?isShuffling=$isShuffling")
@@ -46,12 +51,14 @@ class MainActivity : ComponentActivity() {
                                 defaultValue = false
                             },
                         ),
+                        enterTransition = { slideInHorizontally(initialOffsetX = { it }) },
+                        exitTransition = { slideOutHorizontally(targetOffsetX = { it / 2 }) },
                     ) {
                         CameraScreen(
                             cameraViewModel = hiltViewModel<CameraViewModel>(),
                             ids = it.arguments?.getString("ids") ?: "",
                             isShuffling = it.arguments?.getBoolean("isShuffling") ?: false,
-                            onBackPressed = { navController.navigateUp() },
+                            onBackPressed = navController::navigateUp,
                         )
                     }
                 }
