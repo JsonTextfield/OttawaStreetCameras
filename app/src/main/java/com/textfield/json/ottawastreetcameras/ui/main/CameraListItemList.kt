@@ -1,6 +1,8 @@
 package com.textfield.json.ottawastreetcameras.ui.main
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,7 +45,11 @@ fun CameraListItemList(
     onFavouriteClick: (Camera) -> Unit = {},
 ) {
     Row {
-        AnimatedVisibility(visible = cameraState.showSectionIndex) {
+        AnimatedVisibility(
+            visible = cameraState.showSectionIndex,
+            enter = slideInHorizontally(),
+            exit = slideOutHorizontally(),
+        ) {
             SectionIndex(
                 data = cameraState.displayedCameras.map { it.sortableName },
                 listState = listState,
@@ -127,9 +133,11 @@ fun CameraListItemList(
 @Preview
 @Composable
 private fun CameraListItemListPreview() {
-    val cameraList = (0 until 10).map { Camera(
-        _name = BilingualObject(en = "Camera $it", fr = "Caméra $it"),
-        _neighbourhood = BilingualObject(en = "Neighbourhood $it", fr = "Voisinage $it"),
-    )}
+    val cameraList = (0 until 10).map {
+        Camera(
+            _name = BilingualObject(en = "Camera $it", fr = "Caméra $it"),
+            _neighbourhood = BilingualObject(en = "Neighbourhood $it", fr = "Voisinage $it"),
+        )
+    }
     CameraListItemList(CameraState(displayedCameras = cameraList), listState = LazyListState())
 }
