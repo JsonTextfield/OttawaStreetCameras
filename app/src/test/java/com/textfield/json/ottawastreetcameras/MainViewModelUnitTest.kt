@@ -86,7 +86,7 @@ class MainViewModelUnitTest {
     @Before
     fun setup() {
         mainViewModel = MainViewModel(
-            CameraRepository(FakeCameraDataSource()),
+            cameraRepository = CameraRepository(FakeCameraDataSource()),
             prefs = FakePreferences(),
             dispatcher = UnconfinedTestDispatcher()
         )
