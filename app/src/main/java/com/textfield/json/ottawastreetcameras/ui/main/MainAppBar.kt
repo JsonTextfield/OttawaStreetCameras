@@ -61,6 +61,8 @@ fun MainAppBar(
                         }
                     }
                 },
+                suggestions = mainViewModel.suggestionList,
+                searchText = mainViewModel.searchText,
                 onTextChanged = { mainViewModel.searchCameras(cameraState.searchMode, it) },
             )
         },

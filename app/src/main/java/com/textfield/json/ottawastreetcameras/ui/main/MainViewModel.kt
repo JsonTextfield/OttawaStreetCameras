@@ -1,6 +1,9 @@
 package com.textfield.json.ottawastreetcameras.ui.main
 
 import android.location.Location
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.textfield.json.ottawastreetcameras.SortByName
@@ -10,6 +13,7 @@ import com.textfield.json.ottawastreetcameras.entities.Camera
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,8 +29,24 @@ class MainViewModel @Inject constructor(
     private val prefs: IPreferencesRepository,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ViewModel() {
-    private var searchJob: kotlinx.coroutines.Job? = null
+    private var searchJob: Job? = null
     val cameraState: StateFlow<CameraState> get() = _cameraState.asStateFlow()
+    var searchText by mutableStateOf("")
+        private set
+
+    val suggestionList: List<String>
+        get() {
+            if (cameraState.value.searchMode != SearchMode.NEIGHBOURHOOD || searchText.isEmpty()) {
+                return emptyList()
+            }
+            val filteredNeighbourhoods = cameraState.value.neighbourhoods.filter {
+                it.contains(searchText, true)
+            }
+            if (filteredNeighbourhoods.all { it.equals(searchText, true) }) {
+                return emptyList()
+            }
+            return filteredNeighbourhoods
+        }
 
     private var _theme: MutableStateFlow<ThemeMode> = MutableStateFlow(ThemeMode.SYSTEM)
     val theme: StateFlow<ThemeMode> get() = _theme.asStateFlow()
@@ -56,7 +76,11 @@ class MainViewModel @Inject constructor(
             it.copy(
                 sortMode = sortMode,
                 location = location,
-                displayedCameras = it.getDisplayedCameras(sortMode = sortMode, location = location)
+                displayedCameras = it.getDisplayedCameras(
+                    sortMode = sortMode,
+                    location = location,
+                    searchText = searchText
+                )
             )
         }
     }
@@ -64,12 +88,16 @@ class MainViewModel @Inject constructor(
     fun changeFilterMode(filterMode: FilterMode) {
         val mode = if (filterMode == _cameraState.value.filterMode) {
             FilterMode.VISIBLE
-        } else {
+        }
+        else {
             filterMode
         }
         _cameraState.update {
             it.copy(
-                displayedCameras = it.getDisplayedCameras(filterMode = mode),
+                displayedCameras = it.getDisplayedCameras(
+                    filterMode = mode,
+                    searchText = searchText,
+                ),
                 filterMode = mode,
             )
         }
@@ -101,7 +129,7 @@ class MainViewModel @Inject constructor(
             _cameraState.update {
                 it.copy(
                     lastUpdated = System.currentTimeMillis(),
-                    displayedCameras = it.getDisplayedCameras(),
+                    displayedCameras = it.getDisplayedCameras(searchText = searchText),
                 )
             }
         }
@@ -128,6 +156,7 @@ class MainViewModel @Inject constructor(
 
     fun searchCameras(searchMode: SearchMode = SearchMode.NONE, searchText: String = "") {
         searchJob?.cancel()
+        this.searchText = searchText
         searchJob = viewModelScope.launch(dispatcher) {
             delay(1000)
             _cameraState.update {
@@ -137,7 +166,6 @@ class MainViewModel @Inject constructor(
                         searchText = searchText
                     ),
                     searchMode = searchMode,
-                    searchText = searchText,
                 )
             }
         }
@@ -149,6 +177,7 @@ class MainViewModel @Inject constructor(
                 displayedCameras = it.getDisplayedCameras(
                     searchMode = SearchMode.NONE,
                     filterMode = FilterMode.VISIBLE,
+                    searchText = searchText,
                 ),
                 searchMode = SearchMode.NONE,
                 filterMode = FilterMode.VISIBLE,
@@ -166,7 +195,8 @@ class MainViewModel @Inject constructor(
             if (cameras.isEmpty()) {
                 // show an error if the retrieved camera list is empty
                 _cameraState.update { it.copy(uiState = UIState.ERROR) }
-            } else {
+            }
+            else {
                 val viewMode = prefs.getViewMode()
                 for (camera in cameras) {
                     camera.isFavourite = prefs.isFavourite(camera.id)

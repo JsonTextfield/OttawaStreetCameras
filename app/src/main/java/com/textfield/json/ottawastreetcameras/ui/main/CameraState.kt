@@ -42,7 +42,6 @@ data class CameraState(
     val uiState: UIState = UIState.INITIAL,
     val sortMode: SortMode = SortMode.NAME,
     val searchMode: SearchMode = SearchMode.NONE,
-    val searchText: String = "",
     val filterMode: FilterMode = FilterMode.VISIBLE,
     val viewMode: ViewMode = ViewMode.GALLERY,
     val location: Location? = null,
@@ -132,7 +131,7 @@ data class CameraState(
     fun getDisplayedCameras(
         searchMode: SearchMode = this.searchMode,
         filterMode: FilterMode = this.filterMode,
-        searchText: String = this.searchText,
+        searchText: String,
         sortMode: SortMode = this.sortMode,
         location: Location? = this.location,
     ): List<Camera> {
