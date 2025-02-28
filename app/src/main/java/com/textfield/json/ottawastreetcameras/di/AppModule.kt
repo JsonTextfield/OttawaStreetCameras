@@ -6,7 +6,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.textfield.json.ottawastreetcameras.R
-import com.textfield.json.ottawastreetcameras.StreetCamsApp
 import com.textfield.json.ottawastreetcameras.data.CameraRepository
 import com.textfield.json.ottawastreetcameras.data.ICameraRepository
 import com.textfield.json.ottawastreetcameras.data.IPreferencesRepository
@@ -30,11 +29,11 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
     @Singleton
-    @get:Provides
-    val supabase: SupabaseClient by lazy {
-        createSupabaseClient(
+    @Provides
+    fun provideSupabaseClient(@ApplicationContext context: Context): SupabaseClient {
+        return createSupabaseClient(
             supabaseUrl = "https://nacudfxzbqaesoyjfluh.supabase.co",
-            supabaseKey = StreetCamsApp.resources.getString(R.string.supabase_key)
+            supabaseKey = context.getString(R.string.supabase_key)
         ) {
             install(Postgrest)
         }
@@ -51,14 +50,14 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideCameraRepository(): ICameraRepository {
-        return CameraRepository(SupabaseCameraDataSource(supabase))
+    fun provideCameraRepository(supabaseClient: SupabaseClient): ICameraRepository {
+        return CameraRepository(SupabaseCameraDataSource(supabaseClient))
     }
 
     @Provides
-    fun provideMainViewModel(@ApplicationContext context: Context): MainViewModel {
+    fun provideMainViewModel(@ApplicationContext context: Context, supabaseClient: SupabaseClient): MainViewModel {
         return MainViewModel(
-            cameraRepository = provideCameraRepository(),
+            cameraRepository = provideCameraRepository(supabaseClient),
             prefs = providePreferencesDataStoreRepository(context),
             dispatcher = dispatcher
         )
