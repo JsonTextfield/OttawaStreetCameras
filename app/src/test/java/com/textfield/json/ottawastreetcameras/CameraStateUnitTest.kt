@@ -31,7 +31,6 @@ class CameraStateUnitTest {
         assertEquals(cameraState.uiState, UIState.INITIAL)
         assertEquals(cameraState.sortMode, SortMode.NAME)
         assertEquals(cameraState.searchMode, SearchMode.NONE)
-        assertEquals(cameraState.searchText, "")
         assertEquals(cameraState.filterMode, FilterMode.VISIBLE)
         assertEquals(cameraState.viewMode, ViewMode.GALLERY)
 
@@ -124,18 +123,21 @@ class CameraStateUnitTest {
         }
         cameraState = CameraState(allCameras = cameras)
         assertEquals(
-            cameraState.getDisplayedCameras(),
-            cameras.filter { it.isVisible }.sortedWith(SortByName)
+            cameraState.getDisplayedCameras(searchText = ""),
+            cameras
+                .filter { it.isVisible }
+                .sortedWith(SortByName)
         )
 
         cameraState = cameraState.copy(
             searchMode = SearchMode.NAME,
-            searchText = "l",
             filterMode = FilterMode.FAVOURITE,
             sortMode = SortMode.NEIGHBOURHOOD,
         )
-        assertEquals(cameraState.getDisplayedCameras(),
-            cameras.filter { it.isFavourite }.filter { it.name.trim().contains("l", true) }
+        assertEquals(cameraState.getDisplayedCameras(searchText = ""),
+            cameras
+                .filter { it.isFavourite }
+                .filter { it.name.trim().contains("l", true) }
                 .sortedWith(SortByNeighbourhood)
         )
     }
