@@ -16,10 +16,10 @@ android {
         applicationId = "com.textfield.json.ottawastreetcameras"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         minSdk = 28
-        compileSdk = 34
-        targetSdk = 34
-        versionCode = 32
-        versionName = "2.2.4"
+        compileSdk = 35
+        targetSdk = 35
+        versionCode = 33
+        versionName = "2.3.0"
         vectorDrawables { useSupportLibrary = true }
     }
     kotlinOptions {
