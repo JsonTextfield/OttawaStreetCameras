@@ -56,8 +56,13 @@ import kotlinx.coroutines.launch
 fun ActionBar(
     actions: List<Action> = emptyList(),
 ) {
-    // actions should take up only 1/3 of the screen width
-    val maxActions = LocalConfiguration.current.screenWidthDp / 3 / 48
+    val screenWidthDp = LocalConfiguration.current.screenWidthDp
+    val maxActions = when {
+        screenWidthDp < 400 -> screenWidthDp / 4 / 48
+        screenWidthDp < 600 -> screenWidthDp / 3 / 48
+        screenWidthDp < 800 -> screenWidthDp / 2 / 48
+        else -> screenWidthDp * 2 / 3 / 48
+    }
 
     val visibleActions = actions.filter { it.isVisible }
 
@@ -76,7 +81,8 @@ fun ActionBar(
             onClick = {
                 if (action.menuContent != null) {
                     showMenu = !showMenu
-                } else {
+                }
+                else {
                     action.onClick()
                 }
             }
@@ -126,7 +132,8 @@ fun getActions(
         tooltip = stringResource(
             if (allIsFavourite) {
                 R.string.remove_from_favourites
-            } else {
+            }
+            else {
                 R.string.add_to_favourites
             }
         ),
@@ -203,7 +210,8 @@ fun getActions(
                             locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
                         if (lastLocation != null) {
                             mainViewModel.changeSortMode(SortMode.DISTANCE, lastLocation)
-                        } else {
+                        }
+                        else {
                             scope.launch {
                                 snackbarHostState.showSnackbar(context.getString(R.string.location_unavailable))
                             }
@@ -225,7 +233,8 @@ fun getActions(
                             isExpanded = !isExpanded
                             if (sortMode == SortMode.DISTANCE) {
                                 locationPermissionLauncher.launch(permissionArray)
-                            } else {
+                            }
+                            else {
                                 mainViewModel.changeSortMode(sortMode)
                             }
                         },
@@ -287,7 +296,7 @@ fun getActions(
                 ThemeMode.entries.forEach { themeMode ->
                     RadioMenuItem(
                         title = stringResource(themeMode.key),
-                        isSelected =theme == themeMode,
+                        isSelected = theme == themeMode,
                         onClick = {
                             isExpanded = !isExpanded
                             mainViewModel.changeTheme(themeMode)
