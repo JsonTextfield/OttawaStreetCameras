@@ -74,7 +74,7 @@ fun SectionIndex(
     data: List<String>,
     listState: LazyListState,
     selectedColour: Color = MaterialTheme.colorScheme.primary,
-    minSectionHeight: Dp = 30.dp, // Minimum pixels needed to display each section
+    minSectionHeight: Dp = 40.dp, // Minimum pixels needed to display each section
 ) {
     val indexData = getIndexData(data).toList()
     var selectedKey by remember { mutableStateOf("") }
