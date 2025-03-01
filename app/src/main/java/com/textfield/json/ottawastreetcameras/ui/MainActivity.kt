@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
                             },
                         ),
                         enterTransition = { slideInHorizontally(initialOffsetX = { it }) },
-                        exitTransition = { slideOutHorizontally(targetOffsetX = { it / 2 }) },
+                        exitTransition = { slideOutHorizontally(targetOffsetX = { it }) },
                     ) {
                         CameraScreen(
                             cameraViewModel = hiltViewModel<CameraViewModel>(),
