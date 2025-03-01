@@ -7,12 +7,12 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.data.CameraRepository
+import com.textfield.json.ottawastreetcameras.data.ICameraDataSource
 import com.textfield.json.ottawastreetcameras.data.ICameraRepository
 import com.textfield.json.ottawastreetcameras.data.IPreferencesRepository
-import com.textfield.json.ottawastreetcameras.data.PreferencesDataStorePreferencesRepository
 import com.textfield.json.ottawastreetcameras.data.SharedPreferencesRepository
 import com.textfield.json.ottawastreetcameras.data.SupabaseCameraDataSource
-import com.textfield.json.ottawastreetcameras.ui.main.MainViewModel
+import com.textfield.json.ottawastreetcameras.ui.main.CameraState
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,6 +23,7 @@ import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Singleton
 
 @Module
@@ -39,8 +40,8 @@ object AppModule {
         }
     }
 
-    @get:Provides
-    val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    @Provides
+    fun provideDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @Singleton
     @Provides
@@ -48,38 +49,39 @@ object AppModule {
         return context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)
     }
 
-    @Singleton
-    @Provides
-    fun provideCameraRepository(supabaseClient: SupabaseClient): ICameraRepository {
-        return CameraRepository(SupabaseCameraDataSource(supabaseClient))
-    }
-
-    @Provides
-    fun provideMainViewModel(@ApplicationContext context: Context, supabaseClient: SupabaseClient): MainViewModel {
-        return MainViewModel(
-            cameraRepository = provideCameraRepository(supabaseClient),
-            prefs = providePreferencesDataStoreRepository(context),
-            dispatcher = dispatcher
-        )
-    }
-
-    @Singleton
-    @Provides
-    fun provideSharedPreferencesRepository(@ApplicationContext context: Context): IPreferencesRepository {
-        return SharedPreferencesRepository(provideSharedPreferences(context))
-    }
-
-    @Singleton
-    @Provides
-    fun providePreferencesDataStoreRepository(@ApplicationContext context: Context): IPreferencesRepository {
-        return PreferencesDataStorePreferencesRepository(context.dataStore)
-    }
+    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("prefs")
 
     @Singleton
     @Provides
     fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
-        return preferencesDataStore(context.packageName).getValue(context, String::javaClass)
+        return context.dataStore
     }
 
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("prefs")
+    @Singleton
+    @Provides
+    fun providePreferencesRepository(
+        sharedPreferences: SharedPreferences,
+        //dataStore: DataStore<Preferences>,
+    ): IPreferencesRepository {
+        //return PreferencesDataStorePreferencesRepository(dataStore)
+        return SharedPreferencesRepository(sharedPreferences)
+    }
+
+    @Singleton
+    @Provides
+    fun provideCameraDataSource(supabaseClient: SupabaseClient): ICameraDataSource {
+        return SupabaseCameraDataSource(supabaseClient)
+    }
+
+    @Singleton
+    @Provides
+    fun provideCameraRepository(dataSource: ICameraDataSource): ICameraRepository {
+        return CameraRepository(dataSource)
+    }
+
+    @Singleton
+    @Provides
+    fun provideCameraState() : MutableStateFlow<CameraState> {
+        return MutableStateFlow(CameraState())
+    }
 }
