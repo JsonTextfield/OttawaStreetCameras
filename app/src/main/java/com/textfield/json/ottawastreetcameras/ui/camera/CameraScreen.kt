@@ -33,11 +33,6 @@ fun CameraScreen(
     val cameraList by cameraViewModel.cameraList.collectAsStateWithLifecycle()
     val allCameras by cameraViewModel.allCameras.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        if (allCameras.isEmpty()) {
-            cameraViewModel.getAllCameras()
-        }
-    }
     LaunchedEffect(allCameras) {
         if (allCameras.isNotEmpty() && cameraList.isEmpty()) {
             if (isShuffling) {

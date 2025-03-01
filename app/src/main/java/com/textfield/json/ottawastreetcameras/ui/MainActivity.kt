@@ -25,8 +25,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val viewModel = hiltViewModel<MainViewModel>()
-            val theme by viewModel.theme.collectAsStateWithLifecycle()
+            val mainViewModel = hiltViewModel<MainViewModel>()
+            val theme by mainViewModel.theme.collectAsStateWithLifecycle()
             AppTheme(theme = theme) {
                 val navController = rememberNavController()
                 NavHost(
@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
                     startDestination = "main",
                 ) {
                     composable("main") {
-                        MainScreen(mainViewModel = viewModel) { selectedCameras, isShuffling ->
+                        MainScreen(mainViewModel = mainViewModel) { selectedCameras, isShuffling ->
                             navController.navigate("cameras?ids=${selectedCameras.joinToString(",") { it.id }}?isShuffling=$isShuffling")
                         }
                     }
@@ -54,8 +54,9 @@ class MainActivity : ComponentActivity() {
                         enterTransition = { slideInHorizontally(initialOffsetX = { it }) },
                         exitTransition = { slideOutHorizontally(targetOffsetX = { it }) },
                     ) {
+                        val cameraViewModel = hiltViewModel<CameraViewModel>()
                         CameraScreen(
-                            cameraViewModel = hiltViewModel<CameraViewModel>(),
+                            cameraViewModel = cameraViewModel,
                             ids = it.arguments?.getString("ids") ?: "",
                             isShuffling = it.arguments?.getBoolean("isShuffling") ?: false,
                             onBackPressed = navController::navigateUp,

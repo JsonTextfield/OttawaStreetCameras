@@ -54,6 +54,7 @@ class MainViewModel @Inject constructor(
     init {
         viewModelScope.launch(dispatcher) {
             _theme.value = prefs.getTheme()
+            getAllCameras()
         }
     }
 

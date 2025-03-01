@@ -25,6 +25,10 @@ class CameraViewModel @Inject constructor(
     private var _cameraList = MutableStateFlow<List<Camera>>(emptyList())
     val cameraList: StateFlow<List<Camera>> = _cameraList.asStateFlow()
 
+    init {
+        getAllCameras()
+    }
+
     fun getAllCameras() {
         viewModelScope.launch(dispatcher) {
             _allCameras.value = cameraRepository.getAllCameras()
