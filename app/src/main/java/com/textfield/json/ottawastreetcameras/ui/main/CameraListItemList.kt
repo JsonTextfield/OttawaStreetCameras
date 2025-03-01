@@ -83,6 +83,8 @@ fun CameraListItemList(
                     }
                     SwipeToDismissBox(
                         state = dismissState,
+                        enableDismissFromEndToStart = cameraState.selectedCameras.isEmpty(),
+                        enableDismissFromStartToEnd = cameraState.selectedCameras.isEmpty(),
                         modifier = Modifier.background(MaterialTheme.colorScheme.tertiary),
                         backgroundContent = {
                             ListItem(
