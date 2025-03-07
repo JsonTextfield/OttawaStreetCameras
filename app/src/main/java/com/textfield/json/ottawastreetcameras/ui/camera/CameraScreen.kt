@@ -24,7 +24,6 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun CameraScreen(
-    ids: String = "",
     isShuffling: Boolean = false,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     cameraViewModel: CameraViewModel = viewModel<CameraViewModel>(),
@@ -33,15 +32,6 @@ fun CameraScreen(
     val cameraList by cameraViewModel.cameraList.collectAsStateWithLifecycle()
     val allCameras by cameraViewModel.allCameras.collectAsStateWithLifecycle()
 
-    LaunchedEffect(allCameras) {
-        if (allCameras.isNotEmpty() && cameraList.isEmpty()) {
-            if (isShuffling) {
-                cameraViewModel.getRandomCamera()
-            } else {
-                cameraViewModel.getCameras(ids)
-            }
-        }
-    }
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     ) {

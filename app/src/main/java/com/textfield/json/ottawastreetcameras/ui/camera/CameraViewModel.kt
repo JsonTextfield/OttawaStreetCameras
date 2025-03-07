@@ -26,20 +26,21 @@ class CameraViewModel @Inject constructor(
     val cameraList: StateFlow<List<Camera>> = _cameraList.asStateFlow()
 
     init {
-        getAllCameras()
-    }
-
-    fun getAllCameras() {
         viewModelScope.launch(dispatcher) {
             _allCameras.value = cameraRepository.getAllCameras()
         }
     }
 
     fun getCameras(ids: String) {
-        _cameraList.value = _allCameras.value.filter { camera -> camera.id in ids }
+        viewModelScope.launch(dispatcher) {
+            _cameraList.value = _allCameras.value.filter { camera -> camera.id in ids }
+            _cameraList.value = _allCameras.value.filter { camera -> camera.id in ids }
+        }
     }
 
     fun getRandomCamera() {
-        _cameraList.value = listOf(_allCameras.value.random())
+        viewModelScope.launch(dispatcher) {
+            _cameraList.value = listOf(_allCameras.value.random())
+        }
     }
 }
