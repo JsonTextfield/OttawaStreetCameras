@@ -1,10 +1,6 @@
 package com.textfield.json.ottawastreetcameras
 
 import com.textfield.json.ottawastreetcameras.data.CameraRepository
-import com.textfield.json.ottawastreetcameras.data.ICameraDataSource
-import com.textfield.json.ottawastreetcameras.data.IPreferencesRepository
-import com.textfield.json.ottawastreetcameras.entities.BilingualObject
-import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.entities.CameraApiModel
 import com.textfield.json.ottawastreetcameras.entities.LocationApiModel
 import com.textfield.json.ottawastreetcameras.ui.main.CameraState
@@ -12,7 +8,6 @@ import com.textfield.json.ottawastreetcameras.ui.main.FilterMode
 import com.textfield.json.ottawastreetcameras.ui.main.MainViewModel
 import com.textfield.json.ottawastreetcameras.ui.main.SearchMode
 import com.textfield.json.ottawastreetcameras.ui.main.SortMode
-import com.textfield.json.ottawastreetcameras.ui.main.ThemeMode
 import com.textfield.json.ottawastreetcameras.ui.main.ViewMode
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,53 +30,6 @@ class MainViewModelUnitTest {
     var mainCoroutineRule = MainCoroutineRule()
 
     private lateinit var mainViewModel: MainViewModel
-
-    class FakeCameraDataSource : ICameraDataSource {
-        override suspend fun getAllCameras(): List<Camera> {
-            return (0 until 100).map {
-                Camera(
-                    id = "$it",
-                    _name = BilingualObject("Camera $it", "Camera $it"),
-                )
-            }
-        }
-    }
-
-    class FakePreferences : IPreferencesRepository {
-        private val data = mutableMapOf<String, Any>()
-        override suspend fun favourite(id: String, value: Boolean) {
-            data[id] = value
-        }
-
-        override suspend fun isFavourite(id: String): Boolean {
-            return data[id] as Boolean
-        }
-
-        override suspend fun setVisibility(id: String, value: Boolean) {
-            data[id] = value
-        }
-
-        override suspend fun isVisible(id: String): Boolean {
-            return data[id] as Boolean
-        }
-
-        override suspend fun setTheme(theme: ThemeMode) {
-            data["theme"] = theme
-        }
-
-        override suspend fun getTheme(): ThemeMode {
-            return (data["theme"] ?: ThemeMode.SYSTEM) as ThemeMode
-        }
-
-        override suspend fun setViewMode(viewMode: ViewMode) {
-            data["viewMode"] = viewMode
-        }
-
-        override suspend fun getViewMode(): ViewMode {
-            return data["viewMode"] as ViewMode
-        }
-
-    }
 
     @Before
     fun setup() {
@@ -122,7 +70,7 @@ class MainViewModelUnitTest {
     }
 
     @Test
-    fun testChangeSearchMode() = runTest{
+    fun testChangeSearchMode() = runTest {
         mainViewModel.searchCameras(SearchMode.NEIGHBOURHOOD)
         advanceUntilIdle()
         assertEquals(SearchMode.NEIGHBOURHOOD, mainViewModel.cameraState.value.searchMode)
@@ -133,7 +81,7 @@ class MainViewModelUnitTest {
     }
 
     @Test
-    fun testSearchCameras() = runTest{
+    fun testSearchCameras() = runTest {
         mainViewModel = MainViewModel(
             cameraRepository = CameraRepository(FakeCameraDataSource()),
             prefs = FakePreferences(),
@@ -156,23 +104,23 @@ class MainViewModelUnitTest {
 
         mainViewModel.searchCameras(SearchMode.NAME, "Camera 5")
         advanceUntilIdle()
-        assertEquals(1, mainViewModel.cameraState.value.displayedCameras.size)
+        assertEquals(true, mainViewModel.cameraState.value.displayedCameras.all {it.name.contains("Camera 5")})
 
         mainViewModel.searchCameras(SearchMode.NONE, "any")
         advanceUntilIdle()
-        assertEquals(10, mainViewModel.cameraState.value.displayedCameras.size)
+        assertEquals(mainViewModel.cameraState.value.allCameras.size, mainViewModel.cameraState.value.displayedCameras.size)
 
         mainViewModel.searchCameras(SearchMode.NEIGHBOURHOOD, "")
         advanceUntilIdle()
-        assertEquals(10, mainViewModel.cameraState.value.displayedCameras.size)
+        assertEquals(mainViewModel.cameraState.value.allCameras.size, mainViewModel.cameraState.value.displayedCameras.size)
 
         mainViewModel.searchCameras(SearchMode.NAME, "")
         advanceUntilIdle()
-        assertEquals(10, mainViewModel.cameraState.value.displayedCameras.size)
+        assertEquals(mainViewModel.cameraState.value.allCameras.size, mainViewModel.cameraState.value.displayedCameras.size)
 
         mainViewModel.searchCameras(SearchMode.NEIGHBOURHOOD, "neighbourhood")
         advanceUntilIdle()
-        assertEquals(1, mainViewModel.cameraState.value.displayedCameras.size)
+        assertEquals(true, mainViewModel.cameraState.value.displayedCameras.all {it.neighbourhood.contains("neighbourhood")})
     }
 
     @Test

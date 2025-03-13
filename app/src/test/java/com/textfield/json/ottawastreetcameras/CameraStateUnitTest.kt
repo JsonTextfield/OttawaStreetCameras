@@ -134,7 +134,7 @@ class CameraStateUnitTest {
             filterMode = FilterMode.FAVOURITE,
             sortMode = SortMode.NEIGHBOURHOOD,
         )
-        assertEquals(cameraState.getDisplayedCameras(searchText = ""),
+        assertEquals(cameraState.getDisplayedCameras(searchText = "l"),
             cameras
                 .filter { it.isFavourite }
                 .filter { it.name.trim().contains("l", true) }
