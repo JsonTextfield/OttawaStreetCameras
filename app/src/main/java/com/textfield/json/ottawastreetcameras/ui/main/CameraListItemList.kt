@@ -57,7 +57,7 @@ fun CameraListItemList(
         }
         val cameras = cameraState.displayedCameras
         LazyColumn(state = listState) {
-            items(cameras, { camera -> camera.hashCode() }) { camera ->
+            items(cameras, key = { it.id }) { camera ->
                 if (cameraState.filterMode == FilterMode.FAVOURITE) {
                     CameraListItem(
                         camera = camera,

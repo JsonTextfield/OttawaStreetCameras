@@ -5,13 +5,11 @@ supabase = "2.5.1"
 coilCompose = "2.7.0"
 composeBom = "2025.03.00"
 datastorePreferences = "1.1.3"
-espressoCore = "3.6.1"
 gradle = "8.8.2"
 hiltNavigationCompose = "1.2.0"
 hiltVersion = "2.55"
 json = "20250107"
 junit = "4.13.2"
-junitKtx = "1.2.1"
 kotlinGradlePlugin = "1.9.24"
 kotlinxCoroutinesTest = "1.10.1"
 ktorClientAndroid = "2.3.12"
@@ -30,17 +28,12 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
-androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
-androidx-junit-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "junitKtx" }
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleViewmodelCompose" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
-androidx-rules = { module = "androidx.test:rules", version.ref = "rules" }
-androidx-runner = { module = "androidx.test:runner", version.ref = "runner" }
-androidx-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 androidx-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }

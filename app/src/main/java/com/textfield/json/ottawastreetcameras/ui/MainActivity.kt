@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -27,41 +28,43 @@ class MainActivity : ComponentActivity() {
         setContent {
             val mainViewModel = hiltViewModel<MainViewModel>()
             val theme by mainViewModel.theme.collectAsStateWithLifecycle()
+            val navController = rememberNavController()
             AppTheme(theme = theme) {
-                val navController = rememberNavController()
-                NavHost(
-                    navController = navController,
-                    startDestination = HomeRoute,
-                ) {
-                    composable<HomeRoute> {
-                        MainScreen(mainViewModel = mainViewModel) { selectedCameras, isShuffling ->
-                            navController.navigate(
-                                CameraRoute(
-                                    cameras = selectedCameras.joinToString(",") { it.id },
-                                    isShuffling = isShuffling,
+                Surface {
+                    NavHost(
+                        navController = navController,
+                        startDestination = HomeRoute,
+                    ) {
+                        composable<HomeRoute> {
+                            MainScreen(mainViewModel = mainViewModel) { selectedCameras, isShuffling ->
+                                navController.navigate(
+                                    CameraRoute(
+                                        cameras = selectedCameras.joinToString(",") { it.id },
+                                        isShuffling = isShuffling,
+                                    )
                                 )
+                            }
+                        }
+                        composable<CameraRoute>(
+                            enterTransition = { slideInHorizontally(initialOffsetX = { it }) },
+                            exitTransition = { slideOutHorizontally(targetOffsetX = { it }) },
+                        ) {
+                            val route = it.toRoute<CameraRoute>()
+                            val cameraViewModel = hiltViewModel<CameraViewModel>()
+                            LaunchedEffect(Unit) {
+                                if (route.isShuffling) {
+                                    cameraViewModel.getRandomCamera()
+                                }
+                                else {
+                                    cameraViewModel.getCameras(route.cameras)
+                                }
+                            }
+                            CameraScreen(
+                                isShuffling = route.isShuffling,
+                                cameraViewModel = cameraViewModel,
+                                onBackPressed = navController::navigateUp,
                             )
                         }
-                    }
-                    composable<CameraRoute>(
-                        enterTransition = { slideInHorizontally(initialOffsetX = { it }) },
-                        exitTransition = { slideOutHorizontally(targetOffsetX = { it }) },
-                    ) {
-                        val route = it.toRoute<CameraRoute>()
-                        val cameraViewModel = hiltViewModel<CameraViewModel>()
-                        LaunchedEffect(Unit) {
-                            if (route.isShuffling) {
-                                cameraViewModel.getRandomCamera()
-                            }
-                            else {
-                                cameraViewModel.getCameras(route.cameras)
-                            }
-                        }
-                        CameraScreen(
-                            isShuffling = route.isShuffling,
-                            cameraViewModel = cameraViewModel,
-                            onBackPressed = navController::navigateUp,
-                        )
                     }
                 }
             }

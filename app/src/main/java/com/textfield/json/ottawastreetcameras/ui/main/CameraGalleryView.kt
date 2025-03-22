@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,9 +38,9 @@ fun CameraGalleryView(
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        items(cameras.size) {
+        items(cameras, key = { it.id }) { camera ->
             CameraGalleryTile(
-                camera = cameras[it],
+                camera = camera,
                 onClick = onItemClick,
                 onLongClick = onItemLongClick,
             )
@@ -68,6 +69,7 @@ fun CameraGalleryView(
 @Preview(showBackground = true, backgroundColor = 0xEEEEEE)
 @Composable
 private fun CameraGalleryViewPreview() {
-    val cameraList = (0 until 10).map { Camera(_name = BilingualObject(en = "Camera $it", fr = "Caméra $it"))}
+    val cameraList =
+        (0 until 10).map { Camera(_name = BilingualObject(en = "Camera $it", fr = "Caméra $it")) }
     CameraGalleryView(CameraState(displayedCameras = cameraList), LazyGridState(), {}, {})
 }
