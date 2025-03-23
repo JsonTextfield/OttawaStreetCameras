@@ -20,8 +20,6 @@ multidex = "1.0.3"
 navigationCompose = "2.8.9"
 ossLicensesPlugin = "0.10.6"
 playServicesOssLicenses = "17.1.0"
-rules = "1.6.1"
-runner = "1.6.2"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
