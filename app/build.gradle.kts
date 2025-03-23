@@ -19,7 +19,7 @@ android {
         compileSdk = 35
         targetSdk = 35
         versionCode = 35
-        versionName = "2.4.0"
+        versionName = "2.3.2"
         vectorDrawables { useSupportLibrary = true }
     }
     kotlinOptions {
