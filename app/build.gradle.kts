@@ -97,11 +97,6 @@ dependencies {
 
     // Testing
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    androidTestImplementation(libs.androidx.junit.ktx)
-    androidTestImplementation(libs.androidx.rules)
-    androidTestImplementation(libs.androidx.runner)
-    androidTestImplementation(libs.androidx.espresso.core)
     testImplementation (libs.kotlinx.coroutines.test)
     testImplementation(libs.junit)
     testImplementation(libs.json)
