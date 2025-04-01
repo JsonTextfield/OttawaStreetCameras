@@ -44,7 +44,6 @@ data class CameraState(
     val filterMode: FilterMode = FilterMode.VISIBLE,
     val viewMode: ViewMode = ViewMode.GALLERY,
     val location: Location? = null,
-    val lastUpdated: Long = 0L,
 ) {
     val selectedCameras: List<Camera>
         get() = allCameras.filter { it.isSelected }

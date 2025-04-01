@@ -104,30 +104,40 @@ class MainViewModel @Inject constructor(
 
     fun hideCameras(cameras: List<Camera>) {
         viewModelScope.launch(dispatcher) {
-            val anyVisible = cameras.any { it.isVisible }
+            val anyVisible = _cameraState.value.allCameras
+                .filter { it in cameras }
+                .any { it.isVisible }
             prefs.setVisibility(cameras.map { it.id }, !anyVisible)
-            selectAllCameras(false)
-            _cameraState.update { it.copy(allCameras = cameraRepository.getAllCameras()) }
+            _cameraState.update {
+                it.copy(allCameras = cameraRepository.getAllCameras())
+            }
         }
     }
 
     fun selectCamera(camera: Camera) {
-        for (cam in _cameraState.value.allCameras) {
-            if (cam == camera) {
-                cam.isSelected = !cam.isSelected
-                break
-            }
+        _cameraState.update { cameraState ->
+            cameraState.copy(
+                allCameras = cameraState.allCameras.map { cam ->
+                    if (cam == camera) cam.copy(isSelected = !cam.isSelected) else cam
+                }
+            )
         }
-        _cameraState.update { it.copy(lastUpdated = System.currentTimeMillis()) }
     }
 
     fun selectAllCameras(select: Boolean = true) {
-        for (camera in _cameraState.value.allCameras) {
-            if (camera in _cameraState.value.getDisplayedCameras(searchText)) {
-                camera.isSelected = select
-            }
+        _cameraState.update { cameraState ->
+            val displayedCameras = cameraState.getDisplayedCameras(searchText)
+            cameraState.copy(
+                allCameras = cameraState.allCameras.map { cam ->
+                    if (cam in displayedCameras) {
+                        cam.copy(isSelected = select)
+                    }
+                    else {
+                        cam
+                    }
+                }
+            )
         }
-        _cameraState.update { it.copy(lastUpdated = System.currentTimeMillis()) }
     }
 
     fun searchCameras(searchMode: SearchMode = SearchMode.NONE, searchText: String = "") {
@@ -135,11 +145,7 @@ class MainViewModel @Inject constructor(
         this.searchText = searchText
         searchJob = viewModelScope.launch(dispatcher) {
             delay(1000)
-            _cameraState.update {
-                it.copy(
-                    searchMode = searchMode,
-                )
-            }
+            _cameraState.update { it.copy(searchMode = searchMode) }
         }
     }
 

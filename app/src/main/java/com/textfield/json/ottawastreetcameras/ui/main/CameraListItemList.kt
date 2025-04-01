@@ -87,7 +87,9 @@ fun CameraListItemList(
                         state = dismissState,
                         enableDismissFromEndToStart = cameraState.selectedCameras.isEmpty(),
                         enableDismissFromStartToEnd = cameraState.selectedCameras.isEmpty(),
-                        modifier = Modifier.background(MaterialTheme.colorScheme.tertiary),
+                        modifier = Modifier
+                            .background(MaterialTheme.colorScheme.tertiary)
+                            .animateItem(),
                         backgroundContent = {
                             ListItem(
                                 modifier = Modifier.fillMaxSize(),
