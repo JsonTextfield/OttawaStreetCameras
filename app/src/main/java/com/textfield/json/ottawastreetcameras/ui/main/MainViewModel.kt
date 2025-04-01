@@ -107,28 +107,19 @@ class MainViewModel @Inject constructor(
     fun favouriteCameras(cameras: List<Camera>) {
         viewModelScope.launch(dispatcher) {
             val allFavourite = cameras.all { it.isFavourite }
-            for (camera in _cameraState.value.allCameras) {
-                if (camera in cameras) {
-                    camera.isFavourite = !allFavourite
-                    prefs.favourite(camera.id, !allFavourite)
-                }
-            }
-            _cameraState.update { it.copy(lastUpdated = System.currentTimeMillis()) }
+            prefs.favourite(cameras.map { it.id }, !allFavourite)
+            _cameraState.update { it.copy(allCameras = cameraRepository.getAllCameras()) }
         }
     }
 
     fun hideCameras(cameras: List<Camera>) {
         viewModelScope.launch(dispatcher) {
             val anyVisible = cameras.any { it.isVisible }
-            for (camera in _cameraState.value.allCameras) {
-                if (camera in cameras) {
-                    camera.isVisible = !anyVisible
-                    prefs.setVisibility(camera.id, !anyVisible)
-                }
-            }
+            prefs.setVisibility(cameras.map { it.id }, !anyVisible)
             selectAllCameras(false)
             _cameraState.update {
                 it.copy(
+                    allCameras = cameraRepository.getAllCameras(),
                     lastUpdated = System.currentTimeMillis(),
                     displayedCameras = it.getDisplayedCameras(searchText = searchText),
                 )
@@ -199,10 +190,6 @@ class MainViewModel @Inject constructor(
             }
             else {
                 val viewMode = prefs.getViewMode()
-                for (camera in cameras) {
-                    camera.isFavourite = prefs.isFavourite(camera.id)
-                    camera.isVisible = prefs.isVisible(camera.id)
-                }
                 _cameraState.update { cameraState ->
                     cameraState.copy(
                         allCameras = cameras,

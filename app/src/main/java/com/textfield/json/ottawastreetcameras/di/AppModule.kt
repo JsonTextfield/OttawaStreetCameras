@@ -10,7 +10,7 @@ import com.textfield.json.ottawastreetcameras.data.CameraRepository
 import com.textfield.json.ottawastreetcameras.data.ICameraDataSource
 import com.textfield.json.ottawastreetcameras.data.ICameraRepository
 import com.textfield.json.ottawastreetcameras.data.IPreferencesRepository
-import com.textfield.json.ottawastreetcameras.data.SharedPreferencesRepository
+import com.textfield.json.ottawastreetcameras.data.PreferencesDataStorePreferencesRepository
 import com.textfield.json.ottawastreetcameras.data.SupabaseCameraDataSource
 import com.textfield.json.ottawastreetcameras.ui.main.CameraState
 import dagger.Module
@@ -60,11 +60,11 @@ object AppModule {
     @Singleton
     @Provides
     fun providePreferencesRepository(
-        sharedPreferences: SharedPreferences,
-        //dataStore: DataStore<Preferences>,
+        //sharedPreferences: SharedPreferences,
+        dataStore: DataStore<Preferences>,
     ): IPreferencesRepository {
-        //return PreferencesDataStorePreferencesRepository(dataStore)
-        return SharedPreferencesRepository(sharedPreferences)
+        return PreferencesDataStorePreferencesRepository(dataStore)
+        //return SharedPreferencesRepository(sharedPreferences)
     }
 
     @Singleton
@@ -75,8 +75,8 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideCameraRepository(dataSource: ICameraDataSource): ICameraRepository {
-        return CameraRepository(dataSource)
+    fun provideCameraRepository(dataSource: ICameraDataSource, prefs: IPreferencesRepository): ICameraRepository {
+        return CameraRepository(dataSource, prefs)
     }
 
     @Singleton

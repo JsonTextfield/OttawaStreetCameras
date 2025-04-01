@@ -6,25 +6,30 @@ import com.textfield.json.ottawastreetcameras.ui.main.ThemeMode
 import com.textfield.json.ottawastreetcameras.ui.main.ViewMode
 import javax.inject.Inject
 
-class SharedPreferencesRepository @Inject constructor(private val sharedPreferences: SharedPreferences) : IPreferencesRepository {
-    override suspend fun favourite(id: String, value: Boolean) {
+class SharedPreferencesRepository @Inject constructor(private val sharedPreferences: SharedPreferences) :
+    IPreferencesRepository {
+    override suspend fun favourite(ids: Collection<String>, value: Boolean) {
         sharedPreferences.edit {
-            putBoolean("$id.isFavourite", value)
+            val key = "favourites"
+            val favourites = sharedPreferences.getStringSet(key, emptySet()) ?: emptySet()
+            putStringSet(key, if (value) favourites + ids else favourites - ids.toSet())
         }
     }
 
-    override suspend fun isFavourite(id: String): Boolean {
-        return sharedPreferences.getBoolean("$id.isFavourite", false)
+    override suspend fun getFavourites(): List<String> {
+        return sharedPreferences.getStringSet("favourites", emptySet())?.toList() ?: emptyList()
     }
 
-    override suspend fun setVisibility(id: String, value: Boolean) {
+    override suspend fun setVisibility(ids: Collection<String>, value: Boolean) {
         sharedPreferences.edit {
-            putBoolean("$id.isVisible", value)
+            val key = "hidden"
+            val hidden = sharedPreferences.getStringSet(key, emptySet()) ?: emptySet()
+            putStringSet(key, if (value) hidden + ids else hidden - ids.toSet())
         }
     }
 
-    override suspend fun isVisible(id: String): Boolean {
-        return sharedPreferences.getBoolean("$id.isVisible", true)
+    override suspend fun getHidden(): List<String> {
+        return sharedPreferences.getStringSet("hidden", emptySet())?.toList() ?: emptyList()
     }
 
     override suspend fun setTheme(theme: ThemeMode) {
@@ -44,6 +49,8 @@ class SharedPreferencesRepository @Inject constructor(private val sharedPreferen
     }
 
     override suspend fun getViewMode(): ViewMode {
-        return ViewMode.valueOf(sharedPreferences.getString("viewMode", ViewMode.LIST.name) ?: ViewMode.LIST.name)
+        return ViewMode.valueOf(
+            sharedPreferences.getString("viewMode", ViewMode.LIST.name) ?: ViewMode.LIST.name
+        )
     }
 }

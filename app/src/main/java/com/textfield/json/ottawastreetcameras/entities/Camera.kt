@@ -1,29 +1,23 @@
 package com.textfield.json.ottawastreetcameras.entities
 
-import android.os.Parcelable
-import kotlinx.parcelize.IgnoredOnParcel
-import kotlinx.parcelize.Parcelize
+import java.util.UUID
 import kotlin.math.roundToInt
 
 /**
  * Created by Jason on 25/04/2016.
  */
-@Parcelize
 data class Camera(
-    val id: String = "",
+    val id: String = UUID.randomUUID().toString(),
     private val _name: BilingualObject = BilingualObject(),
     private val _neighbourhood: BilingualObject = BilingualObject(),
     val lat: Double = 0.0,
     val lon: Double = 0.0,
     private val _url: String = "",
-) : Parcelable {
-    @IgnoredOnParcel
-    var isFavourite = false
-    @IgnoredOnParcel
-    var isVisible = true
-    @IgnoredOnParcel
+    val isFavourite: Boolean = false,
+    val isVisible: Boolean = true,
+) {
     var isSelected = false
-    @IgnoredOnParcel
+
     var distance = -1
 
     val name: String get() = _name.name

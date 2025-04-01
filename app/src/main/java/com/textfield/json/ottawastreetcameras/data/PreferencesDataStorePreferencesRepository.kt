@@ -2,9 +2,9 @@ package com.textfield.json.ottawastreetcameras.data
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.textfield.json.ottawastreetcameras.ui.main.ThemeMode
 import com.textfield.json.ottawastreetcameras.ui.main.ViewMode
 import kotlinx.coroutines.flow.first
@@ -13,33 +13,47 @@ import javax.inject.Inject
 
 class PreferencesDataStorePreferencesRepository @Inject constructor(private val dataStore: DataStore<Preferences>) :
     IPreferencesRepository {
-    override suspend fun favourite(id: String, value: Boolean) {
-        val key = booleanPreferencesKey("$id.isFavourite")
+
+    override suspend fun favourite(ids: Collection<String>, value: Boolean) {
+        val key = stringSetPreferencesKey("favourites")
         dataStore.edit { preferences ->
-            preferences[key] = value
+            val currentFavourites = preferences[key] ?: emptySet()
+            val newFavourites = if (value) {
+                currentFavourites + ids
+            }
+            else {
+                currentFavourites - ids.toSet()
+            }
+            preferences[key] = newFavourites
         }
     }
 
-
-    override suspend fun isFavourite(id: String): Boolean {
-        val key = booleanPreferencesKey("$id.isFavourite")
+    override suspend fun getFavourites(): List<String> {
+        val key = stringSetPreferencesKey("favourites")
         return dataStore.data.map { preferences ->
-            preferences[key] ?: false
-        }.first()
+            preferences[key] ?: emptySet()
+        }.first().toList()
     }
 
-    override suspend fun setVisibility(id: String, value: Boolean) {
-        val key = booleanPreferencesKey("$id.isVisible")
+    override suspend fun setVisibility(ids: Collection<String>, value: Boolean) {
+        val key = stringSetPreferencesKey("hidden")
         dataStore.edit { preferences ->
-            preferences[key] = value
+            val currentHidden = preferences[key] ?: emptySet()
+            val newHidden = if (value) {
+                currentHidden + ids
+            }
+            else {
+                currentHidden - ids.toSet()
+            }
+            preferences[key] = newHidden
         }
     }
 
-    override suspend fun isVisible(id: String): Boolean {
-        val key = booleanPreferencesKey("$id.isVisible")
+    override suspend fun getHidden(): List<String> {
+        val key = stringSetPreferencesKey("hidden")
         return dataStore.data.map { preferences ->
-            preferences[key] ?: true
-        }.first()
+            preferences[key] ?: emptySet()
+        }.first().toList()
     }
 
     override suspend fun setTheme(theme: ThemeMode) {

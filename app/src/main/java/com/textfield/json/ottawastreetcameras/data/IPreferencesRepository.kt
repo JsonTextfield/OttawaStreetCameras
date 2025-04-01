@@ -4,13 +4,13 @@ import com.textfield.json.ottawastreetcameras.ui.main.ThemeMode
 import com.textfield.json.ottawastreetcameras.ui.main.ViewMode
 
 interface IPreferencesRepository {
-    suspend fun favourite(id: String, value: Boolean)
+    suspend fun favourite(ids: Collection<String>, value: Boolean)
 
-    suspend fun isFavourite(id: String): Boolean
+    suspend fun getFavourites(): List<String>
 
-    suspend fun setVisibility(id: String, value: Boolean)
+    suspend fun setVisibility(ids: Collection<String>, value: Boolean)
 
-    suspend fun isVisible(id: String): Boolean
+    suspend fun getHidden(): List<String>
 
     suspend fun setTheme(theme: ThemeMode)
 
