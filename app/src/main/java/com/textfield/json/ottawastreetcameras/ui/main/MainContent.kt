@@ -1,5 +1,6 @@
 package com.textfield.json.ottawastreetcameras.ui.main
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.material3.SnackbarDuration
@@ -29,7 +30,8 @@ fun MainContent(
     val onItemClick = { camera: Camera ->
         if (cameraState.selectedCameras.isNotEmpty()) {
             mainViewModel.selectCamera(camera)
-        } else {
+        }
+        else {
             onNavigateToCameraScreen(listOf(camera))
         }
     }
@@ -54,33 +56,39 @@ fun MainContent(
             dismissedCamera = null
         }
     }
-    when (cameraState.viewMode) {
-        ViewMode.LIST -> {
-            CameraListItemList(
-                cameraState = cameraState,
-                listState = listState,
-                onItemClick = onItemClick,
-                onItemLongClick = onItemLongClick,
-                onItemDismissed = { dismissedCamera = it },
-                onFavouriteClick = { mainViewModel.favouriteCameras(listOf(it)) },
-            )
-        }
+    Column {
+//        FilterChipStrip(
+//            filterMode = cameraState.filterMode,
+//            onChangeFilterMode = mainViewModel::changeFilterMode,
+//        )
+        when (cameraState.viewMode) {
+            ViewMode.LIST -> {
+                CameraListItemList(
+                    cameraState = cameraState,
+                    listState = listState,
+                    onItemClick = onItemClick,
+                    onItemLongClick = onItemLongClick,
+                    onItemDismissed = { dismissedCamera = it },
+                    onFavouriteClick = { mainViewModel.favouriteCameras(listOf(it)) },
+                )
+            }
 
-        ViewMode.MAP -> {
-            CameraMapView(
-                cameraState = cameraState,
-                onItemClick = onItemClick,
-                onItemLongClick = onItemLongClick,
-            )
-        }
+            ViewMode.MAP -> {
+                CameraMapView(
+                    cameraState = cameraState,
+                    onItemClick = onItemClick,
+                    onItemLongClick = onItemLongClick,
+                )
+            }
 
-        ViewMode.GALLERY -> {
-            CameraGalleryView(
-                cameraState = cameraState,
-                gridState = gridState,
-                onItemClick = onItemClick,
-                onItemLongClick = onItemLongClick,
-            )
+            ViewMode.GALLERY -> {
+                CameraGalleryView(
+                    cameraState = cameraState,
+                    gridState = gridState,
+                    onItemClick = onItemClick,
+                    onItemLongClick = onItemLongClick,
+                )
+            }
         }
     }
 }

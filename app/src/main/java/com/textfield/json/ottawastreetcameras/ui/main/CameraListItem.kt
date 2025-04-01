@@ -37,9 +37,10 @@ fun CameraListItem(
     onClick: (Camera) -> Unit = {},
     onLongClick: (Camera) -> Unit = {},
     onFavouriteClick: (Camera) -> Unit = {},
+    modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .heightIn(min = 60.dp)
             .combinedClickable(
                 onClick = { onClick(camera) },

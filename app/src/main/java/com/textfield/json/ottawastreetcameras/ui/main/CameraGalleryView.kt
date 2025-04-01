@@ -43,6 +43,7 @@ fun CameraGalleryView(
                 camera = camera,
                 onClick = onItemClick,
                 onLongClick = onItemLongClick,
+                modifier = Modifier.animateItem(),
             )
         }
 

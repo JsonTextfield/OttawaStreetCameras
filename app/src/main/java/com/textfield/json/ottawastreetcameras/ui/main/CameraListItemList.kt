@@ -64,7 +64,8 @@ fun CameraListItemList(
                         showDistance = cameraState.sortMode == SortMode.DISTANCE && camera.distance > -1,
                         onClick = onItemClick,
                         onLongClick = onItemLongClick,
-                        onFavouriteClick = onFavouriteClick
+                        onFavouriteClick = onFavouriteClick,
+                        modifier = Modifier.animateItem(),
                     )
                 }
                 else {

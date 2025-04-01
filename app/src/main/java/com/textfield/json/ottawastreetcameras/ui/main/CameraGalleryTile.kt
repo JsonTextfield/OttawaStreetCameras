@@ -46,9 +46,10 @@ fun CameraGalleryTile(
     camera: Camera = Camera(),
     onClick: (Camera) -> Unit = {},
     onLongClick: (Camera) -> Unit = {},
+    modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .clip(shape = RoundedCornerShape(10.dp))
             .aspectRatio(1f).semantics(true){},
     ) {
