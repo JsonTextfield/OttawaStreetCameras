@@ -64,6 +64,7 @@ fun MainContent(
         when (cameraState.viewMode) {
             ViewMode.LIST -> {
                 CameraListItemList(
+                    searchText = mainViewModel.searchText,
                     cameraState = cameraState,
                     listState = listState,
                     onItemClick = onItemClick,
@@ -75,6 +76,7 @@ fun MainContent(
 
             ViewMode.MAP -> {
                 CameraMapView(
+                    searchText = mainViewModel.searchText,
                     cameraState = cameraState,
                     onItemClick = onItemClick,
                     onItemLongClick = onItemLongClick,
@@ -83,6 +85,7 @@ fun MainContent(
 
             ViewMode.GALLERY -> {
                 CameraGalleryView(
+                    searchText = mainViewModel.searchText,
                     cameraState = cameraState,
                     gridState = gridState,
                     onItemClick = onItemClick,

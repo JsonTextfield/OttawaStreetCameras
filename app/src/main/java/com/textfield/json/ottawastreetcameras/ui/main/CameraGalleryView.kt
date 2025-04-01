@@ -25,12 +25,13 @@ import com.textfield.json.ottawastreetcameras.entities.Camera
 
 @Composable
 fun CameraGalleryView(
+    searchText: String,
     cameraState: CameraState,
     gridState: LazyGridState,
     onItemClick: (Camera) -> Unit,
     onItemLongClick: (Camera) -> Unit,
 ) {
-    val cameras = cameraState.displayedCameras
+    val cameras = cameraState.getDisplayedCameras(searchText)
     LazyVerticalGrid(
         state = gridState,
         columns = GridCells.Adaptive(100.dp),
@@ -72,5 +73,5 @@ fun CameraGalleryView(
 private fun CameraGalleryViewPreview() {
     val cameraList =
         (0 until 10).map { Camera(_name = BilingualObject(en = "Camera $it", fr = "Caméra $it")) }
-    CameraGalleryView(CameraState(displayedCameras = cameraList), LazyGridState(), {}, {})
+    CameraGalleryView("", CameraState(allCameras = cameraList), LazyGridState(), {}, {})
 }

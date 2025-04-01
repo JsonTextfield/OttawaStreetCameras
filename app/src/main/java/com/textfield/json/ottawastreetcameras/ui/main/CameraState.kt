@@ -38,7 +38,6 @@ enum class UIState { LOADING, LOADED, ERROR, INITIAL, }
 
 data class CameraState(
     val allCameras: List<Camera> = ArrayList(),
-    val displayedCameras: List<Camera> = ArrayList(),
     val uiState: UIState = UIState.INITIAL,
     val sortMode: SortMode = SortMode.NAME,
     val searchMode: SearchMode = SearchMode.NONE,
@@ -47,16 +46,16 @@ data class CameraState(
     val location: Location? = null,
     val lastUpdated: Long = 0L,
 ) {
-    val selectedCameras
+    val selectedCameras: List<Camera>
         get() = allCameras.filter { it.isSelected }
 
-    val visibleCameras
+    val visibleCameras: List<Camera>
         get() = allCameras.filter { it.isVisible }
 
-    val hiddenCameras
+    val hiddenCameras: List<Camera>
         get() = allCameras.filter { !it.isVisible }
 
-    val favouriteCameras
+    val favouriteCameras: List<Camera>
         get() = allCameras.filter { it.isFavourite }
 
     val showSectionIndex
@@ -128,13 +127,7 @@ data class CameraState(
         }
     }
 
-    fun getDisplayedCameras(
-        searchMode: SearchMode = this.searchMode,
-        filterMode: FilterMode = this.filterMode,
-        searchText: String,
-        sortMode: SortMode = this.sortMode,
-        location: Location? = this.location,
-    ): List<Camera> {
+    fun getDisplayedCameras(searchText: String): List<Camera> {
         return filterCameras(filterMode)
             .filter(getSearchPredicate(searchMode, searchText))
             .sortedWith(getCameraComparator(sortMode, location))

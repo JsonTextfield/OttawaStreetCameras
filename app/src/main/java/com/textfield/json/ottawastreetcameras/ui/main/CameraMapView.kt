@@ -24,12 +24,13 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun CameraMapView(
+    searchText: String,
     cameraState: CameraState,
     isMyLocationEnabled: Boolean = false,
     onItemClick: (Camera) -> Unit = {},
     onItemLongClick: (Camera) -> Unit = {},
 ) {
-    val cameras = cameraState.displayedCameras
+    val cameras = cameraState.getDisplayedCameras(searchText)
     val context = LocalContext.current
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.builder().target(LatLng(45.45, -75.69)).zoom(9f).build()
@@ -87,5 +88,5 @@ fun CameraMapView(
 @Composable
 private fun CameraMapViewPreview() {
     val cameraList = (0 until 10).map { Camera(_name = BilingualObject(en = "Camera $it", fr = "Caméra $it"))}
-    CameraMapView(CameraState(displayedCameras = cameraList))
+    CameraMapView("", CameraState(allCameras = cameraList))
 }

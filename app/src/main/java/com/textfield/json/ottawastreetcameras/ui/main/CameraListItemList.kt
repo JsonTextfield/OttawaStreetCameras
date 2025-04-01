@@ -37,6 +37,7 @@ import com.textfield.json.ottawastreetcameras.ui.components.SectionIndex
 
 @Composable
 fun CameraListItemList(
+    searchText: String,
     cameraState: CameraState,
     listState: LazyListState,
     onItemClick: (Camera) -> Unit = {},
@@ -51,11 +52,11 @@ fun CameraListItemList(
             exit = slideOutHorizontally(),
         ) {
             SectionIndex(
-                data = cameraState.displayedCameras.map { it.sortableName },
+                data = cameraState.getDisplayedCameras(searchText).map { it.sortableName },
                 listState = listState,
             )
         }
-        val cameras = cameraState.displayedCameras
+        val cameras = cameraState.getDisplayedCameras(searchText)
         LazyColumn(state = listState) {
             items(cameras, key = { it.id }) { camera ->
                 if (cameraState.filterMode == FilterMode.FAVOURITE) {
@@ -142,5 +143,5 @@ private fun CameraListItemListPreview() {
             _neighbourhood = BilingualObject(en = "Neighbourhood $it", fr = "Voisinage $it"),
         )
     }
-    CameraListItemList(CameraState(displayedCameras = cameraList), listState = LazyListState())
+    CameraListItemList("", CameraState(allCameras = cameraList), listState = LazyListState())
 }

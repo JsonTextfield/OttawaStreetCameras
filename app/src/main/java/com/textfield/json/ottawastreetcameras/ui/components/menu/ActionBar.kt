@@ -148,7 +148,7 @@ fun getActions(
     val selectAll = Action(
         icon = Icons.Rounded.SelectAll,
         tooltip = stringResource(R.string.select_all),
-        isVisible = selectedCameras.size < cameraState.displayedCameras.size,
+        isVisible = selectedCameras.size < cameraState.getDisplayedCameras(searchText = mainViewModel.searchText).size,
         onClick = { mainViewModel.selectAllCameras() },
     )
     val switchView = Action(

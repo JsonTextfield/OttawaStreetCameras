@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.textfield.json.ottawastreetcameras.SortByName
 import com.textfield.json.ottawastreetcameras.data.ICameraRepository
 import com.textfield.json.ottawastreetcameras.data.IPreferencesRepository
 import com.textfield.json.ottawastreetcameras.entities.Camera
@@ -77,11 +76,6 @@ class MainViewModel @Inject constructor(
             it.copy(
                 sortMode = sortMode,
                 location = location,
-                displayedCameras = it.getDisplayedCameras(
-                    sortMode = sortMode,
-                    location = location,
-                    searchText = searchText
-                )
             )
         }
     }
@@ -95,10 +89,6 @@ class MainViewModel @Inject constructor(
         }
         _cameraState.update {
             it.copy(
-                displayedCameras = it.getDisplayedCameras(
-                    filterMode = mode,
-                    searchText = searchText,
-                ),
                 filterMode = mode,
             )
         }
@@ -121,7 +111,6 @@ class MainViewModel @Inject constructor(
                 it.copy(
                     allCameras = cameraRepository.getAllCameras(),
                     lastUpdated = System.currentTimeMillis(),
-                    displayedCameras = it.getDisplayedCameras(searchText = searchText),
                 )
             }
         }
@@ -139,7 +128,7 @@ class MainViewModel @Inject constructor(
 
     fun selectAllCameras(select: Boolean = true) {
         for (camera in _cameraState.value.allCameras) {
-            if (camera in _cameraState.value.displayedCameras) {
+            if (camera in _cameraState.value.getDisplayedCameras(searchText)) {
                 camera.isSelected = select
             }
         }
@@ -153,10 +142,6 @@ class MainViewModel @Inject constructor(
             delay(1000)
             _cameraState.update {
                 it.copy(
-                    displayedCameras = it.getDisplayedCameras(
-                        searchMode = searchMode,
-                        searchText = searchText
-                    ),
                     searchMode = searchMode,
                 )
             }
@@ -166,11 +151,6 @@ class MainViewModel @Inject constructor(
     fun resetFilters() {
         _cameraState.update {
             it.copy(
-                displayedCameras = it.getDisplayedCameras(
-                    searchMode = SearchMode.NONE,
-                    filterMode = FilterMode.VISIBLE,
-                    searchText = searchText,
-                ),
                 searchMode = SearchMode.NONE,
                 filterMode = FilterMode.VISIBLE,
             )
@@ -193,7 +173,6 @@ class MainViewModel @Inject constructor(
                 _cameraState.update { cameraState ->
                     cameraState.copy(
                         allCameras = cameras,
-                        displayedCameras = cameras.filter { it.isVisible }.sortedWith(SortByName),
                         uiState = UIState.LOADED,
                         viewMode = viewMode,
                     )
