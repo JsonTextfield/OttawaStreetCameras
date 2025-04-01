@@ -7,20 +7,35 @@ import com.textfield.json.ottawastreetcameras.ui.main.ViewMode
 
 class FakePreferences : IPreferencesRepository {
     private val data = mutableMapOf<String, Any>()
-    override suspend fun favourite(id: String, value: Boolean) {
-        data[id] = value
+
+    override suspend fun favourite(ids: Collection<String>, value: Boolean) {
+        val currentFavourites = data["favourites"] as? Set<String> ?: emptySet()
+        val newHidden = if (value) {
+            currentFavourites + ids
+        }
+        else {
+            currentFavourites - ids.toSet()
+        }
+        data["favourites"] = newHidden
     }
 
-    override suspend fun isFavourite(id: String): Boolean {
-        return (data[id] ?: false) as Boolean
+    override suspend fun getFavourites(): List<String> {
+        return (data["favourites"] as? Set<String> ?: emptySet()).toList()
     }
 
-    override suspend fun setVisibility(id: String, value: Boolean) {
-        data[id] = value
+    override suspend fun setVisibility(ids: Collection<String>, value: Boolean) {
+        val currentHidden = data["hidden"] as? Set<String> ?: emptySet()
+        val newHidden = if (!value) {
+            currentHidden + ids
+        }
+        else {
+            currentHidden - ids.toSet()
+        }
+        data["hidden"] = newHidden
     }
 
-    override suspend fun isVisible(id: String): Boolean {
-        return (data[id] ?: true) as Boolean
+    override suspend fun getHidden(): List<String> {
+        return (data["hidden"] as? Set<String> ?: emptySet()).toList()
     }
 
     override suspend fun setTheme(theme: ThemeMode) {
