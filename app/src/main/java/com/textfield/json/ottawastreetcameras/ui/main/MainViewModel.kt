@@ -107,12 +107,7 @@ class MainViewModel @Inject constructor(
             val anyVisible = cameras.any { it.isVisible }
             prefs.setVisibility(cameras.map { it.id }, !anyVisible)
             selectAllCameras(false)
-            _cameraState.update {
-                it.copy(
-                    allCameras = cameraRepository.getAllCameras(),
-                    lastUpdated = System.currentTimeMillis(),
-                )
-            }
+            _cameraState.update { it.copy(allCameras = cameraRepository.getAllCameras()) }
         }
     }
 
