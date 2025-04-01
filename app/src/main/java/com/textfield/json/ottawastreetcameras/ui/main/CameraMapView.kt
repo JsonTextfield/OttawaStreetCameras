@@ -87,6 +87,6 @@ fun CameraMapView(
 @Preview
 @Composable
 private fun CameraMapViewPreview() {
-    val cameraList = (0 until 10).map { Camera(_name = BilingualObject(en = "Camera $it", fr = "Caméra $it"))}
+    val cameraList = List(10) { Camera(_name = BilingualObject(en = "Camera $it", fr = "Caméra $it"))}
     CameraMapView("", CameraState(allCameras = cameraList))
 }

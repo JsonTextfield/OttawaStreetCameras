@@ -72,6 +72,6 @@ fun CameraGalleryView(
 @Composable
 private fun CameraGalleryViewPreview() {
     val cameraList =
-        (0 until 10).map { Camera(_name = BilingualObject(en = "Camera $it", fr = "Caméra $it")) }
+        List(10) { Camera(_name = BilingualObject(en = "Camera $it", fr = "Caméra $it")) }
     CameraGalleryView("", CameraState(allCameras = cameraList), LazyGridState(), {}, {})
 }

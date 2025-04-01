@@ -39,7 +39,7 @@ class PreferencesDataStorePreferencesRepository @Inject constructor(private val 
         val key = stringSetPreferencesKey("hidden")
         dataStore.edit { preferences ->
             val currentHidden = preferences[key] ?: emptySet()
-            val newHidden = if (value) {
+            val newHidden = if (!value) {
                 currentHidden + ids
             }
             else {

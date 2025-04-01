@@ -158,9 +158,6 @@ class MainViewModel @Inject constructor(
     }
 
     fun getAllCameras() {
-        if (cameraState.value.uiState == UIState.LOADED) {
-            return
-        }
         _cameraState.update { it.copy(uiState = UIState.LOADING) }
         viewModelScope.launch(dispatcher) {
             val cameras = cameraRepository.getAllCameras()
@@ -179,5 +176,11 @@ class MainViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        searchJob?.cancel()
+        searchJob = null
     }
 }

@@ -137,7 +137,7 @@ fun CameraListItemList(
 @Preview
 @Composable
 private fun CameraListItemListPreview() {
-    val cameraList = (0 until 10).map {
+    val cameraList = List(10) {
         Camera(
             _name = BilingualObject(en = "Camera $it", fr = "Caméra $it"),
             _neighbourhood = BilingualObject(en = "Neighbourhood $it", fr = "Voisinage $it"),
