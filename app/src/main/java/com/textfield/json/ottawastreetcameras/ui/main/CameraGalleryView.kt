@@ -34,7 +34,7 @@ fun CameraGalleryView(
     val cameras = cameraState.getDisplayedCameras(searchText)
     LazyVerticalGrid(
         state = gridState,
-        columns = GridCells.Adaptive(100.dp),
+        columns = GridCells.Adaptive(120.dp),
         contentPadding = PaddingValues(10.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),

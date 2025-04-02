@@ -33,11 +33,17 @@ fun MainScreen(
         },
         topBar = {
             if (cameraState.uiState == UIState.LOADED) {
-                MainAppBar(mainViewModel, listState, gridState, snackbarHostState, onNavigateToCameraScreen)
+                MainAppBar(
+                    mainViewModel,
+                    listState,
+                    gridState,
+                    snackbarHostState,
+                    onNavigateToCameraScreen
+                )
             }
         },
     ) {
-        Box(modifier = Modifier.padding(it)) {
+        Box(modifier = Modifier.padding(top = it.calculateTopPadding())) {
             when (cameraState.uiState) {
                 UIState.INITIAL,
                 UIState.LOADING -> LoadingScreen()
