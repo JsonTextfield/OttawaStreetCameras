@@ -18,8 +18,8 @@ android {
         minSdk = 28
         compileSdk = 35
         targetSdk = 35
-        versionCode = 36
-        versionName = "2.3.3"
+        versionCode = 37
+        versionName = "2.4.0"
         vectorDrawables { useSupportLibrary = true }
     }
     kotlinOptions {
