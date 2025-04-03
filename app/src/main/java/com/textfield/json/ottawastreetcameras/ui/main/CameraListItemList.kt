@@ -1,6 +1,8 @@
 package com.textfield.json.ottawastreetcameras.ui.main
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,6 +37,7 @@ import com.textfield.json.ottawastreetcameras.ui.components.SectionIndex
 
 @Composable
 fun CameraListItemList(
+    searchText: String,
     cameraState: CameraState,
     listState: LazyListState,
     onItemClick: (Camera) -> Unit = {},
@@ -43,22 +46,27 @@ fun CameraListItemList(
     onFavouriteClick: (Camera) -> Unit = {},
 ) {
     Row {
-        AnimatedVisibility(visible = cameraState.showSectionIndex) {
+        AnimatedVisibility(
+            visible = cameraState.showSectionIndex,
+            enter = slideInHorizontally(),
+            exit = slideOutHorizontally(),
+        ) {
             SectionIndex(
-                data = cameraState.displayedCameras.map { it.sortableName },
+                data = cameraState.getDisplayedCameras(searchText).map { it.sortableName },
                 listState = listState,
             )
         }
-        val cameras = cameraState.displayedCameras
+        val cameras = cameraState.getDisplayedCameras(searchText)
         LazyColumn(state = listState) {
-            items(cameras, { camera -> camera.hashCode() }) { camera ->
+            items(cameras, key = { it.id }) { camera ->
                 if (cameraState.filterMode == FilterMode.FAVOURITE) {
                     CameraListItem(
                         camera = camera,
                         showDistance = cameraState.sortMode == SortMode.DISTANCE && camera.distance > -1,
                         onClick = onItemClick,
                         onLongClick = onItemLongClick,
-                        onFavouriteClick = onFavouriteClick
+                        onFavouriteClick = onFavouriteClick,
+                        modifier = Modifier.animateItem(),
                     )
                 }
                 else {
@@ -77,7 +85,11 @@ fun CameraListItemList(
                     }
                     SwipeToDismissBox(
                         state = dismissState,
-                        modifier = Modifier.background(MaterialTheme.colorScheme.tertiary),
+                        enableDismissFromEndToStart = cameraState.selectedCameras.isEmpty(),
+                        enableDismissFromStartToEnd = cameraState.selectedCameras.isEmpty(),
+                        modifier = Modifier
+                            .background(MaterialTheme.colorScheme.tertiary)
+                            .animateItem(),
                         backgroundContent = {
                             ListItem(
                                 modifier = Modifier.fillMaxSize(),
@@ -105,6 +117,7 @@ fun CameraListItemList(
                                 showDistance = cameraState.sortMode == SortMode.DISTANCE,
                                 onClick = onItemClick,
                                 onLongClick = onItemLongClick,
+                                onFavouriteClick = onFavouriteClick,
                             )
                         },
                     )
@@ -126,9 +139,11 @@ fun CameraListItemList(
 @Preview
 @Composable
 private fun CameraListItemListPreview() {
-    val cameraList = (0 until 10).map { Camera(
-        _name = BilingualObject(en = "Camera $it", fr = "Caméra $it"),
-        _neighbourhood = BilingualObject(en = "Neighbourhood $it", fr = "Voisinage $it"),
-    )}
-    CameraListItemList(CameraState(displayedCameras = cameraList), listState = LazyListState())
+    val cameraList = List(10) {
+        Camera(
+            _name = BilingualObject(en = "Camera $it", fr = "Caméra $it"),
+            _neighbourhood = BilingualObject(en = "Neighbourhood $it", fr = "Voisinage $it"),
+        )
+    }
+    CameraListItemList("", CameraState(allCameras = cameraList), listState = LazyListState())
 }

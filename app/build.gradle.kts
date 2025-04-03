@@ -16,10 +16,10 @@ android {
         applicationId = "com.textfield.json.ottawastreetcameras"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         minSdk = 28
-        compileSdk = 34
-        targetSdk = 34
-        versionCode = 30
-        versionName = "2.2.2"
+        compileSdk = 35
+        targetSdk = 35
+        versionCode = 37
+        versionName = "2.4.0"
         vectorDrawables { useSupportLibrary = true }
     }
     kotlinOptions {
@@ -93,13 +93,11 @@ dependencies {
     implementation(libs.postgrest.kt)
     implementation(libs.ktor.client.android)
 
+    implementation(libs.androidx.datastore.preferences)
+
     // Testing
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    androidTestImplementation(libs.androidx.junit.ktx)
-    androidTestImplementation(libs.androidx.rules)
-    androidTestImplementation(libs.androidx.runner)
-    androidTestImplementation(libs.androidx.espresso.core)
+    testImplementation (libs.kotlinx.coroutines.test)
     testImplementation(libs.junit)
     testImplementation(libs.json)
 }

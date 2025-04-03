@@ -14,11 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,20 +32,8 @@ import com.textfield.json.ottawastreetcameras.R
 
 @Composable
 fun SearchBar(
-    hintText: String,
-    onValueChange: (String) -> Unit = {},
-) {
-    var value by rememberSaveable { mutableStateOf("") }
-    SearchBarContent(hintText, value) {
-        value = it
-        onValueChange(value)
-    }
-}
-
-@Composable
-fun SearchBarContent(
-    hintText: String = "",
     value: String = "",
+    hintText: String = "",
     onValueChange: (String) -> Unit = {},
 ) {
     val textFieldValue = TextFieldValue(value, TextRange(value.length))
@@ -127,5 +111,5 @@ private fun SearchBarPreview() {
 @Preview(showBackground = true, heightDp = 50, backgroundColor = 0xFFFFFF)
 @Composable
 private fun SearchBarContentPreview() {
-    SearchBarContent(hintText = "Search")
+    SearchBar(hintText = "Search")
 }

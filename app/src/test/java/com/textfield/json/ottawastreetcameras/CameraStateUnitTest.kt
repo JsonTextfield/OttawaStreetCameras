@@ -10,7 +10,6 @@ import com.textfield.json.ottawastreetcameras.ui.main.SortMode
 import com.textfield.json.ottawastreetcameras.ui.main.UIState
 import com.textfield.json.ottawastreetcameras.ui.main.ViewMode
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import kotlin.random.Random
@@ -27,11 +26,9 @@ class CameraStateUnitTest {
     fun testInitialState() {
         assertEquals(cameraState, CameraState())
         assertEquals(cameraState.allCameras, listOf<Camera>())
-        assertEquals(cameraState.displayedCameras, listOf<Camera>())
         assertEquals(cameraState.uiState, UIState.INITIAL)
         assertEquals(cameraState.sortMode, SortMode.NAME)
         assertEquals(cameraState.searchMode, SearchMode.NONE)
-        assertEquals(cameraState.searchText, "")
         assertEquals(cameraState.filterMode, FilterMode.VISIBLE)
         assertEquals(cameraState.viewMode, ViewMode.GALLERY)
 
@@ -49,27 +46,27 @@ class CameraStateUnitTest {
     @Test
     fun testFavourites() {
         cameraState = cameraState.copy(allCameras = List(10) {
-            Camera().apply {
-                isFavourite = it % 3 == 0
-                isVisible = it % 2 == 1
-            }
+            Camera(
+                isFavourite = it % 3 == 0,
+                isVisible = it % 2 == 1,
+            )
         })
         val allFavourite = cameraState.favouriteCameras
 
-        assertTrue(allFavourite.all { it.isFavourite })
+        assertEquals(true, allFavourite.all { it.isFavourite })
     }
 
     @Test
     fun testHidden() {
         cameraState = cameraState.copy(allCameras = List(10) {
-            Camera().apply {
-                isFavourite = it % 2 == 0
-                isVisible = it % 3 == 1
-            }
+            Camera(
+                isFavourite = it % 2 == 0,
+                isVisible = it % 3 == 1,
+            )
         })
         val allHidden = cameraState.hiddenCameras
 
-        assertTrue(allHidden.all { !it.isVisible })
+        assertEquals(true, allHidden.all { !it.isVisible })
     }
 
     @Test
@@ -117,26 +114,30 @@ class CameraStateUnitTest {
                     lat = lat,
                     lon = lon,
                 )
-            ).toCamera().apply {
-                isVisible = Random.nextBoolean()
-                isFavourite = Random.nextBoolean()
-            }
+            ).toCamera().copy(
+                isVisible = Random.nextBoolean(),
+                isFavourite = Random.nextBoolean(),
+            )
         }
         cameraState = CameraState(allCameras = cameras)
         assertEquals(
-            cameraState.getDisplayedCameras(),
-            cameras.filter { it.isVisible }.sortedWith(SortByName)
+            cameraState.getDisplayedCameras(searchText = ""),
+            cameras
+                .filter { it.isVisible }
+                .sortedBy { it.sortableName }
         )
 
         cameraState = cameraState.copy(
             searchMode = SearchMode.NAME,
-            searchText = "l",
             filterMode = FilterMode.FAVOURITE,
             sortMode = SortMode.NEIGHBOURHOOD,
         )
-        assertEquals(cameraState.getDisplayedCameras(),
-            cameras.filter { it.isFavourite }.filter { it.name.trim().contains("l", true) }
-                .sortedWith(SortByNeighbourhood)
+        assertEquals(
+            cameraState.getDisplayedCameras(searchText = "l"),
+            cameras
+                .filter { it.isFavourite }
+                .filter { it.name.trim().contains("l", true) }
+                .sortedWith(compareBy({ it.neighbourhood }, { it.sortableName }))
         )
     }
 }

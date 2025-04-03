@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,24 +25,26 @@ import com.textfield.json.ottawastreetcameras.entities.Camera
 
 @Composable
 fun CameraGalleryView(
+    searchText: String,
     cameraState: CameraState,
     gridState: LazyGridState,
     onItemClick: (Camera) -> Unit,
     onItemLongClick: (Camera) -> Unit,
 ) {
-    val cameras = cameraState.displayedCameras
+    val cameras = cameraState.getDisplayedCameras(searchText)
     LazyVerticalGrid(
         state = gridState,
-        columns = GridCells.Adaptive(100.dp),
+        columns = GridCells.Adaptive(120.dp),
         contentPadding = PaddingValues(10.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        items(cameras.size) {
+        items(cameras, key = { it.id }) { camera ->
             CameraGalleryTile(
-                camera = cameras[it],
+                camera = camera,
                 onClick = onItemClick,
                 onLongClick = onItemLongClick,
+                modifier = Modifier.animateItem(),
             )
         }
 
@@ -68,6 +71,7 @@ fun CameraGalleryView(
 @Preview(showBackground = true, backgroundColor = 0xEEEEEE)
 @Composable
 private fun CameraGalleryViewPreview() {
-    val cameraList = (0 until 10).map { Camera(_name = BilingualObject(en = "Camera $it", fr = "Caméra $it"))}
-    CameraGalleryView(CameraState(displayedCameras = cameraList), LazyGridState(), {}, {})
+    val cameraList =
+        List(10) { Camera(_name = BilingualObject(en = "Camera $it", fr = "Caméra $it")) }
+    CameraGalleryView("", CameraState(allCameras = cameraList), LazyGridState(), {}, {})
 }

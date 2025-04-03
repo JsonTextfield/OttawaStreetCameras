@@ -8,7 +8,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -34,13 +33,19 @@ fun MainScreen(
         },
         topBar = {
             if (cameraState.uiState == UIState.LOADED) {
-                MainAppBar(mainViewModel, listState, gridState, snackbarHostState, onNavigateToCameraScreen)
+                MainAppBar(
+                    mainViewModel,
+                    listState,
+                    gridState,
+                    snackbarHostState,
+                    onNavigateToCameraScreen
+                )
             }
         },
     ) {
-        Box(modifier = Modifier.padding(it)) {
+        Box(modifier = Modifier.padding(top = it.calculateTopPadding())) {
             when (cameraState.uiState) {
-                UIState.INITIAL -> LaunchedEffect(Unit) { mainViewModel.getAllCameras() }
+                UIState.INITIAL,
                 UIState.LOADING -> LoadingScreen()
                 UIState.LOADED -> MainContent(
                     mainViewModel,

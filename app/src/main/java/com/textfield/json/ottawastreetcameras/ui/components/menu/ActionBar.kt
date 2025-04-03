@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.List
 import androidx.compose.material.icons.automirrored.rounded.Sort
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.rounded.BrightnessMedium
 import androidx.compose.material.icons.rounded.CameraAlt
 import androidx.compose.material.icons.rounded.Casino
 import androidx.compose.material.icons.rounded.Clear
@@ -47,16 +48,21 @@ import com.textfield.json.ottawastreetcameras.ui.main.FilterMode
 import com.textfield.json.ottawastreetcameras.ui.main.MainViewModel
 import com.textfield.json.ottawastreetcameras.ui.main.SearchMode
 import com.textfield.json.ottawastreetcameras.ui.main.SortMode
+import com.textfield.json.ottawastreetcameras.ui.main.ThemeMode
 import com.textfield.json.ottawastreetcameras.ui.main.ViewMode
 import kotlinx.coroutines.launch
 
 @Composable
 fun ActionBar(
     actions: List<Action> = emptyList(),
-    onItemSelected: () -> Unit = {},
 ) {
-    // actions should take up only 1/3 of the screen width
-    val maxActions = LocalConfiguration.current.screenWidthDp / 3 / 48
+    val screenWidthDp = LocalConfiguration.current.screenWidthDp
+    val maxActions = when {
+        screenWidthDp < 400 -> screenWidthDp / 4 / 48
+        screenWidthDp < 600 -> screenWidthDp / 3 / 48
+        screenWidthDp < 800 -> screenWidthDp / 2 / 48
+        else -> screenWidthDp * 2 / 3 / 48
+    }
 
     val visibleActions = actions.filter { it.isVisible }
 
@@ -75,10 +81,10 @@ fun ActionBar(
             onClick = {
                 if (action.menuContent != null) {
                     showMenu = !showMenu
-                } else {
+                }
+                else {
                     action.onClick()
                 }
-                onItemSelected()
             }
         )
     }
@@ -89,7 +95,6 @@ fun ActionBar(
             var showOverflowMenu by remember { mutableStateOf(false) }
             OverflowMenu(showOverflowMenu, overflowActions) {
                 showOverflowMenu = false
-                onItemSelected()
             }
             MenuItem(
                 icon = Icons.Rounded.MoreVert,
@@ -127,7 +132,8 @@ fun getActions(
         tooltip = stringResource(
             if (allIsFavourite) {
                 R.string.remove_from_favourites
-            } else {
+            }
+            else {
                 R.string.add_to_favourites
             }
         ),
@@ -142,7 +148,7 @@ fun getActions(
     val selectAll = Action(
         icon = Icons.Rounded.SelectAll,
         tooltip = stringResource(R.string.select_all),
-        isVisible = selectedCameras.size < cameraState.displayedCameras.size,
+        isVisible = selectedCameras.size < cameraState.getDisplayedCameras(searchText = mainViewModel.searchText).size,
         onClick = { mainViewModel.selectAllCameras() },
     )
     val switchView = Action(
@@ -204,7 +210,8 @@ fun getActions(
                             locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
                         if (lastLocation != null) {
                             mainViewModel.changeSortMode(SortMode.DISTANCE, lastLocation)
-                        } else {
+                        }
+                        else {
                             scope.launch {
                                 snackbarHostState.showSnackbar(context.getString(R.string.location_unavailable))
                             }
@@ -226,7 +233,8 @@ fun getActions(
                             isExpanded = !isExpanded
                             if (sortMode == SortMode.DISTANCE) {
                                 locationPermissionLauncher.launch(permissionArray)
-                            } else {
+                            }
+                            else {
                                 mainViewModel.changeSortMode(sortMode)
                             }
                         },
@@ -275,6 +283,29 @@ fun getActions(
             onNavigateToCameraScreen(emptyList(), true)
         },
     )
+    val theme by mainViewModel.theme.collectAsStateWithLifecycle()
+    val darkMode = Action(
+        icon = Icons.Rounded.BrightnessMedium,
+        tooltip = stringResource(R.string.change_theme),
+        menuContent = {
+            var isExpanded by remember { mutableStateOf(it) }
+            DropdownMenu(
+                expanded = isExpanded xor it,
+                onDismissRequest = { isExpanded = !isExpanded },
+            ) {
+                ThemeMode.entries.forEach { themeMode ->
+                    RadioMenuItem(
+                        title = stringResource(themeMode.key),
+                        isSelected = theme == themeMode,
+                        onClick = {
+                            isExpanded = !isExpanded
+                            mainViewModel.changeTheme(themeMode)
+                        },
+                    )
+                }
+            }
+        },
+    )
 
     var showAboutDialog by remember { mutableStateOf(false) }
 
@@ -303,6 +334,7 @@ fun getActions(
             hidden,
             random,
             shuffle,
+            darkMode,
             about,
         )
     }

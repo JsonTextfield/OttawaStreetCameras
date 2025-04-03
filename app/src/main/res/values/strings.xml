@@ -23,7 +23,7 @@
     <string name="could_not_load_long">Could not load. Try again later.</string>
     <string name="random_camera">Random</string>
     <string name="rate">Rate</string>
-    <string name="remove_from_favourites">Unfavourite</string>
+    <string name="remove_from_favourites">Un-favourite</string>
     <string name="download">Download</string>
     <string name="search">Search</string>
     <string name="search_neighbourhood">Search by\nneighbourhood</string>
@@ -44,6 +44,10 @@
     <string name="unhidden">unhidden</string>
     <string name="hidden">hidden</string>
     <string name="undo">Undo</string>
+    <string name="light_mode">Light</string>
+    <string name="dark_mode">Dark</string>
+    <string name="system_default">Default</string>
+    <string name="change_theme">Theme</string>
 
     <plurals name="images_saved">
         <item quantity="one">%d image saved</item>

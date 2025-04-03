@@ -13,17 +13,15 @@ import androidx.compose.ui.window.PopupProperties
 
 @Composable
 fun SuggestionDropdown(
-    expanded: Boolean,
     suggestions: List<String>,
-    text: String,
     onItemSelected: (item: String) -> Unit,
 ) {
     DropdownMenu(
-        expanded = expanded,
+        expanded = suggestions.isNotEmpty(),
         modifier = Modifier
             .width(200.dp)
-            .heightIn(0.dp, 200.dp),
-        onDismissRequest = { onItemSelected(text) },
+            .heightIn(max = 200.dp),
+        onDismissRequest = { },
         properties = PopupProperties(
             focusable = false,
             dismissOnBackPress = true,
@@ -43,9 +41,7 @@ fun SuggestionDropdown(
 @Composable
 private fun SuggestionDropdownPreview() {
     SuggestionDropdown(
-        expanded = true,
         suggestions = "hello world this is a test".split(" "),
-        text = "",
         onItemSelected = {},
     )
 }

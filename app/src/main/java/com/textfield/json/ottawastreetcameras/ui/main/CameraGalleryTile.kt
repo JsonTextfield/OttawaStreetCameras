@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,11 +46,12 @@ fun CameraGalleryTile(
     camera: Camera = Camera(),
     onClick: (Camera) -> Unit = {},
     onLongClick: (Camera) -> Unit = {},
+    modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .clip(shape = RoundedCornerShape(10.dp))
-            .aspectRatio(1f),
+            .aspectRatio(1f).semantics(true){},
     ) {
         Surface(
             modifier = Modifier.combinedClickable(
@@ -68,7 +70,7 @@ fun CameraGalleryTile(
             }
             AsyncImage(
                 model = model,
-                contentDescription = camera.name,
+                contentDescription = null,
                 modifier = Modifier
                     .fillMaxSize()
                     .align(Alignment.Center)

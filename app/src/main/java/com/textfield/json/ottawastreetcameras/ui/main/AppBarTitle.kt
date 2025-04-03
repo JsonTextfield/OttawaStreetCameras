@@ -6,28 +6,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.ui.components.SearchBar
-import com.textfield.json.ottawastreetcameras.ui.components.SearchBarContent
 import com.textfield.json.ottawastreetcameras.ui.components.SuggestionDropdown
 
 @Composable
 fun AppBarTitle(
-    mainViewModel: MainViewModel,
+    cameraState: CameraState = CameraState(),
     onClick: () -> Unit = {},
+    onTextChanged: (String) -> Unit = {},
+    searchText: String = "",
+    suggestions: List<String> = emptyList(),
 ) {
-    val cameraState by mainViewModel.cameraState.collectAsStateWithLifecycle()
     if (cameraState.selectedCameras.isNotEmpty()) {
         Text(
             pluralStringResource(
@@ -64,44 +60,28 @@ fun AppBarTitle(
 
             SearchMode.NAME -> {
                 SearchBar(
-                    pluralStringResource(
+                    hintText = pluralStringResource(
                         R.plurals.search_hint,
-                        cameraState.displayedCameras.size,
-                        cameraState.displayedCameras.size
-                    )
-                ) {
-                    mainViewModel.searchCameras(cameraState.searchMode, it)
-                }
+                        cameraState.getDisplayedCameras().size,
+                        cameraState.getDisplayedCameras().size
+                    ),
+                    value = searchText,
+                    onValueChange = onTextChanged,
+                )
             }
 
             SearchMode.NEIGHBOURHOOD -> {
                 Box {
-                    var value by rememberSaveable { mutableStateOf("") }
-                    val suggestionList = cameraState.neighbourhoods.filter {
-                        it.contains(value, true)
-                    }
-                    val expanded =
-                        cameraState.searchMode == SearchMode.NEIGHBOURHOOD
-                                && value.isNotEmpty()
-                                && suggestionList.isNotEmpty()
-                                && suggestionList.all {
-                            !it.equals(value, true)
-                        }
-
-                    SuggestionDropdown(expanded, suggestionList, value) {
-                        value = it
-                        mainViewModel.searchCameras(cameraState.searchMode, value)
-                    }
-                    SearchBarContent(
-                        pluralStringResource(
+                    SuggestionDropdown(suggestions, onTextChanged)
+                    SearchBar(
+                        hintText = pluralStringResource(
                             R.plurals.search_hint_neighbourhood,
                             cameraState.neighbourhoods.size,
                             cameraState.neighbourhoods.size,
-                        ), value
-                    ) {
-                        value = it
-                        mainViewModel.searchCameras(cameraState.searchMode, value)
-                    }
+                        ),
+                        value = searchText,
+                        onValueChange = onTextChanged,
+                    )
                 }
             }
         }

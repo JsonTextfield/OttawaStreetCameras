@@ -25,17 +25,21 @@ class CameraViewModel @Inject constructor(
     private var _cameraList = MutableStateFlow<List<Camera>>(emptyList())
     val cameraList: StateFlow<List<Camera>> = _cameraList.asStateFlow()
 
-    fun getAllCameras() {
+    init {
         viewModelScope.launch(dispatcher) {
             _allCameras.value = cameraRepository.getAllCameras()
         }
     }
 
     fun getCameras(ids: String) {
-        _cameraList.value = _allCameras.value.filter { camera -> camera.id in ids }
+        viewModelScope.launch(dispatcher) {
+            _cameraList.value = _allCameras.value.filter { camera -> camera.id in ids }
+        }
     }
 
     fun getRandomCamera() {
-        _cameraList.value = listOf(_allCameras.value.random())
+        viewModelScope.launch(dispatcher) {
+            _cameraList.value = listOf(_allCameras.value.random())
+        }
     }
 }

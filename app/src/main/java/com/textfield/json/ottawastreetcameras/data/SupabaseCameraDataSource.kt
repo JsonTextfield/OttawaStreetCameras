@@ -7,7 +7,7 @@ import io.github.jan.supabase.postgrest.from
 import javax.inject.Inject
 
 class SupabaseCameraDataSource @Inject constructor(private val supabaseClient: SupabaseClient) :
-    CameraDataSource {
+    ICameraDataSource {
 
     override suspend fun getAllCameras(): List<Camera> {
         return supabaseClient.from("cameras").select {

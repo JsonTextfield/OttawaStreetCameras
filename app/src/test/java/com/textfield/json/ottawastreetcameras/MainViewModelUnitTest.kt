@@ -1,9 +1,6 @@
 package com.textfield.json.ottawastreetcameras
 
-import com.textfield.json.ottawastreetcameras.data.CameraDataSource
 import com.textfield.json.ottawastreetcameras.data.CameraRepository
-import com.textfield.json.ottawastreetcameras.entities.BilingualObject
-import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.entities.CameraApiModel
 import com.textfield.json.ottawastreetcameras.entities.LocationApiModel
 import com.textfield.json.ottawastreetcameras.ui.main.CameraState
@@ -11,42 +8,49 @@ import com.textfield.json.ottawastreetcameras.ui.main.FilterMode
 import com.textfield.json.ottawastreetcameras.ui.main.MainViewModel
 import com.textfield.json.ottawastreetcameras.ui.main.SearchMode
 import com.textfield.json.ottawastreetcameras.ui.main.SortMode
+import com.textfield.json.ottawastreetcameras.ui.main.UIState
 import com.textfield.json.ottawastreetcameras.ui.main.ViewMode
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
-import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import kotlin.random.Random
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class MainViewModelUnitTest {
 
-    private lateinit var mainViewModel: MainViewModel
+    @get:Rule
+    var mainCoroutineRule = MainCoroutineRule()
 
-    class FakeCameraDataSource : CameraDataSource {
-        override suspend fun getAllCameras(): List<Camera> {
-            return (0 until 100).map {
-                Camera(
-                    id = "$it",
-                    _name = BilingualObject("Camera $it", "Camera $it"),
-                )
-            }
-        }
-    }
+    private lateinit var mainViewModel: MainViewModel
+    private lateinit var fakeCameraDataSource: FakeCameraDataSource
+    private lateinit var prefs: FakePreferences
 
     @Before
     fun setup() {
-        mainViewModel = MainViewModel(CameraRepository(FakeCameraDataSource()))
+        fakeCameraDataSource = FakeCameraDataSource()
+        prefs = FakePreferences()
+        mainViewModel = MainViewModel(
+            cameraRepository = CameraRepository(fakeCameraDataSource),
+            prefs = prefs,
+            dispatcher = UnconfinedTestDispatcher()
+        )
     }
 
     @Test
-    fun testChangeViewMode() {
+    fun testChangeViewMode() = runTest {
         mainViewModel.changeViewMode(ViewMode.MAP)
+        advanceUntilIdle()
         assertEquals(ViewMode.MAP, mainViewModel.cameraState.value.viewMode)
 
         mainViewModel.changeViewMode(ViewMode.GALLERY)
+        advanceUntilIdle()
         assertEquals(ViewMode.GALLERY, mainViewModel.cameraState.value.viewMode)
     }
 
@@ -69,21 +73,24 @@ class MainViewModelUnitTest {
     }
 
     @Test
-    fun testChangeSearchMode() {
+    fun testChangeSearchMode() = runTest {
         mainViewModel.searchCameras(SearchMode.NEIGHBOURHOOD)
+        advanceUntilIdle()
         assertEquals(SearchMode.NEIGHBOURHOOD, mainViewModel.cameraState.value.searchMode)
 
         mainViewModel.searchCameras(SearchMode.NAME)
+        advanceUntilIdle()
         assertEquals(SearchMode.NAME, mainViewModel.cameraState.value.searchMode)
     }
 
     @Test
-    fun testSearchCameras() {
+    fun testSearchCameras() = runTest {
         mainViewModel = MainViewModel(
-            cameraRepository = CameraRepository(FakeCameraDataSource()),
+            cameraRepository = CameraRepository(fakeCameraDataSource),
+            prefs = prefs,
             _cameraState = MutableStateFlow(
                 CameraState(
-                    allCameras = (0 until 10).map {
+                    allCameras = List(10) {
                         CameraApiModel(
                             nameEn = "Camera $it",
                             neighbourhoodEn = if (it == 1) "neighbourhood" else "",
@@ -95,27 +102,48 @@ class MainViewModelUnitTest {
                     },
                 ),
             ),
+            dispatcher = UnconfinedTestDispatcher(),
         )
 
         mainViewModel.searchCameras(SearchMode.NAME, "Camera 5")
-        assertEquals(1, mainViewModel.cameraState.value.displayedCameras.size)
+        advanceUntilIdle()
+        assertEquals(
+            true,
+            mainViewModel.cameraState.value.getDisplayedCameras("Camera 5")
+                .all { it.name.contains("Camera 5") })
 
         mainViewModel.searchCameras(SearchMode.NONE, "any")
-        assertEquals(10, mainViewModel.cameraState.value.displayedCameras.size)
+        advanceUntilIdle()
+        assertEquals(
+            mainViewModel.cameraState.value.allCameras.size,
+            mainViewModel.cameraState.value.getDisplayedCameras("any").size
+        )
 
         mainViewModel.searchCameras(SearchMode.NEIGHBOURHOOD, "")
-        assertEquals(10, mainViewModel.cameraState.value.displayedCameras.size)
+        advanceUntilIdle()
+        assertEquals(
+            mainViewModel.cameraState.value.allCameras.size,
+            mainViewModel.cameraState.value.getDisplayedCameras("").size
+        )
 
         mainViewModel.searchCameras(SearchMode.NAME, "")
-        assertEquals(10, mainViewModel.cameraState.value.displayedCameras.size)
+        advanceUntilIdle()
+        assertEquals(
+            mainViewModel.cameraState.value.allCameras.size,
+            mainViewModel.cameraState.value.getDisplayedCameras("").size
+        )
 
         mainViewModel.searchCameras(SearchMode.NEIGHBOURHOOD, "neighbourhood")
-        assertEquals(1, mainViewModel.cameraState.value.displayedCameras.size)
+        advanceUntilIdle()
+        assertEquals(
+            true,
+            mainViewModel.cameraState.value.getDisplayedCameras("neighbourhood")
+                .all { it.neighbourhood.contains("neighbourhood") })
     }
 
     @Test
     fun testSelectAllCameras() {
-        val allCameras = (0 until 10).map {
+        val allCameras = List(10) {
             CameraApiModel(
                 nameEn = "Camera $it",
                 location = LocationApiModel(
@@ -125,27 +153,26 @@ class MainViewModelUnitTest {
             ).toCamera()
         }
         mainViewModel = MainViewModel(
-            cameraRepository = CameraRepository(FakeCameraDataSource()),
+            cameraRepository = CameraRepository(fakeCameraDataSource),
+            prefs = prefs,
             _cameraState = MutableStateFlow(
-                CameraState(
-                    allCameras = allCameras,
-                    displayedCameras = allCameras,
-                ),
+                CameraState(allCameras = allCameras),
             ),
+            dispatcher = UnconfinedTestDispatcher(),
         )
 
         mainViewModel.selectAllCameras()
 
         assertNotEquals(0, mainViewModel.cameraState.value.selectedCameras.size)
         assertEquals(
-            mainViewModel.cameraState.value.displayedCameras.size,
+            mainViewModel.cameraState.value.allCameras.size,
             mainViewModel.cameraState.value.selectedCameras.size
         )
     }
 
     @Test
     fun testClearSelectedCameras() {
-        val allCameras = (0 until 10).map {
+        val allCameras = List(10) {
             CameraApiModel(
                 nameEn = "Camera $it",
                 location = LocationApiModel(
@@ -155,13 +182,14 @@ class MainViewModelUnitTest {
             ).toCamera()
         }
         mainViewModel = MainViewModel(
-            cameraRepository = CameraRepository(FakeCameraDataSource()),
+            cameraRepository = CameraRepository(fakeCameraDataSource),
+            prefs = prefs,
             _cameraState = MutableStateFlow(
                 CameraState(
                     allCameras = allCameras,
-                    displayedCameras = allCameras,
                 ),
             ),
+            dispatcher = UnconfinedTestDispatcher(),
         )
 
         mainViewModel.selectAllCameras()
@@ -173,7 +201,7 @@ class MainViewModelUnitTest {
 
     @Test
     fun testSelectCamera() {
-        val allCameras = (0 until 10).map {
+        val allCameras = List(10) {
             CameraApiModel(
                 nameEn = "Camera $it",
                 location = LocationApiModel(
@@ -183,20 +211,22 @@ class MainViewModelUnitTest {
             ).toCamera()
         }
         mainViewModel = MainViewModel(
-            cameraRepository = CameraRepository(FakeCameraDataSource()),
+            cameraRepository = CameraRepository(fakeCameraDataSource),
+            prefs = prefs,
             _cameraState = MutableStateFlow(CameraState(allCameras = allCameras)),
+            dispatcher = UnconfinedTestDispatcher(),
         )
 
-        assertTrue(mainViewModel.cameraState.value.selectedCameras.isEmpty())
+        assertEquals(true, mainViewModel.cameraState.value.selectedCameras.isEmpty())
 
         mainViewModel.selectCamera(mainViewModel.cameraState.value.allCameras.first())
 
-        assertFalse(mainViewModel.cameraState.value.selectedCameras.isEmpty())
+        assertEquals(false, mainViewModel.cameraState.value.selectedCameras.isEmpty())
     }
 
     @Test
-    fun testFavouriteSelectedCameras() {
-        val allCameras = (0 until 10).map {
+    fun testFavouriteSelectedCameras() = runTest {
+        val allCameras = List(10) {
             CameraApiModel(
                 id = "$it",
                 nameEn = "Camera $it",
@@ -207,22 +237,24 @@ class MainViewModelUnitTest {
             ).toCamera()
         }
         mainViewModel = MainViewModel(
-            cameraRepository = CameraRepository(FakeCameraDataSource()),
+            cameraRepository = CameraRepository(fakeCameraDataSource),
+            prefs = prefs,
             _cameraState = MutableStateFlow(CameraState(allCameras = allCameras)),
+            dispatcher = UnconfinedTestDispatcher(),
         )
 
         mainViewModel.selectCamera(mainViewModel.cameraState.value.allCameras[1])
         mainViewModel.selectCamera(mainViewModel.cameraState.value.allCameras[4])
 
         mainViewModel.favouriteCameras(mainViewModel.cameraState.value.selectedCameras)
-
-        assertTrue(mainViewModel.cameraState.value.allCameras[1].isFavourite)
-        assertTrue(mainViewModel.cameraState.value.allCameras[4].isFavourite)
+        advanceUntilIdle()
+        assertEquals(true, mainViewModel.cameraState.value.allCameras[1].isFavourite)
+        assertEquals(true, mainViewModel.cameraState.value.allCameras[4].isFavourite)
     }
 
     @Test
-    fun testHideSelectedCameras() {
-        val allCameras = (0 until 10).map {
+    fun testHideSelectedCameras() = runTest {
+        val allCameras = List(10) {
             CameraApiModel(
                 id = "$it",
                 nameEn = "Camera $it",
@@ -233,16 +265,55 @@ class MainViewModelUnitTest {
             ).toCamera()
         }
         mainViewModel = MainViewModel(
-            cameraRepository = CameraRepository(FakeCameraDataSource()),
+            cameraRepository = CameraRepository(fakeCameraDataSource),
+            prefs = prefs,
             _cameraState = MutableStateFlow(CameraState(allCameras = allCameras)),
+            dispatcher = UnconfinedTestDispatcher(),
         )
+
+        assertEquals(true, mainViewModel.cameraState.value.allCameras[5].isVisible)
+        assertEquals(true, mainViewModel.cameraState.value.allCameras[8].isVisible)
 
         mainViewModel.selectCamera(mainViewModel.cameraState.value.allCameras[5])
         mainViewModel.selectCamera(mainViewModel.cameraState.value.allCameras[8])
 
         mainViewModel.hideCameras(mainViewModel.cameraState.value.selectedCameras)
+        advanceUntilIdle()
 
-        assertFalse(mainViewModel.cameraState.value.allCameras[5].isVisible)
-        assertFalse(mainViewModel.cameraState.value.allCameras[8].isVisible)
+        assertEquals(false, mainViewModel.cameraState.value.allCameras[5].isVisible)
+        assertEquals(false, mainViewModel.cameraState.value.allCameras[8].isVisible)
+    }
+
+    @Test
+    fun `test getAllCameras returns an error when the result is empty`() = runTest {
+        fakeCameraDataSource.returnEmptyList = true
+        mainViewModel = MainViewModel(
+            cameraRepository = CameraRepository(fakeCameraDataSource),
+            prefs = prefs,
+            dispatcher = UnconfinedTestDispatcher()
+        )
+        mainViewModel.getAllCameras()
+        advanceUntilIdle()
+        assertEquals(UIState.ERROR, mainViewModel.cameraState.value.uiState)
+    }
+
+    @Test
+    fun `test resetFilters`() = runTest {
+        mainViewModel.changeFilterMode(FilterMode.FAVOURITE)
+        mainViewModel.searchCameras(SearchMode.NAME, "")
+        advanceUntilIdle()
+        mainViewModel.resetFilters()
+        advanceUntilIdle()
+        assertEquals(FilterMode.VISIBLE, mainViewModel.cameraState.value.filterMode)
+        assertEquals(SearchMode.NONE, mainViewModel.cameraState.value.searchMode)
+    }
+
+    @Test
+    fun `test unapply filterMode`() = runTest {
+        mainViewModel.changeFilterMode(FilterMode.FAVOURITE)
+        advanceUntilIdle()
+        mainViewModel.changeFilterMode(FilterMode.FAVOURITE)
+        advanceUntilIdle()
+        assertEquals(FilterMode.VISIBLE, mainViewModel.cameraState.value.filterMode)
     }
 }
