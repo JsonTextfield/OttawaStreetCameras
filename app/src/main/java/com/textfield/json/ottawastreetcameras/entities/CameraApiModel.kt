@@ -12,22 +12,18 @@ data class CameraApiModel(
     private val location: LocationApiModel = LocationApiModel(),
     private val url: String = "",
 ) {
-    fun toCamera(): Camera {
-        val name = BilingualObject(
+    fun toCamera(): Camera = Camera(
+        id = id,
+        _name = BilingualObject(
             en = nameEn,
             fr = nameFr,
-        )
-        val neighbourhood = BilingualObject(
+        ),
+        _neighbourhood = BilingualObject(
             en = neighbourhoodEn,
             fr = neighbourhoodFr,
-        )
-        return Camera(
-            id = id,
-            _name = name,
-            _neighbourhood = neighbourhood,
-            lat = location.lat,
-            lon = location.lon,
-            _url = url,
-        )
-    }
+        ),
+        lat = location.lat,
+        lon = location.lon,
+        _url = url,
+    )
 }

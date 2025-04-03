@@ -34,7 +34,6 @@ class CameraViewModel @Inject constructor(
     fun getCameras(ids: String) {
         viewModelScope.launch(dispatcher) {
             _cameraList.value = _allCameras.value.filter { camera -> camera.id in ids }
-            _cameraList.value = _allCameras.value.filter { camera -> camera.id in ids }
         }
     }
 

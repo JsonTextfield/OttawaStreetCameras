@@ -75,8 +75,8 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideCameraRepository(dataSource: ICameraDataSource, prefs: IPreferencesRepository): ICameraRepository {
-        return CameraRepository(dataSource, prefs)
+    fun provideCameraRepository(dataSource: ICameraDataSource): ICameraRepository {
+        return CameraRepository(dataSource)
     }
 
     @Singleton

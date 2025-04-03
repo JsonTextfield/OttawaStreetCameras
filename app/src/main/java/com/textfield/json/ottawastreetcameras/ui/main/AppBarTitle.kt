@@ -62,8 +62,8 @@ fun AppBarTitle(
                 SearchBar(
                     hintText = pluralStringResource(
                         R.plurals.search_hint,
-                        cameraState.getDisplayedCameras(searchText = "").size,
-                        cameraState.getDisplayedCameras(searchText = "").size
+                        cameraState.getDisplayedCameras().size,
+                        cameraState.getDisplayedCameras().size
                     ),
                     value = searchText,
                     onValueChange = onTextChanged,

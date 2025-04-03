@@ -37,7 +37,7 @@ class MainViewModelUnitTest {
         fakeCameraDataSource = FakeCameraDataSource()
         prefs = FakePreferences()
         mainViewModel = MainViewModel(
-            cameraRepository = CameraRepository(fakeCameraDataSource, prefs),
+            cameraRepository = CameraRepository(fakeCameraDataSource),
             prefs = prefs,
             dispatcher = UnconfinedTestDispatcher()
         )
@@ -86,7 +86,7 @@ class MainViewModelUnitTest {
     @Test
     fun testSearchCameras() = runTest {
         mainViewModel = MainViewModel(
-            cameraRepository = CameraRepository(fakeCameraDataSource, prefs),
+            cameraRepository = CameraRepository(fakeCameraDataSource),
             prefs = prefs,
             _cameraState = MutableStateFlow(
                 CameraState(
@@ -153,7 +153,7 @@ class MainViewModelUnitTest {
             ).toCamera()
         }
         mainViewModel = MainViewModel(
-            cameraRepository = CameraRepository(fakeCameraDataSource, prefs),
+            cameraRepository = CameraRepository(fakeCameraDataSource),
             prefs = prefs,
             _cameraState = MutableStateFlow(
                 CameraState(allCameras = allCameras),
@@ -182,7 +182,7 @@ class MainViewModelUnitTest {
             ).toCamera()
         }
         mainViewModel = MainViewModel(
-            cameraRepository = CameraRepository(fakeCameraDataSource, prefs),
+            cameraRepository = CameraRepository(fakeCameraDataSource),
             prefs = prefs,
             _cameraState = MutableStateFlow(
                 CameraState(
@@ -211,7 +211,7 @@ class MainViewModelUnitTest {
             ).toCamera()
         }
         mainViewModel = MainViewModel(
-            cameraRepository = CameraRepository(fakeCameraDataSource, prefs),
+            cameraRepository = CameraRepository(fakeCameraDataSource),
             prefs = prefs,
             _cameraState = MutableStateFlow(CameraState(allCameras = allCameras)),
             dispatcher = UnconfinedTestDispatcher(),
@@ -237,7 +237,7 @@ class MainViewModelUnitTest {
             ).toCamera()
         }
         mainViewModel = MainViewModel(
-            cameraRepository = CameraRepository(fakeCameraDataSource, prefs),
+            cameraRepository = CameraRepository(fakeCameraDataSource),
             prefs = prefs,
             _cameraState = MutableStateFlow(CameraState(allCameras = allCameras)),
             dispatcher = UnconfinedTestDispatcher(),
@@ -265,7 +265,7 @@ class MainViewModelUnitTest {
             ).toCamera()
         }
         mainViewModel = MainViewModel(
-            cameraRepository = CameraRepository(fakeCameraDataSource, prefs),
+            cameraRepository = CameraRepository(fakeCameraDataSource),
             prefs = prefs,
             _cameraState = MutableStateFlow(CameraState(allCameras = allCameras)),
             dispatcher = UnconfinedTestDispatcher(),
@@ -288,7 +288,7 @@ class MainViewModelUnitTest {
     fun `test getAllCameras returns an error when the result is empty`() = runTest {
         fakeCameraDataSource.returnEmptyList = true
         mainViewModel = MainViewModel(
-            cameraRepository = CameraRepository(fakeCameraDataSource, prefs),
+            cameraRepository = CameraRepository(fakeCameraDataSource),
             prefs = prefs,
             dispatcher = UnconfinedTestDispatcher()
         )

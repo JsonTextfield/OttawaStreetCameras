@@ -20,7 +20,7 @@ fun SuggestionDropdown(
         expanded = suggestions.isNotEmpty(),
         modifier = Modifier
             .width(200.dp)
-            .heightIn(0.dp, 200.dp),
+            .heightIn(max = 200.dp),
         onDismissRequest = { },
         properties = PopupProperties(
             focusable = false,

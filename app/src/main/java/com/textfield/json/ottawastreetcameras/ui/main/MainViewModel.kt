@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -73,9 +74,27 @@ class MainViewModel @Inject constructor(
 
     fun changeSortMode(sortMode: SortMode, location: Location? = null) {
         _cameraState.update {
+            val allCameras = it.allCameras.map { camera ->
+                camera.copy(
+                    distance = if (location != null) {
+                        val result = FloatArray(1)
+                        Location.distanceBetween(
+                            location.latitude,
+                            location.longitude,
+                            camera.lat,
+                            camera.lon,
+                            result
+                        )
+                        result[0].roundToInt()
+                    }
+                    else {
+                        -1
+                    }
+                )
+            }
             it.copy(
+                allCameras = allCameras,
                 sortMode = sortMode,
-                location = location,
             )
         }
     }
@@ -98,7 +117,14 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(dispatcher) {
             val allFavourite = cameras.all { it.isFavourite }
             prefs.favourite(cameras.map { it.id }, !allFavourite)
-            _cameraState.update { it.copy(allCameras = cameraRepository.getAllCameras()) }
+            val favourites = prefs.getFavourites()
+            _cameraState.update {
+                it.copy(
+                    allCameras = it.allCameras.map { camera ->
+                        camera.copy(isFavourite = camera.id in favourites)
+                    }
+                )
+            }
         }
     }
 
@@ -108,8 +134,13 @@ class MainViewModel @Inject constructor(
                 .filter { it in cameras }
                 .any { it.isVisible }
             prefs.setVisibility(cameras.map { it.id }, !anyVisible)
+            val hidden = prefs.getHidden()
             _cameraState.update {
-                it.copy(allCameras = cameraRepository.getAllCameras())
+                it.copy(
+                    allCameras = it.allCameras.map { camera ->
+                        camera.copy(isVisible = camera.id !in hidden)
+                    }
+                )
             }
         }
     }

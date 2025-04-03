@@ -15,9 +15,9 @@ data class Camera(
     private val _url: String = "",
     val isFavourite: Boolean = false,
     val isVisible: Boolean = true,
-    val isSelected: Boolean = false
+    val isSelected: Boolean = false,
+    val distance: Int = -1
 ) {
-    var distance = -1
 
     val name: String get() = _name.name
     val sortableName: String get() = _name.sortableName

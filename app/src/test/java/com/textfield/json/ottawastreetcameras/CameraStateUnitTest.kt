@@ -53,7 +53,7 @@ class CameraStateUnitTest {
         })
         val allFavourite = cameraState.favouriteCameras
 
-        assertEquals(true,allFavourite.all { it.isFavourite })
+        assertEquals(true, allFavourite.all { it.isFavourite })
     }
 
     @Test
@@ -66,7 +66,7 @@ class CameraStateUnitTest {
         })
         val allHidden = cameraState.hiddenCameras
 
-        assertEquals(true,allHidden.all { !it.isVisible })
+        assertEquals(true, allHidden.all { !it.isVisible })
     }
 
     @Test
@@ -124,7 +124,7 @@ class CameraStateUnitTest {
             cameraState.getDisplayedCameras(searchText = ""),
             cameras
                 .filter { it.isVisible }
-                .sortedWith(SortByName)
+                .sortedBy { it.sortableName }
         )
 
         cameraState = cameraState.copy(
@@ -137,7 +137,7 @@ class CameraStateUnitTest {
             cameras
                 .filter { it.isFavourite }
                 .filter { it.name.trim().contains("l", true) }
-                .sortedWith(SortByNeighbourhood)
+                .sortedWith(compareBy({ it.neighbourhood }, { it.sortableName }))
         )
     }
 }
