@@ -130,11 +130,12 @@ class MainViewModel @Inject constructor(
 
     fun hideCameras(cameras: List<Camera>) {
         viewModelScope.launch(dispatcher) {
-            val anyVisible = _cameraState.value.allCameras
-                .filter { it in cameras }
-                .any { it.isVisible }
-            prefs.setVisibility(cameras.map { it.id }, !anyVisible)
-            val hidden = prefs.getHidden()
+            var hidden = prefs.getHidden()
+            prefs.setVisibility(
+                cameras.map { it.id },
+                cameras.first().id in hidden,
+            )
+            hidden = prefs.getHidden()
             _cameraState.update {
                 it.copy(
                     allCameras = it.allCameras.map { camera ->
