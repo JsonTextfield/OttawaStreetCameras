@@ -15,15 +15,15 @@ class PreferencesDataStorePreferencesRepository @Inject constructor(private val 
     IPreferencesRepository {
 
     override suspend fun favourite(ids: Collection<String>, value: Boolean) {
-        val key = stringSetPreferencesKey("favourites")
         dataStore.edit { preferences ->
-            val currentFavourites = preferences[key] ?: emptySet()
+            val currentFavourites = getFavourites().toMutableSet()
             val newFavourites = if (value) {
                 currentFavourites + ids
             }
             else {
                 currentFavourites - ids.toSet()
             }
+            val key = stringSetPreferencesKey("favourites")
             preferences[key] = newFavourites
         }
     }
@@ -36,15 +36,15 @@ class PreferencesDataStorePreferencesRepository @Inject constructor(private val 
     }
 
     override suspend fun setVisibility(ids: Collection<String>, value: Boolean) {
-        val key = stringSetPreferencesKey("hidden")
         dataStore.edit { preferences ->
-            val currentHidden = preferences[key] ?: emptySet()
+            val currentHidden = getHidden().toMutableSet()
             val newHidden = if (!value) {
                 currentHidden + ids
             }
             else {
                 currentHidden - ids.toSet()
             }
+            val key = stringSetPreferencesKey("hidden")
             preferences[key] = newHidden
         }
     }
@@ -57,8 +57,8 @@ class PreferencesDataStorePreferencesRepository @Inject constructor(private val 
     }
 
     override suspend fun setTheme(theme: ThemeMode) {
-        val key = intPreferencesKey("theme")
         dataStore.edit { preferences ->
+            val key = intPreferencesKey("theme")
             preferences[key] = theme.ordinal
         }
     }
@@ -71,8 +71,8 @@ class PreferencesDataStorePreferencesRepository @Inject constructor(private val 
     }
 
     override suspend fun setViewMode(viewMode: ViewMode) {
-        val key = intPreferencesKey("viewMode")
         dataStore.edit { preferences ->
+            val key = intPreferencesKey("viewMode")
             preferences[key] = viewMode.ordinal
         }
     }
