@@ -26,6 +26,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.network.CameraDownloadService
 import com.textfield.json.ottawastreetcameras.ui.components.BackButton
+import com.textfield.json.ottawastreetcameras.ui.main.ThemeMode
+import com.textfield.json.ottawastreetcameras.ui.theme.LocalTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -74,12 +76,22 @@ fun CameraScreen(
                 .fillMaxWidth()
                 .windowInsetsTopHeight(WindowInsets.statusBars)
                 .background(
-                    if (isSystemInDarkTheme()) {
-                        Color.Black.copy(alpha = 0.3f)
-                    }
-                    else {
-                        Color.White.copy(alpha = 0.3f)
-                    }
+                    when (LocalTheme.current) {
+                        ThemeMode.LIGHT ->
+                            Color.White.copy(alpha = 0.3f)
+
+                        ThemeMode.DARK ->
+                            Color.Black.copy(alpha = 0.3f)
+
+                        ThemeMode.SYSTEM -> {
+                            if (isSystemInDarkTheme()) {
+                                Color.Black.copy(alpha = 0.3f)
+                            }
+                            else {
+                                Color.White.copy(alpha = 0.3f)
+                            }
+                        }
+                    },
                 )
         )
         Box(modifier = Modifier.padding(it)) {
