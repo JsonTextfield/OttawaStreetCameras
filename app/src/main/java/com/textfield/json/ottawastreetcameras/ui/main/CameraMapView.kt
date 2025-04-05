@@ -1,9 +1,17 @@
 package com.textfield.json.ottawastreetcameras.ui.main
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -18,6 +26,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.BilingualObject
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import com.textfield.json.ottawastreetcameras.ui.theme.LocalTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -47,11 +56,17 @@ fun CameraMapView(
         cameraPositionState = cameraPositionState,
         properties = MapProperties(
             latLngBoundsForCameraTarget = bounds,
-            mapStyleOptions = if (isSystemInDarkTheme()) {
-                MapStyleOptions.loadRawResourceStyle(context, R.raw.dark_mode)
-            }
-            else {
-                null
+            mapStyleOptions = when(LocalTheme.current) {
+                ThemeMode.LIGHT -> null
+                ThemeMode.DARK -> MapStyleOptions.loadRawResourceStyle(context, R.raw.dark_mode)
+                ThemeMode.SYSTEM -> {
+                    if (isSystemInDarkTheme()) {
+                        MapStyleOptions.loadRawResourceStyle(context, R.raw.dark_mode)
+                    }
+                    else {
+                        null
+                    }
+                }
             },
             isMyLocationEnabled = isMyLocationEnabled,
         ),
@@ -62,6 +77,10 @@ fun CameraMapView(
                 }
             }
         },
+        modifier = Modifier.padding(
+            bottom = WindowInsets.safeContent.asPaddingValues().calculateBottomPadding(),
+            end = WindowInsets.systemBars.asPaddingValues().calculateEndPadding(LayoutDirection.Ltr),
+        )
     ) {
         cameras.map { camera ->
             Marker(
@@ -87,6 +106,7 @@ fun CameraMapView(
 @Preview
 @Composable
 private fun CameraMapViewPreview() {
-    val cameraList = List(10) { Camera(_name = BilingualObject(en = "Camera $it", fr = "Caméra $it"))}
+    val cameraList =
+        List(10) { Camera(_name = BilingualObject(en = "Camera $it", fr = "Caméra $it")) }
     CameraMapView("", CameraState(allCameras = cameraList))
 }
