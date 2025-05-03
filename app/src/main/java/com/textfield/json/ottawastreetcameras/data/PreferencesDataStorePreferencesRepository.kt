@@ -9,11 +9,9 @@ import com.textfield.json.ottawastreetcameras.ui.main.ThemeMode
 import com.textfield.json.ottawastreetcameras.ui.main.ViewMode
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
-class PreferencesDataStorePreferencesRepository @Inject constructor(private val dataStore: DataStore<Preferences>) :
+class PreferencesDataStorePreferencesRepository(private val dataStore: DataStore<Preferences>) :
     IPreferencesRepository {
-
     override suspend fun favourite(ids: Collection<String>, value: Boolean) {
         dataStore.edit { preferences ->
             val currentFavourites = getFavourites().toMutableSet()

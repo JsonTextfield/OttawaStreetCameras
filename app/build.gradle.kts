@@ -5,7 +5,6 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
     id("com.google.devtools.ksp")
-    id("com.google.dagger.hilt.android")
     kotlin("plugin.serialization") version "1.9.24"
 }
 
@@ -69,10 +68,11 @@ dependencies {
 
     implementation(libs.multidex)
 
-    // Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.android.compiler)
-    implementation(libs.androidx.hilt.navigation.compose)
+    // Koin
+    implementation(libs.koin.compose)
+    implementation(libs.koin.compose.viewmodel)
+    implementation(libs.koin.compose.viewmodel.navigation)
+    implementation(libs.koin.android)
 
     // Google
     implementation(libs.play.services.oss.licenses)
@@ -97,7 +97,7 @@ dependencies {
 
     // Testing
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    testImplementation (libs.kotlinx.coroutines.test)
+    testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit)
     testImplementation(libs.json)
 }

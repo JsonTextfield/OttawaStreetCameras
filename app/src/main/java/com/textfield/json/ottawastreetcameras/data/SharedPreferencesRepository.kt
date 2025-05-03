@@ -4,9 +4,8 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.textfield.json.ottawastreetcameras.ui.main.ThemeMode
 import com.textfield.json.ottawastreetcameras.ui.main.ViewMode
-import javax.inject.Inject
 
-class SharedPreferencesRepository @Inject constructor(private val sharedPreferences: SharedPreferences) :
+class SharedPreferencesRepository (private val sharedPreferences: SharedPreferences) :
     IPreferencesRepository {
     override suspend fun favourite(ids: Collection<String>, value: Boolean) {
         sharedPreferences.edit {
