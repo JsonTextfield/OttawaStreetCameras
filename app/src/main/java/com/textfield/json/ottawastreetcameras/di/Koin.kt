@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.data.CameraRepository
 import com.textfield.json.ottawastreetcameras.data.ICameraDataSource
 import com.textfield.json.ottawastreetcameras.data.ICameraRepository
@@ -40,7 +41,7 @@ val appModule = module {
     single<SupabaseClient> {
         createSupabaseClient(
             supabaseUrl = "https://nacudfxzbqaesoyjfluh.supabase.co",
-            supabaseKey = API_KEY
+            supabaseKey = androidContext().getString(R.string.supabase_key)
         ) {
             install(Postgrest)
         }
