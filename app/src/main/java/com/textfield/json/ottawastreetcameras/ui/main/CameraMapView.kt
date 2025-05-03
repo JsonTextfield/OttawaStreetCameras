@@ -1,14 +1,13 @@
 package com.textfield.json.ottawastreetcameras.ui.main
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContent
-import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
@@ -56,7 +55,7 @@ fun CameraMapView(
         cameraPositionState = cameraPositionState,
         properties = MapProperties(
             latLngBoundsForCameraTarget = bounds,
-            mapStyleOptions = when(LocalTheme.current) {
+            mapStyleOptions = when (LocalTheme.current) {
                 ThemeMode.LIGHT -> null
                 ThemeMode.DARK -> MapStyleOptions.loadRawResourceStyle(context, R.raw.dark_mode)
                 ThemeMode.SYSTEM -> {
@@ -77,9 +76,12 @@ fun CameraMapView(
                 }
             }
         },
-        modifier = Modifier.padding(
-            bottom = WindowInsets.safeContent.asPaddingValues().calculateBottomPadding(),
-            end = WindowInsets.systemBars.asPaddingValues().calculateEndPadding(LayoutDirection.Ltr),
+        contentPadding = PaddingValues(
+            bottom = WindowInsets.safeDrawing.asPaddingValues().calculateBottomPadding(),
+            start = WindowInsets.safeDrawing.asPaddingValues()
+                .calculateStartPadding(LayoutDirection.Ltr),
+            end = WindowInsets.safeDrawing.asPaddingValues()
+                .calculateEndPadding(LayoutDirection.Ltr)
         )
     ) {
         cameras.map { camera ->
