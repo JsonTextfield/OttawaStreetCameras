@@ -33,7 +33,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.textfield.json.ottawastreetcameras.R
@@ -99,11 +98,10 @@ fun CameraGalleryTile(
                     camera.name,
                     modifier = Modifier.align(Alignment.BottomCenter),
                     color = Color.White,
+                    style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center,
-                    fontSize = 10.sp,
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
-                    lineHeight = 10.sp
                 )
             }
             if (camera.isFavourite) {

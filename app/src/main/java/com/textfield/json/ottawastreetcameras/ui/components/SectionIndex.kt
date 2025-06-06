@@ -37,7 +37,6 @@ import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -149,7 +148,7 @@ fun SectionIndex(
                 ) {
                     Text(
                         text = it.first,
-                        fontSize = 10.sp,
+                        style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.align(Alignment.Center),
                         textAlign = TextAlign.Center,
                         color = if (selectedKey == it.first) {
