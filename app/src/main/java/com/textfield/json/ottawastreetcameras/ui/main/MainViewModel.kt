@@ -187,7 +187,14 @@ class MainViewModel(
     fun getAllCameras() {
         _cameraState.update { it.copy(uiState = UIState.LOADING) }
         viewModelScope.launch {
-            val cameras = cameraRepository.getAllCameras()
+            val hidden = prefs.getHidden()
+            val favourites = prefs.getFavourites()
+            val cameras = cameraRepository.getAllCameras().map {
+                it.copy(
+                    isVisible = it.id !in hidden,
+                    isFavourite = it.id in favourites,
+                )
+            }
             if (cameras.isEmpty()) {
                 // show an error if the retrieved camera list is empty
                 _cameraState.update { it.copy(uiState = UIState.ERROR) }
