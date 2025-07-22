@@ -15,6 +15,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -66,7 +68,17 @@ fun MainAppBar(
             )
         },
         actions = {
-            ActionBar(getActions(mainViewModel, snackbarHostState, onNavigateToCameraScreen))
+            val screenWidthDp = LocalWindowInfo.current.containerSize.width / LocalDensity.current.density
+            val maxActions = when {
+                screenWidthDp < 400 -> screenWidthDp / 4 / 48
+                screenWidthDp < 600 -> screenWidthDp / 3 / 48
+                screenWidthDp < 800 -> screenWidthDp / 2 / 48
+                else -> screenWidthDp * 2 / 3 / 48
+            }.toInt()
+            ActionBar(
+                maxActions = maxActions,
+                actions = getActions(mainViewModel, snackbarHostState, onNavigateToCameraScreen),
+            )
         },
     )
 }

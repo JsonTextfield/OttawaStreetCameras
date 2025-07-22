@@ -35,7 +35,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
@@ -54,16 +53,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ActionBar(
+    maxActions: Int,
     actions: List<Action> = emptyList(),
 ) {
-    val screenWidthDp = LocalConfiguration.current.screenWidthDp
-    val maxActions = when {
-        screenWidthDp < 400 -> screenWidthDp / 4 / 48
-        screenWidthDp < 600 -> screenWidthDp / 3 / 48
-        screenWidthDp < 800 -> screenWidthDp / 2 / 48
-        else -> screenWidthDp * 2 / 3 / 48
-    }
-
     val visibleActions = actions.filter { it.isVisible }
 
     val displayActions = visibleActions.take(maxActions)
