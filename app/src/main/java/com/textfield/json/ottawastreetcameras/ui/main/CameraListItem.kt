@@ -33,11 +33,11 @@ import com.textfield.json.ottawastreetcameras.entities.Camera
 @Composable
 fun CameraListItem(
     camera: Camera,
+    modifier: Modifier = Modifier,
     showDistance: Boolean = false,
     onClick: (Camera) -> Unit = {},
     onLongClick: (Camera) -> Unit = {},
     onFavouriteClick: (Camera) -> Unit = {},
-    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier

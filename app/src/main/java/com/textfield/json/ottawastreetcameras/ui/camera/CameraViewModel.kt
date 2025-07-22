@@ -4,17 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.textfield.json.ottawastreetcameras.data.ICameraRepository
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class CameraViewModel @Inject constructor(
-    private val dispatcher: CoroutineDispatcher,
+class CameraViewModel(
     private val cameraRepository: ICameraRepository,
 ) :
     ViewModel() {
@@ -26,19 +21,19 @@ class CameraViewModel @Inject constructor(
     val cameraList: StateFlow<List<Camera>> = _cameraList.asStateFlow()
 
     init {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch {
             _allCameras.value = cameraRepository.getAllCameras()
         }
     }
 
     fun getCameras(ids: String) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch {
             _cameraList.value = _allCameras.value.filter { camera -> camera.id in ids }
         }
     }
 
     fun getRandomCamera() {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch {
             _cameraList.value = listOf(_allCameras.value.random())
         }
     }

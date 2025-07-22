@@ -8,9 +8,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.MaterialTheme
@@ -34,7 +37,6 @@ import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -129,7 +131,8 @@ fun SectionIndex(
                     }
                 }
                 true
-            },
+            }
+            .padding(bottom = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()),
         verticalArrangement = Arrangement.SpaceAround,
     ) {
         with(LocalDensity.current) {
@@ -145,7 +148,7 @@ fun SectionIndex(
                 ) {
                     Text(
                         text = it.first,
-                        fontSize = 10.sp,
+                        style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.align(Alignment.Center),
                         textAlign = TextAlign.Center,
                         color = if (selectedKey == it.first) {

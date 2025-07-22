@@ -24,10 +24,8 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import com.textfield.json.ottawastreetcameras.R
 
 @Composable
@@ -46,7 +44,9 @@ fun SearchBar(
             .fillMaxWidth()
             .focusRequester(focusRequester),
         singleLine = true,
-        textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface, fontSize = 14.sp),
+        textStyle = MaterialTheme.typography.bodySmall.copy(
+            color = MaterialTheme.colorScheme.onSurface
+        ),
         cursorBrush = SolidColor(MaterialTheme.colorScheme.inversePrimary),
         decorationBox = { innerTextField ->
             Box {
@@ -82,9 +82,10 @@ fun SearchBar(
                             .basicMarquee()
                             .align(Alignment.CenterStart),
                         maxLines = 1,
-                        fontSize = 14.sp,
                         softWrap = false,
-                        color = MaterialTheme.colorScheme.inversePrimary,
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            color = MaterialTheme.colorScheme.inversePrimary,
+                        )
                     )
                 }
             }

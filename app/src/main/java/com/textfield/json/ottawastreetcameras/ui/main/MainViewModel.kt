@@ -9,9 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.textfield.json.ottawastreetcameras.data.ICameraRepository
 import com.textfield.json.ottawastreetcameras.data.IPreferencesRepository
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,15 +16,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 import kotlin.math.roundToInt
 
-@HiltViewModel
-class MainViewModel @Inject constructor(
-    private val _cameraState: MutableStateFlow<CameraState> = MutableStateFlow(CameraState()),
+class MainViewModel(
+    private val _cameraState: MutableStateFlow<CameraState>,
     private val cameraRepository: ICameraRepository,
     private val prefs: IPreferencesRepository,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ViewModel() {
     private var searchJob: Job? = null
     val cameraState: StateFlow<CameraState> get() = _cameraState.asStateFlow()
@@ -52,21 +46,21 @@ class MainViewModel @Inject constructor(
     val theme: StateFlow<ThemeMode> get() = _theme.asStateFlow()
 
     init {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch {
             _theme.value = prefs.getTheme()
             getAllCameras()
         }
     }
 
     fun changeTheme(theme: ThemeMode) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch {
             prefs.setTheme(theme)
             _theme.value = theme
         }
     }
 
     fun changeViewMode(viewMode: ViewMode) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch {
             prefs.setViewMode(viewMode)
             _cameraState.update { it.copy(viewMode = viewMode) }
         }
@@ -114,7 +108,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun favouriteCameras(cameras: List<Camera>) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch {
             val allFavourite = cameras.all { it.isFavourite }
             prefs.favourite(cameras.map { it.id }, !allFavourite)
             val favourites = prefs.getFavourites()
@@ -129,7 +123,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun hideCameras(cameras: List<Camera>) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch {
             var hidden = prefs.getHidden()
             prefs.setVisibility(
                 cameras.map { it.id },
@@ -175,7 +169,7 @@ class MainViewModel @Inject constructor(
     fun searchCameras(searchMode: SearchMode = SearchMode.NONE, searchText: String = "") {
         searchJob?.cancel()
         this.searchText = searchText
-        searchJob = viewModelScope.launch(dispatcher) {
+        searchJob = viewModelScope.launch {
             delay(1000)
             _cameraState.update { it.copy(searchMode = searchMode) }
         }
@@ -192,8 +186,15 @@ class MainViewModel @Inject constructor(
 
     fun getAllCameras() {
         _cameraState.update { it.copy(uiState = UIState.LOADING) }
-        viewModelScope.launch(dispatcher) {
-            val cameras = cameraRepository.getAllCameras()
+        viewModelScope.launch {
+            val hidden = prefs.getHidden()
+            val favourites = prefs.getFavourites()
+            val cameras = cameraRepository.getAllCameras().map {
+                it.copy(
+                    isVisible = it.id !in hidden,
+                    isFavourite = it.id in favourites,
+                )
+            }
             if (cameras.isEmpty()) {
                 // show an error if the retrieved camera list is empty
                 _cameraState.update { it.copy(uiState = UIState.ERROR) }

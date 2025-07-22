@@ -9,7 +9,6 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,15 +19,14 @@ import com.textfield.json.ottawastreetcameras.ui.camera.CameraViewModel
 import com.textfield.json.ottawastreetcameras.ui.main.MainScreen
 import com.textfield.json.ottawastreetcameras.ui.main.MainViewModel
 import com.textfield.json.ottawastreetcameras.ui.theme.AppTheme
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.compose.viewmodel.koinViewModel
 
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContent {
-            val mainViewModel = hiltViewModel<MainViewModel>()
+            val mainViewModel = koinViewModel<MainViewModel>()
             val theme by mainViewModel.theme.collectAsStateWithLifecycle()
             val navController = rememberNavController()
             AppTheme(theme = theme) {
@@ -52,7 +50,7 @@ class MainActivity : ComponentActivity() {
                             exitTransition = { slideOutHorizontally(targetOffsetX = { it }) },
                         ) {
                             val route = it.toRoute<CameraRoute>()
-                            val cameraViewModel = hiltViewModel<CameraViewModel>()
+                            val cameraViewModel = koinViewModel<CameraViewModel>()
                             LaunchedEffect(Unit) {
                                 if (route.isShuffling) {
                                     cameraViewModel.getRandomCamera()

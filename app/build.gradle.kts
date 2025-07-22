@@ -1,12 +1,9 @@
 plugins {
-    id("com.android.application")
-    id("kotlin-android")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.compiler)
     id("com.google.android.gms.oss-licenses-plugin")
-    id("org.jetbrains.kotlin.android")
-    id("kotlin-parcelize")
-    id("com.google.devtools.ksp")
-    id("com.google.dagger.hilt.android")
-    kotlin("plugin.serialization") version "1.9.24"
+    kotlin("plugin.serialization") version libs.versions.kotlin
 }
 
 android {
@@ -18,8 +15,8 @@ android {
         minSdk = 28
         compileSdk = 35
         targetSdk = 35
-        versionCode = 37
-        versionName = "2.4.0"
+        versionCode = 41
+        versionName = "2.4.4"
         vectorDrawables { useSupportLibrary = true }
     }
     kotlinOptions {
@@ -30,12 +27,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
-        compose = true
         buildConfig = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.14"
     }
 
     signingConfigs {
@@ -62,17 +54,16 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.appcompat)
+
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
 
     implementation(libs.multidex)
 
-    // Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.android.compiler)
-    implementation(libs.androidx.hilt.navigation.compose)
+    // Koin
+    implementation(libs.koin.compose.viewmodel.navigation)
+    implementation(libs.koin.android)
 
     // Google
     implementation(libs.play.services.oss.licenses)
@@ -80,24 +71,26 @@ dependencies {
 
     // Compose
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.material3)
     implementation(libs.androidx.ui.tooling.preview)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.material.icons.extended)
+
     implementation(libs.coil.compose)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.material3)
 
     // Supabase
-    implementation(platform(libs.bom))
-    implementation(libs.postgrest.kt)
+    implementation(platform(libs.supabase.bom))
+    implementation(libs.supabase.postgrest.kt)
     implementation(libs.ktor.client.android)
 
     implementation(libs.androidx.datastore.preferences)
 
     // Testing
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    testImplementation (libs.kotlinx.coroutines.test)
+
+    testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit)
-    testImplementation(libs.json)
+
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
 }

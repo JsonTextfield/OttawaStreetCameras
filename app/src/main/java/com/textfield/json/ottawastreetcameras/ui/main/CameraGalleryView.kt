@@ -3,7 +3,13 @@ package com.textfield.json.ottawastreetcameras.ui.main
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -17,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.BilingualObject
@@ -35,7 +42,12 @@ fun CameraGalleryView(
     LazyVerticalGrid(
         state = gridState,
         columns = GridCells.Adaptive(120.dp),
-        contentPadding = PaddingValues(10.dp),
+        contentPadding = PaddingValues(
+            top = 10.dp,
+            start = WindowInsets.safeDrawing.asPaddingValues().calculateStartPadding(LayoutDirection.Ltr) + 10.dp,
+            end = WindowInsets.safeDrawing.asPaddingValues().calculateEndPadding(LayoutDirection.Ltr) + 10.dp,
+            bottom = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+        ),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {

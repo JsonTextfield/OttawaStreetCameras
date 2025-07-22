@@ -11,7 +11,6 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.ui.components.SearchBar
 import com.textfield.json.ottawastreetcameras.ui.components.SuggestionDropdown
@@ -51,7 +50,7 @@ fun AppBarTitle(
                             onClick = onClick
                         )
                         .padding(10.dp),
-                    fontSize = 20.sp,
+                    style = MaterialTheme.typography.titleLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     color = MaterialTheme.colorScheme.onSurface,

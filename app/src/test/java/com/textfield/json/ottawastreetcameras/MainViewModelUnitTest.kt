@@ -12,7 +12,6 @@ import com.textfield.json.ottawastreetcameras.ui.main.UIState
 import com.textfield.json.ottawastreetcameras.ui.main.ViewMode
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -39,7 +38,7 @@ class MainViewModelUnitTest {
         mainViewModel = MainViewModel(
             cameraRepository = CameraRepository(fakeCameraDataSource),
             prefs = prefs,
-            dispatcher = UnconfinedTestDispatcher()
+            _cameraState = MutableStateFlow(CameraState()),
         )
     }
 
@@ -102,7 +101,6 @@ class MainViewModelUnitTest {
                     },
                 ),
             ),
-            dispatcher = UnconfinedTestDispatcher(),
         )
 
         mainViewModel.searchCameras(SearchMode.NAME, "Camera 5")
@@ -158,7 +156,6 @@ class MainViewModelUnitTest {
             _cameraState = MutableStateFlow(
                 CameraState(allCameras = allCameras),
             ),
-            dispatcher = UnconfinedTestDispatcher(),
         )
 
         mainViewModel.selectAllCameras()
@@ -189,7 +186,6 @@ class MainViewModelUnitTest {
                     allCameras = allCameras,
                 ),
             ),
-            dispatcher = UnconfinedTestDispatcher(),
         )
 
         mainViewModel.selectAllCameras()
@@ -214,7 +210,6 @@ class MainViewModelUnitTest {
             cameraRepository = CameraRepository(fakeCameraDataSource),
             prefs = prefs,
             _cameraState = MutableStateFlow(CameraState(allCameras = allCameras)),
-            dispatcher = UnconfinedTestDispatcher(),
         )
 
         assertEquals(true, mainViewModel.cameraState.value.selectedCameras.isEmpty())
@@ -240,7 +235,6 @@ class MainViewModelUnitTest {
             cameraRepository = CameraRepository(fakeCameraDataSource),
             prefs = prefs,
             _cameraState = MutableStateFlow(CameraState(allCameras = allCameras)),
-            dispatcher = UnconfinedTestDispatcher(),
         )
 
         mainViewModel.selectCamera(mainViewModel.cameraState.value.allCameras[1])
@@ -268,7 +262,6 @@ class MainViewModelUnitTest {
             cameraRepository = CameraRepository(fakeCameraDataSource),
             prefs = prefs,
             _cameraState = MutableStateFlow(CameraState(allCameras = allCameras)),
-            dispatcher = UnconfinedTestDispatcher(),
         )
 
         assertEquals(true, mainViewModel.cameraState.value.allCameras[5].isVisible)
@@ -290,7 +283,7 @@ class MainViewModelUnitTest {
         mainViewModel = MainViewModel(
             cameraRepository = CameraRepository(fakeCameraDataSource),
             prefs = prefs,
-            dispatcher = UnconfinedTestDispatcher()
+            _cameraState = MutableStateFlow(CameraState()),
         )
         mainViewModel.getAllCameras()
         advanceUntilIdle()

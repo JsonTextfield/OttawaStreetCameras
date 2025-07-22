@@ -4,10 +4,17 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -29,6 +36,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.BilingualObject
@@ -45,7 +53,12 @@ fun CameraListItemList(
     onItemDismissed: (Camera) -> Unit = {},
     onFavouriteClick: (Camera) -> Unit = {},
 ) {
-    Row {
+    Row(
+        Modifier.padding(
+            start = WindowInsets.safeDrawing.asPaddingValues()
+                .calculateStartPadding(LayoutDirection.Ltr)
+        ),
+    ) {
         AnimatedVisibility(
             visible = cameraState.showSectionIndex,
             enter = slideInHorizontally(),
@@ -57,7 +70,14 @@ fun CameraListItemList(
             )
         }
         val cameras = cameraState.getDisplayedCameras(searchText)
-        LazyColumn(state = listState) {
+        LazyColumn(
+            state = listState,
+            contentPadding = PaddingValues(
+                bottom = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+                end = WindowInsets.safeDrawing.asPaddingValues()
+                    .calculateEndPadding(LayoutDirection.Ltr)
+            ),
+        ) {
             items(cameras, key = { it.id }) { camera ->
                 if (cameraState.filterMode == FilterMode.FAVOURITE) {
                     CameraListItem(
