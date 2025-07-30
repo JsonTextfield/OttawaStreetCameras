@@ -1,7 +1,7 @@
 package com.textfield.json.ottawastreetcameras.data
 
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import com.textfield.json.ottawastreetcameras.entities.CameraApiModel
+import com.textfield.json.ottawastreetcameras.network.model.CameraApiModel
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 

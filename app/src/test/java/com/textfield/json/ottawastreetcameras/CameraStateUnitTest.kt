@@ -1,8 +1,8 @@
 package com.textfield.json.ottawastreetcameras
 
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import com.textfield.json.ottawastreetcameras.entities.CameraApiModel
-import com.textfield.json.ottawastreetcameras.entities.LocationApiModel
+import com.textfield.json.ottawastreetcameras.network.model.CameraApiModel
+import com.textfield.json.ottawastreetcameras.network.model.LocationApiModel
 import com.textfield.json.ottawastreetcameras.ui.main.CameraState
 import com.textfield.json.ottawastreetcameras.ui.main.FilterMode
 import com.textfield.json.ottawastreetcameras.ui.main.SearchMode

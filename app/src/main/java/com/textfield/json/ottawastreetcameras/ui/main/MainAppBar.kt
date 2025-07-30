@@ -8,14 +8,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.ui.components.menu.Action
 import com.textfield.json.ottawastreetcameras.ui.components.menu.ActionBar
@@ -23,16 +21,19 @@ import com.textfield.json.ottawastreetcameras.ui.components.menu.ActionBar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainAppBar(
-    mainViewModel: MainViewModel,
+    cameraState: CameraState,
+    searchText: String = "",
+    suggestions: List<String> = emptyList(),
     actions: List<Action> = emptyList(),
+    onSearchTextChanged: (String) -> Unit = {},
     onTitleClicked: () -> Unit = {},
+    onBackPressed: () -> Unit = {},
 ) {
-    val cameraState by mainViewModel.cameraState.collectAsStateWithLifecycle()
     TopAppBar(
         modifier = Modifier.shadow(10.dp),
         navigationIcon = {
             if (cameraState.showBackButton) {
-                IconButton(onClick = mainViewModel::resetFilters) {
+                IconButton(onClick = onBackPressed) {
                     Icon(
                         Icons.AutoMirrored.Rounded.ArrowBack,
                         stringResource(id = R.string.back),
@@ -45,9 +46,9 @@ fun MainAppBar(
             AppBarTitle(
                 cameraState,
                 onClick = onTitleClicked,
-                suggestions = mainViewModel.suggestionList,
-                searchText = mainViewModel.searchText,
-                onTextChanged = { mainViewModel.searchCameras(cameraState.searchMode, it) },
+                suggestions = suggestions,
+                searchText = searchText,
+                onTextChanged = onSearchTextChanged,
             )
         },
         actions = {

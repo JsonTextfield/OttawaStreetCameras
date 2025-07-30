@@ -74,10 +74,9 @@ class DataStorePreferencesRepository(private val dataStore: DataStore<Preference
         }
     }
 
-    override suspend fun getViewMode(): ViewMode {
-        val key = intPreferencesKey("viewMode")
+    override suspend fun getViewMode(): ViewMode? {
         return dataStore.data.map { preferences ->
-            ViewMode.entries[preferences[key] ?: ViewMode.LIST.ordinal]
+            ViewMode.entries.firstOrNull { preferences[intPreferencesKey("viewMode")] == it.ordinal }
         }.first()
     }
 }

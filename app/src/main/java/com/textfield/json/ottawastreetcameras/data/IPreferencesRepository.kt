@@ -18,5 +18,5 @@ interface IPreferencesRepository {
 
     suspend fun setViewMode(viewMode: ViewMode)
 
-    suspend fun getViewMode(): ViewMode
+    suspend fun getViewMode(): ViewMode?
 }

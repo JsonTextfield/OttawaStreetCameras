@@ -2,6 +2,8 @@ package com.textfield.json.ottawastreetcameras.ui.main
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
@@ -17,6 +19,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.ui.components.ErrorScreen
 import com.textfield.json.ottawastreetcameras.ui.components.LoadingScreen
+import com.textfield.json.ottawastreetcameras.ui.components.menu.Action
 import com.textfield.json.ottawastreetcameras.ui.components.menu.getActions
 import kotlinx.coroutines.launch
 
@@ -29,7 +32,52 @@ fun MainScreen(
     val listState = rememberLazyListState()
     val gridState = rememberLazyGridState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val actions = getActions(
+        mainViewModel,
+        snackbarHostState,
+        onNavigateToCameraScreen
+    )
 
+    MainScreen(
+        cameraState = cameraState,
+        listState = listState,
+        gridState = gridState,
+        snackbarHostState = snackbarHostState,
+        actions = actions,
+        searchText = mainViewModel.searchText,
+        suggestions = mainViewModel.suggestionList,
+        onSearchTextChanged = {
+            mainViewModel.searchCameras(
+                cameraState.searchMode,
+                it
+            )
+        },
+        onSelectCamera = mainViewModel::selectCamera,
+        onRetry = mainViewModel::getAllCameras,
+        onBackPressed = mainViewModel::resetFilters,
+        onNavigateToCameraScreen = onNavigateToCameraScreen,
+        onHideCameras = mainViewModel::hideCameras,
+        onFavouriteCameras = mainViewModel::favouriteCameras
+    )
+}
+
+@Composable
+private fun MainScreen(
+    cameraState: CameraState,
+    listState: LazyListState,
+    gridState: LazyGridState,
+    snackbarHostState: SnackbarHostState,
+    actions: List<Action> = emptyList(),
+    searchText: String = "",
+    suggestions: List<String> = emptyList(),
+    onSearchTextChanged: (String) -> Unit = {},
+    onBackPressed: () -> Unit = {},
+    onRetry: () -> Unit = {},
+    onSelectCamera: (Camera) -> Unit = {},
+    onHideCameras: (List<Camera>) -> Unit = {},
+    onFavouriteCameras: (List<Camera>) -> Unit = {},
+    onNavigateToCameraScreen: (List<Camera>, Boolean) -> Unit = { _, _ -> },
+) {
     Scaffold(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
@@ -37,14 +85,12 @@ fun MainScreen(
         topBar = {
             if (cameraState.uiState == UIState.LOADED) {
                 val scope = rememberCoroutineScope()
-                val actions = getActions(
-                    mainViewModel,
-                    snackbarHostState,
-                    onNavigateToCameraScreen
-                )
                 MainAppBar(
-                    mainViewModel = mainViewModel,
+                    cameraState = cameraState,
+                    searchText = searchText,
+                    suggestions = suggestions,
                     actions = actions,
+                    onSearchTextChanged = onSearchTextChanged,
                     onTitleClicked = {
                         scope.launch {
                             if (cameraState.viewMode == ViewMode.LIST) {
@@ -54,7 +100,8 @@ fun MainScreen(
                                 gridState.scrollToItem(0)
                             }
                         }
-                    }
+                    },
+                    onBackPressed = onBackPressed,
                 )
             }
         },
@@ -63,15 +110,27 @@ fun MainScreen(
             when (cameraState.uiState) {
                 UIState.INITIAL,
                 UIState.LOADING -> LoadingScreen()
+
                 UIState.LOADED -> MainContent(
-                    mainViewModel,
-                    listState,
-                    gridState,
-                    snackbarHostState
-                ) { selectedCameras ->
-                    onNavigateToCameraScreen(selectedCameras, false)
-                }
-                UIState.ERROR -> ErrorScreen { mainViewModel.getAllCameras() }
+                    cameraState = cameraState,
+                    listState = listState,
+                    gridState = gridState,
+                    searchText = searchText,
+                    snackbarHostState = snackbarHostState,
+                    onCameraClicked = { camera: Camera ->
+                        if (cameraState.selectedCameras.isNotEmpty()) {
+                            onSelectCamera(camera)
+                        }
+                        else {
+                            onNavigateToCameraScreen(listOf(camera), false)
+                        }
+                    },
+                    onHideCameras = onHideCameras,
+                    onFavouriteCameras = onFavouriteCameras,
+                    onCameraLongClick = onSelectCamera,
+                )
+
+                UIState.ERROR -> ErrorScreen(retry = onRetry)
             }
         }
     }

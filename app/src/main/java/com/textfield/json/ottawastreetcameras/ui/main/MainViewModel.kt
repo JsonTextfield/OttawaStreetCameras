@@ -10,6 +10,7 @@ import com.textfield.json.ottawastreetcameras.data.ICameraRepository
 import com.textfield.json.ottawastreetcameras.data.IPreferencesRepository
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -66,7 +67,10 @@ class MainViewModel(
         }
     }
 
-    fun changeSortMode(sortMode: SortMode, location: Location? = null) {
+    fun changeSortMode(
+        sortMode: SortMode,
+        location: Location? = null,
+    ) {
         _cameraState.update {
             val allCameras = it.allCameras.map { camera ->
                 camera.copy(
@@ -166,7 +170,10 @@ class MainViewModel(
         }
     }
 
-    fun searchCameras(searchMode: SearchMode = SearchMode.NONE, searchText: String = "") {
+    fun searchCameras(
+        searchMode: SearchMode = SearchMode.NONE,
+        searchText: String = "",
+    ) {
         searchJob?.cancel()
         this.searchText = searchText
         searchJob = viewModelScope.launch {
@@ -187,23 +194,23 @@ class MainViewModel(
     fun getAllCameras() {
         _cameraState.update { it.copy(uiState = UIState.LOADING) }
         viewModelScope.launch {
-            val hidden = prefs.getHidden()
-            val favourites = prefs.getFavourites()
-            val cameras = cameraRepository.getAllCameras().map {
-                it.copy(
-                    isVisible = it.id !in hidden,
-                    isFavourite = it.id in favourites,
-                )
-            }
+            val hidden = async { prefs.getHidden() }.await()
+            val favourites = async { prefs.getFavourites() }.await()
+            val cameras = cameraRepository.getAllCameras()
             if (cameras.isEmpty()) {
                 // show an error if the retrieved camera list is empty
                 _cameraState.update { it.copy(uiState = UIState.ERROR) }
             }
             else {
-                val viewMode = prefs.getViewMode()
+                val viewMode = prefs.getViewMode() ?: ViewMode.GALLERY
                 _cameraState.update { cameraState ->
                     cameraState.copy(
-                        allCameras = cameras,
+                        allCameras = cameras.map {
+                            it.copy(
+                                isVisible = it.id !in hidden,
+                                isFavourite = it.id in favourites,
+                            )
+                        },
                         uiState = UIState.LOADED,
                         viewMode = viewMode,
                     )
