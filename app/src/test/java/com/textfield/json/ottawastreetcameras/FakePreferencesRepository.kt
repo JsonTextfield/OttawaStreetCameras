@@ -19,8 +19,8 @@ class FakePreferences : IPreferencesRepository {
         data["favourites"] = newHidden
     }
 
-    override suspend fun getFavourites(): List<String> {
-        return (data["favourites"] as? Set<String> ?: emptySet()).toList()
+    override suspend fun getFavourites(): Set<String> {
+        return (data["favourites"] as? Set<String> ?: emptySet())
     }
 
     override suspend fun setVisibility(ids: Collection<String>, value: Boolean) {
@@ -34,8 +34,8 @@ class FakePreferences : IPreferencesRepository {
         data["hidden"] = newHidden
     }
 
-    override suspend fun getHidden(): List<String> {
-        return (data["hidden"] as? Set<String> ?: emptySet()).toList()
+    override suspend fun getHidden(): Set<String> {
+        return (data["hidden"] as? Set<String> ?: emptySet())
     }
 
     override suspend fun setTheme(theme: ThemeMode) {

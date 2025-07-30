@@ -7,10 +7,8 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.data.CameraRepository
 import com.textfield.json.ottawastreetcameras.data.DataStorePreferencesRepository
-import com.textfield.json.ottawastreetcameras.data.ICameraDataSource
 import com.textfield.json.ottawastreetcameras.data.ICameraRepository
 import com.textfield.json.ottawastreetcameras.data.IPreferencesRepository
-import com.textfield.json.ottawastreetcameras.data.SupabaseCameraDataSource
 import com.textfield.json.ottawastreetcameras.ui.camera.CameraViewModel
 import com.textfield.json.ottawastreetcameras.ui.main.CameraState
 import com.textfield.json.ottawastreetcameras.ui.main.MainViewModel
@@ -47,9 +45,7 @@ val appModule = module {
         }
     }
 
-    single<ICameraDataSource> { SupabaseCameraDataSource(get<SupabaseClient>()) }
-
-    single<ICameraRepository> { CameraRepository(get<ICameraDataSource>()) }
+    single<ICameraRepository> { CameraRepository(get<SupabaseClient>()) }
 
     single { MutableStateFlow(CameraState()) }
 
