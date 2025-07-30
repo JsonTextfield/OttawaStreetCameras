@@ -47,7 +47,7 @@ class MainViewModel(
 
     init {
         viewModelScope.launch {
-            _theme.value = prefs.getTheme()
+            _theme.value = prefs.getTheme() ?: ThemeMode.SYSTEM
             getAllCameras()
         }
     }
