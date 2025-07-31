@@ -1,6 +1,5 @@
 package com.textfield.json.ottawastreetcameras.ui.main
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -18,7 +17,6 @@ import com.textfield.json.ottawastreetcameras.ui.components.SuggestionDropdown
 @Composable
 fun AppBarTitle(
     cameraState: CameraState = CameraState(),
-    onClick: () -> Unit = {},
     onTextChanged: (String) -> Unit = {},
     searchText: String = "",
     suggestions: List<String> = emptyList(),
@@ -30,9 +28,7 @@ fun AppBarTitle(
                 cameraState.selectedCameras.size,
                 cameraState.selectedCameras.size
             ),
-            modifier = Modifier
-                .clickable(enabled = cameraState.viewMode != ViewMode.MAP, onClick = onClick)
-                .padding(10.dp),
+            modifier = Modifier.padding(10.dp),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             color = MaterialTheme.colorScheme.onSurface
@@ -44,12 +40,7 @@ fun AppBarTitle(
                 val title = stringResource(id = cameraState.filterMode.key)
                 Text(
                     title,
-                    modifier = Modifier
-                        .clickable(
-                            enabled = cameraState.viewMode != ViewMode.MAP,
-                            onClick = onClick
-                        )
-                        .padding(10.dp),
+                    modifier = Modifier.padding(10.dp),
                     style = MaterialTheme.typography.titleLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,

@@ -45,7 +45,6 @@ fun MainAppBar(
         title = {
             AppBarTitle(
                 cameraState,
-                onClick = onTitleClicked,
                 suggestions = suggestions,
                 searchText = searchText,
                 onTextChanged = onSearchTextChanged,

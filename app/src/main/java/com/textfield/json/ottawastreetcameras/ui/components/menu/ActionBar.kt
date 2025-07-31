@@ -2,7 +2,6 @@ package com.textfield.json.ottawastreetcameras.ui.components.menu
 
 import android.Manifest
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -17,7 +16,6 @@ import androidx.compose.material.icons.rounded.CameraAlt
 import androidx.compose.material.icons.rounded.Casino
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.GridView
-import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.SelectAll
@@ -39,10 +37,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import com.textfield.json.ottawastreetcameras.ui.components.AboutDialog
 import com.textfield.json.ottawastreetcameras.ui.main.FilterMode
 import com.textfield.json.ottawastreetcameras.ui.main.MainViewModel
 import com.textfield.json.ottawastreetcameras.ui.main.SearchMode
@@ -299,23 +295,6 @@ fun getActions(
         },
     )
 
-    var showAboutDialog by remember { mutableStateOf(false) }
-
-    if (showAboutDialog) {
-        AboutDialog(
-            onLicences = {
-                context.startActivity(Intent(context, OssLicensesMenuActivity::class.java))
-            },
-            onDismiss = { showAboutDialog = false },
-        )
-    }
-
-    val about = Action(
-        icon = Icons.Rounded.Info,
-        tooltip = stringResource(id = R.string.about),
-        onClick = { showAboutDialog = true },
-    )
-
     if (selectedCameras.isEmpty()) {
         return listOf(
             switchView,
@@ -327,7 +306,6 @@ fun getActions(
             random,
             shuffle,
             darkMode,
-            about,
         )
     }
     return listOf(

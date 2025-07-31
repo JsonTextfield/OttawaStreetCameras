@@ -50,7 +50,13 @@ val appModule = module {
     single { MutableStateFlow(CameraState()) }
 
     factoryOf(::MainViewModel)
-    factoryOf(::CameraViewModel)
+    factory<CameraViewModel> { parameters ->
+        CameraViewModel(
+            cameraRepository = get<ICameraRepository>(),
+            cameraIds = parameters.getOrNull(String::class) ?: "",
+            isShuffling = parameters.getOrNull(Boolean::class) ?: true,
+        )
+    }
 }
 
 fun initKoin(context: Context) {

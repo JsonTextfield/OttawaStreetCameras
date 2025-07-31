@@ -20,9 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewFontScale
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.textfield.json.ottawastreetcameras.R
@@ -39,9 +42,10 @@ fun CameraGalleryView(
     onItemLongClick: (Camera) -> Unit,
 ) {
     val cameras = cameraState.getDisplayedCameras(searchText)
+    val columns = (LocalWindowInfo.current.containerSize.width / LocalDensity.current.density / 120).toInt()
     LazyVerticalGrid(
         state = gridState,
-        columns = GridCells.Adaptive(120.dp),
+        columns = GridCells.Fixed(columns.coerceIn(2, 8)),
         contentPadding = PaddingValues(
             top = 10.dp,
             start = WindowInsets.safeDrawing.asPaddingValues().calculateStartPadding(LayoutDirection.Ltr) + 10.dp,
@@ -80,7 +84,8 @@ fun CameraGalleryView(
     }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xEEEEEE)
+@PreviewScreenSizes
+@PreviewFontScale
 @Composable
 private fun CameraGalleryViewPreview() {
     val cameraList =

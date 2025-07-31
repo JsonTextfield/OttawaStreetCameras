@@ -11,7 +11,6 @@ import com.textfield.json.ottawastreetcameras.data.IPreferencesRepository
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -174,12 +173,8 @@ class MainViewModel(
         searchMode: SearchMode = SearchMode.NONE,
         searchText: String = "",
     ) {
-        searchJob?.cancel()
         this.searchText = searchText
-        searchJob = viewModelScope.launch {
-            delay(1000)
-            _cameraState.update { it.copy(searchMode = searchMode) }
-        }
+        _cameraState.update { it.copy(searchMode = searchMode) }
     }
 
     fun resetFilters() {

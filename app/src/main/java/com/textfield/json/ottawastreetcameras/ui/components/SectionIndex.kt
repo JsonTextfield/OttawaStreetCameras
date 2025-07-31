@@ -1,6 +1,7 @@
 package com.textfield.json.ottawastreetcameras.ui.components
 
 import android.view.MotionEvent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.DraggableState
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -75,7 +77,7 @@ private fun getSelectedIndex(yPosition: Float, sectionIndexHeight: Float, itemCo
 fun SectionIndex(
     data: List<String>,
     listState: LazyListState,
-    selectedColour: Color = MaterialTheme.colorScheme.primary,
+    selectedColour: Color = MaterialTheme.colorScheme.primaryContainer,
     minSectionHeight: Dp = 40.dp, // Minimum pixels needed to display each section
 ) {
     val indexData = getIndexData(data).toList()
@@ -105,7 +107,7 @@ fun SectionIndex(
         modifier = Modifier
             .fillMaxHeight()
             .width(IntrinsicSize.Max)
-            .padding(vertical = 10.dp)
+            .padding(bottom = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding())
             .onGloballyPositioned { coordinates ->
                 columnHeightPx = coordinates.size.height.toFloat()
             }
@@ -131,8 +133,7 @@ fun SectionIndex(
                     }
                 }
                 true
-            }
-            .padding(bottom = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()),
+            },
         verticalArrangement = Arrangement.SpaceAround,
     ) {
         with(LocalDensity.current) {
@@ -143,19 +144,26 @@ fun SectionIndex(
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp)
+                        .padding(horizontal = 12.dp)
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = it.first,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.align(Alignment.Center),
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier
+                            .background(
+                                color = if (selectedKey == it.first) {
+                                    selectedColour
+                                }
+                                else {
+                                    Color.Transparent
+                                },
+                                shape = CircleShape
+                            )
+                            .padding(4.dp)
+                            .width(16.dp),
                         textAlign = TextAlign.Center,
-                        color = if (selectedKey == it.first) {
-                            selectedColour
-                        } else {
-                            MaterialTheme.colorScheme.onBackground
-                        }
                     )
                 }
             }
