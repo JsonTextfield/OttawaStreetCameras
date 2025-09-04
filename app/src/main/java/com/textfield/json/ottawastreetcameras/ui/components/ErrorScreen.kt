@@ -5,10 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Refresh
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,13 +29,13 @@ fun ErrorScreen(retry: () -> Unit = {}) {
             text = stringResource(R.string.could_not_load_long),
         )
 
-        IconButton(
+        FilledTonalButton(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(10.dp),
             onClick = retry
         ) {
-            Icon(Icons.Rounded.Refresh, stringResource(R.string.retry))
+            Text(stringResource(R.string.retry))
         }
     }
 }

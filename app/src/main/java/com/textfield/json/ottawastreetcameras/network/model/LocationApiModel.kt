@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras.entities
+package com.textfield.json.ottawastreetcameras.network.model
 
 import kotlinx.serialization.Serializable
 

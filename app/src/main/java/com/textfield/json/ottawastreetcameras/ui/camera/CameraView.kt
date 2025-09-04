@@ -24,8 +24,9 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -52,7 +53,7 @@ fun CameraView(
     }
     Box(
         modifier = Modifier
-            .heightIn(0.dp, LocalConfiguration.current.screenHeightDp.dp)
+            .heightIn(0.dp, (LocalWindowInfo.current.containerSize.height / LocalDensity.current.density).dp)
             .fillMaxWidth()
             .combinedClickable(
                 onClick = {},

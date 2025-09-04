@@ -1,5 +1,7 @@
-package com.textfield.json.ottawastreetcameras.entities
+package com.textfield.json.ottawastreetcameras.network.model
 
+import com.textfield.json.ottawastreetcameras.entities.BilingualObject
+import com.textfield.json.ottawastreetcameras.entities.Camera
 import kotlinx.serialization.Serializable
 
 @Serializable

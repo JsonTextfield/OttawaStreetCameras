@@ -2,7 +2,6 @@ package com.textfield.json.ottawastreetcameras.ui.components.menu
 
 import android.Manifest
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -17,7 +16,6 @@ import androidx.compose.material.icons.rounded.CameraAlt
 import androidx.compose.material.icons.rounded.Casino
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.GridView
-import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.SelectAll
@@ -35,15 +33,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import com.textfield.json.ottawastreetcameras.ui.components.AboutDialog
 import com.textfield.json.ottawastreetcameras.ui.main.FilterMode
 import com.textfield.json.ottawastreetcameras.ui.main.MainViewModel
 import com.textfield.json.ottawastreetcameras.ui.main.SearchMode
@@ -54,16 +49,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ActionBar(
+    maxActions: Int,
     actions: List<Action> = emptyList(),
 ) {
-    val screenWidthDp = LocalConfiguration.current.screenWidthDp
-    val maxActions = when {
-        screenWidthDp < 400 -> screenWidthDp / 4 / 48
-        screenWidthDp < 600 -> screenWidthDp / 3 / 48
-        screenWidthDp < 800 -> screenWidthDp / 2 / 48
-        else -> screenWidthDp * 2 / 3 / 48
-    }
-
     val visibleActions = actions.filter { it.isVisible }
 
     val displayActions = visibleActions.take(maxActions)
@@ -113,7 +101,7 @@ fun getActions(
     snackbarHostState: SnackbarHostState,
     onNavigateToCameraScreen: (List<Camera>, Boolean) -> Unit = { _, _ -> }
 ): List<Action> {
-    val cameraState by mainViewModel.cameraState.collectAsStateWithLifecycle()
+    val cameraState by mainViewModel.uiState.collectAsStateWithLifecycle()
     val selectedCameras = cameraState.selectedCameras
     val context = LocalContext.current
     val clearSelection = Action(
@@ -307,23 +295,6 @@ fun getActions(
         },
     )
 
-    var showAboutDialog by remember { mutableStateOf(false) }
-
-    if (showAboutDialog) {
-        AboutDialog(
-            onLicences = {
-                context.startActivity(Intent(context, OssLicensesMenuActivity::class.java))
-            },
-            onDismiss = { showAboutDialog = false },
-        )
-    }
-
-    val about = Action(
-        icon = Icons.Rounded.Info,
-        tooltip = stringResource(id = R.string.about),
-        onClick = { showAboutDialog = true },
-    )
-
     if (selectedCameras.isEmpty()) {
         return listOf(
             switchView,
@@ -335,7 +306,6 @@ fun getActions(
             random,
             shuffle,
             darkMode,
-            about,
         )
     }
     return listOf(

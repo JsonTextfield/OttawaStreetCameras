@@ -1,13 +1,13 @@
 package com.textfield.json.ottawastreetcameras
 
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import com.textfield.json.ottawastreetcameras.entities.CameraApiModel
-import com.textfield.json.ottawastreetcameras.entities.LocationApiModel
+import com.textfield.json.ottawastreetcameras.network.model.CameraApiModel
+import com.textfield.json.ottawastreetcameras.network.model.LocationApiModel
 import com.textfield.json.ottawastreetcameras.ui.main.CameraState
 import com.textfield.json.ottawastreetcameras.ui.main.FilterMode
 import com.textfield.json.ottawastreetcameras.ui.main.SearchMode
 import com.textfield.json.ottawastreetcameras.ui.main.SortMode
-import com.textfield.json.ottawastreetcameras.ui.main.UIState
+import com.textfield.json.ottawastreetcameras.ui.main.Status
 import com.textfield.json.ottawastreetcameras.ui.main.ViewMode
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -26,7 +26,7 @@ class CameraStateUnitTest {
     fun testInitialState() {
         assertEquals(cameraState, CameraState())
         assertEquals(cameraState.allCameras, listOf<Camera>())
-        assertEquals(cameraState.uiState, UIState.INITIAL)
+        assertEquals(cameraState.status, Status.INITIAL)
         assertEquals(cameraState.sortMode, SortMode.NAME)
         assertEquals(cameraState.searchMode, SearchMode.NONE)
         assertEquals(cameraState.filterMode, FilterMode.VISIBLE)

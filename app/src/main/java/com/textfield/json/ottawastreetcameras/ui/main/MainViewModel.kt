@@ -10,7 +10,6 @@ import com.textfield.json.ottawastreetcameras.data.ICameraRepository
 import com.textfield.json.ottawastreetcameras.data.IPreferencesRepository
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,21 +18,21 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 class MainViewModel(
-    private val _cameraState: MutableStateFlow<CameraState>,
+    private val _uiState: MutableStateFlow<CameraState>,
     private val cameraRepository: ICameraRepository,
     private val prefs: IPreferencesRepository,
 ) : ViewModel() {
     private var searchJob: Job? = null
-    val cameraState: StateFlow<CameraState> get() = _cameraState.asStateFlow()
+    val uiState: StateFlow<CameraState> get() = _uiState.asStateFlow()
     var searchText by mutableStateOf("")
         private set
 
     val suggestionList: List<String>
         get() {
-            if (cameraState.value.searchMode != SearchMode.NEIGHBOURHOOD || searchText.isEmpty()) {
+            if (uiState.value.searchMode != SearchMode.NEIGHBOURHOOD || searchText.isEmpty()) {
                 return emptyList()
             }
-            val filteredNeighbourhoods = cameraState.value.neighbourhoods.filter {
+            val filteredNeighbourhoods = uiState.value.neighbourhoods.filter {
                 it.contains(searchText, true)
             }
             if (filteredNeighbourhoods.all { it.equals(searchText, true) }) {
@@ -47,7 +46,7 @@ class MainViewModel(
 
     init {
         viewModelScope.launch {
-            _theme.value = prefs.getTheme()
+            _theme.value = prefs.getTheme() ?: ThemeMode.SYSTEM
             getAllCameras()
         }
     }
@@ -62,12 +61,15 @@ class MainViewModel(
     fun changeViewMode(viewMode: ViewMode) {
         viewModelScope.launch {
             prefs.setViewMode(viewMode)
-            _cameraState.update { it.copy(viewMode = viewMode) }
+            _uiState.update { it.copy(viewMode = viewMode) }
         }
     }
 
-    fun changeSortMode(sortMode: SortMode, location: Location? = null) {
-        _cameraState.update {
+    fun changeSortMode(
+        sortMode: SortMode,
+        location: Location? = null,
+    ) {
+        _uiState.update {
             val allCameras = it.allCameras.map { camera ->
                 camera.copy(
                     distance = if (location != null) {
@@ -94,13 +96,13 @@ class MainViewModel(
     }
 
     fun changeFilterMode(filterMode: FilterMode) {
-        val mode = if (filterMode == _cameraState.value.filterMode) {
+        val mode = if (filterMode == _uiState.value.filterMode) {
             FilterMode.VISIBLE
         }
         else {
             filterMode
         }
-        _cameraState.update {
+        _uiState.update {
             it.copy(
                 filterMode = mode,
             )
@@ -112,7 +114,7 @@ class MainViewModel(
             val allFavourite = cameras.all { it.isFavourite }
             prefs.favourite(cameras.map { it.id }, !allFavourite)
             val favourites = prefs.getFavourites()
-            _cameraState.update {
+            _uiState.update {
                 it.copy(
                     allCameras = it.allCameras.map { camera ->
                         camera.copy(isFavourite = camera.id in favourites)
@@ -130,7 +132,7 @@ class MainViewModel(
                 cameras.first().id in hidden,
             )
             hidden = prefs.getHidden()
-            _cameraState.update {
+            _uiState.update {
                 it.copy(
                     allCameras = it.allCameras.map { camera ->
                         camera.copy(isVisible = camera.id !in hidden)
@@ -141,7 +143,7 @@ class MainViewModel(
     }
 
     fun selectCamera(camera: Camera) {
-        _cameraState.update { cameraState ->
+        _uiState.update { cameraState ->
             cameraState.copy(
                 allCameras = cameraState.allCameras.map { cam ->
                     if (cam == camera) cam.copy(isSelected = !cam.isSelected) else cam
@@ -151,7 +153,7 @@ class MainViewModel(
     }
 
     fun selectAllCameras(select: Boolean = true) {
-        _cameraState.update { cameraState ->
+        _uiState.update { cameraState ->
             val displayedCameras = cameraState.getDisplayedCameras(searchText)
             cameraState.copy(
                 allCameras = cameraState.allCameras.map { cam ->
@@ -166,17 +168,16 @@ class MainViewModel(
         }
     }
 
-    fun searchCameras(searchMode: SearchMode = SearchMode.NONE, searchText: String = "") {
-        searchJob?.cancel()
+    fun searchCameras(
+        searchMode: SearchMode = SearchMode.NONE,
+        searchText: String = "",
+    ) {
         this.searchText = searchText
-        searchJob = viewModelScope.launch {
-            delay(1000)
-            _cameraState.update { it.copy(searchMode = searchMode) }
-        }
+        _uiState.update { it.copy(searchMode = searchMode) }
     }
 
     fun resetFilters() {
-        _cameraState.update {
+        _uiState.update {
             it.copy(
                 searchMode = SearchMode.NONE,
                 filterMode = FilterMode.VISIBLE,
@@ -185,29 +186,28 @@ class MainViewModel(
     }
 
     fun getAllCameras() {
-        _cameraState.update { it.copy(uiState = UIState.LOADING) }
+        _uiState.update { it.copy(status = Status.LOADING) }
         viewModelScope.launch {
             val hidden = prefs.getHidden()
             val favourites = prefs.getFavourites()
-            val cameras = cameraRepository.getAllCameras().map {
-                it.copy(
-                    isVisible = it.id !in hidden,
-                    isFavourite = it.id in favourites,
-                )
-            }
-            if (cameras.isEmpty()) {
-                // show an error if the retrieved camera list is empty
-                _cameraState.update { it.copy(uiState = UIState.ERROR) }
-            }
-            else {
-                val viewMode = prefs.getViewMode()
-                _cameraState.update { cameraState ->
+            runCatching {
+                cameraRepository.getAllCameras()
+            }.onSuccess { cameras ->
+                val viewMode = prefs.getViewMode() ?: ViewMode.GALLERY
+                _uiState.update { cameraState ->
                     cameraState.copy(
-                        allCameras = cameras,
-                        uiState = UIState.LOADED,
+                        allCameras = cameras.map {
+                            it.copy(
+                                isVisible = it.id !in hidden,
+                                isFavourite = it.id in favourites,
+                            )
+                        },
+                        status = Status.LOADED,
                         viewMode = viewMode,
                     )
                 }
+            }.onFailure {
+                _uiState.update { it.copy(status = Status.ERROR) }
             }
         }
     }

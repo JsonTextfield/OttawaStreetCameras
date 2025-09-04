@@ -10,7 +10,7 @@ import com.textfield.json.ottawastreetcameras.ui.main.ViewMode
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
-class PreferencesDataStorePreferencesRepository(private val dataStore: DataStore<Preferences>) :
+class DataStorePreferencesRepository(private val dataStore: DataStore<Preferences>) :
     IPreferencesRepository {
     override suspend fun favourite(ids: Collection<String>, value: Boolean) {
         dataStore.edit { preferences ->
@@ -26,11 +26,11 @@ class PreferencesDataStorePreferencesRepository(private val dataStore: DataStore
         }
     }
 
-    override suspend fun getFavourites(): List<String> {
+    override suspend fun getFavourites(): Set<String> {
         val key = stringSetPreferencesKey("favourites")
         return dataStore.data.map { preferences ->
             preferences[key] ?: emptySet()
-        }.first().toList()
+        }.first()
     }
 
     override suspend fun setVisibility(ids: Collection<String>, value: Boolean) {
@@ -47,11 +47,11 @@ class PreferencesDataStorePreferencesRepository(private val dataStore: DataStore
         }
     }
 
-    override suspend fun getHidden(): List<String> {
+    override suspend fun getHidden(): Set<String> {
         val key = stringSetPreferencesKey("hidden")
         return dataStore.data.map { preferences ->
             preferences[key] ?: emptySet()
-        }.first().toList()
+        }.first()
     }
 
     override suspend fun setTheme(theme: ThemeMode) {
@@ -61,10 +61,9 @@ class PreferencesDataStorePreferencesRepository(private val dataStore: DataStore
         }
     }
 
-    override suspend fun getTheme(): ThemeMode {
-        val key = intPreferencesKey("theme")
+    override suspend fun getTheme(): ThemeMode? {
         return dataStore.data.map { preferences ->
-            ThemeMode.entries[preferences[key] ?: ThemeMode.SYSTEM.ordinal]
+            ThemeMode.entries.firstOrNull { preferences[intPreferencesKey("theme")] == it.ordinal }
         }.first()
     }
 
@@ -75,10 +74,9 @@ class PreferencesDataStorePreferencesRepository(private val dataStore: DataStore
         }
     }
 
-    override suspend fun getViewMode(): ViewMode {
-        val key = intPreferencesKey("viewMode")
+    override suspend fun getViewMode(): ViewMode? {
         return dataStore.data.map { preferences ->
-            ViewMode.entries[preferences[key] ?: ViewMode.LIST.ordinal]
+            ViewMode.entries.firstOrNull { preferences[intPreferencesKey("viewMode")] == it.ordinal }
         }.first()
     }
 }

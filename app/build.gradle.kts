@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
-    id("com.google.android.gms.oss-licenses-plugin")
     kotlin("plugin.serialization") version libs.versions.kotlin
 }
 
@@ -13,21 +12,17 @@ android {
         applicationId = "com.textfield.json.ottawastreetcameras"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         minSdk = 28
-        compileSdk = 35
-        targetSdk = 35
+        compileSdk = 36
+        targetSdk = 36
         versionCode = 41
-        versionName = "2.4.4"
-        vectorDrawables { useSupportLibrary = true }
-    }
-    kotlinOptions {
-        jvmTarget = "17"
+        versionName = "2.5.0"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    buildFeatures {
-        buildConfig = true
+    kotlin {
+        jvmToolchain(17)
     }
 
     signingConfigs {
@@ -59,14 +54,11 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
 
-    implementation(libs.multidex)
-
     // Koin
     implementation(libs.koin.compose.viewmodel.navigation)
     implementation(libs.koin.android)
 
     // Google
-    implementation(libs.play.services.oss.licenses)
     implementation(libs.maps.compose)
 
     // Compose
