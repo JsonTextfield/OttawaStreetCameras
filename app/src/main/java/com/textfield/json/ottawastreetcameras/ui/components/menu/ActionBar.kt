@@ -101,7 +101,7 @@ fun getActions(
     snackbarHostState: SnackbarHostState,
     onNavigateToCameraScreen: (List<Camera>, Boolean) -> Unit = { _, _ -> }
 ): List<Action> {
-    val cameraState by mainViewModel.cameraState.collectAsStateWithLifecycle()
+    val cameraState by mainViewModel.uiState.collectAsStateWithLifecycle()
     val selectedCameras = cameraState.selectedCameras
     val context = LocalContext.current
     val clearSelection = Action(

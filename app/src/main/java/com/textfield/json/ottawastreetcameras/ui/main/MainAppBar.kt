@@ -26,7 +26,6 @@ fun MainAppBar(
     suggestions: List<String> = emptyList(),
     actions: List<Action> = emptyList(),
     onSearchTextChanged: (String) -> Unit = {},
-    onTitleClicked: () -> Unit = {},
     onBackPressed: () -> Unit = {},
 ) {
     TopAppBar(

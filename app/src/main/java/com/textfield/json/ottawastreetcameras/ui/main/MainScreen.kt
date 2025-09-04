@@ -44,7 +44,7 @@ fun MainScreen(
     mainViewModel: MainViewModel = viewModel<MainViewModel>(),
     onNavigateToCameraScreen: (List<Camera>, Boolean) -> Unit = { _, _ -> },
 ) {
-    val cameraState by mainViewModel.cameraState.collectAsStateWithLifecycle()
+    val cameraState by mainViewModel.uiState.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
     val gridState = rememberLazyGridState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -99,35 +99,24 @@ private fun MainScreen(
             SnackbarHost(hostState = snackbarHostState)
         },
         topBar = {
-            if (cameraState.uiState == UIState.LOADED) {
-                val scope = rememberCoroutineScope()
+            if (cameraState.status == Status.LOADED) {
                 MainAppBar(
                     cameraState = cameraState,
                     searchText = searchText,
                     suggestions = suggestions,
                     actions = actions,
                     onSearchTextChanged = onSearchTextChanged,
-                    onTitleClicked = {
-                        scope.launch {
-                            if (cameraState.viewMode == ViewMode.LIST) {
-                                listState.scrollToItem(0)
-                            }
-                            else if (cameraState.viewMode == ViewMode.GALLERY) {
-                                gridState.scrollToItem(0)
-                            }
-                        }
-                    },
                     onBackPressed = onBackPressed,
                 )
             }
         },
     ) {
         Box(modifier = Modifier.padding(top = it.calculateTopPadding())) {
-            when (cameraState.uiState) {
-                UIState.INITIAL,
-                UIState.LOADING -> LoadingScreen()
+            when (cameraState.status) {
+                Status.INITIAL,
+                Status.LOADING -> LoadingScreen()
 
-                UIState.LOADED -> MainContent(
+                Status.LOADED -> MainContent(
                     cameraState = cameraState,
                     listState = listState,
                     gridState = gridState,
@@ -146,7 +135,7 @@ private fun MainScreen(
                     onCameraLongClick = onSelectCamera,
                 )
 
-                UIState.ERROR -> ErrorScreen(retry = onRetry)
+                Status.ERROR -> ErrorScreen(retry = onRetry)
             }
             var showUpButton by remember { mutableStateOf(false) }
             if (cameraState.viewMode == ViewMode.LIST) {
@@ -176,10 +165,10 @@ private fun MainScreen(
                     onClick = {
                         scope.launch {
                             if (cameraState.viewMode == ViewMode.LIST) {
-                                listState.scrollToItem(0)
+                                listState.animateScrollToItem(0)
                             }
                             else if (cameraState.viewMode == ViewMode.GALLERY) {
-                                gridState.scrollToItem(0)
+                                gridState.animateScrollToItem(0)
                             }
                         }
                     },

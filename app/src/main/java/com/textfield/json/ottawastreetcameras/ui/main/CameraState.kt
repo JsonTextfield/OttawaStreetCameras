@@ -29,11 +29,11 @@ enum class ViewMode(val key: Int) {
     GALLERY(R.string.gallery),
 }
 
-enum class UIState { LOADING, LOADED, ERROR, INITIAL, }
+enum class Status { LOADING, LOADED, ERROR, INITIAL, }
 
 data class CameraState(
     val allCameras: List<Camera> = ArrayList(),
-    val uiState: UIState = UIState.INITIAL,
+    val status: Status = Status.INITIAL,
     val sortMode: SortMode = SortMode.NAME,
     val searchMode: SearchMode = SearchMode.NONE,
     val filterMode: FilterMode = FilterMode.VISIBLE,
@@ -58,7 +58,7 @@ data class CameraState(
                 && viewMode == ViewMode.LIST
 
     val showSearchNeighbourhood
-        get() = uiState == UIState.LOADED && searchMode != SearchMode.NEIGHBOURHOOD
+        get() = status == Status.LOADED && searchMode != SearchMode.NEIGHBOURHOOD
 
     val showBackButton
         get() = (filterMode != FilterMode.VISIBLE || searchMode != SearchMode.NONE) &&
