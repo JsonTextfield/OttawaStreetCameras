@@ -28,7 +28,7 @@ fun AppBarTitle(
                 cameraState.selectedCameras.size,
                 cameraState.selectedCameras.size
             ),
-            modifier = Modifier.padding(8.dp),
+            modifier = Modifier.padding(10.dp),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             color = MaterialTheme.colorScheme.onSurface
@@ -38,8 +38,8 @@ fun AppBarTitle(
         when (cameraState.searchMode) {
             SearchMode.NONE -> {
                 Text(
-                    stringResource(R.string.app_name),
-                    modifier = Modifier.padding(8.dp),
+                    stringResource(id = R.string.app_name),
+                    modifier = Modifier.padding(10.dp),
                     style = MaterialTheme.typography.titleLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,

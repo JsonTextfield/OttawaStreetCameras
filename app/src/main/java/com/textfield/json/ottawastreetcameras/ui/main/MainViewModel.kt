@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.textfield.json.ottawastreetcameras.data.ICameraRepository
 import com.textfield.json.ottawastreetcameras.data.IPreferencesRepository
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import com.textfield.json.ottawastreetcameras.entities.City
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -192,7 +191,7 @@ class MainViewModel(
             val hidden = prefs.getHidden()
             val favourites = prefs.getFavourites()
             runCatching {
-                cameraRepository.getAllCameras(City.OTTAWA)
+                cameraRepository.getAllCameras()
             }.onSuccess { cameras ->
                 val viewMode = prefs.getViewMode() ?: ViewMode.GALLERY
                 _uiState.update { cameraState ->
