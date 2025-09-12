@@ -3,12 +3,14 @@ package com.textfield.json.ottawastreetcameras.ui.main
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.KeyboardDoubleArrowUp
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -23,10 +25,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.ui.components.ErrorScreen
 import com.textfield.json.ottawastreetcameras.ui.components.LoadingScreen
@@ -41,7 +41,7 @@ fun MainScreen(
     onNavigateToCameraScreen: (List<Camera>, Boolean) -> Unit = { _, _ -> },
 ) {
     val cameraState by mainViewModel.uiState.collectAsStateWithLifecycle()
-    val listState = rememberLazyGridState()
+    val listState = rememberLazyListState()
     val gridState = rememberLazyGridState()
     val snackbarHostState = remember { SnackbarHostState() }
     val actions = getActions(
@@ -65,19 +65,18 @@ fun MainScreen(
             )
         },
         onSelectCamera = mainViewModel::selectCamera,
-        onRetry = mainViewModel::retry,
+        onRetry = mainViewModel::getAllCameras,
         onBackPressed = mainViewModel::resetFilters,
         onNavigateToCameraScreen = onNavigateToCameraScreen,
         onHideCameras = mainViewModel::hideCameras,
-        onFavouriteCameras = mainViewModel::favouriteCameras,
-        onFilterModeChanged = mainViewModel::changeFilterMode,
+        onFavouriteCameras = mainViewModel::favouriteCameras
     )
 }
 
 @Composable
 private fun MainScreen(
     cameraState: CameraState,
-    listState: LazyGridState,
+    listState: LazyListState,
     gridState: LazyGridState,
     snackbarHostState: SnackbarHostState,
     actions: List<Action> = emptyList(),
@@ -90,7 +89,6 @@ private fun MainScreen(
     onHideCameras: (List<Camera>) -> Unit = {},
     onFavouriteCameras: (List<Camera>) -> Unit = {},
     onNavigateToCameraScreen: (List<Camera>, Boolean) -> Unit = { _, _ -> },
-    onFilterModeChanged: (FilterMode) -> Unit = {},
 ) {
     var showUpButton by remember { mutableStateOf(false) }
     Scaffold(
@@ -112,8 +110,8 @@ private fun MainScreen(
         floatingActionButton = {
             AnimatedVisibility(
                 visible = showUpButton,
-                enter = fadeIn() + slideInVertically { it },
-                exit = fadeOut() + slideOutVertically { it / 2 },
+                enter = fadeIn(),
+                exit = fadeOut(),
             ) {
                 val scope = rememberCoroutineScope()
                 FilledIconButton(
@@ -121,13 +119,14 @@ private fun MainScreen(
                         scope.launch {
                             if (cameraState.viewMode == ViewMode.LIST) {
                                 listState.animateScrollToItem(0)
-                            } else if (cameraState.viewMode == ViewMode.GALLERY) {
+                            }
+                            else if (cameraState.viewMode == ViewMode.GALLERY) {
                                 gridState.animateScrollToItem(0)
                             }
                         }
                     },
                 ) {
-                    Icon(painterResource(R.drawable.rounded_arrow_upward_24), null)
+                    Icon(Icons.Rounded.KeyboardDoubleArrowUp, null)
                 }
             }
         }
@@ -139,20 +138,21 @@ private fun MainScreen(
 
                 Status.LOADED -> MainContent(
                     cameraState = cameraState,
+                    listState = listState,
                     gridState = gridState,
                     searchText = searchText,
                     snackbarHostState = snackbarHostState,
                     onCameraClicked = { camera: Camera ->
                         if (cameraState.selectedCameras.isNotEmpty()) {
                             onSelectCamera(camera)
-                        } else {
+                        }
+                        else {
                             onNavigateToCameraScreen(listOf(camera), false)
                         }
                     },
                     onHideCameras = onHideCameras,
                     onFavouriteCameras = onFavouriteCameras,
                     onCameraLongClick = onSelectCamera,
-                    onFilterModeChanged = onFilterModeChanged,
                 )
 
                 Status.ERROR -> ErrorScreen(retry = onRetry)
@@ -164,7 +164,8 @@ private fun MainScreen(
                             showUpButton = index > 4
                         }
                 }
-            } else if (cameraState.viewMode == ViewMode.GALLERY) {
+            }
+            else if (cameraState.viewMode == ViewMode.GALLERY) {
                 LaunchedEffect(gridState) {
                     snapshotFlow { gridState.layoutInfo.visibleItemsInfo.firstOrNull() }
                         .mapNotNull { it?.index }.collect { index ->

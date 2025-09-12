@@ -15,10 +15,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyGridState
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
@@ -31,9 +32,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.CollectionInfo
+import androidx.compose.ui.semantics.CollectionItemInfo
+import androidx.compose.ui.semantics.collectionInfo
+import androidx.compose.ui.semantics.collectionItemInfo
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
@@ -47,7 +52,7 @@ import com.textfield.json.ottawastreetcameras.ui.components.SectionIndex
 fun CameraListItemList(
     searchText: String,
     cameraState: CameraState,
-    gridState: LazyGridState,
+    listState: LazyListState,
     onItemClick: (Camera) -> Unit = {},
     onItemLongClick: (Camera) -> Unit = {},
     onItemDismissed: (Camera) -> Unit = {},
@@ -66,20 +71,25 @@ fun CameraListItemList(
         ) {
             SectionIndex(
                 data = cameraState.getDisplayedCameras(searchText).map { it.sortableName },
-                listState = gridState,
+                listState = listState,
             )
         }
         val cameras = cameraState.getDisplayedCameras(searchText)
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(240.dp),
-            state = gridState,
+        LazyColumn(
+            state = listState,
             contentPadding = PaddingValues(
                 bottom = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
                 end = WindowInsets.safeDrawing.asPaddingValues()
                     .calculateEndPadding(LayoutDirection.Ltr)
             ),
+            modifier = Modifier.semantics {
+                collectionInfo = CollectionInfo(
+                    rowCount = cameras.size,
+                    columnCount = 1,
+                )
+            }
         ) {
-            items(cameras, key = { it.id }) { camera ->
+            itemsIndexed(cameras, key = { index, camera -> camera.id }) { index, camera ->
                 if (cameraState.filterMode == FilterMode.FAVOURITE) {
                     CameraListItem(
                         camera = camera,
@@ -87,7 +97,16 @@ fun CameraListItemList(
                         onClick = onItemClick,
                         onLongClick = onItemLongClick,
                         onFavouriteClick = onFavouriteClick,
-                        modifier = Modifier.animateItem(),
+                        modifier = Modifier
+                            .semantics {
+                                collectionItemInfo = CollectionItemInfo(
+                                    rowIndex = index,
+                                    columnIndex = 0,
+                                    columnSpan = 1,
+                                    rowSpan = 1,
+                                )
+                            }
+                            .animateItem(),
                     )
                 }
                 else {
@@ -118,7 +137,7 @@ fun CameraListItemList(
                                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
                                 ),
                                 leadingContent = {
-                                    Icon(painterResource(R.drawable.round_visibility_off_24), "")
+                                    Icon(Icons.Rounded.VisibilityOff, "")
                                 },
                                 headlineContent = {
                                     Text(
@@ -128,7 +147,7 @@ fun CameraListItemList(
                                     )
                                 },
                                 trailingContent = {
-                                    Icon(painterResource(R.drawable.round_visibility_off_24), "")
+                                    Icon(Icons.Rounded.VisibilityOff, "")
                                 },
                             )
                         },
@@ -149,7 +168,7 @@ fun CameraListItemList(
                     pluralStringResource(R.plurals.camera_count, cameras.size, cameras.size),
                     textAlign = TextAlign.Center,
                     modifier = Modifier
-                        .padding(8.dp)
+                        .padding(10.dp)
                         .fillMaxWidth()
                 )
             }
@@ -166,5 +185,5 @@ private fun CameraListItemListPreview() {
             _neighbourhood = BilingualObject(en = "Neighbourhood $it", fr = "Voisinage $it"),
         )
     }
-    CameraListItemList("", CameraState(allCameras = cameraList), gridState = LazyGridState())
+    CameraListItemList("", CameraState(allCameras = cameraList), listState = LazyListState())
 }

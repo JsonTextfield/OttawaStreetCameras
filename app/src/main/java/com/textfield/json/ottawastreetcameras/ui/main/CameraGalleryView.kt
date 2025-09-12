@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +23,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.semantics.CollectionInfo
+import androidx.compose.ui.semantics.CollectionItemInfo
+import androidx.compose.ui.semantics.collectionInfo
+import androidx.compose.ui.semantics.collectionItemInfo
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewFontScale
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
@@ -31,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.BilingualObject
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import kotlin.math.ceil
 
 
 @Composable
@@ -42,32 +48,51 @@ fun CameraGalleryView(
     onItemLongClick: (Camera) -> Unit,
 ) {
     val cameras = cameraState.getDisplayedCameras(searchText)
-    val columns = (LocalWindowInfo.current.containerSize.width / LocalDensity.current.density / 120).toInt()
+    val columns =
+        (LocalWindowInfo.current.containerSize.width / LocalDensity.current.density / 120).toInt()
+            .coerceIn(2, 8)
     LazyVerticalGrid(
         state = gridState,
-        columns = GridCells.Fixed(columns.coerceIn(2, 8)),
+        columns = GridCells.Fixed(columns),
         contentPadding = PaddingValues(
-            top = 12.dp,
-            start = WindowInsets.safeDrawing.asPaddingValues().calculateStartPadding(LayoutDirection.Ltr) + 12.dp,
-            end = WindowInsets.safeDrawing.asPaddingValues().calculateEndPadding(LayoutDirection.Ltr) + 12.dp,
+            top = 10.dp,
+            start = WindowInsets.safeDrawing.asPaddingValues()
+                .calculateStartPadding(LayoutDirection.Ltr) + 10.dp,
+            end = WindowInsets.safeDrawing.asPaddingValues()
+                .calculateEndPadding(LayoutDirection.Ltr) + 10.dp,
             bottom = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
         ),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        modifier = Modifier.semantics {
+            collectionInfo = CollectionInfo(
+                rowCount = ceil(cameras.size / columns.toDouble()).toInt(),
+                columnCount = columns,
+            )
+        }
     ) {
-        items(cameras, key = { it.id }) { camera ->
+        itemsIndexed(cameras, key = { index, camera -> camera.id }) { index, camera ->
             CameraGalleryTile(
                 camera = camera,
                 onClick = onItemClick,
                 onLongClick = onItemLongClick,
-                modifier = Modifier.animateItem(),
+                modifier = Modifier
+                    .semantics(mergeDescendants = true) {
+                        collectionItemInfo = CollectionItemInfo(
+                            rowIndex = index / columns,
+                            columnIndex = index % columns,
+                            columnSpan = 1,
+                            rowSpan = 1,
+                        )
+                    }
+                    .animateItem(),
             )
         }
 
         item {
             Box(
                 modifier = Modifier
-                    .clip(shape = RoundedCornerShape(12.dp))
+                    .clip(shape = RoundedCornerShape(10.dp))
                     .aspectRatio(1f)
             ) {
                 Text(
