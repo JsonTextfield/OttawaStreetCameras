@@ -14,10 +14,10 @@ class CameraRepository(
         if (allCameras.isEmpty()) {
             allCameras = supabaseClient.from("cameras").select {
                 filter {
-                    eq("city", city.value)
+                    eq("city", city.cityName)
                 }
             }.decodeList<CameraApiModel>().map {
-                it.toCamera(city)
+                it.toCamera()
             }
         }
         return allCameras

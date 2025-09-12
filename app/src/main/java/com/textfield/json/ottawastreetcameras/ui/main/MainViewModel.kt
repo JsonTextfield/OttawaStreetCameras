@@ -9,14 +9,11 @@ import androidx.lifecycle.viewModelScope
 import com.textfield.json.ottawastreetcameras.data.ICameraRepository
 import com.textfield.json.ottawastreetcameras.data.IPreferencesRepository
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import com.textfield.json.ottawastreetcameras.entities.City
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -49,22 +46,23 @@ class MainViewModel(
     val theme: StateFlow<ThemeMode> get() = _theme.asStateFlow()
 
     init {
-        prefs.getTheme().map {
-            _theme.value = it
-        }.launchIn(viewModelScope)
-
-        loadData()
+        viewModelScope.launch {
+            _theme.value = prefs.getTheme() ?: ThemeMode.SYSTEM
+            getAllCameras()
+        }
     }
 
     fun changeTheme(theme: ThemeMode) {
         viewModelScope.launch {
             prefs.setTheme(theme)
+            _theme.value = theme
         }
     }
 
     fun changeViewMode(viewMode: ViewMode) {
         viewModelScope.launch {
             prefs.setViewMode(viewMode)
+            _uiState.update { it.copy(viewMode = viewMode) }
         }
     }
 
@@ -116,13 +114,32 @@ class MainViewModel(
         viewModelScope.launch {
             val allFavourite = cameras.all { it.isFavourite }
             prefs.favourite(cameras.map { it.id }, !allFavourite)
+            val favourites = prefs.getFavourites()
+            _uiState.update {
+                it.copy(
+                    allCameras = it.allCameras.map { camera ->
+                        camera.copy(isFavourite = camera.id in favourites)
+                    }
+                )
+            }
         }
     }
 
     fun hideCameras(cameras: List<Camera>) {
         viewModelScope.launch {
-            val anyHidden = cameras.any { !it.isVisible }
-            prefs.setVisibility(cameras.map { it.id }, anyHidden)
+            var hidden = prefs.getHidden()
+            prefs.setVisibility(
+                cameras.map { it.id },
+                cameras.first().id in hidden,
+            )
+            hidden = prefs.getHidden()
+            _uiState.update {
+                it.copy(
+                    allCameras = it.allCameras.map { camera ->
+                        camera.copy(isVisible = camera.id !in hidden)
+                    }
+                )
+            }
         }
     }
 
@@ -169,33 +186,31 @@ class MainViewModel(
         }
     }
 
-    fun retry() {
-        loadData()
-    }
-
-    private fun loadData() {
+    fun getAllCameras() {
         _uiState.update { it.copy(status = Status.LOADING) }
-        combine(
-            prefs.getFavourites(),
-            prefs.getHidden(),
-            prefs.getViewMode(),
-        ) { favourites, hidden, viewMode ->
-            val allCameras = uiState.value.allCameras.ifEmpty { cameraRepository.getAllCameras() }
-            _uiState.update {
-                it.copy(
-                    allCameras = allCameras.map { camera ->
-                        camera.copy(
-                            isVisible = camera.id !in hidden,
-                            isFavourite = camera.id in favourites,
-                        )
-                    },
-                    status = Status.LOADED,
-                    viewMode = viewMode,
-                )
+        viewModelScope.launch {
+            val hidden = prefs.getHidden()
+            val favourites = prefs.getFavourites()
+            runCatching {
+                cameraRepository.getAllCameras(City.OTTAWA)
+            }.onSuccess { cameras ->
+                val viewMode = prefs.getViewMode() ?: ViewMode.GALLERY
+                _uiState.update { cameraState ->
+                    cameraState.copy(
+                        allCameras = cameras.map {
+                            it.copy(
+                                isVisible = it.id !in hidden,
+                                isFavourite = it.id in favourites,
+                            )
+                        },
+                        status = Status.LOADED,
+                        viewMode = viewMode,
+                    )
+                }
+            }.onFailure {
+                _uiState.update { it.copy(status = Status.ERROR) }
             }
-        }.catch {
-            _uiState.update { it.copy(status = Status.ERROR) }
-        }.launchIn(viewModelScope)
+        }
     }
 
     override fun onCleared() {
