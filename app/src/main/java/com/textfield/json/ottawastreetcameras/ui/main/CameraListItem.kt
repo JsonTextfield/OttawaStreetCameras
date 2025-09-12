@@ -39,7 +39,7 @@ fun CameraListItem(
 ) {
     Row(
         modifier = modifier
-            .heightIn(min = 60.dp)
+            .heightIn(min = 80.dp)
             .combinedClickable(
                 onClick = { onClick(camera) },
                 onLongClick = { onLongClick(camera) }
@@ -59,19 +59,21 @@ fun CameraListItem(
     ) {
         if (showDistance) {
             Text(
-                camera.distanceString,
+                text = camera.distanceString,
                 style = MaterialTheme.typography.bodySmall.copy(textAlign = TextAlign.Center),
             )
         }
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                camera.name,
+                text = camera.name,
                 style = MaterialTheme.typography.titleMedium,
+                maxLines = 2,
             )
             if (camera.neighbourhood.isNotBlank()) {
                 Text(
-                    camera.neighbourhood,
+                    text = camera.neighbourhood,
                     style = MaterialTheme.typography.bodySmall,
+                    maxLines = 2,
                 )
             }
         }
