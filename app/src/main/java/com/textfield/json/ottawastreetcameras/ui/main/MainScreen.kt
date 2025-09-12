@@ -4,10 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeGestures
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -27,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -94,6 +90,7 @@ private fun MainScreen(
     onFavouriteCameras: (List<Camera>) -> Unit = {},
     onNavigateToCameraScreen: (List<Camera>, Boolean) -> Unit = { _, _ -> },
 ) {
+    var showUpButton by remember { mutableStateOf(false) }
     Scaffold(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
@@ -110,6 +107,29 @@ private fun MainScreen(
                 )
             }
         },
+        floatingActionButton = {
+            AnimatedVisibility(
+                visible = showUpButton,
+                enter = fadeIn(),
+                exit = fadeOut(),
+            ) {
+                val scope = rememberCoroutineScope()
+                FilledIconButton(
+                    onClick = {
+                        scope.launch {
+                            if (cameraState.viewMode == ViewMode.LIST) {
+                                listState.animateScrollToItem(0)
+                            }
+                            else if (cameraState.viewMode == ViewMode.GALLERY) {
+                                gridState.animateScrollToItem(0)
+                            }
+                        }
+                    },
+                ) {
+                    Icon(Icons.Rounded.KeyboardDoubleArrowUp, null)
+                }
+            }
+        }
     ) {
         Box(modifier = Modifier.padding(top = it.calculateTopPadding())) {
             when (cameraState.status) {
@@ -137,7 +157,6 @@ private fun MainScreen(
 
                 Status.ERROR -> ErrorScreen(retry = onRetry)
             }
-            var showUpButton by remember { mutableStateOf(false) }
             if (cameraState.viewMode == ViewMode.LIST) {
                 LaunchedEffect(listState) {
                     snapshotFlow { listState.layoutInfo.visibleItemsInfo.firstOrNull() }
@@ -152,28 +171,6 @@ private fun MainScreen(
                         .mapNotNull { it?.index }.collect { index ->
                             showUpButton = index > 4
                         }
-                }
-            }
-            AnimatedVisibility(
-                visible = showUpButton,
-                enter = fadeIn(),
-                exit = fadeOut(),
-                modifier = Modifier.align(Alignment.BottomCenter).padding(WindowInsets.safeGestures.asPaddingValues())
-            ) {
-                val scope = rememberCoroutineScope()
-                FilledIconButton(
-                    onClick = {
-                        scope.launch {
-                            if (cameraState.viewMode == ViewMode.LIST) {
-                                listState.animateScrollToItem(0)
-                            }
-                            else if (cameraState.viewMode == ViewMode.GALLERY) {
-                                gridState.animateScrollToItem(0)
-                            }
-                        }
-                    },
-                ) {
-                    Icon(Icons.Rounded.KeyboardDoubleArrowUp, null)
                 }
             }
         }
