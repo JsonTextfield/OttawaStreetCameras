@@ -67,7 +67,8 @@ fun MainScreen(
         onBackPressed = mainViewModel::resetFilters,
         onNavigateToCameraScreen = onNavigateToCameraScreen,
         onHideCameras = mainViewModel::hideCameras,
-        onFavouriteCameras = mainViewModel::favouriteCameras
+        onFavouriteCameras = mainViewModel::favouriteCameras,
+        onChangeFilterMode = mainViewModel::changeFilterMode,
     )
 }
 
@@ -85,6 +86,7 @@ private fun MainScreen(
     onSelectCamera: (Camera) -> Unit = {},
     onHideCameras: (List<Camera>) -> Unit = {},
     onFavouriteCameras: (List<Camera>) -> Unit = {},
+    onChangeFilterMode: (FilterMode) -> Unit = {},
     onNavigateToCameraScreen: (List<Camera>, Boolean) -> Unit = { _, _ -> },
 ) {
     var showUpButton by remember { mutableStateOf(false) }
@@ -144,6 +146,7 @@ private fun MainScreen(
                     onHideCameras = onHideCameras,
                     onFavouriteCameras = onFavouriteCameras,
                     onCameraLongClick = onSelectCamera,
+                    onChangeFilterMode = onChangeFilterMode,
                 )
 
                 Status.ERROR -> ErrorScreen(retry = onRetry)

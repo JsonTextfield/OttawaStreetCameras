@@ -91,7 +91,7 @@ fun CameraListItemList(
         LazyVerticalGrid(
             state = gridState,
             contentPadding = PaddingValues(
-                bottom = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+                bottom = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding() + 100.dp,
                 end = WindowInsets.safeDrawing.asPaddingValues()
                     .calculateEndPadding(LayoutDirection.Ltr)
             ),

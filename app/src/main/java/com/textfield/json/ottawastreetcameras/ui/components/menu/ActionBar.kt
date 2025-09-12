@@ -39,7 +39,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import com.textfield.json.ottawastreetcameras.ui.main.FilterMode
 import com.textfield.json.ottawastreetcameras.ui.main.MainViewModel
 import com.textfield.json.ottawastreetcameras.ui.main.SearchMode
 import com.textfield.json.ottawastreetcameras.ui.main.SortMode
@@ -245,18 +244,6 @@ fun getActions(
         isChecked = cameraState.searchMode == SearchMode.NEIGHBOURHOOD,
         onClick = { mainViewModel.searchCameras(SearchMode.NEIGHBOURHOOD) },
     )
-    val favourites = Action(
-        icon = Icons.Rounded.Star,
-        tooltip = stringResource(id = R.string.favourites),
-        isChecked = cameraState.filterMode == FilterMode.FAVOURITE,
-        onClick = { mainViewModel.changeFilterMode(FilterMode.FAVOURITE) },
-    )
-    val hidden = Action(
-        icon = Icons.Rounded.VisibilityOff,
-        tooltip = stringResource(id = R.string.hidden_cameras),
-        isChecked = cameraState.filterMode == FilterMode.HIDDEN,
-        onClick = { mainViewModel.changeFilterMode(FilterMode.HIDDEN) },
-    )
     val random = Action(
         icon = Icons.Rounded.Casino,
         tooltip = stringResource(id = R.string.random_camera),
@@ -301,8 +288,6 @@ fun getActions(
             sort,
             search,
             searchNeighbourhood,
-            favourites,
-            hidden,
             random,
             shuffle,
             darkMode,

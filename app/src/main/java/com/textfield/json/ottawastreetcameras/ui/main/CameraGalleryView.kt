@@ -60,7 +60,7 @@ fun CameraGalleryView(
                 .calculateStartPadding(LayoutDirection.Ltr) + 10.dp,
             end = WindowInsets.safeDrawing.asPaddingValues()
                 .calculateEndPadding(LayoutDirection.Ltr) + 10.dp,
-            bottom = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+            bottom = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding() + 100.dp,
         ),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
