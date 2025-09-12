@@ -5,7 +5,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -52,7 +51,6 @@ fun MainScreen(
 
     MainScreen(
         cameraState = cameraState,
-        listState = listState,
         gridState = gridState,
         snackbarHostState = snackbarHostState,
         actions = actions,
@@ -76,7 +74,6 @@ fun MainScreen(
 @Composable
 private fun MainScreen(
     cameraState: CameraState,
-    listState: LazyListState,
     gridState: LazyGridState,
     snackbarHostState: SnackbarHostState,
     actions: List<Action> = emptyList(),
@@ -117,12 +114,7 @@ private fun MainScreen(
                 FilledIconButton(
                     onClick = {
                         scope.launch {
-                            if (cameraState.viewMode == ViewMode.LIST) {
-                                listState.animateScrollToItem(0)
-                            }
-                            else if (cameraState.viewMode == ViewMode.GALLERY) {
-                                gridState.animateScrollToItem(0)
-                            }
+                            gridState.animateScrollToItem(0)
                         }
                     },
                 ) {
@@ -138,7 +130,6 @@ private fun MainScreen(
 
                 Status.LOADED -> MainContent(
                     cameraState = cameraState,
-                    listState = listState,
                     gridState = gridState,
                     searchText = searchText,
                     snackbarHostState = snackbarHostState,
@@ -157,21 +148,11 @@ private fun MainScreen(
 
                 Status.ERROR -> ErrorScreen(retry = onRetry)
             }
-            if (cameraState.viewMode == ViewMode.LIST) {
-                LaunchedEffect(listState) {
-                    snapshotFlow { listState.layoutInfo.visibleItemsInfo.firstOrNull() }
-                        .mapNotNull { it?.index }.collect { index ->
-                            showUpButton = index > 4
-                        }
-                }
-            }
-            else if (cameraState.viewMode == ViewMode.GALLERY) {
-                LaunchedEffect(gridState) {
-                    snapshotFlow { gridState.layoutInfo.visibleItemsInfo.firstOrNull() }
-                        .mapNotNull { it?.index }.collect { index ->
-                            showUpButton = index > 4
-                        }
-                }
+            LaunchedEffect(gridState) {
+                snapshotFlow { gridState.layoutInfo.visibleItemsInfo.firstOrNull() }
+                    .mapNotNull { it?.index }.collect { index ->
+                        showUpButton = index > 4
+                    }
             }
         }
     }

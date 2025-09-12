@@ -15,9 +15,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.Icon
@@ -32,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CollectionInfo
@@ -47,17 +50,27 @@ import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.BilingualObject
 import com.textfield.json.ottawastreetcameras.entities.Camera
 import com.textfield.json.ottawastreetcameras.ui.components.SectionIndex
+import kotlin.math.ceil
+import kotlin.math.min
 
 @Composable
 fun CameraListItemList(
     searchText: String,
     cameraState: CameraState,
-    listState: LazyListState,
+    gridState: LazyGridState,
     onItemClick: (Camera) -> Unit = {},
     onItemLongClick: (Camera) -> Unit = {},
     onItemDismissed: (Camera) -> Unit = {},
     onFavouriteClick: (Camera) -> Unit = {},
 ) {
+    val density = LocalDensity.current
+    val widthDp =
+        (LocalWindowInfo.current.containerSize.width / density.density - WindowInsets.safeDrawing.asPaddingValues()
+            .calculateLeftPadding(
+                LayoutDirection.Ltr
+            ).value - WindowInsets.safeDrawing.asPaddingValues()
+            .calculateRightPadding(LayoutDirection.Ltr).value).toInt()
+    val columns = min((widthDp / 300).coerceIn(1, 4), ceil(3 / density.fontScale).toInt())
     Row(
         Modifier.padding(
             start = WindowInsets.safeDrawing.asPaddingValues()
@@ -71,17 +84,18 @@ fun CameraListItemList(
         ) {
             SectionIndex(
                 data = cameraState.getDisplayedCameras(searchText).map { it.sortableName },
-                listState = listState,
+                gridState = gridState,
             )
         }
         val cameras = cameraState.getDisplayedCameras(searchText)
-        LazyColumn(
-            state = listState,
+        LazyVerticalGrid(
+            state = gridState,
             contentPadding = PaddingValues(
                 bottom = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
                 end = WindowInsets.safeDrawing.asPaddingValues()
                     .calculateEndPadding(LayoutDirection.Ltr)
             ),
+            columns = GridCells.Fixed(columns),
             modifier = Modifier.semantics {
                 collectionInfo = CollectionInfo(
                     rowCount = cameras.size,
@@ -163,7 +177,7 @@ fun CameraListItemList(
                     )
                 }
             }
-            item {
+            item(span = { GridItemSpan(columns) }) {
                 Text(
                     pluralStringResource(R.plurals.camera_count, cameras.size, cameras.size),
                     textAlign = TextAlign.Center,
@@ -185,5 +199,5 @@ private fun CameraListItemListPreview() {
             _neighbourhood = BilingualObject(en = "Neighbourhood $it", fr = "Voisinage $it"),
         )
     }
-    CameraListItemList("", CameraState(allCameras = cameraList), listState = LazyListState())
+    CameraListItemList("", CameraState(allCameras = cameraList), gridState = LazyGridState())
 }

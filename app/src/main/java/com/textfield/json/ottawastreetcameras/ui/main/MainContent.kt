@@ -1,7 +1,6 @@
 package com.textfield.json.ottawastreetcameras.ui.main
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
@@ -19,7 +18,6 @@ import com.textfield.json.ottawastreetcameras.entities.Camera
 @Composable
 fun MainContent(
     cameraState: CameraState,
-    listState: LazyListState,
     gridState: LazyGridState,
     snackbarHostState: SnackbarHostState,
     searchText: String = "",
@@ -56,7 +54,7 @@ fun MainContent(
                 CameraListItemList(
                     searchText = searchText,
                     cameraState = cameraState,
-                    listState = listState,
+                    gridState = gridState,
                     onItemClick = onCameraClicked,
                     onItemLongClick = onItemLongClick,
                     onItemDismissed = { dismissedCamera = it },
