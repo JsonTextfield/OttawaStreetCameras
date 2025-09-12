@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.textfield.json.ottawastreetcameras.data.ICameraRepository
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import com.textfield.json.ottawastreetcameras.entities.City
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,7 +34,7 @@ class CameraViewModel(
 
     init {
         viewModelScope.launch {
-            _allCameras.value = cameraRepository.getAllCameras()
+            _allCameras.value = cameraRepository.getAllCameras(City.OTTAWA)
             getCameras()
         }
         job = job ?: viewModelScope.launch {
