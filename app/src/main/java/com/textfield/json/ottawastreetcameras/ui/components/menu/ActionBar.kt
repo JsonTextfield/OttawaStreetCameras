@@ -110,7 +110,7 @@ fun getActions(
     val view = Action(
         icon = Icons.Rounded.CameraAlt,
         tooltip = stringResource(id = R.string.view),
-        selectedCameras.size <= 8,
+        isVisible = selectedCameras.size <= 8,
         onClick = { onNavigateToCameraScreen(cameraState.selectedCameras, false) },
     )
     val allIsFavourite = selectedCameras.all { it.isFavourite }

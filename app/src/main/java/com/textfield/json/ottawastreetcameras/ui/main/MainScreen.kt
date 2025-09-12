@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardDoubleArrowUp
 import androidx.compose.material3.FilledIconButton
@@ -40,7 +39,6 @@ fun MainScreen(
     onNavigateToCameraScreen: (List<Camera>, Boolean) -> Unit = { _, _ -> },
 ) {
     val cameraState by mainViewModel.uiState.collectAsStateWithLifecycle()
-    val listState = rememberLazyListState()
     val gridState = rememberLazyGridState()
     val snackbarHostState = remember { SnackbarHostState() }
     val actions = getActions(
@@ -64,7 +62,6 @@ fun MainScreen(
         },
         onSelectCamera = mainViewModel::selectCamera,
         onRetry = mainViewModel::getAllCameras,
-        onBackPressed = mainViewModel::resetFilters,
         onNavigateToCameraScreen = onNavigateToCameraScreen,
         onHideCameras = mainViewModel::hideCameras,
         onFavouriteCameras = mainViewModel::favouriteCameras,
@@ -81,7 +78,6 @@ private fun MainScreen(
     searchText: String = "",
     suggestions: List<String> = emptyList(),
     onSearchTextChanged: (String) -> Unit = {},
-    onBackPressed: () -> Unit = {},
     onRetry: () -> Unit = {},
     onSelectCamera: (Camera) -> Unit = {},
     onHideCameras: (List<Camera>) -> Unit = {},
@@ -102,7 +98,6 @@ private fun MainScreen(
                     suggestions = suggestions,
                     actions = actions,
                     onSearchTextChanged = onSearchTextChanged,
-                    onBackPressed = onBackPressed,
                 )
             }
         },
