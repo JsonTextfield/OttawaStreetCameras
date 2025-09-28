@@ -11,11 +11,11 @@ android {
     defaultConfig {
         applicationId = "com.textfield.json.ottawastreetcameras"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        minSdk = 28
-        compileSdk = 36
-        targetSdk = 36
-        versionCode = 41
-        versionName = "2.5.0"
+        minSdk = libs.versions.minSdk.get().toInt()
+        compileSdk = libs.versions.compileSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
+        versionCode = libs.versions.versionCode.get().toInt()
+        versionName = libs.versions.versionName.get()
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
