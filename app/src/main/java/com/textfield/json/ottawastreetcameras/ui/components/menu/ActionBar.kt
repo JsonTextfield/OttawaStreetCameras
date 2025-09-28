@@ -216,14 +216,12 @@ fun getActions(
         icon = R.drawable.rounded_search_24,
         isVisible = cameraState.searchMode != SearchMode.NAME,
         tooltip = stringResource(id = R.string.search),
-        isChecked = cameraState.searchMode == SearchMode.NAME,
         onClick = { mainViewModel.searchCameras(SearchMode.NAME) },
     )
     val searchNeighbourhood = Action(
         icon = R.drawable.rounded_travel_explore_24,
         isVisible = cameraState.showSearchNeighbourhood,
         tooltip = stringResource(id = R.string.search_neighbourhood),
-        isChecked = cameraState.searchMode == SearchMode.NEIGHBOURHOOD,
         onClick = { mainViewModel.searchCameras(SearchMode.NEIGHBOURHOOD) },
     )
     val random = Action(

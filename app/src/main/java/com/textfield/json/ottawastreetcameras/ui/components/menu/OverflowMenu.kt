@@ -38,7 +38,6 @@ fun OverflowMenu(
                     icon = action.icon,
                     tooltip = action.tooltip,
                     isVisible = action.isVisible,
-                    isChecked = action.isChecked,
                 ) {
                     action.onClick()
                     onItemSelected()

@@ -1,13 +1,20 @@
 package com.textfield.json.ottawastreetcameras.ui.main
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.ui.components.menu.Action
 import com.textfield.json.ottawastreetcameras.ui.components.menu.ActionBar
 
@@ -19,9 +26,23 @@ fun MainAppBar(
     suggestions: List<String> = emptyList(),
     actions: List<Action> = emptyList(),
     onSearchTextChanged: (String) -> Unit = {},
+    onBackClick: () -> Unit = {},
 ) {
     TopAppBar(
         modifier = Modifier.shadow(10.dp),
+        navigationIcon = {
+            if (cameraState.searchMode != SearchMode.NONE) {
+                IconButton(
+                    modifier = Modifier.padding(5.dp),
+                    onClick = onBackClick,
+                ) {
+                    Icon(
+                        Icons.AutoMirrored.Rounded.ArrowBack,
+                        stringResource(id = R.string.back),
+                    )
+                }
+            }
+        },
         title = {
             AppBarTitle(
                 cameraState,

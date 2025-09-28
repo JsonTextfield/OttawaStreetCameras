@@ -2,11 +2,17 @@ package com.textfield.json.ottawastreetcameras.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.ElevatedFilterChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.ui.main.FilterMode
@@ -19,7 +25,13 @@ fun FilterChipStrip(
 ) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
-        contentPadding = PaddingValues(horizontal = 12.dp)
+        contentPadding = PaddingValues(
+            start = WindowInsets.safeDrawing.asPaddingValues().calculateStartPadding(
+                LayoutDirection.Ltr
+            ) + 12.dp, end = WindowInsets.safeDrawing.asPaddingValues().calculateEndPadding(
+                LayoutDirection.Ltr
+            ) + 12.dp
+        )
     ) {
         item {
             ElevatedFilterChip(

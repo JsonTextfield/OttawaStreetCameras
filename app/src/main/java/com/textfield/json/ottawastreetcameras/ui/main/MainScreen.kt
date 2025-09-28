@@ -1,19 +1,27 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.textfield.json.ottawastreetcameras.ui.main
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.KeyboardDoubleArrowUp
+import androidx.compose.material.icons.rounded.ArrowUpward
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -23,6 +31,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.textfield.json.ottawastreetcameras.entities.Camera
@@ -66,6 +75,7 @@ fun MainScreen(
         onHideCameras = mainViewModel::hideCameras,
         onFavouriteCameras = mainViewModel::favouriteCameras,
         onChangeFilterMode = mainViewModel::changeFilterMode,
+        onBackClick = mainViewModel::resetFilters,
     )
 }
 
@@ -84,6 +94,7 @@ private fun MainScreen(
     onFavouriteCameras: (List<Camera>) -> Unit = {},
     onChangeFilterMode: (FilterMode) -> Unit = {},
     onNavigateToCameraScreen: (List<Camera>, Boolean) -> Unit = { _, _ -> },
+    onBackClick: () -> Unit = {},
 ) {
     var showUpButton by remember { mutableStateOf(false) }
     Scaffold(
@@ -98,14 +109,17 @@ private fun MainScreen(
                     suggestions = suggestions,
                     actions = actions,
                     onSearchTextChanged = onSearchTextChanged,
+                    onBackClick = onBackClick,
                 )
             }
         },
         floatingActionButton = {
             AnimatedVisibility(
                 visible = showUpButton,
-                enter = fadeIn(),
-                exit = fadeOut(),
+                enter = fadeIn() + slideInVertically { it },
+                exit = fadeOut() + slideOutVertically { it },
+                modifier = Modifier.padding(end = TopAppBarDefaults.windowInsets.asPaddingValues().calculateEndPadding(
+                    LayoutDirection.Ltr))
             ) {
                 val scope = rememberCoroutineScope()
                 FilledIconButton(
@@ -115,7 +129,7 @@ private fun MainScreen(
                         }
                     },
                 ) {
-                    Icon(Icons.Rounded.KeyboardDoubleArrowUp, null)
+                    Icon(Icons.Rounded.ArrowUpward, null)
                 }
             }
         }
