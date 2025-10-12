@@ -13,6 +13,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -46,22 +48,23 @@ class MainViewModel(
 
     init {
         viewModelScope.launch {
-            _theme.value = prefs.getTheme() ?: ThemeMode.SYSTEM
-            getAllCameras()
+            prefs.getTheme().collect {
+                _theme.update { it }
+            }
         }
+        getAllCameras()
     }
 
     fun changeTheme(theme: ThemeMode) {
         viewModelScope.launch {
             prefs.setTheme(theme)
-            _theme.value = theme
+            _theme.update { theme }
         }
     }
 
     fun changeViewMode(viewMode: ViewMode) {
         viewModelScope.launch {
             prefs.setViewMode(viewMode)
-            _uiState.update { it.copy(viewMode = viewMode) }
         }
     }
 
@@ -110,34 +113,33 @@ class MainViewModel(
     }
 
     fun favouriteCameras(cameras: List<Camera>) {
+        val favouriteCameras = uiState.value.favouriteCameras
+        val newFavourites = if (favouriteCameras.containsAll(cameras)) {
+            favouriteCameras - cameras
+        }
+        else {
+            favouriteCameras + cameras
+        }.map {
+            it.id
+        }.toSet()
         viewModelScope.launch {
-            val allFavourite = cameras.all { it.isFavourite }
-            prefs.favourite(cameras.map { it.id }, !allFavourite)
-            val favourites = prefs.getFavourites()
-            _uiState.update {
-                it.copy(
-                    allCameras = it.allCameras.map { camera ->
-                        camera.copy(isFavourite = camera.id in favourites)
-                    }
-                )
-            }
+            prefs.setFavouriteCameras(newFavourites)
         }
     }
 
     fun hideCameras(cameras: List<Camera>) {
         viewModelScope.launch {
-            var hidden = prefs.getHidden()
-            prefs.setVisibility(
-                cameras.map { it.id },
-                cameras.first().id in hidden,
-            )
-            hidden = prefs.getHidden()
-            _uiState.update {
-                it.copy(
-                    allCameras = it.allCameras.map { camera ->
-                        camera.copy(isVisible = camera.id !in hidden)
-                    }
-                )
+            val hiddenCameras = uiState.value.hiddenCameras
+            val newHidden = if (hiddenCameras.containsAll(cameras)) {
+                hiddenCameras - cameras
+            }
+            else {
+                hiddenCameras + cameras
+            }.map {
+                it.id
+            }.toSet()
+            viewModelScope.launch {
+                prefs.setHiddenCameras(newHidden)
             }
         }
     }
@@ -188,27 +190,30 @@ class MainViewModel(
     fun getAllCameras() {
         _uiState.update { it.copy(status = Status.LOADING) }
         viewModelScope.launch {
-            val hidden = prefs.getHidden()
-            val favourites = prefs.getFavourites()
-            runCatching {
-                cameraRepository.getAllCameras()
-            }.onSuccess { cameras ->
-                val viewMode = prefs.getViewMode() ?: ViewMode.GALLERY
-                _uiState.update { cameraState ->
-                    cameraState.copy(
-                        allCameras = cameras.map {
-                            it.copy(
-                                isVisible = it.id !in hidden,
-                                isFavourite = it.id in favourites,
-                            )
-                        },
-                        status = Status.LOADED,
-                        viewMode = viewMode,
-                    )
+            combine(
+                prefs.getHidden(),
+                prefs.getFavourites(),
+                prefs.getViewMode(),
+            ) { hidden, favourites, viewMode ->
+                runCatching {
+                    cameraRepository.getAllCameras()
+                }.onSuccess { cameras ->
+                    _uiState.update { cameraState ->
+                        cameraState.copy(
+                            allCameras = cameras.map {
+                                it.copy(
+                                    isVisible = it.id !in hidden,
+                                    isFavourite = it.id in favourites,
+                                )
+                            },
+                            status = Status.LOADED,
+                            viewMode = viewMode,
+                        )
+                    }
+                }.onFailure {
+                    _uiState.update { it.copy(status = Status.ERROR) }
                 }
-            }.onFailure {
-                _uiState.update { it.copy(status = Status.ERROR) }
-            }
+            }.collect()
         }
     }
 

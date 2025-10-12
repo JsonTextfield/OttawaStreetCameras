@@ -1,17 +1,15 @@
 package com.textfield.json.ottawastreetcameras.data
 
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.textfield.json.ottawastreetcameras.ui.main.ThemeMode
 import com.textfield.json.ottawastreetcameras.ui.main.ViewMode
 import kotlinx.coroutines.flow.Flow
 
 interface IPreferencesRepository {
-    suspend fun favourite(ids: Collection<String>, value: Boolean)
+    suspend fun setFavouriteCameras(ids: Set<String>)
 
     fun getFavourites(): Flow<Set<String>>
 
-    suspend fun setVisibility(ids: Collection<String>, value: Boolean)
+    suspend fun setHiddenCameras(ids: Set<String>)
 
     fun getHidden(): Flow<Set<String>>
 
@@ -23,9 +21,3 @@ interface IPreferencesRepository {
 
     fun getViewMode(): Flow<ViewMode>
 }
-
-val viewModeKey = intPreferencesKey("viewMode")
-val sortModeKey = intPreferencesKey("sortMode")
-val themeKey = intPreferencesKey("theme")
-val favouritesKey = stringSetPreferencesKey("favourites")
-val hiddenKey = stringSetPreferencesKey("hidden")

@@ -1,65 +1,45 @@
 package com.textfield.json.ottawastreetcameras
 
 import com.textfield.json.ottawastreetcameras.data.IPreferencesRepository
-import com.textfield.json.ottawastreetcameras.ui.main.SortMode
 import com.textfield.json.ottawastreetcameras.ui.main.ThemeMode
 import com.textfield.json.ottawastreetcameras.ui.main.ViewMode
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 
 
 class FakePreferences : IPreferencesRepository {
-    private val favourites = MutableStateFlow(emptySet<String>())
-    private val hidden = MutableStateFlow(emptySet<String>())
-    private val viewMode = MutableStateFlow(ViewMode.GALLERY)
-    private val sortMode = MutableStateFlow(SortMode.NAME)
-    private val theme = MutableStateFlow(ThemeMode.SYSTEM)
+    private val data = mutableMapOf<String, Any>()
 
-    override suspend fun favourite(ids: Collection<String>, value: Boolean) {
-        val currentFavourites = favourites.value
-        val newHidden = if (value) {
-            currentFavourites + ids
-        }
-        else {
-            currentFavourites - ids.toSet()
-        }
-        favourites.value = newHidden
+    override suspend fun setFavouriteCameras(ids: Set<String>) {
+        data["favourites"] = ids
     }
 
     override fun getFavourites(): Flow<Set<String>> {
-        return favourites
+        return flowOf(data["favourites"] as? Set<String> ?: emptySet())
     }
 
-    override suspend fun setVisibility(ids: Collection<String>, value: Boolean) {
-        val currentHidden = hidden.value
-        val newHidden = if (!value) {
-            currentHidden + ids
-        }
-        else {
-            currentHidden - ids.toSet()
-        }
-        hidden.value = newHidden
+    override suspend fun setHiddenCameras(ids: Set<String>) {
+        data["hidden"] = ids
     }
 
     override fun getHidden(): Flow<Set<String>> {
-        return hidden
+        return flowOf(data["hidden"] as? Set<String> ?: emptySet())
     }
 
     override suspend fun setTheme(theme: ThemeMode) {
-        this.theme.value = theme
+        data["theme"] = theme
     }
 
     override fun getTheme(): Flow<ThemeMode> {
-        return theme
+        return flowOf((data["theme"] ?: ThemeMode.SYSTEM) as ThemeMode)
     }
 
     override suspend fun setViewMode(viewMode: ViewMode) {
-        this.viewMode.value = viewMode
+        data["viewMode"] = viewMode
     }
 
     override fun getViewMode(): Flow<ViewMode> {
-        return viewMode
+        return flowOf((data["viewMode"] ?: ViewMode.GALLERY) as ViewMode)
     }
 
 }
