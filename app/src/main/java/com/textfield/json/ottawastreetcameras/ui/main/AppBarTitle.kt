@@ -31,7 +31,6 @@ fun AppBarTitle(
             modifier = Modifier.padding(10.dp),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            color = MaterialTheme.colorScheme.onSurface
         )
     }
     else {
@@ -43,7 +42,6 @@ fun AppBarTitle(
                     style = MaterialTheme.typography.titleLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colorScheme.onSurface,
                 )
             }
 

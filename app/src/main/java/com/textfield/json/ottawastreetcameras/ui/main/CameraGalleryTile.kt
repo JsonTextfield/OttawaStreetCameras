@@ -10,6 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -26,7 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -37,7 +40,6 @@ import coil.request.ImageRequest
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.BilingualObject
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import com.textfield.json.ottawastreetcameras.ui.theme.favouriteColour
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -58,41 +60,33 @@ fun CameraGalleryTile(
                 .combinedClickable(
                     onClick = { onClick(camera) },
                     onLongClick = { onLongClick(camera) },
-                ),
+                )
         ) {
             val context = LocalContext.current
             var model by remember {
                 mutableStateOf(
-                    ImageRequest
-                        .Builder(context)
-                        .data(camera.preview)
-                        .crossfade(500)
-                        .build()
+                    ImageRequest.Builder(context).data(camera.preview).crossfade(500).build()
                 )
             }
             LaunchedEffect(camera.name) {
-                model = ImageRequest
-                    .Builder(context)
-                    .data(camera.preview)
-                    .crossfade(500)
-                    .build()
+                model = ImageRequest.Builder(context).data(camera.preview).crossfade(500).build()
             }
             AsyncImage(
                 model = model,
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.onSurface)
-                    .align(Alignment.Center),
+                    .align(Alignment.Center)
+                    .background(MaterialTheme.colorScheme.secondaryContainer),
                 contentScale = ContentScale.Crop,
             )
             Box(
                 modifier = Modifier
+                    .align(Alignment.BottomCenter)
                     .fillMaxWidth()
-                    .height(40.dp)
-                    .background(color = Color.Black.copy(alpha = .6f))
-                    .padding(horizontal = 12.dp, vertical = 2.dp)
-                    .align(Alignment.BottomCenter),
+                    .height(32.dp)
+                    .background(color = colorResource(id = R.color.cameraNameBackground))
+                    .padding(2.dp),
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
@@ -106,25 +100,22 @@ fun CameraGalleryTile(
             }
             if (camera.isFavourite) {
                 Icon(
-                    painterResource(R.drawable.round_star_24),
+                    Icons.Rounded.Star,
                     contentDescription = "",
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .align(Alignment.TopEnd),
-                    tint = favouriteColour,
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    tint = colorResource(id = R.color.favouriteColour),
                 )
             }
             if (camera.isSelected) {
                 Icon(
-                    painterResource(R.drawable.round_check_24),
+                    Icons.Rounded.Check,
                     contentDescription = "",
                     modifier = Modifier
-                        .padding(4.dp)
+                        .align(Alignment.TopStart)
                         .background(
                             color = MaterialTheme.colorScheme.primary,
                             shape = CircleShape,
-                        )
-                        .align(Alignment.TopStart),
+                        ),
                     tint = MaterialTheme.colorScheme.onPrimary,
                 )
             }
