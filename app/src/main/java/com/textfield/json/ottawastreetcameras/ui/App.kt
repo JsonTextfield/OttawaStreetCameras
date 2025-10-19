@@ -14,11 +14,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.textfield.json.ottawastreetcameras.ui.camera.CameraScreen
-import com.textfield.json.ottawastreetcameras.ui.camera.CameraViewModel
-import com.textfield.json.ottawastreetcameras.ui.main.MainScreen
-import com.textfield.json.ottawastreetcameras.ui.main.MainViewModel
-import com.textfield.json.ottawastreetcameras.ui.theme.AppTheme
+import com.jsontextfield.core.ui.theme.AppTheme
+import com.jsontextfield.core.ui.viewmodels.CameraViewModel
+import com.jsontextfield.core.ui.viewmodels.MainViewModel
+import com.textfield.json.ottawastreetcameras.ui.screens.CameraScreen
+import com.textfield.json.ottawastreetcameras.ui.screens.MainScreen
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 

@@ -1,8 +1,8 @@
 package com.textfield.json.ottawastreetcameras
 
-import com.textfield.json.ottawastreetcameras.data.IPreferencesRepository
-import com.textfield.json.ottawastreetcameras.ui.main.ThemeMode
-import com.textfield.json.ottawastreetcameras.ui.main.ViewMode
+import com.jsontextfield.core.ui.ThemeMode
+import com.jsontextfield.core.ui.ViewMode
+import com.jsontextfield.core.data.IPreferencesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 

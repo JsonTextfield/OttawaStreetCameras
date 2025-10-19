@@ -1,6 +1,6 @@
 package com.textfield.json.ottawastreetcameras
 
-import com.textfield.json.ottawastreetcameras.entities.BilingualObject
+import com.jsontextfield.core.entities.BilingualObject
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.util.Locale
@@ -22,8 +22,8 @@ class BilingualObjectUnitTest {
 
     @Test
     fun testSortableNameSpecialCharacters() {
-        val nameEn = "!@#\$%^&*()n!@#\$%^&*()a!@#\$%^&*()m!@#\$%^&*()e!@#\$%^&*()"
-        val nameFr = "n!@#\$%^&*()a!@#\$%^&*()m!@#\$%^&*()e!@#\$%^&*()F!@#\$%^&*()r!@#\$%^&*()"
+        val nameEn = "!@#$%^&*()n!@#$%^&*()a!@#$%^&*()m!@#$%^&*()e!@#$%^&*()"
+        val nameFr = "n!@#$%^&*()a!@#$%^&*()m!@#$%^&*()e!@#$%^&*()F!@#$%^&*()r!@#$%^&*()"
         val myBilingualObject = BilingualObject(nameEn, nameFr)
 
         Locale.setDefault(Locale("en"))

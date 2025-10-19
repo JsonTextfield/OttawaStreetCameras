@@ -1,13 +1,12 @@
 package com.textfield.json.ottawastreetcameras
 
-import com.textfield.json.ottawastreetcameras.data.ICameraRepository
-import com.textfield.json.ottawastreetcameras.entities.BilingualObject
-import com.textfield.json.ottawastreetcameras.entities.Camera
-import com.textfield.json.ottawastreetcameras.entities.City
+import com.jsontextfield.core.data.ICameraRepository
+import com.jsontextfield.core.entities.BilingualObject
+import com.jsontextfield.core.entities.Camera
 
 class FakeCameraRepository : ICameraRepository {
     var returnEmptyList = false
-    override suspend fun getAllCameras(city: City): List<Camera> {
+    override suspend fun getAllCameras(): List<Camera> {
         return if (returnEmptyList) {
             emptyList()
         } else {

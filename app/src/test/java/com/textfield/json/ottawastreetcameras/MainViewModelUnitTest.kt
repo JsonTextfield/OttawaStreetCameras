@@ -1,22 +1,17 @@
 package com.textfield.json.ottawastreetcameras
 
-import com.textfield.json.ottawastreetcameras.network.model.CameraApiModel
-import com.textfield.json.ottawastreetcameras.network.model.LocationApiModel
-import com.textfield.json.ottawastreetcameras.ui.main.CameraState
-import com.textfield.json.ottawastreetcameras.ui.main.FilterMode
-import com.textfield.json.ottawastreetcameras.ui.main.MainViewModel
-import com.textfield.json.ottawastreetcameras.ui.main.SearchMode
-import com.textfield.json.ottawastreetcameras.ui.main.SortMode
-import com.textfield.json.ottawastreetcameras.ui.main.ViewMode
-import kotlinx.coroutines.Dispatchers
+import com.jsontextfield.core.network.model.CameraApiModel
+import com.jsontextfield.core.network.model.LocationApiModel
+import com.jsontextfield.core.ui.FilterMode
+import com.jsontextfield.core.ui.SearchMode
+import com.jsontextfield.core.ui.SortMode
+import com.jsontextfield.core.ui.ViewMode
+import com.jsontextfield.core.ui.main.CameraState
+import com.jsontextfield.core.ui.viewmodels.MainViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Before
@@ -26,13 +21,16 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainViewModelUnitTest {
+
+    @get:Rule
+    var mainCoroutineRule = MainCoroutineRule()
+
     private lateinit var mainViewModel: MainViewModel
     private lateinit var fakeCameraRepository: FakeCameraRepository
     private lateinit var prefs: FakePreferences
 
     @Before
     fun setup() {
-        Dispatchers.setMain(StandardTestDispatcher())
         fakeCameraRepository = FakeCameraRepository()
         prefs = FakePreferences()
         mainViewModel = MainViewModel(
@@ -40,11 +38,6 @@ class MainViewModelUnitTest {
             prefs = prefs,
             _uiState = MutableStateFlow(CameraState()),
         )
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
     }
 
     @Test

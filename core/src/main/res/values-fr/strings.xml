@@ -1,0 +1,78 @@
+<resources>
+    <string name="about">À propos de</string>
+    <string name="add_to_favourites">Ajouter aux favourites</string>
+    <string name="app_name">RueCams</string>
+    <string name="app_name_long">RueCams Ottawa</string>
+    <string name="all">Tous</string>
+    <string name="favourites">Favoris</string>
+    <string name="hidden_cameras">Caméras cachées</string>
+    <string name="hide">Cacher</string>
+    <string name="more">Plus</string>
+    <string name="clear">Effacer</string>
+    <string name="image_saved">%s a été téléchargée</string>
+    <string name="image_saved_at">L\'image a été téléchargée dans %s</string>
+    <string name="licences">Licences</string>
+    <string name="location_unavailable">L\'emplacement n\'est pas disponible</string>
+    <string name="list">Liste</string>
+    <string name="map">Carte</string>
+    <string name="gallery">Galerie</string>
+    <string name="neighbourhoods">Quartiers</string>
+    <string name="night_mode">Mode nuit</string>
+    <string name="no_network_content">Réessayer plus tard</string>
+    <string name="retry">Réessayer</string>
+    <string name="no_network_title">N\'a pas pu charger</string>
+    <string name="could_not_load_long">N\'a pas pu charger. Réessayer plus tard.</string>
+    <string name="random_camera">Caméra aléatoire</string>
+    <string name="rate">Évaluer</string>
+    <string name="remove_from_favourites">Supprimer des favoris</string>
+    <string name="download">Télécharger</string>
+    <string name="search">Chercher</string>
+    <string name="search_neighbourhood">Chercher par quartier</string>
+    <string name="select_all">Tout sélectionner</string>
+    <string name="deselect_all">Tout déselectionner</string>
+    <string name="view">Voir</string>
+    <string name="shuffle">Mélanger</string>
+    <string name="sort_by_distance">Triez par distance</string>
+    <string name="sort_by_name">Triez par nom</string>
+    <string name="sort_by_neighbourhood">Triez par quartier</string>
+    <string name="switch_view">Changer la vue</string>
+    <string name="unhide">Révéler</string>
+    <string name="version">Version %s</string>
+    <string name="sort">Trier</string>
+    <string name="back">Retourner</string>
+    <string name="close">Fermer</string>
+    <string name="camera_visibility_changed">%s a été %s</string>
+    <string name="unhidden">dévoilée</string>
+    <string name="hidden">cachée</string>
+    <string name="undo">Annuler</string>
+    <string name="light_mode">Lumière</string>
+    <string name="dark_mode">Sombre</string>
+    <string name="system_default">Défaut</string>
+    <string name="change_theme">Thème</string>
+
+    <plurals name="images_saved">
+        <item quantity="one">%d image a été enregistrée</item>
+        <item quantity="many">%d images ont été enregistrée</item>
+        <item quantity="other">%d images ont été enregistrée</item>
+    </plurals>
+    <plurals name="selectedCameras">
+        <item quantity="one">%d sélectionnée</item>
+        <item quantity="many">%d sélectionnées</item>
+        <item quantity="other">%d sélectionnées</item>
+    </plurals>
+    <plurals name="search_hint">
+        <item quantity="one">Recherche de %d caméra</item>
+        <item quantity="many">Recherche de %d caméras</item>
+        <item quantity="other">Recherche de %d caméras</item>
+    </plurals>
+    <plurals name="search_hint_neighbourhood">
+        <item quantity="one">Recherche de %d quartier</item>
+        <item quantity="many">Recherche de %d quartiers</item>
+        <item quantity="other">Recherche de %d quartiers</item>
+    </plurals>
+    <plurals name="camera_count">
+        <item quantity="one">%d caméra</item>
+        <item quantity="many">%d caméras</item>
+        <item quantity="other">%d caméras</item>
+    </plurals>
+</resources>

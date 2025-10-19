@@ -5,13 +5,13 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.textfield.json.ottawastreetcameras.R
-import com.textfield.json.ottawastreetcameras.data.CameraRepository
-import com.textfield.json.ottawastreetcameras.data.DataStorePreferencesRepository
-import com.textfield.json.ottawastreetcameras.data.ICameraRepository
-import com.textfield.json.ottawastreetcameras.data.IPreferencesRepository
-import com.textfield.json.ottawastreetcameras.ui.camera.CameraViewModel
-import com.textfield.json.ottawastreetcameras.ui.main.CameraState
-import com.textfield.json.ottawastreetcameras.ui.main.MainViewModel
+import com.jsontextfield.core.data.CameraRepository
+import com.jsontextfield.core.data.DataStorePreferencesRepository
+import com.jsontextfield.core.data.ICameraRepository
+import com.jsontextfield.core.data.IPreferencesRepository
+import com.jsontextfield.core.ui.main.CameraState
+import com.jsontextfield.core.ui.viewmodels.CameraViewModel
+import com.jsontextfield.core.ui.viewmodels.MainViewModel
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
@@ -40,7 +40,7 @@ val appModule = module {
     single<SupabaseClient> {
         createSupabaseClient(
             supabaseUrl = "https://nacudfxzbqaesoyjfluh.supabase.co",
-            supabaseKey = androidContext().getString(R.string.supabase_key)
+            supabaseKey = SUPABASE_API_KEY
         ) {
             install(Postgrest)
         }

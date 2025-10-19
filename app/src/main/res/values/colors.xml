@@ -2,9 +2,4 @@
 <resources>
     <color name="colorPrimary">#2749B3</color>
     <color name="colorAccent">#139BCC</color>
-    <color name="backButtonBackground">#8AFFFFFF</color>
-    <color name="cameraNameBackground">#8A000000</color>
-    <color name="galleryTileSelectedColour">#4F00BCD4</color>
-    <color name="cameraViewSelectedColour">#4F00BCD4</color>
-    <color name="favouriteColour">#FFED00</color>
 </resources>
