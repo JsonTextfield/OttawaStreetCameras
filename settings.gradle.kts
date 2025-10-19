@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Ottawa StreetCams"
 include(":app")
+include(":core")
