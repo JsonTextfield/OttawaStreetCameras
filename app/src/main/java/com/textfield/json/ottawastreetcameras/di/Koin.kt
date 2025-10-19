@@ -20,7 +20,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
-import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("prefs")
@@ -49,8 +50,8 @@ val appModule = module {
 
     single { MutableStateFlow(CameraState()) }
 
-    factoryOf(::MainViewModel)
-    factory<CameraViewModel> { parameters ->
+    viewModelOf(::MainViewModel)
+    viewModel<CameraViewModel> { parameters ->
         CameraViewModel(
             cameraRepository = get<ICameraRepository>(),
             cameraIds = parameters.getOrNull(String::class) ?: "",

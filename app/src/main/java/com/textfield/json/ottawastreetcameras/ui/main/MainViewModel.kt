@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -49,7 +50,7 @@ class MainViewModel(
     init {
         viewModelScope.launch {
             prefs.getTheme().collect {
-                _theme.update { it }
+                _theme.value = it
             }
         }
         getAllCameras()
@@ -58,7 +59,6 @@ class MainViewModel(
     fun changeTheme(theme: ThemeMode) {
         viewModelScope.launch {
             prefs.setTheme(theme)
-            _theme.update { theme }
         }
     }
 
