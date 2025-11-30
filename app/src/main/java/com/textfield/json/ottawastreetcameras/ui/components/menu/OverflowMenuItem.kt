@@ -1,5 +1,6 @@
 package com.textfield.json.ottawastreetcameras.ui.components.menu
 
+import androidx.annotation.DrawableRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.DropdownMenuItem
@@ -7,12 +8,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
 
 @Composable
 fun OverflowMenuItem(
-    icon: ImageVector,
+    @DrawableRes icon: Int,
     tooltip: String = "",
     isVisible: Boolean = true,
     isChecked: Boolean = false,
@@ -21,7 +22,7 @@ fun OverflowMenuItem(
     if (isVisible) {
         DropdownMenuItem(
             text = { Text(text = tooltip) },
-            leadingIcon = { Icon(icon, null) },
+            leadingIcon = { Icon(painterResource(icon), null) },
             trailingIcon = {
                 if (isChecked) {
                     Icon(Icons.Rounded.Check, null)

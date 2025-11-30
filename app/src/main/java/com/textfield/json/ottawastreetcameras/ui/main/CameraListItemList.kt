@@ -19,8 +19,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
@@ -33,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -119,7 +118,7 @@ fun CameraListItemList(
                                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
                                 ),
                                 leadingContent = {
-                                    Icon(Icons.Rounded.VisibilityOff, "")
+                                    Icon(painterResource(R.drawable.round_visibility_off_24), "")
                                 },
                                 headlineContent = {
                                     Text(
@@ -129,7 +128,7 @@ fun CameraListItemList(
                                     )
                                 },
                                 trailingContent = {
-                                    Icon(Icons.Rounded.VisibilityOff, "")
+                                    Icon(painterResource(R.drawable.round_visibility_off_24), "")
                                 },
                             )
                         },

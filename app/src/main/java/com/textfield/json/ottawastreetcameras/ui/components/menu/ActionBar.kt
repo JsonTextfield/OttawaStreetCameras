@@ -7,24 +7,6 @@ import android.location.LocationManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.List
-import androidx.compose.material.icons.automirrored.rounded.Sort
-import androidx.compose.material.icons.filled.Place
-import androidx.compose.material.icons.rounded.BrightnessMedium
-import androidx.compose.material.icons.rounded.CameraAlt
-import androidx.compose.material.icons.rounded.Casino
-import androidx.compose.material.icons.rounded.Clear
-import androidx.compose.material.icons.rounded.GridView
-import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.SelectAll
-import androidx.compose.material.icons.rounded.Shuffle
-import androidx.compose.material.icons.rounded.Star
-import androidx.compose.material.icons.rounded.StarBorder
-import androidx.compose.material.icons.rounded.TravelExplore
-import androidx.compose.material.icons.rounded.Visibility
-import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -84,7 +66,7 @@ fun ActionBar(
                 showOverflowMenu = false
             }
             MenuItem(
-                icon = Icons.Rounded.MoreVert,
+                icon = R.drawable.rounded_more_vert_24,
                 tooltip = stringResource(R.string.more),
                 onClick = {
                     showOverflowMenu = true
@@ -104,18 +86,18 @@ fun getActions(
     val selectedCameras = cameraState.selectedCameras
     val context = LocalContext.current
     val clearSelection = Action(
-        icon = Icons.Rounded.Clear, tooltip = stringResource(R.string.clear), true,
+        icon = R.drawable.round_clear_24, tooltip = stringResource(R.string.clear), true,
         onClick = { mainViewModel.selectAllCameras(false) },
     )
     val view = Action(
-        icon = Icons.Rounded.CameraAlt,
+        icon = R.drawable.round_photo_camera_24,
         tooltip = stringResource(id = R.string.view),
         selectedCameras.size <= 8,
         onClick = { onNavigateToCameraScreen(cameraState.selectedCameras, false) },
     )
     val allIsFavourite = selectedCameras.all { it.isFavourite }
     val favourite = Action(
-        icon = if (allIsFavourite) Icons.Rounded.StarBorder else Icons.Rounded.Star,
+        icon = if (allIsFavourite) R.drawable.round_star_border_24 else R.drawable.round_star_24,
         tooltip = stringResource(
             if (allIsFavourite) {
                 R.string.remove_from_favourites
@@ -128,21 +110,21 @@ fun getActions(
     )
     val allIsHidden = selectedCameras.all { !it.isVisible }
     val hide = Action(
-        icon = if (allIsHidden) Icons.Rounded.Visibility else Icons.Rounded.VisibilityOff,
+        icon = if (allIsHidden) R.drawable.round_visibility_24 else R.drawable.round_visibility_off_24,
         tooltip = stringResource(if (allIsHidden) R.string.unhide else R.string.hide),
         onClick = { mainViewModel.hideCameras(cameraState.selectedCameras) },
     )
     val selectAll = Action(
-        icon = Icons.Rounded.SelectAll,
+        icon = R.drawable.rounded_select_all_24,
         tooltip = stringResource(R.string.select_all),
         isVisible = selectedCameras.size < cameraState.getDisplayedCameras(searchText = mainViewModel.searchText).size,
         onClick = { mainViewModel.selectAllCameras() },
     )
     val switchView = Action(
         icon = when (cameraState.viewMode) {
-            ViewMode.LIST -> Icons.AutoMirrored.Rounded.List
-            ViewMode.MAP -> Icons.Filled.Place
-            ViewMode.GALLERY -> Icons.Rounded.GridView
+            ViewMode.LIST -> R.drawable.rounded_list_24
+            ViewMode.MAP -> R.drawable.baseline_place_24
+            ViewMode.GALLERY -> R.drawable.round_grid_view_24
         },
         tooltip = stringResource(
             id = when (cameraState.viewMode) {
@@ -171,7 +153,7 @@ fun getActions(
         },
     )
     val sort = Action(
-        icon = Icons.AutoMirrored.Rounded.Sort,
+        icon = R.drawable.rounded_sort_24,
         isVisible = cameraState.viewMode != ViewMode.MAP,
         tooltip = stringResource(id = R.string.sort),
         menuContent = {
@@ -231,28 +213,28 @@ fun getActions(
         },
     )
     val search = Action(
-        icon = Icons.Rounded.Search,
+        icon = R.drawable.rounded_search_24,
         isVisible = cameraState.searchMode != SearchMode.NAME,
         tooltip = stringResource(id = R.string.search),
         isChecked = cameraState.searchMode == SearchMode.NAME,
         onClick = { mainViewModel.searchCameras(SearchMode.NAME) },
     )
     val searchNeighbourhood = Action(
-        icon = Icons.Rounded.TravelExplore,
+        icon = R.drawable.rounded_travel_explore_24,
         isVisible = cameraState.showSearchNeighbourhood,
         tooltip = stringResource(id = R.string.search_neighbourhood),
         isChecked = cameraState.searchMode == SearchMode.NEIGHBOURHOOD,
         onClick = { mainViewModel.searchCameras(SearchMode.NEIGHBOURHOOD) },
     )
     val random = Action(
-        icon = Icons.Rounded.Casino,
+        icon = R.drawable.round_casino_24,
         tooltip = stringResource(id = R.string.random_camera),
         onClick = {
             onNavigateToCameraScreen(listOf(cameraState.visibleCameras.random()), false)
         },
     )
     val shuffle = Action(
-        icon = Icons.Rounded.Shuffle,
+        icon = R.drawable.rounded_shuffle_24,
         tooltip = stringResource(id = R.string.shuffle),
         onClick = {
             onNavigateToCameraScreen(emptyList(), true)
@@ -260,7 +242,7 @@ fun getActions(
     )
     val theme by mainViewModel.theme.collectAsStateWithLifecycle()
     val darkMode = Action(
-        icon = Icons.Rounded.BrightnessMedium,
+        icon = R.drawable.round_brightness_medium_24,
         tooltip = stringResource(R.string.change_theme),
         menuContent = {
             var isExpanded by remember { mutableStateOf(it) }

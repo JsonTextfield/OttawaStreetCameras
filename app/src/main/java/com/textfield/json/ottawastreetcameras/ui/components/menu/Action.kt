@@ -1,10 +1,10 @@
 package com.textfield.json.ottawastreetcameras.ui.components.menu
 
+import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
 
 data class Action(
-    val icon: ImageVector,
+    @DrawableRes val icon: Int,
     val tooltip: String,
     val isVisible: Boolean = true,
     val isChecked: Boolean = false,

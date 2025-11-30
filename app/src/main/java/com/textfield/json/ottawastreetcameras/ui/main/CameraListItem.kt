@@ -9,9 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Star
-import androidx.compose.material.icons.rounded.StarBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItemDefaults
@@ -21,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -83,14 +81,14 @@ fun CameraListItem(
         ) {
             if (camera.isFavourite) {
                 Icon(
-                    Icons.Rounded.Star,
+                    painterResource(R.drawable.round_star_24),
                     contentDescription = stringResource(R.string.remove_from_favourites),
                     tint = colorResource(id = R.color.favouriteColour)
                 )
             }
             else {
                 Icon(
-                    Icons.Rounded.StarBorder,
+                    painterResource(R.drawable.round_star_border_24),
                     contentDescription = stringResource(R.string.add_to_favourites),
                 )
             }

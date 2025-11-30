@@ -1,5 +1,6 @@
 package com.textfield.json.ottawastreetcameras.ui.components.menu
 
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -14,13 +15,13 @@ import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuItem(
-    icon: ImageVector,
+    @DrawableRes icon: Int,
     tooltip: String = "",
     isVisible: Boolean = true,
     onClick: () -> Unit = {},
@@ -38,7 +39,7 @@ fun MenuItem(
                 },
             ) {
                 IconButton(
-                    content = { Icon(icon, tooltip) },
+                    content = { Icon(painterResource(icon), tooltip) },
                     onClick = onClick,
                     colors = IconButtonDefaults.iconButtonColors(
                         contentColor = MaterialTheme.colorScheme.onSurface,
