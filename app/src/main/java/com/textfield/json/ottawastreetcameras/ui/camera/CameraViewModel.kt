@@ -7,11 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.textfield.json.ottawastreetcameras.data.ICameraRepository
 import com.textfield.json.ottawastreetcameras.entities.Camera
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class CameraViewModel(
@@ -29,15 +29,13 @@ class CameraViewModel(
 
     var update by mutableStateOf(false)
 
-    private var job: Job? = null
-
     init {
         viewModelScope.launch {
             _allCameras.value = cameraRepository.getAllCameras()
             getCameras()
         }
-        job = job ?: viewModelScope.launch {
-            while (true) {
+        viewModelScope.launch {
+            while (isActive) {
                 if (isShuffling) {
                     getRandomCamera()
                 }
@@ -48,16 +46,10 @@ class CameraViewModel(
     }
 
     private fun getCameras() {
-        _cameraList.value = _allCameras.value.filter { camera -> camera.id in cameraIds }
+        _cameraList.value = allCameras.value.filter { camera -> camera.id in cameraIds }
     }
 
     private fun getRandomCamera() {
-        _cameraList.value = listOf(_allCameras.value.random())
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        job?.cancel()
-        job = null
+        _cameraList.value = listOf(allCameras.value.random())
     }
 }
