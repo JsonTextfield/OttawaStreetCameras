@@ -13,6 +13,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -45,23 +48,50 @@ class MainViewModel(
     val theme: StateFlow<ThemeMode> get() = _theme.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            _theme.value = prefs.getTheme() ?: ThemeMode.SYSTEM
-            getAllCameras()
-        }
+        prefs.getTheme().map {
+            _theme.value = it
+        }.launchIn(viewModelScope)
+
+        prefs.getFavourites().map { favourites ->
+            _uiState.update {
+                it.copy(
+                    allCameras = it.allCameras.map { camera ->
+                        camera.copy(isFavourite = camera.id in favourites)
+                    }
+                )
+            }
+        }.launchIn(viewModelScope)
+
+        prefs.getHidden().map { hidden ->
+            _uiState.update {
+                it.copy(
+                    allCameras = it.allCameras.map { camera ->
+                        camera.copy(isVisible = camera.id !in hidden)
+                    }
+                )
+            }
+        }.launchIn(viewModelScope)
+
+        prefs.getViewMode().map { viewMode ->
+            _uiState.update {
+                it.copy(
+                    viewMode = viewMode,
+                )
+            }
+        }.launchIn(viewModelScope)
+
+        getAllCameras()
     }
 
     fun changeTheme(theme: ThemeMode) {
         viewModelScope.launch {
             prefs.setTheme(theme)
-            _theme.value = theme
         }
     }
 
     fun changeViewMode(viewMode: ViewMode) {
         viewModelScope.launch {
             prefs.setViewMode(viewMode)
-            _uiState.update { it.copy(viewMode = viewMode) }
         }
     }
 
@@ -113,32 +143,13 @@ class MainViewModel(
         viewModelScope.launch {
             val allFavourite = cameras.all { it.isFavourite }
             prefs.favourite(cameras.map { it.id }, !allFavourite)
-            val favourites = prefs.getFavourites()
-            _uiState.update {
-                it.copy(
-                    allCameras = it.allCameras.map { camera ->
-                        camera.copy(isFavourite = camera.id in favourites)
-                    }
-                )
-            }
         }
     }
 
     fun hideCameras(cameras: List<Camera>) {
         viewModelScope.launch {
-            var hidden = prefs.getHidden()
-            prefs.setVisibility(
-                cameras.map { it.id },
-                cameras.first().id in hidden,
-            )
-            hidden = prefs.getHidden()
-            _uiState.update {
-                it.copy(
-                    allCameras = it.allCameras.map { camera ->
-                        camera.copy(isVisible = camera.id !in hidden)
-                    }
-                )
-            }
+            val anyHidden = cameras.any { !it.isVisible }
+            prefs.setVisibility(cameras.map { it.id }, anyHidden)
         }
     }
 
@@ -188,12 +199,12 @@ class MainViewModel(
     fun getAllCameras() {
         _uiState.update { it.copy(status = Status.LOADING) }
         viewModelScope.launch {
-            val hidden = prefs.getHidden()
-            val favourites = prefs.getFavourites()
             runCatching {
                 cameraRepository.getAllCameras()
             }.onSuccess { cameras ->
-                val viewMode = prefs.getViewMode() ?: ViewMode.GALLERY
+                val hidden = prefs.getHidden().first()
+                val favourites = prefs.getFavourites().first()
+                val viewMode = prefs.getViewMode().first()
                 _uiState.update { cameraState ->
                     cameraState.copy(
                         allCameras = cameras.map {

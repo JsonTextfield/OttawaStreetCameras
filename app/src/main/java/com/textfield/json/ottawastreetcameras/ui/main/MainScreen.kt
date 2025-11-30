@@ -3,6 +3,8 @@ package com.textfield.json.ottawastreetcameras.ui.main
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -13,6 +15,7 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.rounded.KeyboardDoubleArrowUp
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -94,6 +97,7 @@ private fun MainScreen(
     onFavouriteCameras: (List<Camera>) -> Unit = {},
     onNavigateToCameraScreen: (List<Camera>, Boolean) -> Unit = { _, _ -> },
 ) {
+    var showUpButton by remember { mutableStateOf(false) }
     Scaffold(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
@@ -110,6 +114,28 @@ private fun MainScreen(
                 )
             }
         },
+        floatingActionButton = {
+            AnimatedVisibility(
+                visible = showUpButton,
+                enter = fadeIn() + slideInVertically { it },
+                exit = fadeOut() + slideOutVertically { it / 2 },
+            ) {
+                val scope = rememberCoroutineScope()
+                FilledIconButton(
+                    onClick = {
+                        scope.launch {
+                            if (cameraState.viewMode == ViewMode.LIST) {
+                                listState.animateScrollToItem(0)
+                            } else if (cameraState.viewMode == ViewMode.GALLERY) {
+                                gridState.animateScrollToItem(0)
+                            }
+                        }
+                    },
+                ) {
+                    Icon(Icons.Rounded.ArrowUpward, null)
+                }
+            }
+        }
     ) {
         Box(modifier = Modifier.padding(top = it.calculateTopPadding())) {
             when (cameraState.status) {
@@ -125,8 +151,7 @@ private fun MainScreen(
                     onCameraClicked = { camera: Camera ->
                         if (cameraState.selectedCameras.isNotEmpty()) {
                             onSelectCamera(camera)
-                        }
-                        else {
+                        } else {
                             onNavigateToCameraScreen(listOf(camera), false)
                         }
                     },
@@ -137,7 +162,6 @@ private fun MainScreen(
 
                 Status.ERROR -> ErrorScreen(retry = onRetry)
             }
-            var showUpButton by remember { mutableStateOf(false) }
             if (cameraState.viewMode == ViewMode.LIST) {
                 LaunchedEffect(listState) {
                     snapshotFlow { listState.layoutInfo.visibleItemsInfo.firstOrNull() }
@@ -145,35 +169,12 @@ private fun MainScreen(
                             showUpButton = index > 4
                         }
                 }
-            }
-            else if (cameraState.viewMode == ViewMode.GALLERY) {
+            } else if (cameraState.viewMode == ViewMode.GALLERY) {
                 LaunchedEffect(gridState) {
                     snapshotFlow { gridState.layoutInfo.visibleItemsInfo.firstOrNull() }
                         .mapNotNull { it?.index }.collect { index ->
                             showUpButton = index > 4
                         }
-                }
-            }
-            AnimatedVisibility(
-                visible = showUpButton,
-                enter = fadeIn(),
-                exit = fadeOut(),
-                modifier = Modifier.align(Alignment.BottomCenter).padding(WindowInsets.safeGestures.asPaddingValues())
-            ) {
-                val scope = rememberCoroutineScope()
-                FilledIconButton(
-                    onClick = {
-                        scope.launch {
-                            if (cameraState.viewMode == ViewMode.LIST) {
-                                listState.animateScrollToItem(0)
-                            }
-                            else if (cameraState.viewMode == ViewMode.GALLERY) {
-                                gridState.animateScrollToItem(0)
-                            }
-                        }
-                    },
-                ) {
-                    Icon(Icons.Rounded.KeyboardDoubleArrowUp, null)
                 }
             }
         }

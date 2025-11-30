@@ -8,10 +8,15 @@ import com.textfield.json.ottawastreetcameras.ui.main.MainViewModel
 import com.textfield.json.ottawastreetcameras.ui.main.SearchMode
 import com.textfield.json.ottawastreetcameras.ui.main.SortMode
 import com.textfield.json.ottawastreetcameras.ui.main.ViewMode
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Before
@@ -31,6 +36,7 @@ class MainViewModelUnitTest {
 
     @Before
     fun setup() {
+        Dispatchers.setMain(StandardTestDispatcher())
         fakeCameraRepository = FakeCameraRepository()
         prefs = FakePreferences()
         mainViewModel = MainViewModel(
@@ -38,6 +44,11 @@ class MainViewModelUnitTest {
             prefs = prefs,
             _uiState = MutableStateFlow(CameraState()),
         )
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
     }
 
     @Test

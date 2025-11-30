@@ -3,10 +3,9 @@ package com.textfield.json.ottawastreetcameras.data
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.textfield.json.ottawastreetcameras.ui.main.ThemeMode
 import com.textfield.json.ottawastreetcameras.ui.main.ViewMode
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
@@ -14,69 +13,63 @@ class DataStorePreferencesRepository(private val dataStore: DataStore<Preference
     IPreferencesRepository {
     override suspend fun favourite(ids: Collection<String>, value: Boolean) {
         dataStore.edit { preferences ->
-            val currentFavourites = getFavourites().toMutableSet()
+            val currentFavourites = getFavourites().first()
             val newFavourites = if (value) {
                 currentFavourites + ids
             }
             else {
                 currentFavourites - ids.toSet()
             }
-            val key = stringSetPreferencesKey("favourites")
-            preferences[key] = newFavourites
+            preferences[favouritesKey] = newFavourites
         }
     }
 
-    override suspend fun getFavourites(): Set<String> {
-        val key = stringSetPreferencesKey("favourites")
+    override fun getFavourites(): Flow<Set<String>> {
         return dataStore.data.map { preferences ->
-            preferences[key] ?: emptySet()
-        }.first()
+            preferences[favouritesKey] ?: emptySet()
+        }
     }
 
     override suspend fun setVisibility(ids: Collection<String>, value: Boolean) {
         dataStore.edit { preferences ->
-            val currentHidden = getHidden().toMutableSet()
+            val currentHidden = getHidden().first()
             val newHidden = if (!value) {
                 currentHidden + ids
             }
             else {
                 currentHidden - ids.toSet()
             }
-            val key = stringSetPreferencesKey("hidden")
-            preferences[key] = newHidden
+            preferences[hiddenKey] = newHidden
         }
     }
 
-    override suspend fun getHidden(): Set<String> {
-        val key = stringSetPreferencesKey("hidden")
+    override fun getHidden(): Flow<Set<String>> {
         return dataStore.data.map { preferences ->
-            preferences[key] ?: emptySet()
-        }.first()
+            preferences[hiddenKey] ?: emptySet()
+        }
     }
 
     override suspend fun setTheme(theme: ThemeMode) {
         dataStore.edit { preferences ->
-            val key = intPreferencesKey("theme")
-            preferences[key] = theme.ordinal
+            preferences[themeKey] = theme.ordinal
         }
     }
 
-    override suspend fun getTheme(): ThemeMode? {
+    override fun getTheme(): Flow<ThemeMode> {
         return dataStore.data.map { preferences ->
-            ThemeMode.entries.firstOrNull { preferences[intPreferencesKey("theme")] == it.ordinal }
-        }.first()
+            ThemeMode.entries.firstOrNull { preferences[themeKey] == it.ordinal } ?: ThemeMode.SYSTEM
+        }
     }
 
     override suspend fun setViewMode(viewMode: ViewMode) {
         dataStore.edit { preferences ->
-            val key = intPreferencesKey("viewMode")
-            preferences[key] = viewMode.ordinal
+            preferences[viewModeKey] = viewMode.ordinal
         }
     }
 
-    override suspend fun getViewMode(): ViewMode? {
+    override fun getViewMode(): Flow<ViewMode> {
         return dataStore.data.map { preferences ->
-            ViewMode.entries.firstOrNull { preferences[intPreferencesKey("viewMode")] == it.ordinal }
-        }.first()
+            ViewMode.entries.firstOrNull { preferences[viewModeKey] == it.ordinal } ?: ViewMode.GALLERY
+        }
     }
 }

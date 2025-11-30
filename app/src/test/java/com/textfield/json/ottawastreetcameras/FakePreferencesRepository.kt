@@ -1,57 +1,65 @@
 package com.textfield.json.ottawastreetcameras
 
 import com.textfield.json.ottawastreetcameras.data.IPreferencesRepository
+import com.textfield.json.ottawastreetcameras.ui.main.SortMode
 import com.textfield.json.ottawastreetcameras.ui.main.ThemeMode
 import com.textfield.json.ottawastreetcameras.ui.main.ViewMode
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flowOf
 
 
 class FakePreferences : IPreferencesRepository {
-    private val data = mutableMapOf<String, Any>()
+    private val favourites = MutableStateFlow(emptySet<String>())
+    private val hidden = MutableStateFlow(emptySet<String>())
+    private val viewMode = MutableStateFlow(ViewMode.GALLERY)
+    private val sortMode = MutableStateFlow(SortMode.NAME)
+    private val theme = MutableStateFlow(ThemeMode.SYSTEM)
 
     override suspend fun favourite(ids: Collection<String>, value: Boolean) {
-        val currentFavourites = data["favourites"] as? Set<String> ?: emptySet()
+        val currentFavourites = favourites.value
         val newHidden = if (value) {
             currentFavourites + ids
         }
         else {
             currentFavourites - ids.toSet()
         }
-        data["favourites"] = newHidden
+        favourites.value = newHidden
     }
 
-    override suspend fun getFavourites(): Set<String> {
-        return (data["favourites"] as? Set<String> ?: emptySet())
+    override fun getFavourites(): Flow<Set<String>> {
+        return favourites
     }
 
     override suspend fun setVisibility(ids: Collection<String>, value: Boolean) {
-        val currentHidden = data["hidden"] as? Set<String> ?: emptySet()
+        val currentHidden = hidden.value
         val newHidden = if (!value) {
             currentHidden + ids
         }
         else {
             currentHidden - ids.toSet()
         }
-        data["hidden"] = newHidden
+        hidden.value = newHidden
     }
 
-    override suspend fun getHidden(): Set<String> {
-        return (data["hidden"] as? Set<String> ?: emptySet())
+    override fun getHidden(): Flow<Set<String>> {
+        return hidden
     }
 
     override suspend fun setTheme(theme: ThemeMode) {
-        data["theme"] = theme
+        this.theme.value = theme
     }
 
-    override suspend fun getTheme(): ThemeMode {
-        return (data["theme"] ?: ThemeMode.SYSTEM) as ThemeMode
+    override fun getTheme(): Flow<ThemeMode> {
+        return theme
     }
 
     override suspend fun setViewMode(viewMode: ViewMode) {
-        data["viewMode"] = viewMode
+        this.viewMode.value = viewMode
     }
 
-    override suspend fun getViewMode(): ViewMode {
-        return (data["viewMode"] ?: ViewMode.GALLERY) as ViewMode
+    override fun getViewMode(): Flow<ViewMode> {
+        return viewMode
     }
 
 }
