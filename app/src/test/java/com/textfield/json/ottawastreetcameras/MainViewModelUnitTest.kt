@@ -26,10 +26,6 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainViewModelUnitTest {
-
-    @get:Rule
-    var mainCoroutineRule = MainCoroutineRule()
-
     private lateinit var mainViewModel: MainViewModel
     private lateinit var fakeCameraRepository: FakeCameraRepository
     private lateinit var prefs: FakePreferences
