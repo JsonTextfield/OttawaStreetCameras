@@ -6,17 +6,11 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeGestures
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowUpward
-import androidx.compose.material.icons.rounded.KeyboardDoubleArrowUp
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -30,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -48,7 +41,7 @@ fun MainScreen(
     onNavigateToCameraScreen: (List<Camera>, Boolean) -> Unit = { _, _ -> },
 ) {
     val cameraState by mainViewModel.uiState.collectAsStateWithLifecycle()
-    val listState = rememberLazyListState()
+    val listState = rememberLazyGridState()
     val gridState = rememberLazyGridState()
     val snackbarHostState = remember { SnackbarHostState() }
     val actions = getActions(
@@ -76,14 +69,15 @@ fun MainScreen(
         onBackPressed = mainViewModel::resetFilters,
         onNavigateToCameraScreen = onNavigateToCameraScreen,
         onHideCameras = mainViewModel::hideCameras,
-        onFavouriteCameras = mainViewModel::favouriteCameras
+        onFavouriteCameras = mainViewModel::favouriteCameras,
+        onFilterModeChanged = mainViewModel::changeFilterMode,
     )
 }
 
 @Composable
 private fun MainScreen(
     cameraState: CameraState,
-    listState: LazyListState,
+    listState: LazyGridState,
     gridState: LazyGridState,
     snackbarHostState: SnackbarHostState,
     actions: List<Action> = emptyList(),
@@ -96,6 +90,7 @@ private fun MainScreen(
     onHideCameras: (List<Camera>) -> Unit = {},
     onFavouriteCameras: (List<Camera>) -> Unit = {},
     onNavigateToCameraScreen: (List<Camera>, Boolean) -> Unit = { _, _ -> },
+    onFilterModeChanged: (FilterMode) -> Unit = {},
 ) {
     var showUpButton by remember { mutableStateOf(false) }
     Scaffold(
@@ -144,7 +139,6 @@ private fun MainScreen(
 
                 Status.LOADED -> MainContent(
                     cameraState = cameraState,
-                    listState = listState,
                     gridState = gridState,
                     searchText = searchText,
                     snackbarHostState = snackbarHostState,
@@ -158,6 +152,7 @@ private fun MainScreen(
                     onHideCameras = onHideCameras,
                     onFavouriteCameras = onFavouriteCameras,
                     onCameraLongClick = onSelectCamera,
+                    onFilterModeChanged = onFilterModeChanged,
                 )
 
                 Status.ERROR -> ErrorScreen(retry = onRetry)

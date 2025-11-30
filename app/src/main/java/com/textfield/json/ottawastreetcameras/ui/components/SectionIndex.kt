@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -76,7 +78,7 @@ private fun getSelectedIndex(yPosition: Float, sectionIndexHeight: Float, itemCo
 @Composable
 fun SectionIndex(
     data: List<String>,
-    listState: LazyListState,
+    listState: LazyGridState = rememberLazyGridState(),
     selectedColour: Color = MaterialTheme.colorScheme.primaryContainer,
     minSectionHeight: Dp = 40.dp, // Minimum pixels needed to display each section
 ) {
@@ -176,6 +178,6 @@ fun SectionIndex(
 private fun SectionIndexPreview() {
     SectionIndex(
         "abcdefghijklmnopqrstuvwxyz!@#$%^&*()123456789".split("").filter { it.isNotBlank() },
-        LazyListState(),
+        LazyGridState(),
     )
 }

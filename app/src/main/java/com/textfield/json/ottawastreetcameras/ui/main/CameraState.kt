@@ -16,7 +16,7 @@ enum class SortMode(val key: Int) {
 }
 
 enum class FilterMode(val key: Int) {
-    VISIBLE(R.string.app_name),
+    VISIBLE(R.string.all),
     FAVOURITE(R.string.favourites),
     HIDDEN(R.string.hidden_cameras),
 }
@@ -61,8 +61,7 @@ data class CameraState(
         get() = status == Status.LOADED && searchMode != SearchMode.NEIGHBOURHOOD
 
     val showBackButton
-        get() = (filterMode != FilterMode.VISIBLE || searchMode != SearchMode.NONE) &&
-                selectedCameras.isEmpty()
+        get() = searchMode != SearchMode.NONE && selectedCameras.isEmpty()
 
     val neighbourhoods
         get() = allCameras.map { it.neighbourhood }.distinct()

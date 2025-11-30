@@ -48,6 +48,7 @@
     <string name="dark_mode">Sombre</string>
     <string name="system_default">Défaut</string>
     <string name="change_theme">Thème</string>
+    <string name="all">All</string>
 
     <plurals name="images_saved">
         <item quantity="one">%d image a été enregistrée</item>

@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -15,11 +16,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import com.textfield.json.ottawastreetcameras.ui.components.FilterChipStrip
 
 @Composable
 fun MainContent(
     cameraState: CameraState,
-    listState: LazyListState,
     gridState: LazyGridState,
     snackbarHostState: SnackbarHostState,
     searchText: String = "",
@@ -27,6 +28,7 @@ fun MainContent(
     onFavouriteCameras: (List<Camera>) -> Unit = {},
     onCameraLongClick: (Camera) -> Unit = {},
     onCameraClicked: (Camera) -> Unit = {},
+    onFilterModeChanged: (FilterMode) -> Unit = {},
 ) {
     val context = LocalContext.current
     val onItemLongClick = onCameraLongClick
@@ -51,36 +53,39 @@ fun MainContent(
         }
     }
     Column {
-        when (cameraState.viewMode) {
-            ViewMode.LIST -> {
-                CameraListItemList(
-                    searchText = searchText,
-                    cameraState = cameraState,
-                    listState = listState,
-                    onItemClick = onCameraClicked,
-                    onItemLongClick = onItemLongClick,
-                    onItemDismissed = { dismissedCamera = it },
-                    onFavouriteClick = { onFavouriteCameras(listOf(it)) },
-                )
-            }
+        FilterChipStrip(cameraState.filterMode, onChangeFilterMode = onFilterModeChanged)
+        Surface {
+            when (cameraState.viewMode) {
+                ViewMode.LIST -> {
+                    CameraListItemList(
+                        searchText = searchText,
+                        cameraState = cameraState,
+                        gridState = gridState,
+                        onItemClick = onCameraClicked,
+                        onItemLongClick = onItemLongClick,
+                        onItemDismissed = { dismissedCamera = it },
+                        onFavouriteClick = { onFavouriteCameras(listOf(it)) },
+                    )
+                }
 
-            ViewMode.MAP -> {
-                CameraMapView(
-                    searchText = searchText,
-                    cameraState = cameraState,
-                    onItemClick = onCameraClicked,
-                    onItemLongClick = onItemLongClick,
-                )
-            }
+                ViewMode.MAP -> {
+                    CameraMapView(
+                        searchText = searchText,
+                        cameraState = cameraState,
+                        onItemClick = onCameraClicked,
+                        onItemLongClick = onItemLongClick,
+                    )
+                }
 
-            ViewMode.GALLERY -> {
-                CameraGalleryView(
-                    searchText = searchText,
-                    cameraState = cameraState,
-                    gridState = gridState,
-                    onItemClick = onCameraClicked,
-                    onItemLongClick = onItemLongClick,
-                )
+                ViewMode.GALLERY -> {
+                    CameraGalleryView(
+                        searchText = searchText,
+                        cameraState = cameraState,
+                        gridState = gridState,
+                        onItemClick = onCameraClicked,
+                        onItemLongClick = onItemLongClick,
+                    )
+                }
             }
         }
     }

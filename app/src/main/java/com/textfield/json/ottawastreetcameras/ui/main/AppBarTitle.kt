@@ -37,9 +37,8 @@ fun AppBarTitle(
     else {
         when (cameraState.searchMode) {
             SearchMode.NONE -> {
-                val title = stringResource(id = cameraState.filterMode.key)
                 Text(
-                    title,
+                    stringResource(R.string.app_name),
                     modifier = Modifier.padding(10.dp),
                     style = MaterialTheme.typography.titleLarge,
                     maxLines = 1,

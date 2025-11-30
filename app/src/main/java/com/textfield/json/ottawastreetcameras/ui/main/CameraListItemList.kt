@@ -15,9 +15,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.Icon
@@ -47,7 +48,7 @@ import com.textfield.json.ottawastreetcameras.ui.components.SectionIndex
 fun CameraListItemList(
     searchText: String,
     cameraState: CameraState,
-    listState: LazyListState,
+    gridState: LazyGridState,
     onItemClick: (Camera) -> Unit = {},
     onItemLongClick: (Camera) -> Unit = {},
     onItemDismissed: (Camera) -> Unit = {},
@@ -66,12 +67,13 @@ fun CameraListItemList(
         ) {
             SectionIndex(
                 data = cameraState.getDisplayedCameras(searchText).map { it.sortableName },
-                listState = listState,
+                listState = gridState,
             )
         }
         val cameras = cameraState.getDisplayedCameras(searchText)
-        LazyColumn(
-            state = listState,
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(240.dp),
+            state = gridState,
             contentPadding = PaddingValues(
                 bottom = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
                 end = WindowInsets.safeDrawing.asPaddingValues()
@@ -165,5 +167,5 @@ private fun CameraListItemListPreview() {
             _neighbourhood = BilingualObject(en = "Neighbourhood $it", fr = "Voisinage $it"),
         )
     }
-    CameraListItemList("", CameraState(allCameras = cameraList), listState = LazyListState())
+    CameraListItemList("", CameraState(allCameras = cameraList), gridState = LazyGridState())
 }
