@@ -2,6 +2,7 @@ package com.textfield.json.ottawastreetcameras.network.model
 
 import com.textfield.json.ottawastreetcameras.entities.BilingualObject
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import com.textfield.json.ottawastreetcameras.entities.City
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -14,7 +15,7 @@ data class CameraApiModel(
     private val location: LocationApiModel = LocationApiModel(),
     private val url: String = "",
 ) {
-    fun toCamera(): Camera = Camera(
+    fun toCamera(city: City = City.OTTAWA): Camera = Camera(
         id = id,
         _name = BilingualObject(
             en = nameEn,
