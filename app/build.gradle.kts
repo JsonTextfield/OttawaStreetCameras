@@ -46,6 +46,9 @@ android {
             signingConfig = signingConfigs.getByName("release")
         }
     }
+    buildFeatures {
+        compose = true
+    }
 }
 
 dependencies {
@@ -81,12 +84,16 @@ dependencies {
     implementation(libs.ktor.client.android)
 
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
 
     // Testing
     androidTestImplementation(platform(libs.androidx.compose.bom))
 
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
