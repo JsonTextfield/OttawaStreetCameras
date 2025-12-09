@@ -1,8 +1,6 @@
 package com.textfield.json.ottawastreetcameras.ui.components.menu
 
 import androidx.annotation.DrawableRes
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -23,11 +21,6 @@ fun OverflowMenuItem(
         DropdownMenuItem(
             text = { Text(text = tooltip) },
             leadingIcon = { Icon(painterResource(icon), null) },
-            trailingIcon = {
-                if (isChecked) {
-                    Icon(Icons.Rounded.Check, null)
-                }
-            },
             onClick = onClick,
             modifier = Modifier.semantics(true){}
         )

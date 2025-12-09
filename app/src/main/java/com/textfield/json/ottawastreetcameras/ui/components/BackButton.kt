@@ -3,8 +3,6 @@ package com.textfield.json.ottawastreetcameras.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -17,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,15 +35,15 @@ fun BackButton(onClick: () -> Unit = {}) {
     ) {
         IconButton(
             modifier = Modifier
-                .padding(5.dp)
+                .padding(4.dp)
                 .background(
                     color = colorResource(R.color.backButtonBackground),
-                    shape = RoundedCornerShape(10.dp)
+                    shape = RoundedCornerShape(8.dp)
                 ),
             onClick = onClick,
         ) {
             Icon(
-                Icons.AutoMirrored.Rounded.ArrowBack,
+                painterResource(R.drawable.round_arrow_back_24),
                 stringResource(id = R.string.back),
                 tint = Color.Black
             )

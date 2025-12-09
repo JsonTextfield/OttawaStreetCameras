@@ -10,9 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -30,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -60,33 +58,41 @@ fun CameraGalleryTile(
                 .combinedClickable(
                     onClick = { onClick(camera) },
                     onLongClick = { onLongClick(camera) },
-                )
+                ),
         ) {
             val context = LocalContext.current
             var model by remember {
                 mutableStateOf(
-                    ImageRequest.Builder(context).data(camera.preview).crossfade(500).build()
+                    ImageRequest
+                        .Builder(context)
+                        .data(camera.preview)
+                        .crossfade(500)
+                        .build()
                 )
             }
             LaunchedEffect(camera.name) {
-                model = ImageRequest.Builder(context).data(camera.preview).crossfade(500).build()
+                model = ImageRequest
+                    .Builder(context)
+                    .data(camera.preview)
+                    .crossfade(500)
+                    .build()
             }
             AsyncImage(
                 model = model,
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxSize()
-                    .align(Alignment.Center)
-                    .background(MaterialTheme.colorScheme.onSurface),
+                    .background(MaterialTheme.colorScheme.onSurface)
+                    .align(Alignment.Center),
                 contentScale = ContentScale.Crop,
             )
             Box(
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
                     .fillMaxWidth()
-                    .height(32.dp)
-                    .background(color = colorResource(id = R.color.cameraNameBackground))
-                    .padding(2.dp),
+                    .height(40.dp)
+                    .background(color = Color.Black.copy(alpha = .4f))
+                    .padding(horizontal = 12.dp, vertical = 2.dp)
+                    .align(Alignment.BottomCenter),
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
@@ -100,22 +106,25 @@ fun CameraGalleryTile(
             }
             if (camera.isFavourite) {
                 Icon(
-                    Icons.Rounded.Star,
+                    painterResource(R.drawable.round_star_24),
                     contentDescription = "",
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .align(Alignment.TopEnd),
                     tint = colorResource(id = R.color.favouriteColour),
                 )
             }
             if (camera.isSelected) {
                 Icon(
-                    Icons.Rounded.Check,
+                    painterResource(R.drawable.round_check_24),
                     contentDescription = "",
                     modifier = Modifier
-                        .align(Alignment.TopStart)
+                        .padding(4.dp)
                         .background(
                             color = MaterialTheme.colorScheme.primary,
                             shape = CircleShape,
-                        ),
+                        )
+                        .align(Alignment.TopStart),
                     tint = MaterialTheme.colorScheme.onPrimary,
                 )
             }
