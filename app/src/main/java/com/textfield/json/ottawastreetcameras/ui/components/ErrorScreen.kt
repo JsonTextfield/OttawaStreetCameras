@@ -32,7 +32,7 @@ fun ErrorScreen(retry: () -> Unit = {}) {
         FilledTonalButton(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(10.dp),
+                .padding(8.dp),
             onClick = retry
         ) {
             Text(stringResource(R.string.retry))

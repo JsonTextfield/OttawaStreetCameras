@@ -26,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -38,6 +37,7 @@ import coil.request.ImageRequest
 import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.BilingualObject
 import com.textfield.json.ottawastreetcameras.entities.Camera
+import com.textfield.json.ottawastreetcameras.ui.theme.favouriteColour
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -90,7 +90,7 @@ fun CameraGalleryTile(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(40.dp)
-                    .background(color = Color.Black.copy(alpha = .4f))
+                    .background(color = Color.Black.copy(alpha = .6f))
                     .padding(horizontal = 12.dp, vertical = 2.dp)
                     .align(Alignment.BottomCenter),
                 contentAlignment = Alignment.Center,
@@ -111,7 +111,7 @@ fun CameraGalleryTile(
                     modifier = Modifier
                         .padding(4.dp)
                         .align(Alignment.TopEnd),
-                    tint = colorResource(id = R.color.favouriteColour),
+                    tint = favouriteColour,
                 )
             }
             if (camera.isSelected) {

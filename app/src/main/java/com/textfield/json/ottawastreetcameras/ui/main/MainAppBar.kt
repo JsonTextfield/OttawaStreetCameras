@@ -28,7 +28,7 @@ fun MainAppBar(
     onBackPressed: () -> Unit = {},
 ) {
     TopAppBar(
-        modifier = Modifier.shadow(10.dp),
+        modifier = Modifier.shadow(8.dp),
         navigationIcon = {
             if (cameraState.showBackButton) {
                 IconButton(onClick = onBackPressed) {

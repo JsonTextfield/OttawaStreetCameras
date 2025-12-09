@@ -19,17 +19,17 @@ import com.textfield.json.ottawastreetcameras.entities.Camera
 fun CameraViewList(
     cameras: List<Camera> = emptyList(),
     displayedCameras: List<Camera> = emptyList(),
-    shuffle: Boolean = false,
+    isShuffling: Boolean = false,
     update: Boolean = false,
     onItemLongClick: (Camera) -> Unit = {},
 ) {
     val verticalScrollState = rememberScrollState()
     Column(
         modifier = Modifier
-            .verticalScroll(verticalScrollState)
             .fillMaxSize()
+            .verticalScroll(verticalScrollState)
     ) {
-        if (cameras.size == 1 && !shuffle) {
+        if (cameras.size == 1 && !isShuffling) {
             val pagerState = rememberPagerState(
                 initialPage = displayedCameras.indexOf(cameras.first()),
                 pageCount = { displayedCameras.size },

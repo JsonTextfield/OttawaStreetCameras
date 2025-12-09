@@ -47,13 +47,13 @@ fun CameraGalleryView(
         state = gridState,
         columns = GridCells.Fixed(columns.coerceIn(2, 8)),
         contentPadding = PaddingValues(
-            top = 10.dp,
-            start = WindowInsets.safeDrawing.asPaddingValues().calculateStartPadding(LayoutDirection.Ltr) + 10.dp,
-            end = WindowInsets.safeDrawing.asPaddingValues().calculateEndPadding(LayoutDirection.Ltr) + 10.dp,
+            top = 12.dp,
+            start = WindowInsets.safeDrawing.asPaddingValues().calculateStartPadding(LayoutDirection.Ltr) + 12.dp,
+            end = WindowInsets.safeDrawing.asPaddingValues().calculateEndPadding(LayoutDirection.Ltr) + 12.dp,
             bottom = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
         ),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         items(cameras, key = { it.id }) { camera ->
             CameraGalleryTile(
@@ -67,7 +67,7 @@ fun CameraGalleryView(
         item {
             Box(
                 modifier = Modifier
-                    .clip(shape = RoundedCornerShape(10.dp))
+                    .clip(shape = RoundedCornerShape(12.dp))
                     .aspectRatio(1f)
             ) {
                 Text(

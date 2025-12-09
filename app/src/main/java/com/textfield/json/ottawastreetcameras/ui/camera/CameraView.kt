@@ -27,13 +27,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import coil.imageLoader
 import coil.request.ImageRequest
-import com.textfield.json.ottawastreetcameras.R
 import com.textfield.json.ottawastreetcameras.entities.Camera
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -53,7 +51,7 @@ fun CameraView(
     }
     Box(
         modifier = Modifier
-            .heightIn(0.dp, (LocalWindowInfo.current.containerSize.height / LocalDensity.current.density).dp)
+            .heightIn(max = (LocalWindowInfo.current.containerSize.height / LocalDensity.current.density).dp)
             .fillMaxWidth()
             .combinedClickable(
                 onClick = {},
@@ -66,7 +64,7 @@ fun CameraView(
                 contentDescription = camera.name,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .blur(radius = 10.dp),
+                    .blur(radius = 8.dp),
                 contentScale = ContentScale.FillWidth,
             )
             Image(
@@ -88,16 +86,16 @@ fun CameraLabel(camera: Camera, modifier: Modifier) {
     Box(
         modifier = modifier
             .padding(
-                horizontal = 5.dp,
+                horizontal = 8.dp,
                 vertical = 2.dp,
             )
             .background(
-                color = colorResource(id = R.color.cameraNameBackground),
-                shape = RoundedCornerShape(10.dp),
+                color = Color.Black.copy(alpha = .6f),
+                shape = RoundedCornerShape(12.dp),
             )
             .padding(
-                vertical = 5.dp,
-                horizontal = 10.dp,
+                vertical = 4.dp,
+                horizontal = 12.dp,
             ),
     ) {
         Text(

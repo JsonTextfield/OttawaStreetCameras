@@ -18,12 +18,9 @@ class CameraViewModel(
     private val cameraRepository: ICameraRepository,
     private val cameraIds: String = "",
     private val isShuffling: Boolean = false,
-) :
-    ViewModel() {
-
+) : ViewModel() {
     private var _allCameras = MutableStateFlow<List<Camera>>(emptyList())
-    val allCameras: StateFlow<List<Camera>> = _allCameras.asStateFlow()
-
+    val allCameras: StateFlow<List<Camera>> = _allCameras
     private var _cameraList = MutableStateFlow<List<Camera>>(emptyList())
     val cameraList: StateFlow<List<Camera>> = _cameraList.asStateFlow()
 
@@ -31,10 +28,11 @@ class CameraViewModel(
 
     init {
         viewModelScope.launch {
-            _allCameras.value = cameraRepository.getAllCameras()
-            getCameras()
-        }
-        viewModelScope.launch {
+            val allCameras = cameraRepository.getAllCameras()
+            _allCameras.value = allCameras
+            _cameraList.value = allCameras.filter { camera ->
+                camera.id in cameraIds
+            }
             while (isActive) {
                 if (isShuffling) {
                     getRandomCamera()
@@ -43,10 +41,6 @@ class CameraViewModel(
                 delay(6000)
             }
         }
-    }
-
-    private fun getCameras() {
-        _cameraList.value = allCameras.value.filter { camera -> camera.id in cameraIds }
     }
 
     private fun getRandomCamera() {

@@ -29,7 +29,7 @@ fun BackButton(onClick: () -> Unit = {}) {
         positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
         tooltip = {
             PlainTooltip {
-                Text(stringResource(R.string.back), modifier = Modifier.padding(10.dp))
+                Text(stringResource(R.string.back), modifier = Modifier.padding(8.dp))
             }
         },
     ) {

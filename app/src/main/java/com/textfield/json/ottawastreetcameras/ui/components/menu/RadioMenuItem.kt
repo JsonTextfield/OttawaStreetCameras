@@ -28,7 +28,7 @@ fun RadioMenuItem(
                 )
                 Text(
                     title,
-                    modifier = Modifier.padding(end = 10.dp),
+                    modifier = Modifier.padding(end = 8.dp),
                 )
             }
         },
