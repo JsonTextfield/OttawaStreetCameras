@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
@@ -137,15 +138,14 @@ class MainViewModel(
     }
 
     fun favouriteCameras(cameras: List<Camera>) {
-        val favouriteCameras = uiState.value.favouriteCameras
-        val newFavourites = if (favouriteCameras.containsAll(cameras)) {
-            favouriteCameras - cameras
-        } else {
-            favouriteCameras + cameras
-        }.map {
-            it.id
-        }.toSet()
         viewModelScope.launch {
+            val ids = cameras.map { it.id }.toSet()
+            val favouriteCameras = prefs.getFavourites().first()
+            val newFavourites = if (favouriteCameras.containsAll(ids)) {
+                favouriteCameras - ids
+            } else {
+                favouriteCameras + ids
+            }.toSet()
             prefs.setFavouriteCameras(newFavourites)
         }
     }
