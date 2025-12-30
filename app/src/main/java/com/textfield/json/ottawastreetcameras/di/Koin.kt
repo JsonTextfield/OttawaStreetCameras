@@ -4,11 +4,11 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.textfield.json.ottawastreetcameras.R
 import com.jsontextfield.core.data.CameraRepository
 import com.jsontextfield.core.data.DataStorePreferencesRepository
 import com.jsontextfield.core.data.ICameraRepository
 import com.jsontextfield.core.data.IPreferencesRepository
+import com.jsontextfield.core.network.SUPABASE_API_KEY
 import com.jsontextfield.core.ui.main.CameraState
 import com.jsontextfield.core.ui.viewmodels.CameraViewModel
 import com.jsontextfield.core.ui.viewmodels.MainViewModel

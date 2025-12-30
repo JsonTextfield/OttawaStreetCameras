@@ -15,9 +15,9 @@ import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Surface
 import com.jsontextfield.core.ui.CameraRoute
 import com.jsontextfield.core.ui.HomeRoute
+import com.jsontextfield.core.ui.theme.AppTheme
 import com.jsontextfield.core.ui.viewmodels.CameraViewModel
 import com.jsontextfield.core.ui.viewmodels.MainViewModel
-import com.jsontextfield.streetcamstv.ui.theme.OttawaStreetCamsTheme
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -26,7 +26,7 @@ fun App() {
     val mainViewModel = koinViewModel<MainViewModel>()
     val theme by mainViewModel.theme.collectAsStateWithLifecycle()
     val navController = rememberNavController()
-    OttawaStreetCamsTheme(theme = theme) {
+    AppTheme(theme = theme) {
         Surface {
             NavHost(navController, startDestination = HomeRoute) {
                 composable<HomeRoute> {
