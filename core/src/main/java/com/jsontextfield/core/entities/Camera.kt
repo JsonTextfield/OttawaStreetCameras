@@ -7,6 +7,7 @@ import kotlin.math.roundToInt
  * Created by Jason on 25/04/2016.
  */
 data class Camera(
+    val city: City = City.OTTAWA,
     val id: String = UUID.randomUUID().toString(),
     private val _name: BilingualObject = BilingualObject(),
     private val _neighbourhood: BilingualObject = BilingualObject(),
@@ -22,7 +23,11 @@ data class Camera(
     val name: String get() = _name.name
     val sortableName: String get() = _name.sortableName
     val neighbourhood: String get() = _neighbourhood.name
-    val url: String get() = "$_url&timems=${System.currentTimeMillis()}"
+    val url: String get() = if (city == City.OTTAWA) {
+        "$_url&timems=${System.currentTimeMillis()}"
+    } else {
+        _url
+    }
     val preview: String get() = _url
 
     val distanceString: String

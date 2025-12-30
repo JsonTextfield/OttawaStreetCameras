@@ -4,7 +4,9 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import com.jsontextfield.core.entities.City
 import com.jsontextfield.core.ui.ThemeMode
 import com.jsontextfield.core.ui.ViewMode
 import kotlinx.coroutines.flow.Flow
@@ -70,10 +72,27 @@ class DataStorePreferencesRepository(private val dataStore: DataStore<Preference
         }
     }
 
+    override fun getCity(): Flow<City> {
+        return dataStore.data.map { preferences ->
+            City.entries.firstOrNull {
+                preferences[stringPreferencesKey(CITY_KEY)] == it.name
+            } ?: City.OTTAWA
+        }
+    }
+
+    override suspend fun setCity(city: City) {
+        dataStore.edit { preferences ->
+            val key = stringPreferencesKey(CITY_KEY)
+            preferences[key] = city.name
+        }
+    }
+
     companion object {
         private const val THEME_KEY = "theme"
         private const val FAVOURITES_KEY = "favourites"
         private const val HIDDEN_KEY = "hidden"
         private const val VIEW_MODE_KEY = "viewMode"
+
+        private const val CITY_KEY = "city"
     }
 }

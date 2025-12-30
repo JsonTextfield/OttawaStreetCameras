@@ -6,16 +6,20 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jsontextfield.core.data.ICameraRepository
+import com.jsontextfield.core.data.IPreferencesRepository
 import com.jsontextfield.core.entities.Camera
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class CameraViewModel(
     private val cameraRepository: ICameraRepository,
+    private val prefRepository: IPreferencesRepository,
     private val cameraIds: String = "",
     private val isShuffling: Boolean = false,
 ) : ViewModel() {
@@ -31,19 +35,19 @@ class CameraViewModel(
     private var job: Job? = null
 
     init {
-        viewModelScope.launch {
-            _allCameras.value = cameraRepository.getAllCameras()
+        prefRepository.getCity().map { city ->
+            _allCameras.value = cameraRepository.getAllCameras(city)
             getCameras()
-        }
-        job = job ?: viewModelScope.launch {
-            while (true) {
-                if (isShuffling) {
-                    getRandomCamera()
+            job = job ?: viewModelScope.launch {
+                while (true) {
+                    if (isShuffling) {
+                        getRandomCamera()
+                    }
+                    update = !update
+                    delay(6000)
                 }
-                update = !update
-                delay(6000)
             }
-        }
+        }.launchIn(viewModelScope)
     }
 
     private fun getCameras() {

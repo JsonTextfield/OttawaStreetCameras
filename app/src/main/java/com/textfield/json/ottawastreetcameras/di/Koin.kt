@@ -56,6 +56,7 @@ val appModule = module {
             cameraRepository = get<ICameraRepository>(),
             cameraIds = parameters.getOrNull(String::class) ?: "",
             isShuffling = parameters.getOrNull(Boolean::class) ?: true,
+            prefRepository = get<IPreferencesRepository>(),
         )
     }
 }

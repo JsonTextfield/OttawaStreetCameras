@@ -1,5 +1,6 @@
 package com.jsontextfield.core.data
 
+import com.jsontextfield.core.entities.City
 import com.jsontextfield.core.ui.ThemeMode
 import com.jsontextfield.core.ui.ViewMode
 import kotlinx.coroutines.flow.Flow
@@ -20,4 +21,8 @@ interface IPreferencesRepository {
     suspend fun setViewMode(viewMode: ViewMode)
 
     fun getViewMode(): Flow<ViewMode>
+
+    fun getCity(): Flow<City>
+
+    suspend fun setCity(city: City)
 }
