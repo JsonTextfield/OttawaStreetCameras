@@ -1,6 +1,7 @@
 package com.jsontextfield.core.ui.main
 
 import com.jsontextfield.core.entities.Camera
+import com.jsontextfield.core.entities.City
 import com.jsontextfield.core.ui.FilterMode
 import com.jsontextfield.core.ui.SearchMode
 import com.jsontextfield.core.ui.SortMode
@@ -14,6 +15,7 @@ data class CameraState(
     val searchMode: SearchMode = SearchMode.NONE,
     val filterMode: FilterMode = FilterMode.VISIBLE,
     val viewMode: ViewMode = ViewMode.GALLERY,
+    val currentCity: City = City.OTTAWA,
 ) {
     val selectedCameras: List<Camera>
         get() = allCameras.filter { it.isSelected }

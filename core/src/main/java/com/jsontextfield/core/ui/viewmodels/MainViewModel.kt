@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.jsontextfield.core.data.ICameraRepository
 import com.jsontextfield.core.data.IPreferencesRepository
 import com.jsontextfield.core.entities.Camera
+import com.jsontextfield.core.entities.City
 import com.jsontextfield.core.ui.FilterMode
 import com.jsontextfield.core.ui.SearchMode
 import com.jsontextfield.core.ui.SortMode
@@ -220,6 +221,14 @@ class MainViewModel(
                     _uiState.update { it.copy(status = Status.ERROR) }
                 }
             }.collect()
+        }
+    }
+
+    fun changeCity(city: City) {
+        _uiState.update {
+            it.copy(
+                currentCity = city
+            )
         }
     }
 

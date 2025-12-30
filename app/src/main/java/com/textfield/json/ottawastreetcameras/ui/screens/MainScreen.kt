@@ -52,6 +52,7 @@ import kotlinx.coroutines.launch
 fun MainScreen(
     mainViewModel: MainViewModel = viewModel<MainViewModel>(),
     onNavigateToCameraScreen: (List<Camera>, Boolean) -> Unit = { _, _ -> },
+    onNavigateToCitySelectionScreen: () -> Unit = {},
 ) {
     val cameraState by mainViewModel.uiState.collectAsStateWithLifecycle()
     val gridState = rememberLazyGridState()
@@ -82,6 +83,7 @@ fun MainScreen(
         onFavouriteCameras = mainViewModel::favouriteCameras,
         onChangeFilterMode = mainViewModel::changeFilterMode,
         onBackClick = mainViewModel::resetFilters,
+        onNavigateToCitySelectionScreen = onNavigateToCitySelectionScreen,
     )
 }
 
@@ -101,6 +103,7 @@ private fun MainScreen(
     onChangeFilterMode: (FilterMode) -> Unit = {},
     onNavigateToCameraScreen: (List<Camera>, Boolean) -> Unit = { _, _ -> },
     onBackClick: () -> Unit = {},
+    onNavigateToCitySelectionScreen: () -> Unit = {},
 ) {
     var showUpButton by remember { mutableStateOf(false) }
     Scaffold(
@@ -116,6 +119,7 @@ private fun MainScreen(
                     actions = actions,
                     onSearchTextChanged = onSearchTextChanged,
                     onBackClick = onBackClick,
+                    onNavigateToCitySelectionScreen = onNavigateToCitySelectionScreen
                 )
             }
         },

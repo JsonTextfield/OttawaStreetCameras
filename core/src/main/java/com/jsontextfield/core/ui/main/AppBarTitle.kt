@@ -1,8 +1,10 @@
 package com.jsontextfield.core.ui.main
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -21,6 +23,7 @@ fun AppBarTitle(
     onTextChanged: (String) -> Unit = {},
     searchText: String = "",
     suggestions: List<String> = emptyList(),
+    onNavigateToCitySelectionScreen: () -> Unit = {},
 ) {
     if (cameraState.selectedCameras.isNotEmpty()) {
         Text(
@@ -37,13 +40,14 @@ fun AppBarTitle(
     else {
         when (cameraState.searchMode) {
             SearchMode.NONE -> {
-                Text(
-                    stringResource(id = R.string.app_name),
-                    modifier = Modifier.padding(10.dp),
-                    style = MaterialTheme.typography.titleLarge,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                FilledTonalButton(
+                    modifier = Modifier
+                        .widthIn(max = 200.dp)
+                        .fillMaxWidth(11 / 12f),
+                    onClick = onNavigateToCitySelectionScreen
+                ) {
+                    Text(stringResource(cameraState.currentCity.stringRes))
+                }
             }
 
             SearchMode.NAME -> {

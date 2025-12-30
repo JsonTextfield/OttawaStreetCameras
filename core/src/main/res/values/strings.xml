@@ -50,6 +50,24 @@
     <string name="system_default">Default</string>
     <string name="change_theme">Theme</string>
 
+    <string name="alberta">Alberta</string>
+    <string name="british_columbia">British Columbia</string>
+    <string name="calgary">Calgary</string>
+    <string name="manitoba">Manitoba</string>
+    <string name="newfoundland">Newfoundland</string>
+    <string name="new_brunswick">New Brunswick</string>
+    <string name="nova_scotia">Nova Scotia</string>
+    <string name="ontario">Ontario</string>
+    <string name="ottawa">Ottawa</string>
+    <string name="prince_edward_island">Prince Edward Island</string>
+    <string name="quebec">Quebec</string>
+    <string name="saskatchewan">Saskatchewan</string>
+    <string name="surrey">Surrey</string>
+    <string name="toronto">Toronto</string>
+    <string name="vancouver">Vancouver</string>
+    <string name="yukon">Yukon</string>
+    <string name="change_location">Change location</string>
+
     <plurals name="images_saved">
         <item quantity="one">%d image saved</item>
         <item quantity="other">%d images saved</item>

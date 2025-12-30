@@ -29,6 +29,7 @@ fun MainAppBar(
     actions: List<Action> = emptyList(),
     onSearchTextChanged: (String) -> Unit = {},
     onBackClick: () -> Unit = {},
+    onNavigateToCitySelectionScreen : () -> Unit = {},
 ) {
     TopAppBar(
         modifier = Modifier.shadow(10.dp),
@@ -51,6 +52,7 @@ fun MainAppBar(
                 suggestions = suggestions,
                 searchText = searchText,
                 onTextChanged = onSearchTextChanged,
+                onNavigateToCitySelectionScreen = onNavigateToCitySelectionScreen,
             )
         },
         actions = {
