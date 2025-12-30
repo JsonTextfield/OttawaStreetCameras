@@ -1,26 +1,23 @@
-package com.textfield.json.ottawastreetcameras.ui
+@file:OptIn(ExperimentalTvMaterial3Api::class)
+
+package com.jsontextfield.streetcamstv.ui
 
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.tooling.preview.PreviewDynamicColors
-import androidx.compose.ui.tooling.preview.PreviewFontScale
-import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import androidx.tv.material3.ExperimentalTvMaterial3Api
+import androidx.tv.material3.Surface
 import com.jsontextfield.core.ui.CameraRoute
 import com.jsontextfield.core.ui.HomeRoute
-import com.jsontextfield.core.ui.theme.AppTheme
 import com.jsontextfield.core.ui.viewmodels.CameraViewModel
 import com.jsontextfield.core.ui.viewmodels.MainViewModel
-import com.textfield.json.ottawastreetcameras.ui.screens.CameraScreen
-import com.textfield.json.ottawastreetcameras.ui.screens.MainScreen
+import com.jsontextfield.streetcamstv.ui.theme.OttawaStreetCamsTheme
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -29,12 +26,9 @@ fun App() {
     val mainViewModel = koinViewModel<MainViewModel>()
     val theme by mainViewModel.theme.collectAsStateWithLifecycle()
     val navController = rememberNavController()
-    AppTheme(theme = theme) {
+    OttawaStreetCamsTheme(theme = theme) {
         Surface {
-            NavHost(
-                navController = navController,
-                startDestination = HomeRoute,
-            ) {
+            NavHost(navController, startDestination = HomeRoute) {
                 composable<HomeRoute> {
                     MainScreen(mainViewModel = mainViewModel) { selectedCameras, isShuffling ->
                         navController.navigate(
@@ -62,13 +56,4 @@ fun App() {
             }
         }
     }
-}
-
-@PreviewLightDark
-@PreviewDynamicColors
-@PreviewFontScale
-@PreviewScreenSizes
-@Composable
-fun AppPreview() {
-    App()
 }

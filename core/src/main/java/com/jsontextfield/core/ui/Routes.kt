@@ -1,4 +1,4 @@
-package com.textfield.json.ottawastreetcameras.ui
+package com.jsontextfield.core.ui
 
 import kotlinx.serialization.Serializable
 

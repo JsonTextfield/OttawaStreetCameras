@@ -5,3 +5,4 @@
 .DS_Store
 /build
 /captures
+/core/src/main/java/com/jsontextfield/core/network/SupabaseKey.kt

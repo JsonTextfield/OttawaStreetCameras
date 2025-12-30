@@ -58,4 +58,43 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+
+    implementation(project(":core"))
+
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+
+    // Koin
+    implementation(libs.koin.compose.viewmodel.navigation)
+    implementation(libs.koin.android)
+
+    // Google
+    implementation(libs.maps.compose)
+
+    // Compose
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material.icons.extended)
+
+    implementation(libs.coil.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.material3)
+
+    // Supabase
+    implementation(platform(libs.supabase.bom))
+    implementation(libs.supabase.postgrest.kt)
+    implementation(libs.ktor.client.android)
+
+    implementation(libs.androidx.datastore.preferences)
+
+    // Testing
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.junit)
+
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
 }
