@@ -77,7 +77,7 @@ fun MainScreen(
             )
         },
         onSelectCamera = mainViewModel::selectCamera,
-        onRetry = mainViewModel::getAllCameras,
+        onRetry = mainViewModel::reloadData,
         onNavigateToCameraScreen = onNavigateToCameraScreen,
         onHideCameras = mainViewModel::hideCameras,
         onFavouriteCameras = mainViewModel::favouriteCameras,

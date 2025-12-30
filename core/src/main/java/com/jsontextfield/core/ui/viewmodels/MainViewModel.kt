@@ -21,7 +21,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
@@ -61,7 +63,23 @@ class MainViewModel(
             .map {
                 _theme.value = it
             }.launchIn(viewModelScope)
-        getAllCameras()
+        prefs
+            .getCity()
+            .distinctUntilChanged()
+            .map { city ->
+                _uiState.update {
+                    it.copy(
+                        status = Status.LOADING,
+                        city = city,
+                        allCameras = emptyList(),
+                        sortMode = SortMode.NAME,
+                        searchMode = SearchMode.NONE,
+                        filterMode = FilterMode.VISIBLE,
+                    )
+                }
+                //delay(2000)
+                loadData(city)
+            }.launchIn(viewModelScope)
     }
 
     fun changeTheme(theme: ThemeMode) {
@@ -190,34 +208,38 @@ class MainViewModel(
         }
     }
 
-    fun getAllCameras() {
+    fun reloadData() {
         _uiState.update { it.copy(status = Status.LOADING) }
-        combine(
-            prefs.getCity(),
-            prefs.getHidden(),
-            prefs.getFavourites(),
-            prefs.getViewMode(),
-        ) { city, hidden, favourites, viewMode ->
+        loadData(_uiState.value.city)
+    }
+
+    fun loadData(city: City) {
+        viewModelScope.launch {
             runCatching {
                 cameraRepository.getAllCameras(city)
             }.onSuccess { cameras ->
-                _uiState.update { cameraState ->
-                    cameraState.copy(
-                        allCameras = cameras.map {
-                            it.copy(
-                                isVisible = it.id !in hidden,
-                                isFavourite = it.id in favourites,
-                            )
-                        },
-                        status = Status.LOADED,
-                        viewMode = viewMode,
-                        currentCity = city,
-                    )
-                }
+                combine(
+                    prefs.getHidden(),
+                    prefs.getFavourites(),
+                    prefs.getViewMode(),
+                ) { hidden, favourites, viewMode ->
+                    _uiState.update { cameraState ->
+                        cameraState.copy(
+                            status = Status.LOADED,
+                            allCameras = cameras.map {
+                                it.copy(
+                                    isVisible = it.id !in hidden,
+                                    isFavourite = it.id in favourites,
+                                )
+                            },
+                            viewMode = viewMode,
+                        )
+                    }
+                }.collect()
             }.onFailure {
                 _uiState.update { it.copy(status = Status.ERROR) }
             }
-        }.launchIn(viewModelScope)
+        }
     }
 
     fun changeCity(city: City) {
