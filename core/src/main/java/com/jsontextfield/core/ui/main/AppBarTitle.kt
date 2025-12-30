@@ -46,7 +46,7 @@ fun AppBarTitle(
                         .fillMaxWidth(11 / 12f),
                     onClick = onNavigateToCitySelectionScreen
                 ) {
-                    Text(stringResource(cameraState.currentCity.stringRes))
+                    Text(stringResource(cameraState.city.stringRes))
                 }
             }
 

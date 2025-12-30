@@ -13,6 +13,6 @@ data class CameraRoute(
 )
 
 @Serializable
-data class CitySelectionRoute(
-    val selectedCity: City = City.TORONTO,
+data class SelectLocationRoute(
+    val selectedCity: City = City.OTTAWA,
 )

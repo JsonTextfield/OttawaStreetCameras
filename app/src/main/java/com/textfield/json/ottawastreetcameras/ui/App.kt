@@ -15,9 +15,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.jsontextfield.core.ui.CameraRoute
-import com.jsontextfield.core.ui.CitySelectionRoute
-import com.jsontextfield.core.ui.CitySelectionScreen
 import com.jsontextfield.core.ui.HomeRoute
+import com.jsontextfield.core.ui.SelectLocationRoute
+import com.jsontextfield.core.ui.SelectLocationScreen
 import com.jsontextfield.core.ui.theme.AppTheme
 import com.jsontextfield.core.ui.viewmodels.CameraViewModel
 import com.jsontextfield.core.ui.viewmodels.MainViewModel
@@ -50,7 +50,7 @@ fun App() {
                             )
                         },
                         onNavigateToCitySelectionScreen = {
-                            navController.navigate(CitySelectionRoute(cameraState.currentCity))
+                            navController.navigate(SelectLocationRoute(cameraState.city))
                         })
                 }
                 composable<CameraRoute>(
@@ -68,12 +68,12 @@ fun App() {
                     )
                 }
 
-                composable<CitySelectionRoute>(
+                composable<SelectLocationRoute>(
                     enterTransition = { slideInHorizontally(initialOffsetX = { it }) },
                     exitTransition = { slideOutHorizontally(targetOffsetX = { it }) },
                 ) {
-                    val selectedCity = it.toRoute<CitySelectionRoute>().selectedCity
-                    CitySelectionScreen(
+                    val selectedCity = it.toRoute<SelectLocationRoute>().selectedCity
+                    SelectLocationScreen(
                         selectedCity = selectedCity,
                         onCitySelected = { city ->
                             mainViewModel.changeCity(city)

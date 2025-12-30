@@ -9,13 +9,13 @@ import com.jsontextfield.core.ui.Status
 import com.jsontextfield.core.ui.ViewMode
 
 data class CameraState(
+    val city: City = City.OTTAWA,
     val allCameras: List<Camera> = ArrayList(),
     val status: Status = Status.INITIAL,
     val sortMode: SortMode = SortMode.NAME,
     val searchMode: SearchMode = SearchMode.NONE,
     val filterMode: FilterMode = FilterMode.VISIBLE,
     val viewMode: ViewMode = ViewMode.GALLERY,
-    val currentCity: City = City.OTTAWA,
 ) {
     val selectedCameras: List<Camera>
         get() = allCameras.filter { it.isSelected }
