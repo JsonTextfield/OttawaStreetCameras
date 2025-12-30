@@ -19,17 +19,22 @@ import com.jsontextfield.core.entities.Camera
 fun CameraViewList(
     cameras: List<Camera> = emptyList(),
     displayedCameras: List<Camera> = emptyList(),
-    isShuffling: Boolean = false,
+    shuffle: Boolean = false,
     update: Boolean = false,
     onItemLongClick: (Camera) -> Unit = {},
 ) {
     val verticalScrollState = rememberScrollState()
     Column(
         modifier = Modifier
-            .fillMaxSize()
             .verticalScroll(verticalScrollState)
+            .fillMaxSize()
     ) {
-        if (cameras.size == 1 && !isShuffling) {
+        Spacer(
+            modifier = Modifier.height(
+                WindowInsets.systemBars.asPaddingValues().calculateTopPadding()
+            )
+        )
+        if (cameras.size == 1 && !shuffle) {
             val pagerState = rememberPagerState(
                 initialPage = displayedCameras.indexOf(cameras.first()),
                 pageCount = { displayedCameras.size },
@@ -41,7 +46,8 @@ fun CameraViewList(
                     onLongClick = onItemLongClick,
                 )
             }
-        } else {
+        }
+        else {
             cameras.map { camera ->
                 CameraView(
                     camera = camera,
@@ -50,6 +56,10 @@ fun CameraViewList(
                 )
             }
         }
-        Spacer(modifier = Modifier.height(WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()))
+        Spacer(
+            modifier = Modifier.height(
+                WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()
+            )
+        )
     }
 }

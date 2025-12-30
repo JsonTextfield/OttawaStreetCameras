@@ -98,26 +98,32 @@ fun CameraGalleryTile(
                     overflow = TextOverflow.Ellipsis,
                 )
             }
-            if (camera.isFavourite) {
-                Icon(
-                    Icons.Rounded.Star,
-                    contentDescription = "",
-                    modifier = Modifier.align(Alignment.TopEnd),
-                    tint = favourite,
-                )
-            }
-            if (camera.isSelected) {
-                Icon(
-                    Icons.Rounded.Check,
-                    contentDescription = "",
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .background(
-                            color = MaterialTheme.colorScheme.primary,
-                            shape = CircleShape,
-                        ),
-                    tint = MaterialTheme.colorScheme.onPrimary,
-                )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(4.dp)
+            ) {
+                if (camera.isFavourite) {
+                    Icon(
+                        Icons.Rounded.Star,
+                        contentDescription = "",
+                        modifier = Modifier.align(Alignment.TopEnd),
+                        tint = favourite,
+                    )
+                }
+                if (camera.isSelected) {
+                    Icon(
+                        Icons.Rounded.Check,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .background(
+                                color = MaterialTheme.colorScheme.primary,
+                                shape = CircleShape,
+                            ),
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                    )
+                }
             }
         }
     }

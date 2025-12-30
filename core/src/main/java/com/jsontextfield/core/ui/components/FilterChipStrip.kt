@@ -24,7 +24,7 @@ fun FilterChipStrip(
     onChangeFilterMode: (FilterMode) -> Unit,
 ) {
     LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(
             start = WindowInsets.safeDrawing.asPaddingValues().calculateStartPadding(
                 LayoutDirection.Ltr
