@@ -33,7 +33,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jsontextfield.core.entities.Camera
 import com.jsontextfield.core.ui.FilterMode
 import com.jsontextfield.core.ui.Status
@@ -47,10 +46,11 @@ import com.jsontextfield.core.ui.main.MainContent
 import com.jsontextfield.core.ui.viewmodels.MainViewModel
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun MainScreen(
-    mainViewModel: MainViewModel = viewModel<MainViewModel>(),
+    mainViewModel: MainViewModel = koinViewModel<MainViewModel>(),
     onNavigateToCameraScreen: (List<Camera>, Boolean) -> Unit = { _, _ -> },
     onNavigateToCitySelectionScreen: () -> Unit = {},
 ) {

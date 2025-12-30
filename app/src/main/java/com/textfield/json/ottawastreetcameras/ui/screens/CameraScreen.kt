@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jsontextfield.core.entities.Camera
 import com.jsontextfield.core.network.CameraDownloadService
 import com.jsontextfield.core.ui.ThemeMode
@@ -29,12 +28,13 @@ import com.jsontextfield.core.ui.theme.LocalTheme
 import com.jsontextfield.core.ui.viewmodels.CameraViewModel
 import com.textfield.json.ottawastreetcameras.R
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun CameraScreen(
     isShuffling: Boolean = false,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
-    cameraViewModel: CameraViewModel = viewModel<CameraViewModel>(),
+    cameraViewModel: CameraViewModel = koinViewModel<CameraViewModel>(),
     onBackPressed: () -> Unit = {},
 ) {
     val cameraList by cameraViewModel.cameraList.collectAsStateWithLifecycle()
