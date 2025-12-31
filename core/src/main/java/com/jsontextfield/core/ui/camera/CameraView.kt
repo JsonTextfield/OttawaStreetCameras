@@ -32,40 +32,39 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import coil.imageLoader
 import coil.request.ImageRequest
-import com.jsontextfield.core.entities.Camera
 import com.jsontextfield.core.ui.theme.cameraNameBackground
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CameraView(
-    camera: Camera,
-    update: Boolean = false,
-    onLongClick: (Camera) -> Unit = {},
+    title: String,
+    url: String,
+    update: Boolean,
+    onLongClick: () -> Unit,
 ) {
     var drawable by remember { mutableStateOf<Drawable?>(null) }
     val context = LocalContext.current
     LaunchedEffect(update) {
         val request = ImageRequest.Builder(context)
-            .data(camera.url)
+            .data(url)
             .build()
         drawable = context.imageLoader.execute(request).drawable
     }
     Box(
         modifier = Modifier
             .heightIn(
-                0.dp,
-                (LocalWindowInfo.current.containerSize.height / LocalDensity.current.density).dp
+                max = (LocalWindowInfo.current.containerSize.height / LocalDensity.current.density).dp
             )
             .fillMaxWidth()
             .combinedClickable(
                 onClick = {},
-                onLongClick = { onLongClick(camera) },
+                onLongClick = onLongClick,
             )
     ) {
         drawable?.let {
             Image(
                 bitmap = it.toBitmap().asImageBitmap(),
-                contentDescription = camera.name,
+                contentDescription = title,
                 modifier = Modifier
                     .fillMaxWidth()
                     .blur(radius = 10.dp),
@@ -73,13 +72,13 @@ fun CameraView(
             )
             Image(
                 bitmap = it.toBitmap().asImageBitmap(),
-                contentDescription = camera.name,
+                contentDescription = title,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier.matchParentSize(),
             )
 
             Text(
-                text = camera.name,
+                text = title,
                 color = Color.White,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodySmall,

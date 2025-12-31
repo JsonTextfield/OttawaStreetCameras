@@ -26,8 +26,15 @@ data class Camera(
     val url: String get() = if (city == City.OTTAWA) {
         "$_url&timems=${System.currentTimeMillis()}"
     } else {
-        _url
+        urls.random()
     }
+    val urls: List<String> get() {
+            return if (city == City.OTTAWA) {
+                listOf(url)
+            } else {
+                _url.split(" ")
+            }
+        }
     val preview: String get() = _url
 
     val distanceString: String

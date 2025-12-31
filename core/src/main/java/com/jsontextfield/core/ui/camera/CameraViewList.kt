@@ -12,6 +12,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.jsontextfield.core.entities.Camera
 
@@ -39,21 +40,34 @@ fun CameraViewList(
                 initialPage = displayedCameras.indexOf(cameras.first()),
                 pageCount = { displayedCameras.size },
             )
-            HorizontalPager(pagerState) { index ->
-                CameraView(
-                    camera = displayedCameras[index],
-                    update = update,
-                    onLongClick = onItemLongClick,
-                )
+            HorizontalPager(
+                state = pagerState,
+                verticalAlignment = Alignment.Top,
+            ) { index ->
+                val camera = displayedCameras[index]
+                Column(modifier = Modifier.fillMaxSize()) {
+                    camera.urls.forEach { url ->
+                        CameraView(
+                            title = camera.name,
+                            url = url,
+                            update = update,
+                            onLongClick = { onItemLongClick(camera) },
+                        )
+                    }
+                }
             }
-        }
-        else {
+        } else {
             cameras.map { camera ->
-                CameraView(
-                    camera = camera,
-                    update = update,
-                    onLongClick = onItemLongClick,
-                )
+                Column(modifier = Modifier.fillMaxSize()) {
+                    camera.urls.forEach { url ->
+                        CameraView(
+                            title = camera.name,
+                            url = url,
+                            update = update,
+                            onLongClick = { onItemLongClick(camera) },
+                        )
+                    }
+                }
             }
         }
         Spacer(
