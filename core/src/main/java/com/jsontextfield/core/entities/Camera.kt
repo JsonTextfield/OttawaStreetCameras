@@ -23,19 +23,23 @@ data class Camera(
     val name: String get() = _name.name
     val sortableName: String get() = _name.sortableName
     val neighbourhood: String get() = _neighbourhood.name
-    val url: String get() = if (city == City.OTTAWA) {
-        "$_url&timems=${System.currentTimeMillis()}"
-    } else {
-        urls.random()
-    }
-    val urls: List<String> get() {
+    val url: String
+        get() {
+            return if (city == City.OTTAWA) {
+                "$_url&timems=${System.currentTimeMillis()}"
+            } else {
+                urls.random()
+            }
+        }
+    val urls: List<String>
+        get() {
             return if (city == City.OTTAWA) {
                 listOf(url)
             } else {
                 _url.split(" ")
             }
         }
-    val preview: String get() = _url
+    val preview: String get() = _url.split(" ").random()
 
     val distanceString: String
         get() {
