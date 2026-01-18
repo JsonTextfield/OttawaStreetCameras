@@ -14,3 +14,6 @@ This app shows live images from traffic cameras in the Ottawa area
 <img src="Screenshots/Screenshot_1533309917.png" alt="drawing" width="300"/>
 </td>
 </table>
+
+## Privacy Policy
+This app does not collect nor share any personal information.
