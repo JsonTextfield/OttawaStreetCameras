@@ -66,7 +66,7 @@ fun ActionBar(
                 showOverflowMenu = false
             }
             MenuItem(
-                icon = R.drawable.rounded_more_vert_24,
+                icon = R.drawable.round_more_vert_24,
                 tooltip = stringResource(R.string.more),
                 onClick = {
                     showOverflowMenu = true
@@ -115,15 +115,15 @@ fun getActions(
         onClick = { mainViewModel.hideCameras(cameraState.selectedCameras) },
     )
     val selectAll = Action(
-        icon = R.drawable.rounded_select_all_24,
+        icon = R.drawable.round_select_all_24,
         tooltip = stringResource(R.string.select_all),
         isVisible = selectedCameras.size < cameraState.getDisplayedCameras(searchText = mainViewModel.searchText).size,
         onClick = { mainViewModel.selectAllCameras() },
     )
     val switchView = Action(
         icon = when (cameraState.viewMode) {
-            ViewMode.LIST -> R.drawable.rounded_list_24
-            ViewMode.MAP -> R.drawable.baseline_place_24
+            ViewMode.LIST -> R.drawable.round_list_24
+            ViewMode.MAP -> R.drawable.round_place_24
             ViewMode.GALLERY -> R.drawable.round_grid_view_24
         },
         tooltip = stringResource(
@@ -153,7 +153,7 @@ fun getActions(
         },
     )
     val sort = Action(
-        icon = R.drawable.rounded_sort_24,
+        icon = R.drawable.round_sort_24,
         isVisible = cameraState.viewMode != ViewMode.MAP,
         tooltip = stringResource(id = R.string.sort),
         menuContent = {
@@ -213,13 +213,13 @@ fun getActions(
         },
     )
     val search = Action(
-        icon = R.drawable.rounded_search_24,
+        icon = R.drawable.round_search_24,
         isVisible = cameraState.searchMode != SearchMode.NAME,
         tooltip = stringResource(id = R.string.search),
         onClick = { mainViewModel.searchCameras(SearchMode.NAME) },
     )
     val searchNeighbourhood = Action(
-        icon = R.drawable.rounded_travel_explore_24,
+        icon = R.drawable.round_travel_explore_24,
         isVisible = cameraState.showSearchNeighbourhood,
         tooltip = stringResource(id = R.string.search_neighbourhood),
         onClick = { mainViewModel.searchCameras(SearchMode.NEIGHBOURHOOD) },
@@ -232,7 +232,7 @@ fun getActions(
         },
     )
     val shuffle = Action(
-        icon = R.drawable.rounded_shuffle_24,
+        icon = R.drawable.round_shuffle_24,
         tooltip = stringResource(id = R.string.shuffle),
         onClick = {
             onNavigateToCameraScreen(emptyList(), true)

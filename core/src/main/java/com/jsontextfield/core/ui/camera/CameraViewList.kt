@@ -20,7 +20,7 @@ import com.jsontextfield.core.entities.Camera
 fun CameraViewList(
     cameras: List<Camera> = emptyList(),
     displayedCameras: List<Camera> = emptyList(),
-    shuffle: Boolean = false,
+    isShuffling: Boolean = false,
     update: Boolean = false,
     onItemLongClick: (Camera) -> Unit = {},
 ) {
@@ -35,7 +35,7 @@ fun CameraViewList(
                 WindowInsets.systemBars.asPaddingValues().calculateTopPadding()
             )
         )
-        if (cameras.size == 1 && !shuffle) {
+        if (cameras.size == 1 && !isShuffling) {
             val pagerState = rememberPagerState(
                 initialPage = displayedCameras.indexOf(cameras.first()),
                 pageCount = { displayedCameras.size },

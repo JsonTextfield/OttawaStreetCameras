@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -31,6 +29,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jsontextfield.core.entities.Camera
@@ -44,6 +43,7 @@ import com.jsontextfield.core.ui.main.CameraState
 import com.jsontextfield.core.ui.main.MainAppBar
 import com.jsontextfield.core.ui.main.MainContent
 import com.jsontextfield.core.ui.viewmodels.MainViewModel
+import com.textfield.json.ottawastreetcameras.R
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
@@ -139,7 +139,7 @@ private fun MainScreen(
                         }
                     },
                 ) {
-                    Icon(Icons.Rounded.ArrowUpward, null)
+                    Icon(painterResource(R.drawable.rounded_arrow_upward_24), null)
                 }
             }
         }

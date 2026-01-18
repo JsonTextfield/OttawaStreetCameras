@@ -5,12 +5,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
 
 @Composable
 fun OverflowMenuItem(
-    icon: ImageVector,
+    icon: Int,
     tooltip: String = "",
     isVisible: Boolean = true,
     onClick: () -> Unit = {},
@@ -18,7 +18,7 @@ fun OverflowMenuItem(
     if (isVisible) {
         DropdownMenuItem(
             text = { Text(text = tooltip) },
-            leadingIcon = { Icon(icon, null) },
+            leadingIcon = { Icon(painterResource(icon), null) },
             onClick = onClick,
             modifier = Modifier.semantics(true){}
         )

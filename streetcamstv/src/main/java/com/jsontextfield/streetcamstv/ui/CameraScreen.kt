@@ -60,7 +60,7 @@ private fun CameraScreen(
         CameraViewList(
             cameras = cameras,
             displayedCameras = allCameras,
-            shuffle = isShuffling,
+            isShuffling = isShuffling,
             update = update,
         )
         Box(
