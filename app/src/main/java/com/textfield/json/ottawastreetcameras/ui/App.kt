@@ -14,17 +14,22 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.textfield.json.ottawastreetcameras.ui.camera.CameraScreen
-import com.textfield.json.ottawastreetcameras.ui.camera.CameraViewModel
-import com.textfield.json.ottawastreetcameras.ui.main.MainScreen
-import com.textfield.json.ottawastreetcameras.ui.main.MainViewModel
-import com.textfield.json.ottawastreetcameras.ui.theme.AppTheme
+import com.jsontextfield.core.ui.CameraRoute
+import com.jsontextfield.core.ui.HomeRoute
+import com.jsontextfield.core.ui.SelectLocationRoute
+import com.jsontextfield.core.ui.SelectLocationScreen
+import com.jsontextfield.core.ui.theme.AppTheme
+import com.jsontextfield.core.ui.viewmodels.CameraViewModel
+import com.jsontextfield.core.ui.viewmodels.MainViewModel
+import com.textfield.json.ottawastreetcameras.ui.screens.CameraScreen
+import com.textfield.json.ottawastreetcameras.ui.screens.MainScreen
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
 fun App() {
     val mainViewModel = koinViewModel<MainViewModel>()
+    val cameraState by mainViewModel.uiState.collectAsStateWithLifecycle()
     val theme by mainViewModel.theme.collectAsStateWithLifecycle()
     val navController = rememberNavController()
     AppTheme(theme = theme) {
@@ -34,14 +39,19 @@ fun App() {
                 startDestination = HomeRoute,
             ) {
                 composable<HomeRoute> {
-                    MainScreen(mainViewModel = mainViewModel) { selectedCameras, isShuffling ->
-                        navController.navigate(
-                            CameraRoute(
-                                cameras = selectedCameras.joinToString(",") { it.id },
-                                isShuffling = isShuffling,
+                    MainScreen(
+                        mainViewModel = mainViewModel,
+                        onNavigateToCameraScreen = { selectedCameras, isShuffling ->
+                            navController.navigate(
+                                CameraRoute(
+                                    cameras = selectedCameras.joinToString(",") { it.id },
+                                    isShuffling = isShuffling,
+                                )
                             )
-                        )
-                    }
+                        },
+                        onNavigateToCitySelectionScreen = {
+                            navController.navigate(SelectLocationRoute(cameraState.city))
+                        })
                 }
                 composable<CameraRoute>(
                     enterTransition = { slideInHorizontally(initialOffsetX = { it }) },
@@ -55,6 +65,23 @@ fun App() {
                         isShuffling = route.isShuffling,
                         cameraViewModel = cameraViewModel,
                         onBackPressed = navController::navigateUp,
+                    )
+                }
+
+                composable<SelectLocationRoute>(
+                    enterTransition = { slideInHorizontally(initialOffsetX = { it }) },
+                    exitTransition = { slideOutHorizontally(targetOffsetX = { it }) },
+                ) {
+                    val selectedCity = it.toRoute<SelectLocationRoute>().selectedCity
+                    SelectLocationScreen(
+                        selectedCity = selectedCity,
+                        onCitySelected = { city ->
+                            mainViewModel.changeCity(city)
+                            navController.popBackStack()
+                        },
+                        onBackPressed = {
+                            navController.popBackStack()
+                        },
                     )
                 }
             }

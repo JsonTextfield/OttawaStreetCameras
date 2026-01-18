@@ -4,14 +4,14 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.textfield.json.ottawastreetcameras.R
-import com.textfield.json.ottawastreetcameras.data.CameraRepository
-import com.textfield.json.ottawastreetcameras.data.DataStorePreferencesRepository
-import com.textfield.json.ottawastreetcameras.data.ICameraRepository
-import com.textfield.json.ottawastreetcameras.data.IPreferencesRepository
-import com.textfield.json.ottawastreetcameras.ui.camera.CameraViewModel
-import com.textfield.json.ottawastreetcameras.ui.main.CameraState
-import com.textfield.json.ottawastreetcameras.ui.main.MainViewModel
+import com.jsontextfield.core.data.CameraRepository
+import com.jsontextfield.core.data.DataStorePreferencesRepository
+import com.jsontextfield.core.data.ICameraRepository
+import com.jsontextfield.core.data.IPreferencesRepository
+import com.jsontextfield.core.network.SUPABASE_API_KEY
+import com.jsontextfield.core.ui.main.CameraState
+import com.jsontextfield.core.ui.viewmodels.CameraViewModel
+import com.jsontextfield.core.ui.viewmodels.MainViewModel
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
@@ -20,7 +20,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
-import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("prefs")
@@ -39,7 +40,7 @@ val appModule = module {
     single<SupabaseClient> {
         createSupabaseClient(
             supabaseUrl = "https://nacudfxzbqaesoyjfluh.supabase.co",
-            supabaseKey = androidContext().getString(R.string.supabase_key)
+            supabaseKey = SUPABASE_API_KEY
         ) {
             install(Postgrest)
         }
@@ -49,12 +50,13 @@ val appModule = module {
 
     single { MutableStateFlow(CameraState()) }
 
-    factoryOf(::MainViewModel)
-    factory<CameraViewModel> { parameters ->
+    viewModelOf(::MainViewModel)
+    viewModel<CameraViewModel> { parameters ->
         CameraViewModel(
             cameraRepository = get<ICameraRepository>(),
             cameraIds = parameters.getOrNull(String::class) ?: "",
             isShuffling = parameters.getOrNull(Boolean::class) ?: true,
+            prefRepository = get<IPreferencesRepository>(),
         )
     }
 }

@@ -1,0 +1,73 @@
+package com.jsontextfield.core.ui.main
+
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import com.jsontextfield.core.R
+import com.jsontextfield.core.ui.SearchMode
+import com.jsontextfield.core.ui.components.menu.Action
+import com.jsontextfield.core.ui.components.menu.ActionBar
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MainAppBar(
+    cameraState: CameraState,
+    searchText: String = "",
+    suggestions: List<String> = emptyList(),
+    actions: List<Action> = emptyList(),
+    onSearchTextChanged: (String) -> Unit = {},
+    onBackClick: () -> Unit = {},
+    onNavigateToCitySelectionScreen : () -> Unit = {},
+) {
+    TopAppBar(
+        modifier = Modifier.shadow(10.dp),
+        navigationIcon = {
+            if (cameraState.searchMode != SearchMode.NONE) {
+                IconButton(
+                    modifier = Modifier.padding(5.dp),
+                    onClick = onBackClick,
+                ) {
+                    Icon(
+                        Icons.AutoMirrored.Rounded.ArrowBack,
+                        stringResource(id = R.string.back),
+                    )
+                }
+            }
+        },
+        title = {
+            AppBarTitle(
+                cameraState,
+                suggestions = suggestions,
+                searchText = searchText,
+                onTextChanged = onSearchTextChanged,
+                onNavigateToCitySelectionScreen = onNavigateToCitySelectionScreen,
+            )
+        },
+        actions = {
+            val screenWidthDp =
+                (LocalWindowInfo.current.containerSize.width / LocalDensity.current.density).toInt()
+            val maxActions = when {
+                screenWidthDp < 400 -> screenWidthDp / 4 / 48
+                screenWidthDp < 600 -> screenWidthDp / 3 / 48
+                screenWidthDp < 800 -> screenWidthDp / 2 / 48
+                else -> screenWidthDp * 2 / 3 / 48
+            } + 1
+            ActionBar(
+                maxActions = maxActions,
+                actions = actions,
+            )
+        },
+    )
+}

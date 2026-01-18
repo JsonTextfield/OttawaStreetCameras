@@ -1,5 +1,6 @@
 package com.textfield.json.ottawastreetcameras.entities
 
+import com.jsontextfield.core.entities.Camera
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

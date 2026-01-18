@@ -3,6 +3,7 @@
     <string name="app_name_long">Ottawa StreetCams</string>
     <string name="about">About</string>
     <string name="add_to_favourites">Favourite</string>
+    <string name="all">All</string>
     <string name="favourites">Favourites</string>
     <string name="hidden_cameras">Hidden</string>
     <string name="hide">Hide</string>
@@ -48,7 +49,6 @@
     <string name="dark_mode">Dark</string>
     <string name="system_default">Default</string>
     <string name="change_theme">Theme</string>
-    <string name="all">All</string>
 
     <plurals name="images_saved">
         <item quantity="one">%d image saved</item>
