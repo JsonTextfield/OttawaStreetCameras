@@ -37,11 +37,6 @@ android {
 }
 
 dependencies {
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-
-
-
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
@@ -73,7 +68,7 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
 
     testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.junit)
+    testImplementation(libs.kotlin.test)
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)

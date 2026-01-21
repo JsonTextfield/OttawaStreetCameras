@@ -12,24 +12,20 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
 import kotlin.random.Random
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainViewModelUnitTest {
-
-    @get:Rule
-    var mainCoroutineRule = MainCoroutineRule()
 
     private lateinit var mainViewModel: MainViewModel
     private lateinit var fakeCameraRepository: FakeCameraRepository
     private lateinit var prefs: FakePreferences
 
-    @Before
+    @BeforeTest
     fun setup() {
         fakeCameraRepository = FakeCameraRepository()
         prefs = FakePreferences()

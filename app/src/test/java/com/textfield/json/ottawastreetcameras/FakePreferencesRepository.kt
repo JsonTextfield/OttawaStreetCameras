@@ -1,45 +1,46 @@
 package com.textfield.json.ottawastreetcameras
 
+import com.jsontextfield.core.data.IPreferencesRepository
+import com.jsontextfield.core.entities.City
 import com.jsontextfield.core.ui.ThemeMode
 import com.jsontextfield.core.ui.ViewMode
-import com.jsontextfield.core.data.IPreferencesRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.MutableStateFlow
 
 
 class FakePreferences : IPreferencesRepository {
-    private val data = mutableMapOf<String, Any>()
-
+    private val favouritesFlow = MutableStateFlow(emptySet<String>())
     override suspend fun setFavouriteCameras(ids: Set<String>) {
-        data["favourites"] = ids
+        favouritesFlow.value = ids
     }
 
-    override fun getFavourites(): Flow<Set<String>> {
-        return flowOf(data["favourites"] as? Set<String> ?: emptySet())
-    }
+    override fun getFavourites(): Flow<Set<String>> = favouritesFlow
 
+    private val hiddenCamerasFlow = MutableStateFlow(emptySet<String>())
     override suspend fun setHiddenCameras(ids: Set<String>) {
-        data["hidden"] = ids
+        hiddenCamerasFlow.value = ids
     }
 
-    override fun getHidden(): Flow<Set<String>> {
-        return flowOf(data["hidden"] as? Set<String> ?: emptySet())
-    }
+    override fun getHidden(): Flow<Set<String>> = hiddenCamerasFlow
 
+    private val themeFlow = MutableStateFlow(ThemeMode.SYSTEM)
     override suspend fun setTheme(theme: ThemeMode) {
-        data["theme"] = theme
+        themeFlow.value = theme
     }
 
-    override fun getTheme(): Flow<ThemeMode> {
-        return flowOf((data["theme"] ?: ThemeMode.SYSTEM) as ThemeMode)
-    }
+    override fun getTheme(): Flow<ThemeMode> = themeFlow
 
+    private val viewModeFlow = MutableStateFlow(ViewMode.GALLERY)
     override suspend fun setViewMode(viewMode: ViewMode) {
-        data["viewMode"] = viewMode
+        viewModeFlow.value = viewMode
     }
 
-    override fun getViewMode(): Flow<ViewMode> {
-        return flowOf((data["viewMode"] ?: ViewMode.GALLERY) as ViewMode)
+    override fun getViewMode(): Flow<ViewMode> = viewModeFlow
+
+    private val cityFlow = MutableStateFlow(City.OTTAWA)
+    override suspend fun setCity(city: City) {
+        cityFlow.value = city
     }
 
+    override fun getCity(): Flow<City> = cityFlow
 }
