@@ -1,7 +1,0 @@
-/build
-/src/debug/res/values/google_maps_api.xml
-/release
-/src/release
-/src/debug/res/values/supabase_api_key.xml
-/src/main/java/com/textfield/json/ottawastreetcameras/di/ApiKey.kt
-/src/main/java/com/textfield/json/ottawastreetcameras/di/SupabaseKey.kt

@@ -1,0 +1,98 @@
+<resources>
+    <!--Theme mode-->
+    <string name="light_mode">Lumière</string>
+    <string name="dark_mode">Sombre</string>
+    <string name="system_default">Défaut</string>
+
+    <!--Sort mode-->
+    <string name="sort_by_distance">Triez par distance</string>
+    <string name="sort_by_name">Triez par nom</string>
+    <string name="sort_by_neighbourhood">Triez par quartier</string>
+
+    <!--Filter mode-->
+    <string name="all">Tous</string>
+    <string name="favourites">Favoris</string>
+    <string name="hidden_cameras">Caméras cachées</string>
+
+    <!--Search-->
+    <string name="search">Chercher</string>
+    <string name="search_neighbourhood">Chercher par quartier</string>
+    <string name="app_name">RueCams</string>
+
+    <!--View mode-->
+    <string name="list">Liste</string>
+    <string name="map">Carte</string>
+    <string name="gallery">Galerie</string>
+
+    <!--Actions-->
+    <string name="select_all">Tout sélectionner</string>
+    <string name="change_theme">Thème</string>
+    <string name="random_camera">Caméra aléatoire</string>
+    <string name="view">Voir</string>
+    <string name="shuffle">Mélanger</string>
+    <string name="sort">Trier</string>
+
+    <string name="alberta">Alberta</string>
+    <string name="british_columbia">Colombie-Britannique</string>
+    <string name="calgary">Calgary</string>
+    <string name="manitoba">Manitoba</string>
+    <string name="newfoundland">Terre-Neuve</string>
+    <string name="new_brunswick">Nouveau-Brunswick</string>
+    <string name="nova_scotia">Nouvelle-Écosse</string>
+    <string name="ontario">Ontario</string>
+    <string name="ottawa">Ottawa</string>
+    <string name="prince_edward_island">Île-du-Prince-Édouard</string>
+    <string name="quebec">Québec</string>
+    <string name="saskatchewan">Saskatchewan</string>
+    <string name="surrey">Surrey</string>
+    <string name="toronto">Toronto</string>
+    <string name="vancouver">Vancouver</string>
+    <string name="yukon">Yukon</string>
+    <string name="change_location">Changer location</string>
+
+    <string name="back">Retourner</string>
+
+    <string name="add_to_favourites">Ajouter aux favourites</string>
+    <string name="remove_from_favourites">Supprimer des favoris</string>
+
+    <string name="hide">Cacher</string>
+    <string name="unhide">Révéler</string>
+    <string name="more">Plus</string>
+    <string name="clear">Effacer</string>
+
+    <string name="location_unavailable">L\'emplacement n\'est pas disponible</string>
+
+    <string name="no_network_content">Réessayer plus tard</string>
+    <string name="retry">Réessayer</string>
+    <string name="no_network_title">N\'a pas pu charger</string>
+    <string name="could_not_load_long">N\'a pas pu charger. Réessayer plus tard.</string>
+
+    <string name="camera_visibility_changed">%s a été %s</string>
+
+    <plurals name="images_saved">
+        <item quantity="one">%1$d image a été enregistrée</item>
+        <item quantity="many">%1$d images ont été enregistrée</item>
+        <item quantity="other">%1$d images ont été enregistrée</item>
+    </plurals>
+    <plurals name="selectedCameras">
+        <item quantity="one">%1$d sélectionnée</item>
+        <item quantity="many">%1$d sélectionnées</item>
+        <item quantity="other">%1$d sélectionnées</item>
+    </plurals>
+    <plurals name="search_hint">
+        <item quantity="one">Recherche de %1$d caméra</item>
+        <item quantity="many">Recherche de %1$d caméras</item>
+        <item quantity="other">Recherche de %1$d caméras</item>
+    </plurals>
+    <plurals name="search_hint_neighbourhood">
+        <item quantity="one">Recherche de %1$d quartier</item>
+        <item quantity="many">Recherche de %1$d quartiers</item>
+        <item quantity="other">Recherche de %1$d quartiers</item>
+    </plurals>
+    <plurals name="camera_count">
+        <item quantity="one">%1$d caméra</item>
+        <item quantity="many">%1$d caméras</item>
+        <item quantity="other">%1$d caméras</item>
+    </plurals>
+
+</resources>

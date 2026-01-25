@@ -1,0 +1,108 @@
+package com.jsontextfield.composeapp.ui.screens
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsTopHeight
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jsontextfield.shared.entities.Camera
+import com.jsontextfield.shared.ui.ThemeMode
+import com.jsontextfield.shared.ui.camera.CameraViewList
+import com.jsontextfield.shared.ui.components.BackButton
+import com.jsontextfield.shared.ui.theme.LocalTheme
+import com.jsontextfield.shared.ui.viewmodels.CameraViewModel
+import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
+
+@Composable
+fun CameraScreen(
+    isShuffling: Boolean = false,
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
+    cameraViewModel: CameraViewModel = koinViewModel<CameraViewModel>(),
+    onBackPressed: () -> Unit = {},
+) {
+    val cameraList by cameraViewModel.cameraList.collectAsStateWithLifecycle()
+    val allCameras by cameraViewModel.allCameras.collectAsStateWithLifecycle()
+
+    CameraScreen(
+        update = cameraViewModel.update,
+        cameras = cameraList,
+        allCameras = allCameras,
+        isShuffling = isShuffling,
+        snackbarHostState = snackbarHostState,
+        onBackPressed = onBackPressed,
+    )
+}
+
+@Composable
+private fun CameraScreen(
+    update: Boolean,
+    cameras: List<Camera>,
+    allCameras: List<Camera>,
+    isShuffling: Boolean = false,
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
+    onBackPressed: () -> Unit = {},
+    ) {
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+    ) {
+        val scope = rememberCoroutineScope()
+        //val context = LocalContext.current
+        CameraViewList(
+            cameras = cameras,
+            displayedCameras = allCameras,
+            isShuffling = isShuffling,
+            update = update,
+            onItemLongClick = { camera ->
+                scope.launch {
+//                    CameraDownloadService.saveImage(context, camera)
+//                    snackbarHostState.showSnackbar(
+//                        context.resources.getString(
+//                            R.string.image_saved,
+//                            camera.name,
+//                        )
+//                    )
+                }
+            }
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .windowInsetsTopHeight(WindowInsets.statusBars)
+                .background(
+                    when (LocalTheme.current) {
+                        ThemeMode.LIGHT ->
+                            Color.White.copy(alpha = 0.3f)
+
+                        ThemeMode.DARK ->
+                            Color.Black.copy(alpha = 0.3f)
+
+                        ThemeMode.SYSTEM -> {
+                            if (isSystemInDarkTheme()) {
+                                Color.Black.copy(alpha = 0.3f)
+                            }
+                            else {
+                                Color.White.copy(alpha = 0.3f)
+                            }
+                        }
+                    },
+                )
+        )
+        Box(modifier = Modifier.padding(it)) {
+            BackButton(onClick = onBackPressed)
+        }
+    }
+}

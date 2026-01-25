@@ -1,0 +1,92 @@
+<resources>
+    <!--Theme mode-->
+    <string name="light_mode">Light</string>
+    <string name="dark_mode">Dark</string>
+    <string name="system_default">Default</string>
+
+    <!--Sort mode-->
+    <string name="sort_by_distance">Sort by distance</string>
+    <string name="sort_by_name">Sort by name</string>
+    <string name="sort_by_neighbourhood">Sort by\nneighbourhood</string>
+
+    <!--Filter mode-->
+    <string name="all">All</string>
+    <string name="favourites">Favourites</string>
+    <string name="hidden_cameras">Hidden cameras</string>
+
+    <!--Search-->
+    <string name="search">Search</string>
+    <string name="search_neighbourhood">Search by\nneighbourhood</string>
+    <string name="app_name">RueCams</string>
+
+    <!--View mode-->
+    <string name="list">List</string>
+    <string name="map">Map</string>
+    <string name="gallery">Gallery</string>
+
+    <!--Actions-->
+    <string name="select_all">Select all</string>
+    <string name="change_theme">Theme</string>
+    <string name="random_camera">Random</string>
+    <string name="view">View</string>
+    <string name="shuffle">Shuffle</string>
+    <string name="sort">Sort</string>
+
+    <string name="alberta">Alberta</string>
+    <string name="british_columbia">British Columbia</string>
+    <string name="calgary">Calgary</string>
+    <string name="manitoba">Manitoba</string>
+    <string name="newfoundland">Newfoundland</string>
+    <string name="new_brunswick">New Brunswick</string>
+    <string name="nova_scotia">Nova Scotia</string>
+    <string name="ontario">Ontario</string>
+    <string name="ottawa">Ottawa</string>
+    <string name="prince_edward_island">Prince Edward Island</string>
+    <string name="quebec">Quebec</string>
+    <string name="saskatchewan">Saskatchewan</string>
+    <string name="surrey">Surrey</string>
+    <string name="toronto">Toronto</string>
+    <string name="vancouver">Vancouver</string>
+    <string name="yukon">Yukon</string>
+    <string name="change_location">Change location</string>
+
+    <string name="back">Back</string>
+
+    <string name="add_to_favourites">Favourite</string>
+    <string name="remove_from_favourites">Un-favourite</string>
+
+    <string name="hide">Hide</string>
+    <string name="unhide">Un-hide</string>
+    <string name="more">More</string>
+    <string name="clear">Clear</string>
+
+    <string name="location_unavailable">Location not available</string>
+
+    <string name="no_network_content">Try again later</string>
+    <string name="retry">Retry</string>
+    <string name="no_network_title">Could not load</string>
+    <string name="could_not_load_long">Could not load. Try again later.</string>
+
+    <string name="camera_visibility_changed">%s has been %s</string>
+
+    <plurals name="images_saved">
+        <item quantity="one">%1$d image saved</item>
+        <item quantity="other">%1$d images saved</item>
+    </plurals>
+    <plurals name="selectedCameras">
+        <item quantity="one">%1$d selected</item>
+        <item quantity="other">%1$d selected</item>
+    </plurals>
+    <plurals name="search_hint">
+        <item quantity="one">Search from %1$d camera</item>
+        <item quantity="other">Search from %1$d cameras</item>
+    </plurals>
+    <plurals name="search_hint_neighbourhood">
+        <item quantity="one">Search from %1$d neighbourhood</item>
+        <item quantity="other">Search from %1$d neighbourhoods</item>
+    </plurals>
+    <plurals name="camera_count">
+        <item quantity="one">%1$d camera</item>
+        <item quantity="other">%1$d cameras</item>
+    </plurals>
+</resources>

@@ -6,3 +6,5 @@
 /build
 /captures
 /core/src/main/java/com/jsontextfield/core/network/SupabaseKey.kt
+/.kotlin/
+/composeApp/src/androidDebug/res/values/google_maps_api.xml
